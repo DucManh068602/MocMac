@@ -1,0 +1,221 @@
+@if (product(); as p) {
+  <div class="wrap">
+
+    <nav class="crumb">
+      <a routerLink="/">Trang chủ</a> ›
+      <a routerLink="/san-pham">Sản phẩm</a> ›
+      <b>{{ p.name }}</b>
+    </nav>
+
+    <div class="detail-grid">
+
+      <!-- GALLERY -->
+      <div class="gallery">
+        <div class="main-img">
+          @if (imgs().length > 0) {
+            <img [src]="curImg()" [alt]="p.name" loading="lazy" (error)="imgError(curImg())" />
+          } @else {
+            <span class="ico">{{ p.icon || '🛍️' }}</span>
+          }
+
+          @if (imgs().length > 1) {
+            <button class="nav prev" (click)="step(-1)" aria-label="Ảnh trước">‹</button>
+            <button class="nav next" (click)="step(1)" aria-label="Ảnh sau">›</button>
+          }
+
+          @if (!p.inStock && !p.preorder) {
+            <span class="badge-sold">Hết hàng</span>
+          }
+          @if (p.preorder) {
+            <span class="badge-pre">Đặt trước</span>
+          }
+        </div>
+
+        @if (imgs().length > 1) {
+          <div class="thumbs">
+            @for (u of imgs(); track u; let i = $index) {
+              <button [class.on]="i === currentImg()" (click)="setImg(i)">
+                <img [src]="u" [alt]="p.name + ' ' + (i + 1)" (error)="imgError(u)" />
+              </button>
+            }
+          </div>
+        }
+      </div>
+
+      <!-- INFO -->
+      <div class="detail-info">
+        <h1>{{ p.name }}</h1>
+
+        <div class="rating">
+          <span class="stars">{{ stars(p.rate) }}</span>
+          <small>({{ p.reviews }} đánh giá)</small>
+        </div>
+
+        <div class="price">{{ fmt(p.price) }}</div>
+
+        <div class="tags">
+          @for (b of p.badges; track b) {
+            <span class="tag">{{ b }}</span>
+          }
+          @if (p.ocop) {
+            <span class="tag ocop">OCOP {{ p.ocop }}★</span>
+          }
+          @if (p.heritage) {
+            <span class="tag her">Di sản {{ p.heritage }}</span>
+          }
+          @if (p.preorder) {
+            <span class="tag pre">Pre-order</span>
+          }
+          @if (!p.inStock && !p.preorder) {
+            <span class="tag sold">Hết hàng</span>
+          }
+        </div>
+
+        <div class="origin-row">
+          📍
+          <span class="loc">
+            {{ p.village || p.province }}
+            @if (p.village) {, {{ p.province }}}
+             · {{ p.region }}
+          </span>
+        </div>
+
+        <div class="type-row">
+          <span class="meta-label">Danh mục:</span>
+          {{ p.cat }} · {{ p.type }}
+        </div>
+
+        @if (p.occasion?.length) {
+          <div class="occ-row">
+            <span class="meta-label">Dịp:</span>
+            @for (o of p.occasion; track o) {
+              <span class="occ-chip">{{ o }}</span>
+            }
+          </div>
+        }
+
+        @if (p.inStock) {
+          <div class="qty-row">
+            <button type="button" class="qty-btn" (click)="changeQty(-1)" [disabled]="qty() <= 1" aria-label="Giảm">−</button>
+            <span class="qty-val">{{ qty() }}</span>
+            <button type="button" class="qty-btn" (click)="changeQty(1)" aria-label="Tăng">+</button>
+          </div>
+
+          <div class="action-row">
+            <button class="btn" (click)="addToCart()">🛒 Thêm vào giỏ hàng</button>
+            <button class="btn dark" (click)="buyNow()">Mua ngay</button>
+          </div>
+        } @else {
+          <div class="preorder-note">
+            @if (p.preorder) {
+              <span class="pre">🔔 Đặt trước - giao hàng sau 2–3 tuần</span>
+            } @else {
+              <span class="sold">🚫 Sản phẩm tạm thời hết hàng</span>
+            }
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- DESCRIPTION -->
+    <section class="desc-section">
+      <h2>Câu chuyện sản phẩm</h2>
+      <p class="desc-text">{{ desc() }}</p>
+
+      <div class="detail-meta">
+        <div class="meta-item">
+          <span class="meta-label">Vùng miền</span>
+          <span class="meta-value">{{ p.region }}</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Tỉnh thành</span>
+          <span class="meta-value">{{ p.province }}</span>
+        </div>
+        @if (p.village) {
+          <div class="meta-item">
+            <span class="meta-label">Làng nghề</span>
+            <span class="meta-value">{{ p.village }}</span>
+          </div>
+        }
+        <div class="meta-item">
+          <span class="meta-label">Chất liệu / Loại nghề</span>
+          <span class="meta-value">{{ p.type }}</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">OCOP</span>
+          <span class="meta-value">{{ p.ocop > 0 ? (p.ocop + ' sao') : 'Chưa xác định' }}</span>
+        </div>
+        @if (p.heritage) {
+          <div class="meta-item">
+            <span class="meta-label">Huy hiệu Di sản</span>
+            <span class="meta-value">Di sản {{ p.heritage }}</span>
+          </div>
+        }
+        @if (p.seasons?.length) {
+          <div class="meta-item">
+            <span class="meta-label">Mùa vụ</span>
+            <span class="meta-value">{{ p.seasons.join(', ') }}</span>
+          </div>
+        }
+        <div class="meta-item">
+          <span class="meta-label">Trạng thái</span>
+          <span class="meta-value">
+            @if (!p.inStock && !p.preorder) {
+              Hết hàng
+            } @else if (p.preorder) {
+              Đặt trước
+            } @else {
+              Còn hàng
+            }
+          </span>
+        </div>
+      </div>
+    </section>
+
+    <!-- RELATED -->
+    @if (related().length > 0) {
+      <section class="related-section">
+        <h2>🧺 Sản phẩm liên quan</h2>
+        <div class="plist">
+          @for (rp of related(); track rp.slug) {
+            <article class="pcard" [routerLink]="['/san-pham', rp.slug]">
+              <div class="pimg">
+                @if (rp.images?.length) {
+                  <img class="photo" [src]="rp.images[0]" [alt]="rp.name" loading="lazy" />
+                } @else {
+                  <span class="ico">{{ rp.icon }}</span>
+                }
+                <div class="tags">
+                  @if (rp.ocop) { <span class="tag ocop">OCOP {{ rp.ocop }}★</span> }
+                  @if (rp.heritage) { <span class="tag her">Di sản {{ rp.heritage }}</span> }
+                </div>
+              </div>
+              <div class="pbody">
+                <h3>{{ rp.name }}</h3>
+                <small class="loc">📍 {{ rp.village || rp.province }}{{ rp.village ? ', ' + rp.province : '' }} · {{ rp.region }}</small>
+                <div class="rt"><span class="stars">{{ stars(rp.rate) }}</span> <small>({{ rp.reviews }})</small></div>
+                <div class="row">
+                  <b>{{ fmt(rp.price) }}</b>
+                  <button class="add" (click)="cart.add(rp.id, rp.name)" aria-label="Thêm vào giỏ">🛒</button>
+                </div>
+              </div>
+            </article>
+          }
+        </div>
+      </section>
+    }
+
+  </div>
+} @else {
+  @if (all().length > 0) {
+    <div class="wrap not-found">
+      <h2>Không tìm thấy sản phẩm</h2>
+      <p>Sản phẩm bạn tìm không tồn tại hoặc đã bị xóa.</p>
+      <a class="btn" routerLink="/san-pham">Quay lại danh sách sản phẩm</a>
+    </div>
+  } @else {
+    <div class="wrap loading-state">
+      <p>Đang tải sản phẩm...</p>
+    </div>
+  }
+}

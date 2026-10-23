@@ -1,0 +1,481 @@
+<section class="contact-page">
+
+  <!-- BANNER -->
+  <div class="contact-banner">
+    <div class="wrap banner-content">
+      <span class="small-title">MỘC MẠC</span>
+
+      <h1>Liên hệ với chúng tôi</h1>
+
+      <p>
+        Mộc Mạc luôn sẵn sàng lắng nghe và đồng hành cùng bạn
+        trong hành trình khám phá những giá trị truyền thống Việt Nam.
+      </p>
+    </div>
+  </div>
+
+
+  <!-- CONTACT CONTENT -->
+  <div class="wrap contact-wrapper">
+
+    <!-- LEFT -->
+    <div class="contact-info">
+
+      <span class="section-label">
+        KẾT NỐI VỚI MỘC MẠC
+      </span>
+
+      <h2>
+        Chúng tôi luôn sẵn lòng
+        <br>
+        hỗ trợ bạn
+      </h2>
+
+      <p class="intro">
+        Nếu bạn cần hỗ trợ về sản phẩm, đơn hàng,
+        quà tặng hoặc muốn hợp tác cùng Mộc Mạc,
+        hãy liên hệ với chúng tôi.
+      </p>
+
+
+      <!-- CONTACT INFO -->
+      <div class="info-list">
+
+        <!-- ADDRESS -->
+        <div class="info-item">
+
+          <div class="info-icon">
+            <i class="fa-solid fa-location-dot"></i>
+          </div>
+
+          <div>
+            <h3>Địa chỉ</h3>
+
+            <p>
+              <a
+                href="https://www.google.com/maps/search/?api=1&query=669+Quốc+lộ+1+Linh+Xuân+TP+Hồ+Chí+Minh"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                669 Quốc lộ 1, Khu phố 3,
+                <br>
+                Phường Linh Xuân, TP. Hồ Chí Minh
+              </a>
+            </p>
+
+          </div>
+
+        </div>
+
+
+        <!-- PHONE -->
+        <div class="info-item">
+
+          <div class="info-icon">
+            <i class="fa-solid fa-phone"></i>
+          </div>
+
+          <div>
+            <h3>Điện thoại</h3>
+
+            <p>
+              <a href="tel:0365507533">
+                <strong>0365 507 533</strong>
+              </a>
+            </p>
+
+          </div>
+
+        </div>
+
+
+        <!-- EMAIL -->
+        <div class="info-item">
+
+          <div class="info-icon">
+            <i class="fa-solid fa-envelope"></i>
+          </div>
+
+          <div>
+            <h3>Email</h3>
+
+            <p>
+              <a href="mailto:mocmac.support@gmail.com">
+                mocmac.support@gmail.com
+              </a>
+            </p>
+
+          </div>
+
+        </div>
+
+
+        <!-- SUPPORT TIME -->
+        <div class="info-item">
+
+          <div class="info-icon">
+            <i class="fa-solid fa-clock"></i>
+          </div>
+
+          <div>
+            <h3>Thời gian hỗ trợ</h3>
+
+            <p>
+              Thứ 2 - Chủ nhật
+              <br>
+              08:00 - 21:00
+            </p>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- SOCIAL -->
+      <div class="social">
+
+        <p>Theo dõi Mộc Mạc</p>
+
+        <div class="social-icons">
+
+          <a
+            href="https://www.facebook.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Facebook"
+          >
+            <i class="fa-brands fa-facebook-f"></i>
+          </a>
+
+          <a
+            href="https://www.instagram.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Instagram"
+          >
+            <i class="fa-brands fa-instagram"></i>
+          </a>
+
+          <a
+            href="https://www.tiktok.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="TikTok"
+          >
+            <i class="fa-brands fa-tiktok"></i>
+          </a>
+
+          <a
+            href="https://www.youtube.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="YouTube"
+          >
+            <i class="fa-brands fa-youtube"></i>
+          </a>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- RIGHT -->
+    <div class="contact-form-box">
+
+      <span class="section-label">
+        GỬI LỜI NHẮN
+      </span>
+
+      <h2>
+        Bạn cần Mộc Mạc hỗ trợ?
+      </h2>
+
+      <p class="form-description">
+        Điền thông tin bên dưới, chúng tôi sẽ phản hồi
+        trong thời gian sớm nhất.
+      </p>
+
+
+      <form
+        class="contact-form"
+        (ngSubmit)="sendContact()"
+      >
+
+        <!-- NAME + PHONE -->
+        <div class="form-row">
+
+          <div class="form-group">
+
+            <label>
+              Họ và tên
+              <span>*</span>
+            </label>
+
+            <input
+              type="text"
+              name="name"
+              [(ngModel)]="contact.name"
+              placeholder="Nhập họ và tên"
+              autocomplete="name"
+              required
+            >
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label>
+              Số điện thoại
+            </label>
+
+            <input
+              type="tel"
+              name="phone"
+              [(ngModel)]="contact.phone"
+              placeholder="Nhập số điện thoại"
+              autocomplete="tel"
+            >
+
+          </div>
+
+        </div>
+
+
+        <!-- EMAIL -->
+        <div class="form-group">
+
+          <label>
+            Email
+            <span>*</span>
+          </label>
+
+          <input
+            type="email"
+            name="email"
+            [(ngModel)]="contact.email"
+            placeholder="example@gmail.com"
+            autocomplete="email"
+            required
+          >
+
+        </div>
+
+
+        <!-- SUBJECT -->
+        <div class="form-group">
+
+          <label>
+            Chủ đề
+          </label>
+
+          <select
+            name="subject"
+            [(ngModel)]="contact.subject"
+          >
+
+            <option value="">
+              Chọn nội dung cần hỗ trợ
+            </option>
+
+            <option value="product">
+              Tư vấn sản phẩm
+            </option>
+
+            <option value="order">
+              Hỗ trợ đơn hàng
+            </option>
+
+            <option value="gift">
+              Tư vấn quà tặng
+            </option>
+
+            <option value="business">
+              Hợp tác doanh nghiệp
+            </option>
+
+            <option value="other">
+              Nội dung khác
+            </option>
+
+          </select>
+
+        </div>
+
+
+        <!-- MESSAGE -->
+        <div class="form-group">
+
+          <label>
+            Nội dung
+            <span>*</span>
+          </label>
+
+          <textarea
+            name="message"
+            [(ngModel)]="contact.message"
+            rows="6"
+            placeholder="Mộc Mạc có thể giúp gì cho bạn?"
+            required
+          ></textarea>
+
+        </div>
+
+
+        <!-- BUTTON -->
+        <button
+          type="submit"
+          class="send-button"
+        >
+          <i class="fa-solid fa-paper-plane"></i>
+
+          Gửi lời nhắn
+
+          <span>→</span>
+        </button>
+
+
+        <!-- SUCCESS -->
+        <div
+          class="success"
+          *ngIf="submitted"
+        >
+          <i class="fa-solid fa-circle-check"></i>
+          Cảm ơn bạn đã liên hệ với Mộc Mạc.
+          Chúng tôi sẽ phản hồi sớm nhất có thể.
+        </div>
+
+       </form>
+
+    </div>
+
+  </div>
+
+
+   <!-- POPUP -->
+   <div
+     class="popup-overlay"
+     *ngIf="popup().show"
+   >
+     <div class="popup" [class.error]="popup().type === 'error'">
+       <div class="popup-icon">
+         <i *ngIf="popup().type === 'success'" class="fa-solid fa-circle-check"></i>
+         <i *ngIf="popup().type === 'error'" class="fa-solid fa-circle-xmark"></i>
+       </div>
+
+       <p class="popup-message">{{ popup().message }}</p>
+
+       <button
+         class="popup-close"
+         (click)="closePopup()"
+         type="button"
+       >
+         Đóng
+       </button>
+     </div>
+   </div>
+
+
+  <!-- QUICK SUPPORT -->
+  <section class="quick-support">
+
+    <div class="wrap">
+
+      <div class="support-title">
+
+        <span>
+          CẦN HỖ TRỢ NHANH?
+        </span>
+
+        <h2>
+          Mộc Mạc luôn ở đây cùng bạn
+        </h2>
+
+      </div>
+
+
+      <div class="support-grid">
+
+        <!-- PHONE -->
+        <div class="support-card">
+
+          <div class="support-icon">
+            <i class="fa-solid fa-phone"></i>
+          </div>
+
+          <h3>
+            Gọi cho chúng tôi
+          </h3>
+
+          <p>
+            Hỗ trợ nhanh các vấn đề về
+            sản phẩm và đơn hàng.
+          </p>
+
+          <a href="tel:0365507533">
+            0365 507 533 →
+          </a>
+
+        </div>
+
+
+        <!-- ZALO -->
+        <div class="support-card">
+
+          <div class="support-icon">
+            <i class="fa-solid fa-comment-dots"></i>
+          </div>
+
+          <h3>
+            Chat qua Zalo
+          </h3>
+
+          <p>
+            Trò chuyện trực tiếp với đội ngũ
+            chăm sóc khách hàng Mộc Mạc.
+          </p>
+
+          <a
+            href="https://zalo.me/0365507533"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Nhắn tin ngay →
+          </a>
+
+        </div>
+
+
+        <!-- GIFT -->
+        <div class="support-card">
+
+          <div class="support-icon">
+            <i class="fa-solid fa-gift"></i>
+          </div>
+
+          <h3>
+            Tư vấn quà tặng
+          </h3>
+
+          <p>
+            Tìm món quà phù hợp theo
+            nhu cầu và dịp đặc biệt.
+          </p>
+
+          <a routerLink="/qua-tang">
+            Khám phá quà tặng →
+          </a>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </section>
+
+</section>

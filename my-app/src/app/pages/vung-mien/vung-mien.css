@@ -1,0 +1,298 @@
+.region-banner {
+  padding: 72px 0 24px;
+  text-align: center;
+}
+
+.small-title {
+  color: #a0603e;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 2.5px;
+}
+
+.region-banner h1 {
+  margin: 12px 0 14px;
+  font-size: 38px;
+  font-weight: 700;
+  color: #486247;
+  font-family: "Times New Roman", Times, serif;
+}
+
+.region-banner p {
+  color: #6c706a;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 15px;
+  line-height: 1.7;
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+/* TABS */
+.tabs-switch {
+  display: flex;
+  gap: 8px;
+  padding: 0 0 28px;
+  border-bottom: 1px solid var(--line);
+}
+
+.tabs-switch button {
+  padding: 10px 26px;
+  border: none;
+  background: transparent;
+  font-family: "Be Vietnam Pro", system-ui, sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: 8px 8px 0 0;
+  transition: 0.2s;
+  color: var(--ink2);
+}
+
+.tabs-switch button.on,
+.tabs-switch button:hover {
+  background: var(--moss);
+  color: #fff;
+}
+
+/* REGION GRID */
+.region-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 20px;
+  padding: 0 0 40px;
+}
+
+.region-card {
+  background: var(--cream);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  overflow: hidden;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(50, 50, 50, 0.05);
+  transition: transform 0.2s;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.region-card:hover {
+  transform: translateY(-3px);
+}
+
+.region-img {
+  width: 100%;
+  height: 140px;
+  overflow: hidden;
+}
+
+.region-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.region-body {
+  padding: 18px 20px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.region-body h2 {
+  font-size: 18px;
+  font-weight: 700;
+  color: #486247;
+  font-family: "Times New Roman", Times, serif;
+  margin: 0 0 8px;
+}
+
+.region-desc {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 12px;
+  color: #777a73;
+  line-height: 1.5;
+  margin: 0 0 12px;
+  flex: 1;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.region-count {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: #a05d3b;
+}
+
+/* PRODUCTS BY REGION */
+.region-products-section {
+  margin-top: 40px;
+  padding: 24px;
+  background: var(--cream);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+}
+
+.region-products-section h3 {
+  font-size: 20px;
+  font-weight: 700;
+  color: #486247;
+  font-family: "Times New Roman", Times, serif;
+  margin: 0 0 16px;
+}
+
+.region-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 10px;
+}
+
+.region-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 14px;
+  background: #f5f2eb;
+  border-radius: 7px;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 13px;
+}
+
+.region-row strong {
+  color: var(--moss-d);
+}
+
+.region-row span {
+  color: var(--ink2);
+}
+
+/* VILLAGE GRID */
+.village-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 28px;
+  padding: 0 0 40px;
+}
+
+.village-card {
+  background: var(--cream);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(50, 50, 50, 0.05);
+}
+
+.village-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 18px 22px 12px;
+}
+
+.village-icon {
+  font-size: 28px;
+  flex-shrink: 0;
+}
+
+.village-header h2 {
+  font-size: 20px;
+  font-weight: 700;
+  color: #486247;
+  font-family: "Times New Roman", Times, serif;
+  margin: 0;
+}
+
+.village-meta {
+  display: block;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 12px;
+  color: #8a8e87;
+  margin-top: 2px;
+}
+
+.village-count {
+  margin-left: auto;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: #a05d3b;
+  background: #f0e6dc;
+  padding: 3px 10px;
+  border-radius: 12px;
+}
+
+.village-products {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  padding: 18px 22px 22px;
+}
+
+.vp {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.vp:hover {
+  transform: translateY(-2px);
+}
+
+.vp img,
+.vp .ico {
+  width: 100%;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 7px;
+  background: #f0ebe3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+}
+
+.vp-name {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  color: #333832;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.vp-price {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--earth);
+}
+
+.more-vp {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  color: #8a8e87;
+  text-align: center;
+  padding-top: 4px;
+}
+
+.loading {
+  padding: 60px 0;
+  text-align: center;
+  color: #8a8e87;
+}
+
+@media (max-width: 700px) {
+  .village-products {
+    grid-template-columns: 1fr;
+  }
+
+  .region-banner h1 {
+    font-size: 28px;
+  }
+}

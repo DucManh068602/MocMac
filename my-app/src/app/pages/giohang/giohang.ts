@@ -1,0 +1,137 @@
+import { CommonModule } from '@angular/common';
+import { Component, computed, inject, signal } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
+import { AuthService } from '../../auth.service';
+import { CartService } from '../../cart.service';
+import { ProductItem, ProductsService } from '../../products.service';
+
+interface CartDisplayItem {
+  id: number;
+  name: string;
+  origin: string;
+  description: string;
+  price: number;
+  quantity: number;
+  imageUrl: string | null;
+  badge: string;
+  badgeTone: 'brown' | 'green';
+}
+
+const FREE_SHIPPING_THRESHOLD = 500000;
+const SHIPPING_FEE = 30000;
+const COUPON_CODE = 'MOCMAC10';
+const COUPON_RATE = 0.1;
+
+function toCartDisplayItem(product: ProductItem, quantity: number): CartDisplayItem {
+  return {
+    id: product.id,
+    name: product.name,
+    origin: [product.village, product.province, product.region].filter(Boolean).join(' · '),
+    description: [product.type, product.cat].filter(Boolean).join(' · '),
+    price: product.price,
+    quantity,
+    imageUrl: product.images?.find(Boolean) ?? null,
+    badge: product.badges[0] ?? (product.ocop ? `OCOP ${product.ocop} sao` : product.cat),
+    badgeTone: product.heritage === 'Vàng' ? 'brown' : 'green',
+  };
+}
+
+@Component({
+  selector: 'app-giohang',
+  standalone: true,
+  imports: [CommonModule, FormsModule, RouterLink],
+  templateUrl: './giohang.html',
+  styleUrl: './giohang.scss',
+})
+export class GiohangComponent {
+  private readonly catalog = inject(ProductsService);
+  private readonly cart = inject(CartService);
+  private readonly auth = inject(AuthService);
+
+  readonly loginRequiredPopup = signal(false);
+
+  readonly freeShippingThreshold = FREE_SHIPPING_THRESHOLD;
+  couponInput = '';
+  readonly couponApplied = signal(false);
+  readonly couponError = signal('');
+
+  readonly items = computed(() => {
+    const productsById = new Map(this.catalog.products().map(product => [product.id, product]));
+    return this.cart.lines().flatMap(line => {
+      const product = productsById.get(line.productId);
+      return product ? [toCartDisplayItem(product, line.quantity)] : [];
+    });
+  });
+
+  readonly totalQuantity = computed(() =>
+    this.items().reduce((sum, item) => sum + item.quantity, 0)
+  );
+  readonly subtotal = computed(() =>
+    this.items().reduce((sum, item) => sum + item.price * item.quantity, 0)
+  );
+  readonly discount = computed(() =>
+    this.couponApplied() ? Math.round(this.subtotal() * COUPON_RATE) : 0
+  );
+  readonly shipping = computed(() => {
+    const subtotal = this.subtotal();
+    return subtotal === 0 || subtotal >= FREE_SHIPPING_THRESHOLD ? 0 : SHIPPING_FEE;
+  });
+  readonly total = computed(() => this.subtotal() - this.discount() + this.shipping());
+  readonly isFreeShipping = computed(() => this.subtotal() > 0 && this.shipping() === 0);
+  readonly remainingForFreeShipping = computed(() =>
+    Math.max(FREE_SHIPPING_THRESHOLD - this.subtotal(), 0)
+  );
+  readonly shippingProgress = computed(() =>
+    Math.min((this.subtotal() / FREE_SHIPPING_THRESHOLD) * 100, 100)
+  );
+  readonly isEmpty = computed(() => this.items().length === 0);
+
+  increase(id: number): void {
+    this.cart.increase(id);
+  }
+
+  decrease(id: number): void {
+    this.cart.decrease(id);
+  }
+
+  remove(id: number): void {
+    this.cart.remove(id);
+  }
+
+  clearAll(): void {
+    this.cart.clear();
+  }
+
+  applyCoupon(): void {
+    if (this.couponInput.trim().toUpperCase() === COUPON_CODE) {
+      this.couponApplied.set(true);
+      this.couponError.set('');
+    } else {
+      this.couponApplied.set(false);
+      this.couponError.set('Mã giảm giá không hợp lệ.');
+    }
+  }
+
+  checkout(): void {
+    if (!this.auth.isAuthenticated()) {
+      this.loginRequiredPopup.set(true);
+      return;
+    }
+    console.log('Thanh toán', {
+      items: this.items(),
+      subtotal: this.subtotal(),
+      discount: this.discount(),
+      shipping: this.shipping(),
+      total: this.total(),
+    });
+  }
+
+  closeLoginPopup(): void {
+    this.loginRequiredPopup.set(false);
+  }
+
+  vnd(value: number): string {
+    return value.toLocaleString('vi-VN') + 'đ';
+  }
+}

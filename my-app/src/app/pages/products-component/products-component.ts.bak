@@ -1,0 +1,255 @@
+import { Component, computed, effect, inject, signal, untracked } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { map } from 'rxjs';
+import { CartService } from '../cart.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import {
+  ArrayKey, Filters, PRED, ProductItem, ProductsService, defaultFilters, fromParams, matchFilters, norm, toParams,
+} from '../products.service';
+
+interface Opt { v: string; l: string; n: number; icon?: string; }
+const PAGE_SIZE = 12;
+const ARR: ArrayKey[] = ['cat', 'type', 'region', 'price', 'ocop', 'heri', 'occ', 'status', 'months'];
+
+@Component({
+  selector: 'app-products-component',
+  standalone: false,
+  templateUrl: './products-component.html',
+  styleUrl: './products-component.css',
+})
+export class ProductsComponent {
+  private svc = inject(ProductsService);
+  private router = inject(Router);
+  private route = inject(ActivatedRoute);
+  cart = inject(CartService);
+
+  all = this.svc.products;
+  applied = toSignal(this.route.queryParamMap.pipe(map(fromParams)), { initialValue: defaultFilters() });
+  draft = signal<Filters>(defaultFilters());
+  favs = signal<Set<number>>(new Set());
+  showFilters = signal(false);
+  private imgIdx = signal<Record<number, number>>({});
+  private brokenImg = signal<Set<string>>(new Set());
+  readonly tabs = ['Tất cả', 'Đặc sản', 'Thủ công mỹ nghệ', 'Cà phê - Trà', 'Sản phẩm OCOP'];
+  readonly month = new Date().getMonth() + 1;
+  
+  // ===== KHU VỰC KHÁM PHÁ NHANH =====
+  readonly quickTags = [
+    'Quà Tết',
+    'Đặc sản vùng miền',
+    'Đồ thủ công',
+    'Quà biếu đối tác',
+    'Quà cưới',
+    'OCOP'
+  ];
+
+  // Nhiều sản phẩm gợi ý, xếp hạng theo lượt đánh giá và điểm đánh giá
+  topProducts = computed(() =>
+    [...this.all()]
+      .sort((a, b) => (b.reviews * 2 + b.rate * 10) - (a.reviews * 2 + a.rate * 10))
+      .slice(0, 3)
+  );
+
+  // Nhiều sản phẩm nổi bật có điểm đánh giá cao
+  featuredProducts = computed(() =>
+    [...this.all()]
+      .sort((a, b) => b.rate - a.rate || b.reviews - a.reviews)
+      .slice(0, 3)
+  );
+
+  // Danh sách nhiều sản phẩm bán chạy, không chỉ một sản phẩm
+  bestSellers = computed(() =>
+    [...this.all()].sort((a, b) => b.reviews - a.reviews).slice(0, 4)
+  );
+
+  // Danh sách nhiều sản phẩm có giá thấp
+  bestPrices = computed(() =>
+    [...this.all()].sort((a, b) => a.price - b.price).slice(0, 4)
+  );
+
+  // Các thẻ khám phá nhanh chuyển thành tiêu chí lọc thực tế.
+  quickSearch(tag: string) {
+    const current = this.applied();
+    const f = {
+      ...defaultFilters(),
+      sort: current.sort,
+      view: current.view,
+      page: 1,
+    } as Filters;
+
+    switch (tag) {
+      case 'Quà Tết':
+        f.occ = ['Quà Tết'];
+        break;
+      case 'Đặc sản vùng miền':
+        f.cat = ['Đặc sản'];
+        break;
+      case 'Đồ thủ công':
+        f.cat = ['Thủ công mỹ nghệ'];
+        break;
+      case 'Quà biếu đối tác':
+        f.occ = ['Quà biếu đối tác'];
+        break;
+      case 'Quà cưới':
+        f.occ = ['Quà cưới'];
+        break;
+      case 'OCOP':
+        f.cat = ['Sản phẩm OCOP'];
+        break;
+      default:
+        f.q = tag;
+    }
+
+    this.draft.set({ ...f });
+    this.go(f);
+  }
+
+  // Khai báo hàm điều hướng go(f) bị khuyết trong file của bạn để tránh lỗi biên dịch
+  go(filters: Filters) {
+    const params = toParams(filters);
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: params,
+      queryParamsHandling: 'merge'
+  });
+
+  stars(n: number) { return '★★★★★'.slice(0, Math.round(n)) + '☆☆☆☆☆'.slice(Math.round(n)); }
+  fmt(n: number) { return Number(n).toLocaleString('vi-VN') + 'đ'; }
+
+  imgs(p: ProductItem) {
+    if (this.brokenImg().has(p.icon)) return [];
+    return p.images && p.images.length ? p.images : (p.icon ? [p.icon] : []);
+  }
+  cur(p: ProductItem) { return this.imgs(p)[this.idxOf(p)] || this.imgs(p)[0]; }
+  idxOf(p: ProductItem) { return this.imgIdx()[p.id] ?? 0; }
+  setImg(p: ProductItem, i: number, e: Event) { e.stopPropagation(); this.imgIdx.update(m => ({ ...m, [p.id]: i })); }
+  step(p: ProductItem, d: number, e: Event) { e.stopPropagation(); const arr = this.imgs(p); if (!arr.length) return; const idx = (this.idxOf(p) + d + arr.length) % arr.length; this.imgIdx.update(m => ({ ...m, [p.id]: idx })); }
+  imgError(src: string) { if (!src) return; this.brokenImg.update(s => { const ns = new Set(s); ns.add(src); return ns; }); }
+
+  toggle(k: ArrayKey, v: string) { const cur = this.draft()[k]; const has = cur.includes(v); const next = has ? cur.filter(x => x !== v) : [...cur, v]; this.draft.update(d => ({ ...d, [k]: next as any, page: 1 })); }
+  has(k: ArrayKey, v: string) { return this.draft()[k].includes(v); }
+  setField<K extends keyof Filters>(k: K, v: Filters[K]) { this.draft.update(d => ({ ...d, [k]: v, page: 1 })); }
+  toggleNow() { this.draft.update(d => ({ ...d, now: !d.now, page: 1 })); }
+  apply() { this.go(this.draft()); this.showFilters.set(false); }
+  clear() { const d = defaultFilters(); this.draft.set(d); this.go(d); }
+  search() { this.go(this.draft()); }
+
+  setTab(t: string) { this.draft.update(d => ({ ...d, tab: t, page: 1 })); this.go(this.draft()); }
+  setSort(s: string) { this.draft.update(d => ({ ...d, sort: s, page: 1 })); this.go(this.draft()); }
+  setView(v: 'grid' | 'list') { this.draft.update(d => ({ ...d, view: v, page: 1 })); this.go(this.draft()); }
+  setPage(p: number) { this.draft.update(d => ({ ...d, page: Math.max(1, p) })); this.go(this.draft()); }
+  toggleFav(id: number) { this.favs.update(s => { const ns = new Set(s); ns.has(id) ? ns.delete(id) : ns.add(id); return ns; }); }
+  addToCart(e: Event, id: number, name: string) { e.stopPropagation(); this.cart.add(id, name); }
+
+  get page() { return computed(() => this.applied().page); }
+  get totalPages() { return computed(() => Math.max(1, Math.ceil(this.filtered().length / PAGE_SIZE))); }
+  get pages() { return computed(() => Array.from({ length: this.totalPages() }, (_, i) => i + 1)); }
+  paged = computed(() => {
+    const start = (this.page() - 1) * PAGE_SIZE;
+    return this.filtered().slice(start, start + PAGE_SIZE);
+  });
+  get activeCount() {
+    const f = this.applied();
+    return (f.cat.length + f.type.length + f.region.length + (f.province ? 1 : 0) + (f.village ? 1 : 0) + f.price.length + f.ocop.length + f.heri.length + f.occ.length + f.status.length + f.months.length + (f.now ? 1 : 0) + (f.rate ? 1 : 0) + (f.q ? 1 : 0));
+  }
+}
+
+  constructor() {
+    effect(() => { const a = this.applied(); untracked(() => this.draft.set({ ...a })); });
+  }
+
+  private count(k: ArrayKey, v: string) { return this.all().filter(p => PRED[k](p, v)).length; }
+  private opts(k: ArrayKey, list: [string, string, string?][]): Opt[] {
+    return list.map(([v, l, icon]) => ({ v, l, icon, n: this.count(k, v) }));
+  }
+
+  catOpts = computed(() => this.opts('cat', [['Đặc sản', 'Đặc sản', '🥭'], ['Thủ công mỹ nghệ', 'Thủ công mỹ nghệ', '🧺'], ['Cà phê - Trà', 'Cà phê - Trà', '☕'], ['Sản phẩm OCOP', 'Sản phẩm OCOP', '⭐']]));
+  typeOpts = computed(() => this.opts('type', ['Gốm', 'Mây tre đan', 'Sơn mài', 'Thổ cẩm', 'Đặc sản khô', 'Trà', 'Cà phê', 'Khác'].map(x => [x, x] as [string, string])));
+  regionOpts = computed(() => this.opts('region', ['Miền Bắc', 'Miền Trung', 'Tây Nguyên', 'Miền Nam'].map(x => [x, x] as [string, string])));
+  priceOpts = computed(() => this.opts('price', [['lt200', 'Dưới 200.000đ'], ['200-500', '200.000đ - 500.000đ'], ['500-1000', '500.000đ - 1.000.000đ'], ['gt1000', 'Trên 1.000.000đ']]));
+  ocopOpts = computed(() => this.opts('ocop', [['3', 'OCOP 3 sao'], ['4', 'OCOP 4 sao'], ['5', 'OCOP 5 sao']]));
+  heriOpts = computed(() => this.opts('heri', [['Vàng', 'Di sản Vàng'], ['Bạc', 'Di sản Bạc']]));
+  occOpts = computed(() => this.opts('occ', ['Quà Tết', 'Quà cưới', 'Quà tân gia', 'Quà biếu đối tác'].map(x => [x, x] as [string, string])));
+  statusOpts = computed(() => this.opts('status', [['in', 'Còn hàng'], ['pre', 'Pre-order']]));
+  monthOpts = computed(() => this.opts('months', [['1-3', 'Tháng 1-3'], ['4-6', 'Tháng 4-6'], ['7-9', 'Tháng 7-9'], ['10-12', 'Tháng 10-12']]));
+  
+  // Ép kiểu chuỗi tường minh để xử lý dứt điểm lỗi a.localeCompare is not a function hoặc unknown type (TS18046)
+  provinces = computed(() => [...new Set(this.all().map(p => p.province || ''))].sort((a: string, b: string) => a.localeCompare(b, 'vi')));
+  villages = computed(() => [...new Set(this.all().map(p => p.village || '').filter(Boolean))].sort((a: string, b: string) => a.localeCompare(b, 'vi')));
+
+  // Danh sách khớp chính xác với từ khóa và toàn bộ bộ lọc đã chọn.
+  filtered = computed(() => {
+    const f = this.applied(), m = this.month;
+    const list = this.all().filter(p => matchFilters(p, f, m));
+    const sorters: Record<string, (a: ProductItem, b: ProductItem) => number> = {
+      popular: (a, b) => b.reviews - a.reviews,
+      'price-asc': (a, b) => a.price - b.price,
+      'price-desc': (a, b) => b.price - a.price,
+      rating: (a, b) => b.rate - a.rate,
+      newest: (a, b) => b.id - a.id,
+    };
+    return list.sort(sorters[f.sort] ?? sorters['popular']);
+  });
+
+  // Gợi ý liên quan xuất hiện SAU kết quả khớp chính xác.
+  relatedProducts = computed<ProductItem[]>(() => {
+    const f = this.applied();
+    const primary = this.filtered();
+    const all = this.all();
+    const hasCriteria = Boolean(
+      f.q || f.cat.length || f.type.length || f.region.length || f.province ||
+      f.village || f.price.length || f.ocop.length || f.heri.length || f.occ.length ||
+      f.status.length || f.months.length || f.now || f.rate || f.tab !== 'Tất cả'
+    );
+
+    if (!hasCriteria || all.length === 0) return [];
+
+    const primaryIds = new Set(primary.map(p => p.id));
+    const anchor = primary[0];
+    const queryTerms = norm(f.q).split(/\s+/).filter(term => term.length > 1);
+
+    const scoreProduct = (p: ProductItem): number => {
+      let score = 0;
+      const hasAny = (key: ArrayKey) => f[key].some(v => PRED[key](p, v));
+
+      if (f.tab !== 'Tất cả' && PRED.cat(p, f.tab)) score += 5;
+      if (hasAny('cat')) score += 5;
+      if (hasAny('type')) score += 4;
+      if (hasAny('region')) score += 3;
+      if (f.province && p.province === f.province) score += 3;
+      if (f.village && p.village === f.village) score += 4;
+      if (hasAny('ocop')) score += 3;
+      if (hasAny('heri')) score += 2;
+      if (hasAny('occ')) score += 3;
+      if (hasAny('price')) score += 1;
+      if (hasAny('status')) score += 1;
+      if (hasAny('months')) score += 1;
+      if (f.now && p.seasons.includes(this.month)) score += 1;
+      if (f.rate && p.rate >= f.rate) score += 1;
+
+      const text = norm([
+        p.name, p.cat, p.type, p.region, p.province, p.village,
+        ...(p.occ ?? []), ...(p.badges ?? []), p.heritage ?? ''
+      ].join(' '));
+      score += queryTerms.filter(term => text.includes(term)).length * 2;
+
+      if (anchor) {
+        if (p.cat === anchor.cat) score += 3;
+        if (p.type === anchor.type) score += 3;
+        if (p.village && p.village === anchor.village) score += 4;
+        if (p.region === anchor.region) score += 2;
+        if (p.province === anchor.province) score += 1;
+        if (p.occ && anchor.occ && p.occ.some(o => anchor.occ.includes(o))) score += 2;
+      }
+
+      return score;
+    };
+
+    // Hoàn thiện đoạn cuối xử lý mảng bị thiếu của bạn một cách an toàn nhất
+    return all
+      .filter(p => !primaryIds.has(p.id))
+      .map(p => ({ product: p, score: scoreProduct(p) }))
+      .filter(item => item.score >= 2)
+      .sort((a, b) => b.score - a.score || b.product.reviews - a.product.reviews)
+      .map(item => item.product);
+  });

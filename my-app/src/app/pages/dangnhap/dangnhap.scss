@@ -1,0 +1,520 @@
+$green: #1d4a2e;
+$green-hover: #16392a;
+$text: #1c2a20;
+$muted: #5d6b61;
+$brown: #8c3f1c;
+$input-bg: #f8f9f6;
+$error: #b3401f;
+
+:host {
+  display: block;
+}
+
+.auth-page {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  padding: 24px clamp(20px, 5vw, 80px) 0;
+  box-sizing: border-box;
+  font-family: 'Be Vietnam Pro', system-ui, sans-serif;
+  background:
+    linear-gradient(90deg, rgba(249, 247, 237, .93), rgba(249, 247, 237, .76)),
+    url('/data/images/lang-nghe-login.jpg') center / cover no-repeat;
+}
+
+.auth-card {
+  flex: 1;
+  width: 100%;
+  max-width: 1180px;
+  min-height: calc(100vh - 100px);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(340px, 410px);
+  align-items: center;
+  gap: clamp(36px, 8vw, 120px);
+  margin: 0 auto;
+}
+
+.brand-panel {
+  min-height: 500px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  gap: 36px;
+  padding: 36px 0;
+  color: $text;
+}
+
+.brand-top {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.brand-logo {
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+  background: $green;
+  color: #fff;
+}
+
+.brand-name {
+  color: $green;
+  font: 700 24px 'Lora', Georgia, serif;
+  letter-spacing: .5px;
+}
+
+.brand-sub {
+  margin-top: 2px;
+  color: $muted;
+  font-size: 9px;
+  letter-spacing: .6px;
+}
+
+.tag-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 18px;
+  padding: 5px 12px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, .75);
+  color: #2e5a3c;
+  font-size: 11px;
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #5b8b4e;
+}
+
+.philo {
+  padding: 4px 10px;
+  border-radius: 4px;
+  background: #e7eddf;
+  color: $green;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .8px;
+}
+
+.quote {
+  max-width: 620px;
+  margin: 16px 0 12px;
+  color: $text;
+  font: 600 clamp(34px, 4.2vw, 52px)/1.2 'Lora', Georgia, serif;
+}
+
+.quote-desc {
+  max-width: 480px;
+  margin: 0;
+  color: $muted;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.feature-list {
+  display: grid;
+  gap: 16px;
+}
+
+.brand-feature {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  > span {
+    width: 38px;
+    height: 38px;
+    flex: 0 0 38px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: #fff;
+    color: $green;
+    font-size: 18px;
+  }
+
+  strong, small { display: block; }
+  strong { font-size: 13px; }
+  small { margin-top: 2px; color: $muted; font-size: 11px; }
+}
+
+.form-panel {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 24px 28px 18px;
+  box-sizing: border-box;
+  border: 1px solid rgba(39, 65, 42, .08);
+  border-radius: 16px;
+  background: #fff;
+  color: $text;
+  box-shadow: 0 18px 48px rgba(44, 54, 38, .16);
+}
+
+.form-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.tabs {
+  display: inline-flex;
+  padding: 4px;
+  border-radius: 10px;
+  background: #eeeee9;
+}
+
+.tab {
+  padding: 8px 14px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: #3d4a41;
+  font: 500 13px 'Be Vietnam Pro', sans-serif;
+  cursor: pointer;
+
+  &.active {
+    background: #fff;
+    color: $text;
+    font-weight: 600;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, .08);
+  }
+}
+
+.header-links, .chip {
+  display: flex;
+  align-items: center;
+}
+
+.header-links { gap: 10px; }
+
+.chip {
+  gap: 5px;
+  padding: 5px 10px;
+  border-radius: 999px;
+  background: #e4ebe3;
+  color: #2e5a3c;
+  font-size: 11px;
+}
+
+.link-admin {
+  color: #3d4a41;
+  font-size: 11px;
+}
+
+.form-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+
+  h1 {
+    margin: 22px 0 6px;
+    color: $text;
+    font: 700 22px 'Be Vietnam Pro', system-ui, sans-serif;
+    text-align: center;
+  }
+
+  .subtitle {
+    margin: 0;
+    color: $muted;
+    font-size: 12px;
+    text-align: center;
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+    margin-top: 22px;
+  }
+}
+
+.field-label {
+  display: block;
+  margin-bottom: 6px;
+  color: $text;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.label-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+
+  .forgot {
+    color: $brown;
+    font-size: 11px;
+
+    &:hover { text-decoration: underline; }
+  }
+}
+
+.input-wrap {
+  height: 44px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+  padding: 0 12px;
+  box-sizing: border-box;
+  border: 1px solid #e7e9e3;
+  border-radius: 8px;
+  background: $input-bg;
+  color: #7a847c;
+
+  input {
+    flex: 1;
+    min-width: 0;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    color: $text;
+    font: 400 13px 'Be Vietnam Pro', sans-serif;
+
+    &::placeholder { color: #9aa39c; }
+  }
+
+  &:focus-within {
+    border-color: #2e6b45;
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(46, 107, 69, .12);
+  }
+
+  &.invalid { border-color: $error; }
+}
+
+.eye {
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #7a847c;
+  cursor: pointer;
+}
+
+.error {
+  display: block;
+  margin: -7px 0 10px;
+  color: $error;
+  font-size: 11px;
+}
+
+.checkbox {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin: 4px 0 16px;
+  color: #4a5a4f;
+  font-size: 11.5px;
+  cursor: pointer;
+
+  input { margin-top: 2px; accent-color: $green; }
+  a { color: $brown; }
+}
+
+.submit-btn {
+  width: 100%;
+  height: 46px;
+  border: 0;
+  border-radius: 8px;
+  background: #c96a15;
+  color: #fff;
+  font: 600 14px 'Be Vietnam Pro', sans-serif;
+  cursor: pointer;
+
+  &:hover:not(:disabled) { background: #ad5810; }
+  &:disabled { opacity: .6; cursor: not-allowed; }
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 14px 0 12px;
+  color: #5b7a68;
+  font-size: 11px;
+
+  &::before, &::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: #e2e6df;
+  }
+}
+
+.social-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.social-btn {
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 1px solid #e7e9e3;
+  border-radius: 8px;
+  background: #fff;
+  color: $text;
+  font: 500 12px 'Be Vietnam Pro', sans-serif;
+  cursor: pointer;
+
+  &:hover { background: #f5f6f2; }
+}
+
+.g-logo {
+  background: linear-gradient(90deg, #4285f4, #34a853, #fbbc05, #ea4335);
+  background-clip: text;
+  color: transparent;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.fb-logo {
+  width: 18px;
+  height: 18px;
+  display: inline-grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #1877f2;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 14px;
+
+  > div { min-width: 0; }
+}
+
+.strength {
+  margin: -2px 0 14px;
+
+  &-head {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 6px;
+    color: $muted;
+    font-size: 11px;
+  }
+
+  &-bars { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; }
+}
+
+.bar {
+  height: 4px;
+  border-radius: 4px;
+  background: #e1e5de;
+
+  &.on { background: #3f7d55; }
+}
+
+.terms { margin-bottom: 12px; }
+
+.info-box {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 16px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: #eef3ee;
+  color: #3d4f43;
+
+  p { margin: 0; font-size: 11px; line-height: 1.5; }
+  svg { flex-shrink: 0; margin-top: 1px; color: #2e6b45; }
+}
+
+.form-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid #edf0eb;
+  color: $muted;
+  font-size: 10px;
+
+  .assure { display: inline-flex; align-items: center; gap: 6px; color: #2e6b45; }
+  .sep { margin: 0 6px; }
+}
+
+.trust-bar {
+  display: grid;
+  width: calc(100% + 2 * clamp(20px, 5vw, 80px));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 18px;
+  margin-inline: calc(-1 * clamp(20px, 5vw, 80px));
+  padding: 14px clamp(20px, 5vw, 80px);
+  background: #393630;
+  color: #fff;
+
+  > div { display: flex; align-items: center; justify-content: center; gap: 10px; min-width: 0; }
+  > div > span {
+    width: 28px;
+    height: 28px;
+    flex: 0 0 28px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, .14);
+    color: #f3c07b;
+    font-weight: 700;
+  }
+  p { min-width: 0; margin: 0; }
+  strong, small { display: block; }
+  strong { font-size: 11px; }
+  small { color: rgba(255, 255, 255, .68); font-size: 9px; }
+}
+
+@media (max-width: 860px) {
+  .auth-page { padding-inline: 24px; }
+  .auth-card { grid-template-columns: minmax(0, 1fr) minmax(320px, 390px); gap: 28px; }
+  .brand-panel { min-height: 0; padding-right: 0; }
+  .form-panel { padding-inline: 22px; }
+}
+
+@media (max-width: 680px) {
+  .auth-page { padding: 18px 16px 0; }
+  .auth-card { min-height: auto; grid-template-columns: 1fr; gap: 18px; padding-block: 8px 22px; }
+  .brand-panel { gap: 12px; padding: 0; }
+  .brand-top { flex-direction: row; align-items: center; justify-content: space-between; gap: 12px; }
+  .brand-name { font-size: 19px; }
+  .brand-sub { font-size: 8px; }
+  .tag-pill { max-width: 140px; margin-top: 0; padding: 5px 9px; font-size: 9px; }
+  .brand-middle, .feature-list, .header-links { display: none; }
+  .form-panel { max-width: 440px; justify-self: center; padding: 20px; }
+  .form-header { align-items: center; }
+  .trust-bar { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px 8px; padding-block: 12px; }
+  .trust-bar > div { justify-content: flex-start; }
+}
+
+@media (max-width: 380px) {
+  .brand-top { align-items: flex-start; }
+  .tag-pill { max-width: 120px; white-space: normal; }
+  .form-panel { padding-inline: 16px; }
+  .grid-2 { grid-template-columns: 1fr; }
+}

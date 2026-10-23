@@ -1,0 +1,815 @@
+:host {
+  display: block;
+  font-family: 'Be Vietnam Pro', sans-serif;
+  color: var(--ink, #1f2a37);
+  background-color: #FAF8F2;
+}
+
+.site-wrap {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* ============================================================
+   QUẢN LÝ KHUNG HÌNH (SLOT & IMG RESET)
+============================================================ */
+.img-slot {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+  background-color: #ECE5D1;
+  display: block;
+}
+
+.img-slot img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+}
+
+/* ============================================================
+   HERO B2B SECTION
+============================================================ */
+.hero-b2b {
+  background: linear-gradient(135deg, var(--moss-d, #304430) 0%, #1e2d1e 100%);
+  color: #EDE8D6;
+  padding: 60px 0 70px;
+}
+
+.hero-layout {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: 50px;
+  align-items: center;
+}
+
+.badge-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 18px;
+}
+
+.square-accent {
+  color: var(--clay, #a25633);
+  font-size: 10px;
+}
+
+.hero-title {
+  font-family: 'Lora', serif;
+  font-size: 38px;
+  font-weight: 700;
+  color: #F7F2E4;
+  line-height: 1.3;
+  margin: 0 0 16px;
+}
+
+.hero-sub {
+  font-size: 15px;
+  color: #EDE8D6;
+  line-height: 1.6;
+  margin: 0 0 30px;
+  max-width: 520px;
+  opacity: 0.9;
+}
+
+.credentials-row {
+  display: flex;
+  gap: 30px;
+  margin-top: 45px;
+  padding-top: 25px;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.cred-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.laurel-icon {
+  font-size: 20px;
+  color: var(--clay, #a25633);
+}
+
+.cred-txt strong {
+  display: block;
+  font-size: 11px;
+  letter-spacing: 0.5px;
+  color: #FFFFFF;
+}
+
+.cred-txt small {
+  display: block;
+  font-size: 11px;
+  color: #D3DFD1;
+}
+
+.hero-media-block {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.hero-img-slot {
+  width: 100%;
+  height: 480px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.slider-pager {
+  margin-top: 12px;
+  font-size: 12px;
+  color: #EDE8D6;
+  letter-spacing: 1px;
+  opacity: 0.8;
+}
+
+/* ============================================================
+   OCCASION & FEATURED COLLECTION
+============================================================ */
+.occasion-collection-section {
+  background-color: var(--moss-d, #304430);
+  color: #FFFFFF;
+  padding: 70px 0 80px;
+}
+
+.center-head {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.section-tag-gold {
+  color: var(--clay, #a25633);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  display: block;
+  margin-bottom: 6px;
+}
+
+.section-heading-light {
+  font-family: 'Lora', serif;
+  font-size: 28px;
+  letter-spacing: 0.5px;
+  margin: 0;
+  color: #F7F2E4;
+}
+
+.section-heading-dark {
+  font-family: 'Lora', serif;
+  font-size: 28px;
+  letter-spacing: 0.5px;
+  margin: 0 0 10px;
+  color: var(--moss-d, #304430);
+}
+
+.occasion-tabs-bar {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 40px;
+}
+
+.btn-tab-pill {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  color: #FFFFFF;
+  padding: 9px 22px;
+  border-radius: 20px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-tab-pill.active, .btn-tab-pill:hover {
+  background-color: var(--clay, #a25633);
+  border-color: var(--clay, #a25633);
+  color: #FFFFFF;
+}
+
+.feature-banner-box {
+  background-color: #243524;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: 1fr 1.3fr;
+  min-height: 380px;
+  margin-bottom: 40px;
+}
+
+.feature-banner-content {
+  padding: 50px 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.calligraphy-script {
+  font-family: 'Lora', serif;
+  font-style: italic;
+  font-size: 32px;
+  color: #F7F2E4;
+  line-height: 1.2;
+}
+
+.feature-large-text {
+  font-family: 'Lora', serif;
+  font-size: 40px;
+  font-weight: 700;
+  color: var(--clay, #a25633);
+  letter-spacing: 1px;
+  margin: 4px 0;
+}
+
+.calligraphy-script.sub-script {
+  font-size: 36px;
+  color: #F7F2E4;
+  margin-bottom: 16px;
+}
+
+.feature-lead-text {
+  font-size: 14px;
+  color: #EDE8D6;
+  line-height: 1.6;
+  max-width: 380px;
+  opacity: 0.9;
+}
+
+.feature-banner-img-slot {
+  width: 100%;
+  height: 100%;
+  min-height: 380px;
+}
+
+.collection-triple-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.col-item-card {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.collection-img-slot {
+  width: 100%;
+  height: 270px;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.collection-caption {
+  text-align: center;
+  padding-top: 14px;
+}
+
+.collection-caption h3 {
+  font-family: 'Lora', serif;
+  font-size: 15px;
+  letter-spacing: 1px;
+  color: #FFFFFF;
+  margin: 0;
+}
+
+/* ============================================================
+   SOLUTIONS SECTION: BỐ CỤC CHIA 2 BÊN (SẢN PHẨM TRÁI - BỘ LỌC PHẢI)
+============================================================ */
+.solutions-section {
+  padding: 60px 0 80px;
+  background-color: #FAF8F2;
+}
+
+.gift-catalog-layout {
+  display: grid;
+  grid-template-columns: 490px 1fr; /* Đổi bộ lọc 490px ra phía trước (bên trái), sản phẩm 1fr ra sau (bên phải) */
+  gap: 32px;
+  align-items: start;
+}
+.catalog-filter-sidebar {
+  order: 1; /* Bộ lọc đứng trước -> nằm bên trái */
+}
+/* CỘT BÊN TRÁI */
+.catalog-main-content {
+  order: 2;
+}
+
+.section-header-left {
+  margin-bottom: 25px;
+}
+
+.divider-green-line {
+  width: 100%;
+  height: 2px;
+  background-color: var(--moss, #4A6349);
+  margin: 12px 0 16px;
+}
+
+.category-intro-quote {
+  font-size: 14px;
+  color: var(--ink2, #555555);
+  line-height: 1.6;
+  font-style: italic;
+  font-family: 'Lora', serif;
+  margin: 0 0 24px;
+}
+
+/* LƯỚI SẢN PHẨM TRONG CỘT TRÁI (3 CỘT VỪA ĐẸP MẮT) */
+.product-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.product-item-card {
+  background: #FFFFFF;
+  border: 1px solid #EAE3D2;
+  border-radius: 12px;
+  padding: 12px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.product-item-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.05);
+}
+
+.wishlist-btn {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  background: none;
+  border: none;
+  font-size: 16px;
+  color: #9E9E9E;
+  cursor: pointer;
+  z-index: 2;
+}
+
+.product-img-slot {
+  width: 100%;
+  height: 155px;
+  background-color: #F3EEDF;
+  border-radius: 8px;
+  margin-bottom: 12px;
+  overflow: hidden;
+}
+
+.card-details {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.item-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink, #1f2a37);
+  margin: 0 0 6px;
+  line-height: 1.35;
+  height: 36px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.item-rating {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 4px;
+}
+
+.stars {
+  color: #E28743;
+  font-size: 11px;
+}
+
+.count {
+  font-size: 11px;
+  color: #8C8C8C;
+}
+
+.item-origin {
+  font-size: 11px;
+  color: var(--clay, #a25633);
+  margin-bottom: 10px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pin {
+  font-size: 10px;
+}
+
+.card-action-row {
+  margin-top: auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 4px;
+}
+
+.item-price {
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--clay, #a25633);
+}
+
+.cart-add-btn {
+  background: var(--clay, #a25633);
+  border: none;
+  border-radius: 6px;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.cart-add-btn:hover {
+  opacity: 0.9;
+}
+
+.cart-icon {
+  font-size: 12px;
+}
+
+.filter-empty-state {
+  text-align: center;
+  padding: 50px 20px;
+  color: var(--ink2, #555555);
+}
+
+.filter-empty-state .empty-icon {
+  font-size: 42px;
+  display: block;
+  margin-bottom: 12px;
+}
+
+.filter-empty-state p {
+  font-size: 15px;
+  margin-bottom: 18px;
+}
+
+.btn-gold-pill {
+  background-color: var(--clay, #a25633);
+  color: #FFFFFF;
+  border: none;
+  padding: 10px 24px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.cta-center-bar {
+  text-align: center;
+  margin-top: 40px;
+}
+
+.btn-gold-action {
+  background-color: var(--clay, #a25633);
+  color: #FFFFFF;
+  border: none;
+  padding: 13px 36px;
+  border-radius: 26px;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-gold-action:hover {
+  background-color: #874223;
+  transform: translateY(-2px);
+}
+
+/* ============================================================
+   CỘT BÊN PHẢI: BỘ LỌC 2 CỘT (SIDEBAR FILTER)
+============================================================ */
+.catalog-filter-sidebar {
+  position: sticky;
+  top: 20px;
+}
+
+.filter-card-columns {
+  background-color: #FAF6ED;
+  border: 1px solid #EADEC7;
+  border-radius: 16px;
+  padding: 18px 14px;
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* 2 cột lọc y hệt ảnh thiết kế */
+  gap: 16px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+}
+
+.filter-col {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.filter-title-icon {
+  font-size: 13px;
+  font-weight: 700;
+  color: #2F4538;
+}
+
+.search-input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.filter-input-search {
+  width: 100%;
+  padding: 7px 30px 7px 10px;
+  border: 1px solid #D6CEB9;
+  border-radius: 8px;
+  font-size: 12px;
+  background-color: #FFFFFF;
+  color: var(--ink, #1f2a37);
+  outline: none;
+  font-family: inherit;
+}
+
+.filter-input-search:focus {
+  border-color: #2F4538;
+}
+
+.search-input-wrap .search-icon {
+  position: absolute;
+  right: 8px;
+  font-size: 12px;
+  color: #888;
+}
+
+/* HỘP AI GỢI Ý */
+.ai-recommend-card {
+  background-color: #FDF3E7;
+  border: 1px solid #F3DFCA;
+  border-radius: 10px;
+  padding: 10px 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+
+.ai-recommend-card:hover {
+  transform: translateY(-1px);
+}
+
+.ai-bot-icon {
+  font-size: 20px;
+}
+
+.ai-txt {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.ai-txt strong {
+  font-size: 11px;
+  color: #A25633;
+  line-height: 1.25;
+}
+
+.ai-txt small {
+  font-size: 10px;
+  color: #7A6355;
+  margin-top: 2px;
+}
+
+.ai-arrow {
+  color: #A25633;
+  font-weight: bold;
+}
+
+/* TIÊU ĐỀ & MỤC CHỌN CHECKBOX */
+.filter-section-title {
+  font-size: 12px;
+  font-weight: 700;
+  color: #2F4538;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.filter-checkbox-item {
+  font-size: 12px;
+  color: #424242;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.filter-checkbox-item input[type="checkbox"] {
+  accent-color: #2F4538;
+  width: 14px;
+  height: 14px;
+  cursor: pointer;
+}
+
+.filter-checkbox-item .count {
+  margin-left: auto;
+  color: #8E8E8E;
+  font-size: 11px;
+}
+
+/* DROPDOWN SELECT */
+.filter-select {
+  width: 100%;
+  padding: 7px 8px;
+  border-radius: 8px;
+  border: 1px solid #D6CEB9;
+  background-color: #FFFFFF;
+  font-size: 12px;
+  color: #333333;
+  outline: none;
+  font-family: inherit;
+}
+
+.filter-select:focus {
+  border-color: #2F4538;
+}
+
+/* NÚT THAO TÁC BỘ LỌC */
+.filter-action-btns {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.btn-filter-apply {
+  background-color: #2F4538;
+  color: #FFFFFF;
+  border: none;
+  border-radius: 8px;
+  padding: 9px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.btn-filter-apply:hover {
+  background-color: #1E2D25;
+}
+
+.btn-filter-reset {
+  background-color: #FFFFFF;
+  color: #333333;
+  border: 1px solid #D6CEB9;
+  border-radius: 8px;
+  padding: 8px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-filter-reset:hover {
+  border-color: #999;
+}
+
+/* ============================================================
+   PARTNER STORY SECTION
+============================================================ */
+.partner-story-section {
+  padding: 80px 0 90px;
+  background-color: #FFFFFF;
+}
+
+.story-dual-block {
+  display: grid;
+  grid-template-columns: 1fr 1.1fr;
+  gap: 50px;
+  align-items: center;
+  margin-top: 40px;
+}
+
+.partner-eyebrow {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: var(--clay, #a25633);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.story-main-title {
+  font-family: 'Lora', serif;
+  font-size: 26px;
+  line-height: 1.35;
+  color: var(--moss-d, #304430);
+  margin: 0 0 16px;
+}
+
+.story-body {
+  font-size: 14px;
+  color: var(--ink2, #555555);
+  line-height: 1.7;
+  margin: 0 0 28px;
+}
+
+.story-image-col {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.story-img-slot {
+  width: 100%;
+  height: 380px;
+  border-radius: 6px;
+  border: 1px solid var(--line, #D6CEB9);
+}
+
+.story-nav-circles {
+  display: flex;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.nav-circle {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: none;
+  background-color: var(--moss-d, #304430);
+  color: #FFFFFF;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.nav-circle:hover {
+  background-color: var(--clay, #a25633);
+}
+
+/* ============================================================
+   RESPONSIVE DESIGN
+============================================================ */
+@media (max-width: 1100px) {
+  .gift-catalog-layout {
+    grid-template-columns: 1fr; /* Màn hình nhỏ thì bộ lọc xuống dưới hoặc xếp dọc */
+  }
+  .catalog-filter-sidebar {
+    position: static;
+  }
+  .product-cards-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .hero-layout,
+  .feature-banner-box,
+  .collection-triple-grid,
+  .story-dual-block {
+    grid-template-columns: 1fr;
+  }
+  .filter-card-columns {
+    grid-template-columns: 1fr;
+  }
+  .product-cards-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

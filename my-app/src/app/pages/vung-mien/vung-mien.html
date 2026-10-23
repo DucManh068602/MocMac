@@ -1,0 +1,99 @@
+<section class="wrap page">
+
+  <!-- BANNER -->
+  <div class="region-banner">
+    <span class="small-title">MỘC MẠC</span>
+    <h1>Vùng miền &amp; Làng nghề</h1>
+    <p>Hành trình khám phá từ bao miền đất nước, nơi mỗi bản tay nghệ nhân mang hương vị truyền thống.</p>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs-switch">
+    <button [class.on]="activeTab() === 'regions'" (click)="activeTab.set('regions')">Vùng miền</button>
+    <button [class.on]="activeTab() === 'villages'" (click)="activeTab.set('villages')">Làng nghề</button>
+  </div>
+
+  <!-- REGIONS TAB -->
+  @if (activeTab() === 'regions') {
+    @if (regions().length > 0) {
+      <div class="region-grid">
+        @for (r of regions(); track r.slug) {
+          <section class="region-card" [routerLink]="['/san-pham']">
+            <div class="region-img">
+              <img [src]="r.image" [alt]="r.name" loading="lazy" />
+            </div>
+            <div class="region-body">
+              <h2>{{ r.name }}</h2>
+              <p class="region-desc">{{ r.description }}</p>
+              <div class="region-count">{{ r.productCount }} sản phẩm</div>
+            </div>
+          </section>
+        }
+      </div>
+    } @else {
+      <div class="loading">
+        <p>Đang tải dữ liệu vùng miền…</p>
+      </div>
+    }
+
+    <!-- Products by region -->
+    @if (productsByRegion().length > 0) {
+      <div class="region-products-section">
+        <h3>Sản phẩm theo vùng miền</h3>
+        <div class="region-list">
+          @for (r of productsByRegion(); track r.name) {
+            <div class="region-row">
+              <strong>{{ r.name }}</strong>
+              <span>{{ r.count }} sản phẩm</span>
+            </div>
+          }
+        </div>
+      </div>
+    }
+  }
+
+  <!-- VILLAGES TAB -->
+  @if (activeTab() === 'villages') {
+    @if (villages().length > 0) {
+      <div class="village-grid">
+        @for (v of villages(); track v.name) {
+          <section class="village-card">
+            <div class="village-header">
+              <span class="village-icon">{{ v.icon }}</span>
+              <div>
+                <h2>{{ v.name }}</h2>
+                <span class="village-meta">{{ v.province }} · {{ v.region }}</span>
+              </div>
+              <span class="village-count">{{ v.count }} sản phẩm</span>
+            </div>
+
+            <div class="village-products">
+              @for (p of v.products.slice(0, 3); track p.slug) {
+                <article class="vp" [routerLink]="['/san-pham', p.slug]">
+                  @if (p.images?.length) {
+                    <img [src]="p.images[0]" [alt]="p.name" loading="lazy" />
+                  } @else {
+                    <span class="ico">{{ p.icon || '🛍️' }}</span>
+                  }
+                  <div class="vp-name">{{ p.name }}</div>
+                  <div class="vp-price">{{ fmt(p.price) }}</div>
+                </article>
+              }
+
+              @if (v.products.length > 3) {
+                <div class="more-vp">
+                  +{{ v.products.length - 3 }} sản phẩm khác
+                </div>
+              }
+            </div>
+          </section>
+        }
+      </div>
+    } @else {
+      <div class="loading">
+        <p>Đang tải dữ liệu làng nghề…</p>
+      </div>
+    }
+  }
+
+</section>

@@ -1,0 +1,284 @@
+<div class="auth-page">
+  <div class="auth-card">
+
+    <!-- ===== Cột trái: thương hiệu ===== -->
+    <aside class="brand-panel">
+      <div class="brand-top">
+        <div class="brand">
+          <div class="brand-logo" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor"
+                 stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 21c-4.5 0-8-3.5-8-8 0-5 4-9 8-10 4 1 8 5 8 10 0 4.5-3.5 8-8 8z" />
+              <path d="M12 21V9" />
+              <path d="M12 14l-3-2.5M12 11l3-2.5" />
+            </svg>
+          </div>
+          <div>
+            <div class="brand-name">MỘC MẠC</div>
+            <div class="brand-sub">ĐẶC SẢN &amp; LÀNG NGHỀ VIỆT</div>
+          </div>
+        </div>
+        <span class="tag-pill"><span class="dot"></span>Nông sản sạch • Đậm tinh bản xứ</span>
+      </div>
+
+      <div class="brand-middle">
+        <span class="philo">TRIẾT LÝ TỰ NHIÊN</span>
+        <h2 class="quote">Tinh hoa bản địa, gửi trọn niềm tin.</h2>
+        <p class="quote-desc">
+          Khám phá đặc sản chính gốc và câu chuyện làng nghề Việt, được tuyển chọn tận tâm cho gia đình bạn.
+        </p>
+      </div>
+
+      <div class="feature-list">
+        <div class="brand-feature">
+          <span aria-hidden="true">✦</span>
+          <div><strong>Sản phẩm chính gốc</strong><small>Truy xuất nguồn gốc rõ ràng</small></div>
+        </div>
+        <div class="brand-feature">
+          <span aria-hidden="true">♧</span>
+          <div><strong>Ủng hộ làng nghề</strong><small>Đồng hành cùng nghệ nhân Việt</small></div>
+        </div>
+        <div class="brand-feature">
+          <span aria-hidden="true">♡</span>
+          <div><strong>An tâm lựa chọn</strong><small>Tuyển chọn tận tâm, chất lượng minh bạch</small></div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ===== Cột phải: form ===== -->
+    <main class="form-panel">
+      <header class="form-header">
+        <div class="tabs" role="tablist">
+          <button type="button" role="tab" class="tab"
+                  [class.active]="mode() === 'login'"
+                  (click)="switchMode('login')">Đăng nhập</button>
+          <button type="button" role="tab" class="tab"
+                  [class.active]="mode() === 'register'"
+                  (click)="switchMode('register')">Đăng ký</button>
+        </div>
+        <div class="header-links">
+          <span class="chip">
+            <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor"
+                 stroke-width="2" aria-hidden="true"><circle cx="12" cy="8" r="4" /><path d="M4 21c0-4 4-6 8-6s8 2 8 6" /></svg>
+            Cổng Khách Hàng
+          </span>
+          <a class="link-admin" href="javascript:void(0)">Cổng Admin</a>
+        </div>
+      </header>
+
+      <!-- ---------- ĐĂNG NHẬP ---------- -->
+      @if (mode() === 'login') {
+        <section class="form-body">
+          <h1>Chào mừng trở lại</h1>
+          <p class="subtitle">Đăng nhập tài khoản để khám phá tinh hoa đặc sản làng nghề.</p>
+
+          <form [formGroup]="loginForm" (ngSubmit)="onLogin()" novalidate>
+            <label class="field-label" for="identifier">Email hoặc Số điện thoại</label>
+            <div class="input-wrap" [class.invalid]="hasError(loginForm, 'identifier')">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor"
+                   stroke-width="1.8" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2" /><path d="M3 7l9 6 9-6" /></svg>
+              <input id="identifier" type="text" formControlName="identifier"
+                     placeholder="vidu@mocmac.vn hoặc 0912 345 678" autocomplete="username" />
+            </div>
+            @if (hasError(loginForm, 'identifier')) {
+              <small class="error">Vui lòng nhập email hoặc số điện thoại.</small>
+            }
+
+            <div class="label-row">
+              <label class="field-label" for="login-password">Mật khẩu</label>
+              <a class="forgot" href="javascript:void(0)">Quên mật khẩu?</a>
+            </div>
+            <div class="input-wrap" [class.invalid]="hasError(loginForm, 'password')">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor"
+                   stroke-width="1.8" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2" /><path d="M8 11V7a4 4 0 0 1 8 0v4" /></svg>
+              <input id="login-password" formControlName="password"
+                     [type]="showLoginPassword() ? 'text' : 'password'"
+                     placeholder="Nhập mật khẩu của bạn" autocomplete="current-password" />
+              <button type="button" class="eye" (click)="showLoginPassword.set(!showLoginPassword())"
+                      [attr.aria-label]="showLoginPassword() ? 'Ẩn mật khẩu' : 'Hiện mật khẩu'">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor"
+                     stroke-width="1.8" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z" /><circle cx="12" cy="12" r="3" /></svg>
+              </button>
+            </div>
+            @if (hasError(loginForm, 'password')) {
+              <small class="error">Mật khẩu tối thiểu 8 ký tự.</small>
+            }
+
+            <label class="checkbox">
+              <input type="checkbox" formControlName="remember" />
+              <span>Ghi nhớ phiên đăng nhập trên thiết bị này</span>
+            </label>
+
+            <button type="submit" class="submit-btn" [disabled]="loading()">
+              @if (loading()) {
+                Đang xử lý...
+              } @else {
+                Đăng nhập tài khoản &nbsp;→
+              }
+            </button>
+            @if (feedback(); as result) {
+              <small [class.error]="result.type === 'error'"
+                     [class.info-box]="result.type === 'success'" role="status">
+                {{ result.message }}
+              </small>
+            }
+          </form>
+
+          <div class="divider"><span>hoặc đăng nhập bằng</span></div>
+
+          <div class="social-row">
+            <button type="button" class="social-btn" (click)="loginWithSocial('google')">
+              <span class="g-logo">G</span> Google
+            </button>
+            <button type="button" class="social-btn" (click)="loginWithSocial('facebook')">
+              <span class="fb-logo">f</span> Facebook
+            </button>
+          </div>
+        </section>
+      }
+
+      <!-- ---------- ĐĂNG KÝ ---------- -->
+      @if (mode() === 'register') {
+        <section class="form-body">
+          <h1>Tạo tài khoản Mộc Mạc</h1>
+          <p class="subtitle">Gia nhập cộng đồng người gìn giữ và thưởng thức đặc sản Việt.</p>
+
+          <form [formGroup]="registerForm" (ngSubmit)="onRegister()" novalidate>
+            <label class="field-label" for="fullName">Họ và tên</label>
+            <div class="input-wrap" [class.invalid]="hasError(registerForm, 'fullName')">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor"
+                   stroke-width="1.8" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2" /><circle cx="12" cy="11" r="2.5" /><path d="M7 17c1-2 3-2.5 5-2.5s4 .5 5 2.5" /></svg>
+              <input id="fullName" type="text" formControlName="fullName" placeholder="Nguyễn Văn An" />
+            </div>
+            @if (hasError(registerForm, 'fullName')) {
+              <small class="error">Vui lòng nhập họ và tên.</small>
+            }
+
+            <div class="grid-2">
+              <div>
+                <label class="field-label" for="email">Địa chỉ Email</label>
+                <div class="input-wrap" [class.invalid]="hasError(registerForm, 'email')">
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor"
+                       stroke-width="1.8" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2" /><path d="M3 7l9 6 9-6" /></svg>
+                  <input id="email" type="email" formControlName="email" placeholder="an.nguyen@email.vn" />
+                </div>
+                @if (hasError(registerForm, 'email')) {
+                  <small class="error">Email không hợp lệ.</small>
+                }
+              </div>
+
+              <div>
+                <label class="field-label" for="phone">Số điện thoại</label>
+                <div class="input-wrap" [class.invalid]="hasError(registerForm, 'phone')">
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor"
+                       stroke-width="1.8" aria-hidden="true"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z" /></svg>
+                  <input id="phone" type="tel" formControlName="phone" placeholder="0912345678" />
+                </div>
+                @if (hasError(registerForm, 'phone')) {
+                  <small class="error">Số điện thoại gồm 10 số, bắt đầu bằng 0.</small>
+                }
+              </div>
+
+              <div>
+                <label class="field-label" for="reg-password">Mật khẩu</label>
+                <div class="input-wrap" [class.invalid]="hasError(registerForm, 'password')">
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor"
+                       stroke-width="1.8" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2" /><path d="M8 11V7a4 4 0 0 1 8 0v4" /></svg>
+                  <input id="reg-password" formControlName="password"
+                         [type]="showRegisterPassword() ? 'text' : 'password'"
+                         placeholder="Tối thiểu 8 ký tự" autocomplete="new-password" />
+                  <button type="button" class="eye" (click)="showRegisterPassword.set(!showRegisterPassword())"
+                          [attr.aria-label]="showRegisterPassword() ? 'Ẩn mật khẩu' : 'Hiện mật khẩu'">
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor"
+                         stroke-width="1.8" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z" /><circle cx="12" cy="12" r="3" /></svg>
+                  </button>
+                </div>
+              </div>
+
+              <div>
+                <label class="field-label" for="confirmPassword">Nhập lại mật khẩu</label>
+                <div class="input-wrap" [class.invalid]="registerForm.hasError('mismatch') && registerForm.controls.confirmPassword.touched">
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor"
+                       stroke-width="1.8" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.3-5.6" /><path d="M20 4v4h-4" /></svg>
+                  <input id="confirmPassword" formControlName="confirmPassword"
+                         [type]="showConfirmPassword() ? 'text' : 'password'"
+                         placeholder="Khớp với mật khẩu" autocomplete="new-password" />
+                  <button type="button" class="eye" (click)="showConfirmPassword.set(!showConfirmPassword())"
+                          [attr.aria-label]="showConfirmPassword() ? 'Ẩn mật khẩu' : 'Hiện mật khẩu'">
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor"
+                         stroke-width="1.8" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z" /><circle cx="12" cy="12" r="3" /></svg>
+                  </button>
+                </div>
+                @if (registerForm.hasError('mismatch') && registerForm.controls.confirmPassword.touched) {
+                  <small class="error">Mật khẩu nhập lại không khớp.</small>
+                }
+              </div>
+            </div>
+
+            <div class="strength">
+              <div class="strength-head">
+                <span>Độ bảo mật mật khẩu:</span>
+                <span>{{ strengthLabel }}</span>
+              </div>
+              <div class="strength-bars">
+                @for (i of bars; track i) {
+                  <span class="bar" [class.on]="passwordStrength > i"></span>
+                }
+              </div>
+            </div>
+
+            <label class="checkbox terms">
+              <input type="checkbox" formControlName="agree" />
+              <span>
+                Tôi đồng ý với <a href="javascript:void(0)">Điều khoản dịch vụ</a> và
+                <a href="javascript:void(0)">Chính sách bảo vệ dữ liệu làng nghề Mộc Mạc</a>.
+              </span>
+            </label>
+            @if (hasError(registerForm, 'agree')) {
+              <small class="error">Bạn cần đồng ý với điều khoản để tiếp tục.</small>
+            }
+
+            <div class="info-box">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor"
+                   stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="M12 11v5M12 8h.01" /></svg>
+              <p>
+                Tài khoản đăng ký mặc định là <strong>Khách Hàng (Customer)</strong>. Đối tác HTX làng nghề
+                &amp; Quản trị viên vui lòng liên hệ ban kiểm duyệt.
+              </p>
+            </div>
+
+            <button type="submit" class="submit-btn" [disabled]="loading()">
+              @if (loading()) {
+                Đang xử lý...
+              } @else {
+                Hoàn tất đăng ký &nbsp;✓
+              }
+            </button>
+            @if (feedback(); as result) {
+              <small [class.error]="result.type === 'error'"
+                     [class.info-box]="result.type === 'success'" role="status">
+                {{ result.message }}
+              </small>
+            }
+          </form>
+        </section>
+      }
+
+      <footer class="form-footer">
+        <span class="assure">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor"
+               stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="M8 12l3 3 5-6" /></svg>
+          Cam kết 100% nguồn gốc xuất xứ minh bạch
+        </span>
+        <span class="help">Trợ giúp <span class="sep">•</span> Hotline: 1900 6868</span>
+      </footer>
+    </main>
+
+  </div>
+  <section class="trust-bar" aria-label="Quyền lợi khách hàng">
+    <div><span aria-hidden="true">✓</span><p><strong>100% chính hãng</strong><small>Cam kết nguồn gốc rõ ràng</small></p></div>
+    <div><span aria-hidden="true">➤</span><p><strong>Giao hàng nhanh chóng</strong><small>Giao tận tay trên toàn quốc</small></p></div>
+    <div><span aria-hidden="true">☏</span><p><strong>Hỗ trợ 24/7</strong><small>Luôn sẵn sàng đồng hành</small></p></div>
+    <div><span aria-hidden="true">▣</span><p><strong>Thanh toán an toàn</strong><small>Bảo vệ thông tin của bạn</small></p></div>
+  </section>
+</div>

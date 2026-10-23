@@ -1,0 +1,702 @@
+.contact-page {
+  background: #faf8f2;
+  color: #343933;
+
+  /* Font chính hỗ trợ tiếng Việt tốt */
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* =========================
+   BANNER
+========================= */
+
+.contact-banner {
+  padding: 68px 20px 72px;
+  text-align: center;
+
+  background:
+    linear-gradient(
+      135deg,
+      #f7f2e4,
+      #eee6d3
+    );
+}
+
+.banner-content {
+  max-width: 760px;
+}
+
+.small-title,
+.section-label {
+  color: #a0603e;
+
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+
+  letter-spacing: 2.5px;
+}
+
+.contact-banner h1 {
+  margin: 12px 0 15px;
+
+  font-size: 44px;
+  font-weight: 700;
+
+  color: #486247;
+
+  /* Thay Georgia */
+  font-family: "Times New Roman", Times, serif;
+
+  letter-spacing: normal;
+  word-spacing: normal;
+}
+
+.contact-banner p {
+  max-width: 650px;
+
+  margin: auto;
+
+  color: #6c706a;
+
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 15px;
+  line-height: 1.8;
+}
+
+
+/* =========================
+   MAIN
+========================= */
+
+.contact-wrapper {
+  display: grid;
+
+  grid-template-columns:
+    0.9fr
+    1.1fr;
+
+  gap: 70px;
+
+  padding-top: 80px;
+  padding-bottom: 85px;
+}
+
+
+/* =========================
+   LEFT INFO
+========================= */
+
+.contact-info h2 {
+  margin: 10px 0 18px;
+
+  font-family: "Times New Roman", Times, serif;
+
+  font-size: 34px;
+  font-weight: 700;
+  line-height: 1.25;
+
+  letter-spacing: normal;
+  word-spacing: normal;
+
+  color: #486247;
+}
+
+.intro {
+  margin-bottom: 35px;
+
+  max-width: 480px;
+
+  color: #74776f;
+
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 14px;
+  line-height: 1.8;
+}
+
+.info-list {
+  display: flex;
+  flex-direction: column;
+
+  gap: 23px;
+}
+
+.info-item {
+  display: flex;
+
+  align-items: flex-start;
+
+  gap: 15px;
+}
+
+.info-icon {
+  width: 46px;
+  height: 46px;
+
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: #ece4d2;
+
+  font-size: 18px;
+}
+
+.info-item h3 {
+  margin: 2px 0 5px;
+
+  color: #465144;
+
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+
+  letter-spacing: normal;
+  word-spacing: normal;
+}
+
+.info-item p {
+  margin: 0;
+
+  color: #777a73;
+
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 13px;
+
+  line-height: 1.65;
+}
+
+
+/* =========================
+   SOCIAL
+========================= */
+
+.social {
+  margin-top: 35px;
+
+  padding-top: 25px;
+
+  border-top: 1px solid #ded8c9;
+}
+
+.social p {
+  margin: 0 0 12px;
+
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+
+  color: #4e554c;
+}
+
+.social-icons {
+  display: flex;
+
+  gap: 9px;
+}
+
+.social-icons a {
+  width: 38px;
+  height: 38px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  border: 1px solid #d0c7b4;
+
+  text-decoration: none;
+
+  color: #486247;
+
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: 700;
+
+  transition: 0.25s;
+}
+
+.social-icons a:hover {
+  background: #486247;
+
+  color: white;
+
+  transform: translateY(-3px);
+}
+
+
+/* =========================
+   FORM BOX
+========================= */
+
+.contact-form-box {
+  padding: 42px;
+
+  background: #ffffff;
+
+  border-radius: 15px;
+
+  box-shadow:
+    0 15px 45px
+    rgba(69, 74, 63, 0.08);
+}
+
+.contact-form-box h2 {
+  margin: 10px 0 10px;
+
+  font-size: 30px;
+  font-weight: 700;
+
+  font-family: "Times New Roman", Times, serif;
+
+  color: #486247;
+
+  /* QUAN TRỌNG: tránh lỗi chữ tiếng Việt */
+  letter-spacing: normal;
+  word-spacing: normal;
+  white-space: normal;
+  font-kerning: normal;
+}
+
+.form-description {
+  margin-bottom: 28px;
+
+  color: #777a73;
+
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 13px;
+
+  line-height: 1.7;
+}
+
+
+/* =========================
+   FORM
+========================= */
+
+.contact-form {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 18px;
+}
+
+.form-row {
+  display: grid;
+
+  grid-template-columns:
+    1fr 1fr;
+
+  gap: 15px;
+}
+
+.form-group {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 7px;
+}
+
+.form-group label {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+
+  color: #4b5149;
+
+  letter-spacing: normal;
+  word-spacing: normal;
+}
+
+.form-group label span {
+  color: #a05d3b;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  box-sizing: border-box;
+
+  width: 100%;
+
+  padding: 13px 14px;
+
+  background: #fdfcf8;
+
+  border: 1px solid #ddd7c9;
+
+  border-radius: 7px;
+
+  outline: none;
+
+  color: #333832;
+
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 13px;
+
+  letter-spacing: normal;
+  word-spacing: normal;
+
+  transition: 0.2s;
+}
+
+.form-group textarea {
+  resize: vertical;
+
+  min-height: 135px;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  background: white;
+
+  border-color: #486247;
+
+  box-shadow:
+    0 0 0 3px
+    rgba(72, 98, 71, 0.08);
+}
+
+
+/* =========================
+   BUTTON
+========================= */
+
+.send-button {
+  width: 100%;
+
+  margin-top: 3px;
+
+  padding: 14px 20px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 12px;
+
+  border: none;
+
+  border-radius: 7px;
+
+  background: #486247;
+
+  color: white;
+
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+
+  letter-spacing: normal;
+  word-spacing: normal;
+
+  cursor: pointer;
+
+  transition: 0.25s;
+}
+
+.send-button span {
+  font-size: 18px;
+}
+
+.send-button:hover {
+  background: #354b35;
+
+  transform: translateY(-2px);
+}
+
+.success {
+  padding: 13px 15px;
+
+  background: #edf4ea;
+
+  color: #456044;
+
+  border-radius: 7px;
+
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 12px;
+
+  line-height: 1.6;
+}
+
+
+/* =========================
+   QUICK SUPPORT
+========================= */
+
+.quick-support {
+  padding: 70px 0 85px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #f0eadb,
+      #e8e0cf
+    );
+}
+
+.support-title {
+  margin-bottom: 38px;
+
+  text-align: center;
+}
+
+.support-title span {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 11px;
+
+  font-weight: 700;
+
+  letter-spacing: 2px;
+
+  color: #a0603e;
+}
+
+.support-title h2 {
+  margin: 10px 0 0;
+
+  font-size: 31px;
+  font-weight: 700;
+
+  font-family: "Times New Roman", Times, serif;
+
+  color: #486247;
+
+  letter-spacing: normal;
+  word-spacing: normal;
+}
+
+.support-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(3, 1fr);
+
+  gap: 22px;
+}
+
+.support-card {
+  padding: 30px 25px;
+
+  text-align: center;
+
+  background:
+    rgba(255, 255, 255, 0.68);
+
+  border:
+    1px solid
+    rgba(72, 98, 71, 0.1);
+
+  border-radius: 12px;
+
+  transition: 0.25s;
+}
+
+.support-card:hover {
+  transform: translateY(-5px);
+
+  box-shadow:
+    0 12px 30px
+    rgba(62, 67, 57, 0.08);
+}
+
+.support-icon {
+  width: 50px;
+  height: 50px;
+
+  margin: 0 auto 15px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: #e7deca;
+
+  font-size: 20px;
+}
+
+.support-card h3 {
+  margin: 0 0 10px;
+
+  color: #486247;
+
+  font-family: "Times New Roman", Times, serif;
+
+  font-size: 19px;
+  font-weight: 700;
+
+  letter-spacing: normal;
+  word-spacing: normal;
+}
+
+.support-card p {
+  margin: 0 0 15px;
+
+  color: #74776f;
+
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 12px;
+
+  line-height: 1.7;
+}
+
+.support-card a {
+  color: #a05d3b;
+
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+
+  text-decoration: none;
+}
+
+
+/* =========================
+   FIX FONT VIETNAMESE
+   ========================= */
+
+.contact-page h1,
+.contact-page h2,
+.contact-page h3,
+.contact-page p,
+.contact-page label,
+.contact-page input,
+.contact-page textarea,
+.contact-page select,
+.contact-page button,
+.contact-page a,
+.contact-page span {
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  font-kerning: normal;
+}
+
+
+/* =========================
+   POPUP
+   ========================= */
+
+.popup-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 20px;
+}
+
+.popup {
+  background: #fff;
+  border-radius: 12px;
+  padding: 32px 36px;
+  max-width: 420px;
+  text-align: center;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+  animation: popupIn 0.25s ease-out;
+}
+
+.popup.error {
+  border-top: 4px solid #b3401f;
+}
+
+.popup-icon {
+  font-size: 50px;
+  margin-bottom: 14px;
+}
+
+.popup.success .popup-icon {
+  color: #2e7d32;
+}
+
+.popup.error .popup-icon {
+  color: #b3401f;
+}
+
+.popup-message {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 14px;
+  color: #333832;
+  line-height: 1.6;
+  margin: 0 0 20px;
+}
+
+.popup-close {
+  background: var(--moss);
+  color: #fff;
+  border: none;
+  border-radius: 7px;
+  padding: 9px 28px;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.popup-close:hover {
+  background: var(--moss-d);
+}
+
+@keyframes popupIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+
+/* =========================
+   RESPONSIVE
+   ========================= */
+
+@media (max-width: 900px) {
+
+  .contact-wrapper {
+    grid-template-columns: 1fr;
+
+    gap: 45px;
+  }
+
+  .support-grid {
+    grid-template-columns: 1fr;
+  }
+
+}
+
+
+@media (max-width: 600px) {
+
+  .contact-banner h1 {
+    font-size: 33px;
+  }
+
+  .contact-wrapper {
+    padding-top: 50px;
+  }
+
+  .contact-form-box {
+    padding: 25px 20px;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+
+}

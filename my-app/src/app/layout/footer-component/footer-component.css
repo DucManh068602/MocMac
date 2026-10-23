@@ -1,0 +1,614 @@
+:host {
+  display: block;
+}
+
+footer {
+  margin: 0;
+  padding: 0;
+  background: linear-gradient(180deg, #f8f3e5 0%, #eee6d1 100%);
+  color: #404738;
+  border-top: 1px solid #ddd4bf;
+  font-family: "Be Vietnam Pro", Arial, sans-serif;
+}
+
+/* =========================
+   CONTAINER
+========================= */
+
+.container {
+  width: min(1200px, calc(100% - 40px));
+  margin: 0 auto;
+}
+
+/* =========================
+   FOOTER TOP
+========================= */
+
+.footer-top {
+  padding: 28px 0 4px;
+}
+
+/* =========================
+   GRID CHÍNH
+========================= */
+
+.footer-grid {
+  display: grid;
+
+  grid-template-columns:
+    1.55fr
+    1fr
+    1.2fr
+    1fr
+    1.55fr;
+
+  gap: 24px;
+
+  align-items: start;
+}
+
+/* =========================
+   LOGO
+========================= */
+
+.logo {
+  display: inline-block;
+  text-decoration: none;
+}
+
+.logo img {
+  width: 100px;
+  height: auto;
+  display: block;
+  object-fit: contain;
+}
+
+/* =========================
+   SLOGAN
+========================= */
+
+.slogan {
+  margin: 8px 0 6px;
+
+  font-family: "Lora", serif;
+  font-size: 17px;
+  font-style: italic;
+  font-weight: 600;
+
+  color: #a76743;
+}
+
+/* =========================
+   ABOUT
+========================= */
+
+.about-text,
+.about p {
+  margin: 0 0 10px;
+
+  color: #666b60;
+
+  font-size: 13px;
+  line-height: 1.55;
+}
+.soc {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.soc a {
+  width: 36px;
+  height: 36px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: #43533a;
+  color: #fff;
+
+  text-decoration: none;
+
+  font-size: 17px;
+
+  transition: all 0.25s ease;
+}
+
+.soc a:hover {
+  background: #a76743;
+  transform: translateY(-3px);
+}
+
+.zalo-icon {
+  width: 19px;
+  height: 19px;
+
+  object-fit: contain;
+
+  filter: brightness(0) invert(1);
+}
+/* =========================
+   FOOTER COLUMN
+========================= */
+
+.footer-col h4 {
+  position: relative;
+
+  margin: 0 0 11px;
+
+  padding-bottom: 7px;
+
+  color: #43533a;
+
+  font-family: "Lora", serif;
+
+  font-size: 16px;
+  font-weight: 700;
+}
+
+/* gạch nhỏ dưới title */
+.footer-col h4::after {
+  content: "";
+
+  position: absolute;
+
+  left: 0;
+  bottom: 0;
+
+  width: 32px;
+  height: 2px;
+
+  border-radius: 5px;
+
+  background: #a76743;
+}
+
+/* =========================
+   LINKS
+========================= */
+
+.footer-col > a {
+  display: block;
+
+  padding: 3px 0;
+
+  color: #62675c;
+
+  font-size: 13px;
+  line-height: 1.35;
+
+  text-decoration: none;
+
+  transition: 0.2s ease;
+}
+
+.footer-col > a:hover {
+  color: #a76743;
+
+  transform: translateX(3px);
+}
+
+/* =========================
+   NEWSLETTER TOP
+========================= */
+
+.newsletter p {
+  margin: 0 0 8px;
+
+  color: #666b60;
+
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.newsletter-form {
+  display: flex;
+
+  overflow: hidden;
+
+  background: #fff;
+
+  border: 1px solid #d9d0bc;
+
+  border-radius: 7px;
+
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.04);
+}
+
+.newsletter-form input {
+  flex: 1;
+
+  min-width: 0;
+
+  padding: 9px 10px;
+
+  border: none;
+
+  outline: none;
+
+  background: #fff;
+
+  font-family: inherit;
+
+  font-size: 12px;
+}
+
+.newsletter-form button {
+  padding: 0 13px;
+
+  border: none;
+
+  background: #43533a;
+
+  color: #fff;
+
+  font-family: inherit;
+
+  font-size: 11px;
+
+  font-weight: 600;
+
+  white-space: nowrap;
+
+  cursor: pointer;
+
+  transition: 0.2s ease;
+}
+
+.newsletter-form button:hover {
+  background: #a76743;
+}
+
+/* =========================
+   PAYMENT + SHIPPING
+========================= */
+
+.partner-section {
+  display: grid;
+
+  grid-template-columns: 1fr 1fr;
+
+  gap: 28px;
+
+  margin-top: 16px;
+
+  padding: 12px 0 0;
+
+  border-top: 1px solid rgba(67, 83, 58, 0.16);
+
+  margin-bottom: 0;
+}
+
+/* =========================
+   PARTNER GROUP
+========================= */
+
+.partner-group {
+  margin: 0;
+  padding: 0 !important;
+}
+
+.partner-group h4 {
+  margin: 0 0 8px;
+
+  color: #43533a;
+
+  font-family: "Lora", serif;
+
+  font-size: 13px;
+
+  font-weight: 700;
+}
+
+/* =========================
+   PARTNER LOGOS
+========================= */
+
+.partner-logos {
+  display: flex;
+
+  align-items: center;
+
+  flex-wrap: wrap;
+
+  gap: 7px;
+
+  margin: 0;
+  padding: 0;
+}
+
+.partner-logos img {
+  height: 32px;
+
+  width: auto;
+
+  max-width: 85px;
+
+  object-fit: contain;
+
+  display: block;
+
+  box-sizing: border-box;
+
+  padding: 3px 6px;
+
+  background: #fff;
+
+  border: 1px solid #ddd5c2;
+
+  border-radius: 6px;
+
+  transition: 0.2s ease;
+}
+
+.partner-logos img:hover {
+  transform: translateY(-2px);
+
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.07);
+}
+
+/* =========================
+   FOOTER BOTTOM
+========================= */
+
+.footer-bottom {
+  margin-top: 6px;
+
+  padding: 0;
+
+  background: #3d4b34;
+
+  color: #eee9da;
+}
+
+/* =========================
+   BOTTOM WRAPPER
+========================= */
+
+.bottom-wrapper {
+  min-height: auto;
+
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: center;
+
+  gap: 25px;
+
+  padding-top: 10px;
+
+  padding-bottom: 10px;
+}
+
+/* =========================
+   COMPANY INFO
+========================= */
+
+.company-info {
+  flex: 1;
+
+  color: #ece6d7;
+
+  font-size: 12px;
+
+  line-height: 1.45;
+}
+
+.company-info strong {
+  display: block;
+
+  margin-bottom: 2px;
+
+  color: #fff;
+
+  font-weight: 600;
+}
+
+.company-info a {
+  color: #e8e1d0;
+
+  text-decoration: none;
+}
+
+.company-info a:hover {
+  text-decoration: underline;
+}
+
+/* =========================
+   BOTTOM NEWSLETTER
+========================= */
+
+.bottom-newsletter {
+  width: 350px;
+}
+
+.bottom-newsletter p {
+  margin: 0 0 5px;
+
+  color: #fff;
+
+  font-size: 11px;
+}
+
+.bottom-form {
+  display: flex;
+
+  overflow: hidden;
+
+  background: #fff;
+
+  border-radius: 6px;
+}
+
+.bottom-form input {
+  flex: 1;
+
+  min-width: 0;
+
+  padding: 8px 9px;
+
+  border: none;
+
+  outline: none;
+
+  font-family: inherit;
+
+  font-size: 11px;
+}
+
+.bottom-form button {
+  padding: 0 12px;
+
+  border: none;
+
+  background: #b17851;
+
+  color: #fff;
+
+  font-family: inherit;
+
+  font-size: 10px;
+
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition: 0.2s ease;
+}
+
+.bottom-form button:hover {
+  background: #965d3c;
+}
+
+/* =========================
+   TABLET
+========================= */
+
+@media (max-width: 1100px) {
+
+  .footer-grid {
+    grid-template-columns:
+      1.5fr
+      1fr
+      1fr;
+
+    gap: 24px;
+  }
+
+  .newsletter {
+    grid-column: span 2;
+  }
+}
+
+/* =========================
+   TABLET NHỎ
+========================= */
+
+@media (max-width: 800px) {
+
+  .footer-top {
+    padding-top: 24px;
+  }
+
+  .footer-grid {
+    grid-template-columns:
+      1fr
+      1fr;
+
+    gap: 22px;
+  }
+
+  .about {
+    grid-column: 1 / -1;
+  }
+
+  .newsletter {
+    grid-column: 1 / -1;
+  }
+
+  .partner-section {
+    grid-template-columns: 1fr;
+
+    gap: 16px;
+
+    margin-top: 14px;
+  }
+
+  .bottom-wrapper {
+    flex-direction: column;
+
+    align-items: stretch;
+
+    gap: 12px;
+  }
+
+  .bottom-newsletter {
+    width: 100%;
+  }
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 550px) {
+
+  .container {
+    width: calc(100% - 28px);
+  }
+
+  .footer-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .about,
+  .newsletter {
+    grid-column: auto;
+  }
+
+  .logo img {
+    width: 165px;
+  }
+
+  .newsletter-form {
+    flex-direction: column;
+  }
+
+  .newsletter-form input {
+    width: 100%;
+
+    box-sizing: border-box;
+  }
+
+  .newsletter-form button {
+    padding: 9px 10px;
+  }
+
+  .partner-section {
+    padding-top: 10px;
+  }
+
+  .partner-logos img {
+    height: 30px;
+
+    max-width: 80px;
+  }
+
+  .bottom-form {
+    flex-direction: column;
+  }
+
+  .bottom-form input {
+    width: 100%;
+
+    box-sizing: border-box;
+  }
+
+  .bottom-form button {
+    padding: 9px;
+  }
+}

@@ -1,0 +1,89 @@
+<div class="top">
+  <div class="wrap">
+    <div>
+      <a routerLink="/gioi-thieu">Giới thiệu</a>
+      <a routerLink="/qua-tang-theo-nhu-cau">Quà tặng theo nhu cầu</a>
+      <a routerLink="/qua-tang-doanh-nghiep">Quà tặng doanh nghiệp</a>
+    </div>
+
+    <div>
+      <a routerLink="/thong-bao">Thông báo</a>
+      <a routerLink="/ho-tro">Hỗ trợ</a>
+      <a href="#">Tiếng Việt</a>
+      <a routerLink="/dang-ky">Đăng ký</a>
+      <a routerLink="/dang-nhap">Đăng nhập</a>
+    </div>
+  </div>
+</div>
+
+<div class="brand">
+  <div class="wrap">
+    <a class="logo" routerLink="/">
+      <img src="data/images/Logo.png" alt="Mộc Mạc Logo">
+    </a>
+
+    <form class="search" (submit)="$event.preventDefault()">
+      <input
+        type="search"
+        placeholder="Tìm đặc sản, làng nghề, vùng miền..."
+      />
+
+      <button type="submit" aria-label="Tìm">
+        &#128269;
+      </button>
+    </form>
+
+    <a class="cart" (click)="onCartClick()">
+      &#128722; Giỏ hàng <b>{{ cartService.count() }}</b>
+    </a>
+  </div>
+</div>
+
+<div class="nav">
+  <div class="wrap">
+    <nav>
+      <a
+        routerLink="/"
+        routerLinkActive="on"
+        [routerLinkActiveOptions]="{ exact: true }"
+      >
+        Trang chủ
+      </a>
+
+      <a routerLink="/san-pham" routerLinkActive="on">
+        Sản phẩm
+      </a>
+
+      <a routerLink="/qua-tang" routerLinkActive="on">
+        Quà tặng
+      </a>
+
+      <a routerLink="/vung-mien" routerLinkActive="on">
+        Vùng miền
+      </a>
+
+      <a routerLink="/lang-nghe" routerLinkActive="on">
+        Làng nghề
+      </a>
+
+      <a routerLink="/lien-he" routerLinkActive="on">
+        Liên hệ
+      </a>
+    </nav>
+  </div>
+</div>
+
+<!-- ===== Login notification popup ===== -->
+@if (loginPopup()) {
+  <div class="cart-login-overlay" (click)="closeLoginPopup()">
+    <div class="cart-login-popup" (click)="$event.stopPropagation()">
+      <div class="cart-login-icon">🔒</div>
+      <h3>Bạn cần đăng nhập</h3>
+      <p>Để mua hàng và quản lý giỏ hàng, vui lòng đăng nhập tài khoản.</p>
+      <div class="cart-login-actions">
+        <a class="btn" routerLink="/dang-nhap" (click)="closeLoginPopup()">Đăng nhập ngay</a>
+        <button type="button" class="btn btn-secondary" (click)="closeLoginPopup()">Hủy</button>
+      </div>
+    </div>
+  </div>
+}

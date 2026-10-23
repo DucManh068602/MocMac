@@ -1,0 +1,319 @@
+<div class="gift-landing">
+
+  <!-- HERO SECTION -->
+  <section class="hero-b2b">
+    <div class="site-wrap hero-layout">
+      <div class="hero-text-block">
+        <div class="badge-row">
+          <span class="square-accent">■</span>
+          <span class="square-accent">■</span>
+        </div>
+        <h1 class="hero-title">{{ heroData.title }}</h1>
+        <p class="hero-sub">{{ heroData.subtitle }}</p>
+
+        <div class="hero-btn-row">
+        </div>
+
+        <div class="credentials-row">
+          <div class="cred-item">
+            <span class="laurel-icon">🪶</span>
+            <div class="cred-txt">
+              <strong>HÀNG VIỆT NAM</strong>
+            </div>
+          </div>
+          <div class="cred-item">
+            <span class="laurel-icon">★</span>
+            <div class="cred-txt">
+              <strong>KOTLER AWARDS</strong>
+              <small>Việt Nam 2024</small>
+            </div>
+          </div>
+          <div class="cred-item">
+            <span class="laurel-icon">🛡️</span>
+            <div class="cred-txt">
+              <strong>REDDOT DESIGN</strong>
+              <small>Award Winner 2019</small>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-media-block">
+        <div class="img-slot hero-img-slot">
+          <img src="/data/images/1.jpg" alt="Hero Banner" class="hero-img" />
+        </div>
+        <div class="slider-pager">01 — 05</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="occasion-collection-section">
+    <div class="site-wrap">
+      <div class="center-head">
+        <span class="section-tag-gold">BỘ SƯU TẬP</span>
+        <h2 class="section-heading-light">QUÀ TẶNG NỔI BẬT</h2>
+      </div>
+
+  
+
+      <div class="feature-banner-box">
+        <div class="feature-banner-content">
+          <div class="calligraphy-script">Quà tặng</div>
+          <div class="feature-large-text">TÂM GIAO</div>
+          <div class="calligraphy-script sub-script">Gắn kết chân tình</div>
+          <p class="feature-lead-text">
+          Thềm hoa một bước lên tiên,<br>
+          Áo lụa Hà Đông dịu hiền dáng ai.<br>
+          Tơ tằm óng ả bàn tay,<br>
+          Dệt bao thương nhớ nối dài năm canh<br>
+          </p>
+        </div>
+        <div class="img-slot feature-banner-img-slot">
+          <img src="/data/images/quà tặng đầu tranng.jpg" alt="Bộ sưu tập nổi bật" class="feature-banner-img" />
+        </div>
+      </div>
+
+      <div class="collection-triple-grid">
+        <div class="col-item-card" *ngFor="let col of featuredCollections; let i = index">
+          <div class="img-slot collection-img-slot">
+            <img [src]="col.imageUrl || (i === 0 ? '/data/images/ấm tách xanh trắng.webp' : (i === 1 ? '/data/images/chim lạc.webp' : '/data/images/bình hoa.webp'))" [alt]="col.name" class="collection-img" />
+          </div>
+          <div class="collection-caption">
+            <h3>{{ col.name }}</h3>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- GIẢI PHÁP QUÀ TẶNG & BỘ LỌC (LAYOUT 2 BÊN) -->
+  <section class="solutions-section">
+    <div class="site-wrap">
+      
+      <!-- CỤM CHÍNH: NỘI DUNG/SẢN PHẨM BÊN TRÁI - BỘ LỌC BÊN PHẢI -->
+      <div class="gift-catalog-layout">
+        
+        <!-- CỘT BÊN TRÁI: TIÊU ĐỀ, MÔ TẢ & LƯỚI SẢN PHẨM -->
+        <main class="catalog-main-content">
+          <div class="section-header-left">
+            <span class="section-tag-gold">SẢN PHẨM</span>
+            <h2 class="section-heading-dark">GIẢI PHÁP QUÀ TẶNG</h2>
+            <div class="divider-green-line"></div>
+            <p class="category-intro-quote">
+              Mộc Mạc khởi tạo mùa đoàn viên ấm áp với đa dạng bộ quà tặng được tinh tuyển từ đất lành của thiên nhiên, mang đến nét đẹp văn hóa truyền thống vẹn tròn gửi gắm người thân và đối tác tâm giao.
+            </p>
+          </div>
+
+          <!-- LƯỚI SẢN PHẨM -->
+          <div class="product-cards-grid" *ngIf="filteredProducts.length > 0; else noProductTemplate">
+            <div class="product-item-card" *ngFor="let item of filteredProducts">
+              <button class="wishlist-btn" type="button">♡</button>
+              <div class="img-slot product-img-slot">
+                <img 
+                  [src]="item.imageUrl || (
+                    item.name.includes('sen Tây Hồ') ? '/data/images/trà sen tây hồ.jpg' :
+                    item.name.includes('Túi mây') ? '/data/images/túi mây tre.jpg' :
+                    item.name.includes('Rổ mây') ? '/data/images/rổ mây tre.jpg' :
+                    item.name.includes('shan tuyết') ? '/data/images/trà san tuyết.webp' :
+                    item.name.includes('hoa cúc') ? '/data/images/trà hoa cúc.jpg' :
+                    item.name.includes('Chu Đậu') ? '/data/images/chu đậu.webp' :
+                    item.name.includes('Jasmine') ? '/data/images/ấm jasmine.webp' :
+                    item.name.includes('men hoả biến') ? '/data/images/ấm chén hoa tiễn.jpg' :
+                    item.name.includes('hoa son') ? '/data/images/ấm bát tràg.jpg' :
+                    item.name.includes('Bát Tràng') ? '/data/images/ấm bát tràg.jpg' :
+                    item.name.includes('chồn') ? '/data/images/cà phê 2.jpg' :
+                    item.name.includes('Buôn Ma Thuột') ? '/data/images/cà phê.jpg' :
+                    item.name.includes('Thái Nguyên') ? '/data/images/trà xanh.jpg' :
+                    '/data/images/3.jpg'
+                  )" 
+                  [alt]="item.name" 
+                  class="product-img" />
+              </div>
+              <div class="card-details">
+                <h3 class="item-title">{{ item.name }}</h3>
+                <div class="item-rating">
+                  <span class="stars">★★★★★</span>
+                  <span class="count">({{ item.reviewsCount }})</span>
+                </div>
+                <div class="item-origin">
+                  <span class="pin">📍</span> {{ item.origin }} · {{ item.region }}
+                </div>
+                <div class="card-action-row">
+                  <span class="item-price">{{ formatPrice(item.price) }}</span>
+                  <button class="cart-add-btn" type="button"><span class="cart-icon">🛒</span></button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <ng-template #noProductTemplate>
+            <div class="filter-empty-state">
+              <span class="empty-icon">🍃</span>
+              <p>Không tìm thấy sản phẩm nào phù hợp với bộ lọc hiện tại.</p>
+              <button type="button" class="btn-gold-pill" (click)="resetFilter()">Đặt lại bộ lọc</button>
+            </div>
+          </ng-template>
+
+          <div class="cta-center-bar">
+            <button class="btn-gold-action">YÊU CẦU BÁO GIÁ →</button>
+          </div>
+        </main>
+
+        <!-- CỘT BÊN PHẢI (BÊN TAY PHẢI MÀN HÌNH): THANH BỘ LỌC 2 CỘT NHƯ ẢNH -->
+        <aside class="catalog-filter-sidebar">
+          <div class="filter-card-columns">
+            
+            <!-- Cột lọc 1: Tìm kiếm, Danh mục, Vùng miền, Giá -->
+            <div class="filter-col">
+              <div class="filter-group">
+                <div class="filter-title-icon">🔎 Tìm kiếm & gợi ý</div>
+                <div class="search-input-wrap">
+                  <input type="text" placeholder="Tìm sản phẩm..." class="filter-input-search" />
+                  <span class="search-icon">🔍</span>
+                </div>
+              </div>
+
+              <div class="ai-recommend-card">
+                <span class="ai-bot-icon">🤖</span>
+                <div class="ai-txt">
+                  <strong>AI Tìm quà phù hợp theo vùng miền</strong>
+                  <small>Nhập vào câu, dịp tặng...</small>
+                </div>
+                <span class="ai-arrow">›</span>
+              </div>
+
+              <div class="filter-group">
+                <h4 class="filter-section-title">Danh mục sản phẩm</h4>
+                <label class="filter-checkbox-item"><input type="checkbox" /> 🥭 Đặc sản <span class="count">(0)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" /> 🧺 Thủ công mỹ nghệ <span class="count">(0)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" /> ☕ Cà phê - Trà <span class="count">(0)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" /> ⭐ Sản phẩm OCOP <span class="count">(0)</span></label>
+              </div>
+
+              <div class="filter-group">
+                <h4 class="filter-section-title">🌿 Vùng miền</h4>
+                <label class="filter-checkbox-item"><input type="checkbox" /> Miền Bắc <span class="count">(0)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" /> Miền Trung <span class="count">(0)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" /> Tây Nguyên <span class="count">(0)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" /> Miền Nam <span class="count">(0)</span></label>
+              </div>
+
+              <div class="filter-group">
+                <h4 class="filter-section-title">Tỉnh thành</h4>
+                <select class="filter-select">
+                  <option>Chọn tỉnh/thành phố</option>
+                </select>
+              </div>
+
+              <div class="filter-group">
+                <h4 class="filter-section-title">Làng nghề</h4>
+                <select class="filter-select">
+                  <option>Chọn làng nghề</option>
+                </select>
+              </div>
+
+              <div class="filter-group">
+                <h4 class="filter-section-title">Khoảng giá</h4>
+                <label class="filter-checkbox-item"><input type="checkbox" /> Dưới 200.000đ <span class="count">(0)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" /> 200.000đ - 500.000đ <span class="count">(0)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" /> 500.000đ - 1.000.000đ <span class="count">(0)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" /> Trên 1.000.000đ <span class="count">(0)</span></label>
+              </div>
+
+              <div class="filter-action-btns">
+                <button type="button" class="btn-filter-apply">Áp dụng bộ lọc</button>
+                <button type="button" class="btn-filter-reset">Xóa bộ lọc</button>
+              </div>
+            </div>
+
+            <!-- Cột lọc 2: Mùa vụ, Chất liệu, OCOP, Huy hiệu, Dịp tặng, Đánh giá -->
+            <div class="filter-col">
+              <div class="filter-group">
+                <h4 class="filter-section-title">Mùa vụ</h4>
+                <label class="filter-checkbox-item"><input type="checkbox" /> Đang vào mùa (Tháng 10)</label>
+                <label class="filter-checkbox-item"><input type="checkbox" /> Tháng 1-3 <span class="count">(0)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" /> Tháng 4-6 <span class="count">(0)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" /> Tháng 7-9 <span class="count">(0)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" /> Tháng 10-12 <span class="count">(0)</span></label>
+              </div>
+
+              <div class="filter-group">
+                <h4 class="filter-section-title">Chất liệu / Loại nghề</h4>
+                <label class="filter-checkbox-item"><input type="checkbox" /> Gốm <span class="count">(0)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" /> Mây tre đan <span class="count">(0)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" /> Sơn mài <span class="count">(0)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" /> Thổ cẩm <span class="count">(0)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" /> Đặc sản khô <span class="count">(0)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" /> Trà <span class="count">(0)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" /> Cà phê <span class="count">(0)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" /> Khác <span class="count">(0)</span></label>
+              </div>
+
+              <div class="filter-group">
+                <h4 class="filter-section-title">Chứng nhận OCOP</h4>
+                <label class="filter-checkbox-item"><input type="checkbox" /> OCOP 3 sao <span class="count">(0)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" /> OCOP 4 sao <span class="count">(0)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" /> OCOP 5 sao <span class="count">(0)</span></label>
+              </div>
+
+              <div class="filter-group">
+                <h4 class="filter-section-title">Huy hiệu Di sản</h4>
+                <label class="filter-checkbox-item"><input type="checkbox" /> Di sản Vàng <span class="count">(0)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" /> Di sản Bạc <span class="count">(0)</span></label>
+              </div>
+
+              <div class="filter-group">
+                <h4 class="filter-section-title">Dịp / Mục đích</h4>
+                <label class="filter-checkbox-item"><input type="checkbox" /> Quà Tết <span class="count">(0)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" /> Quà cưới <span class="count">(0)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" /> Quà tân gia <span class="count">(0)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" /> Quà biếu đối tác <span class="count">(0)</span></label>
+              </div>
+
+              <div class="filter-group">
+                <h4 class="filter-section-title">Đánh giá</h4>
+                <label class="filter-checkbox-item"><input type="checkbox" /> ⭐⭐⭐⭐ Từ 4 sao trở lên</label>
+              </div>
+
+              <div class="filter-group">
+                <h4 class="filter-section-title">Tình trạng</h4>
+                <label class="filter-checkbox-item"><input type="checkbox" /> Còn hàng <span class="count">(0)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" /> Pre-order <span class="count">(0)</span></label>
+              </div>
+            </div>
+
+          </div>
+        </aside>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- CÂU CHUYỆN QUÀ TẶNG -->
+  <section class="partner-story-section">
+    <div class="site-wrap">
+      <div class="center-head">
+        <h2 class="section-heading-dark">CÂU CHUYỆN QUÀ TẶNG</h2>
+      </div>
+
+      <div class="story-dual-block">
+        <div class="story-info-col">
+          <span class="partner-eyebrow">{{ projectStory.partner }}</span>
+          <h3 class="story-main-title">{{ projectStory.title }}</h3>
+          <p class="story-body">{{ projectStory.description }}</p>
+        </div>
+
+        <div class="story-image-col">
+          <div class="img-slot story-img-slot">
+            <img src="/data/images/đối tác.jpg" alt="Dự án Đối tác" class="story-img" />
+          </div>
+          <div class="story-nav-circles">
+            <button class="nav-circle">‹</button>
+            <button class="nav-circle">›</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>

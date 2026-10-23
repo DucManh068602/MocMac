@@ -1,0 +1,1277 @@
+[
+  {
+    "id": 1,
+    "name": "Cà phê Buôn Ma Thuột rang mộc",
+    "cat": "Cà phê - Trà",
+    "type": "Cà phê",
+    "region": "Tây Nguyên",
+    "province": "Đắk Lắk",
+    "village": "",
+    "price": 126000,
+    "rate": 4.5,
+    "reviews": 30,
+    "ocop": 0,
+    "heritage": null,
+    "seasons": [],
+    "occasion": null,
+    "inStock": false,
+    "preorder": true,
+    "icon": "☕",
+    "badges": [],
+    "images": [
+      "https://down-vn.img.susercontent.com/file/vn-11134207-7qukw-ljmwck45uz2a2c",
+      "https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lzeaaulmy6vhb1_tn"
+    ]
+  },
+  {
+    "id": 2,
+    "name": "Cà phê chồn Đà Lạt",
+    "cat": "Cà phê - Trà",
+    "type": "Cà phê",
+    "region": "Tây Nguyên",
+    "province": "Lâm Đồng",
+    "village": "",
+    "price": 428000,
+    "rate": 3.7,
+    "reviews": 123,
+    "ocop": 0,
+    "heritage": "Bạc",
+    "seasons": [],
+    "occasion": "Quà biếu đối tác",
+    "inStock": false,
+    "preorder": true,
+    "icon": "☕",
+    "badges": [],
+    "images": [
+      "https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lzeaaulmy6vhb1_tn"
+    ]
+  },
+  {
+    "id": 3,
+    "name": "Trà Thái Nguyên đặc sản",
+    "cat": "Cà phê - Trà",
+    "type": "Trà",
+    "region": "Miền Bắc",
+    "province": "Thái Nguyên",
+    "village": "",
+    "price": 150000,
+    "rate": 3.7,
+    "reviews": 43,
+    "ocop": 5,
+    "heritage": null,
+    "seasons": [],
+    "occasion": "Quà cưới",
+    "inStock": true,
+    "preorder": false,
+    "icon": "🍵",
+    "badges": [],
+    "images": [
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR1BLuIIhg2e9Gsakmp0Iw9g3_F-oqHWKX5kNWaTxoiVt-ZJ8D4vTwrH-qH&s=10"
+    ]
+  },
+  {
+    "id": 4,
+    "name": "Trà shan tuyết Hà Giang",
+    "cat": "Cà phê - Trà",
+    "type": "Trà",
+    "region": "Miền Bắc",
+    "province": "Hà Giang",
+    "village": "",
+    "price": 304000,
+    "rate": 3.7,
+    "reviews": 68,
+    "ocop": 0,
+    "heritage": null,
+    "seasons": [],
+    "occasion": "Quà Tết",
+    "inStock": true,
+    "preorder": false,
+    "icon": "🍵",
+    "badges": [],
+    "images": [
+      "https://pos.nvncdn.com/35ab07-173722/ps/Tra-Shan-Tuyet-Co-Thu-Loai-1-200G-Goi-Vang.png?v=1742360303"
+    ]
+  },
+  {
+    "id": 5,
+    "name": "Trà sen Tây Hồ",
+    "cat": "Cà phê - Trà",
+    "type": "Trà",
+    "region": "Miền Bắc",
+    "province": "Hà Nội",
+    "village": "Quảng Bá",
+    "price": 680000,
+    "rate": 3.8,
+    "reviews": 42,
+    "ocop": 3,
+    "heritage": null,
+    "seasons": [],
+    "occasion": null,
+    "inStock": true,
+    "preorder": false,
+    "icon": "🪷",
+    "badges": [
+      "Làng nghề"
+    ],
+    "images": [
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTkw5-e6O7p17G8VVRNNxS3IAIVqaOAGiADSjR3iAnH_a-DUC5itpcGE70&s=10"
+    ]
+  },
+  {
+    "id": 6,
+    "name": "Túi mây tre đan Phú Vinh",
+    "cat": "Thủ công mỹ nghệ",
+    "type": "Mây tre đan",
+    "region": "Miền Bắc",
+    "province": "Hà Nội",
+    "village": "Phú Vinh",
+    "price": 238000,
+    "rate": 4.1,
+    "reviews": 28,
+    "ocop": 5,
+    "heritage": "Bạc",
+    "seasons": [],
+    "occasion": null,
+    "inStock": false,
+    "preorder": true,
+    "icon": "🧺",
+    "badges": [
+      "Thủ công",
+      "Làng nghề"
+    ],
+    "images": [
+      "https://dunghangviet.vn/wp-content/uploads/2024/12/may-tre-dan-Phu-Vinh-1.jpg"
+    ]
+  },
+  {
+    "id": 7,
+    "name": "Rổ mây Bát Tràng",
+    "cat": "Thủ công mỹ nghệ",
+    "type": "Mây tre đan",
+    "region": "Miền Bắc",
+    "province": "Hà Nội",
+    "village": "Bát Tràng",
+    "price": 95000,
+    "rate": 4.7,
+    "reviews": 131,
+    "ocop": 0,
+    "heritage": null,
+    "seasons": [],
+    "occasion": null,
+    "inStock": true,
+    "preorder": false,
+    "icon": "🧺",
+    "badges": [
+      "Thủ công",
+      "Làng nghề"
+    ],
+    "images": [
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTlsYEg8DHiFA8YKFqc_nzqPjDFfcQ11O2KOG7XVpsQzt4G2cphtU0asyg&s=10"
+    ]
+  },
+  {
+    "id": 8,
+    "name": "Bộ ấm trà Bát Tràng hoa son",
+    "cat": "Thủ công mỹ nghệ",
+    "type": "Gốm",
+    "region": "Miền Bắc",
+    "province": "Hà Nội",
+    "village": "Bát Tràng",
+    "price": 724000,
+    "rate": 3.7,
+    "reviews": 88,
+    "ocop": 0,
+    "heritage": "Bạc",
+    "seasons": [],
+    "occasion": null,
+    "inStock": true,
+    "preorder": false,
+    "icon": "🫖",
+    "badges": [
+      "Thủ công",
+      "Làng nghề"
+    ],
+    "images": [
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT9f6TGHUEvwGlGlsfnuD8rn5RuHNZoAFQ004-AoqiUiX-KGJYt7I-s_AE&s=10"
+    ]
+  },
+  {
+    "id": 9,
+    "name": "Ấm tử sa Bát Tràng",
+    "cat": "Thủ công mỹ nghệ",
+    "type": "Gốm",
+    "region": "Miền Bắc",
+    "province": "Hà Nội",
+    "village": "Bát Tràng",
+    "price": 546000,
+    "rate": 4.5,
+    "reviews": 30,
+    "ocop": 0,
+    "heritage": null,
+    "seasons": [],
+    "occasion": "Quà Tết",
+    "inStock": true,
+    "preorder": false,
+    "icon": "🫖",
+    "badges": [
+      "Thủ công",
+      "Làng nghề"
+    ],
+    "images": [
+      "https://gomsubattranghaotho.vn/uploads/2024/10/ts16-400x400.jpg"
+    ]
+  },
+  {
+    "id": 10,
+    "name": "Bình gốm Chu Đậu men rạn",
+    "cat": "Thủ công mỹ nghệ",
+    "type": "Gốm",
+    "region": "Miền Bắc",
+    "province": "Hải Dương",
+    "village": "Chu Đậu",
+    "price": 780000,
+    "rate": 4.9,
+    "reviews": 119,
+    "ocop": 0,
+    "heritage": "Bạc",
+    "seasons": [],
+    "occasion": "Quà Tết",
+    "inStock": true,
+    "preorder": false,
+    "icon": "🏺",
+    "badges": [
+      "Thủ công",
+      "Làng nghề"
+    ],
+    "images": [
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRYKy3V9mP-N5NNQaikOW_GayiGYRte3X436ZCGSMOySBxkBOZP7ikGtgU&s=10"
+    ]
+  },
+  {
+    "id": 11,
+    "name": "Gốm Bàu Trúc chậu hoa",
+    "cat": "Thủ công mỹ nghệ",
+    "type": "Gốm",
+    "region": "Miền Trung",
+    "province": "Ninh Thuận",
+    "village": "Bàu Trúc",
+    "price": 210000,
+    "rate": 4.1,
+    "reviews": 101,
+    "ocop": 0,
+    "heritage": null,
+    "seasons": [],
+    "occasion": null,
+    "inStock": true,
+    "preorder": false,
+    "icon": "🏺",
+    "badges": [
+      "Thủ công",
+      "Làng nghề"
+    ],
+    "images": [
+      "https://img.lazcdn.com/g/p/5b06354a3bfbf40555aa86584d2e81ee.jpg_720x720q80.jpg"
+    ]
+  },
+  {
+    "id": 12,
+    "name": "Bát sơn mài truyền thống",
+    "cat": "Thủ công mỹ nghệ",
+    "type": "Sơn mài",
+    "region": "Miền Bắc",
+    "province": "Hà Nội",
+    "village": "Hạ Thái",
+    "price": 336000,
+    "rate": 4.3,
+    "reviews": 28,
+    "ocop": 0,
+    "heritage": null,
+    "seasons": [],
+    "occasion": "Quà Tết",
+    "inStock": true,
+    "preorder": false,
+    "icon": "🥣",
+    "badges": [
+      "Thủ công",
+      "Làng nghề"
+    ],
+    "images": [
+      "https://tanmydesign.com/uploaded/san-pham/Son%20mai/Khac/b%C3%A1t%20s%C6%A1n%20m%C3%A0i/PAS001133.1.1370.jpg",
+      "https://dongphuongart.com/uploads/images/BatP11Ca3.png",
+      "https://dongphuongart.com/uploads/images/BatP11CaLS.jpg"
+    ]
+  },
+  {
+    "id": 13,
+    "name": "Khay sơn mài khảm trai",
+    "cat": "Thủ công mỹ nghệ",
+    "type": "Sơn mài",
+    "region": "Miền Bắc",
+    "province": "Hà Nội",
+    "village": "Hạ Thái",
+    "price": 1312000,
+    "rate": 4.0,
+    "reviews": 110,
+    "ocop": 0,
+    "heritage": null,
+    "seasons": [],
+    "occasion": "Quà tân gia",
+    "inStock": false,
+    "preorder": true,
+    "icon": "🪞",
+    "badges": [
+      "Thủ công",
+      "Làng nghề"
+    ],
+    "images": [
+      "https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lqok5t7yjrxzb0"
+    ]
+  },
+  {
+    "id": 14,
+    "name": "Khăn thổ cẩm dệt tay",
+    "cat": "Thủ công mỹ nghệ",
+    "type": "Thổ cẩm",
+    "region": "Miền Bắc",
+    "province": "Sơn La",
+    "village": "Mường Chanh",
+    "price": 294000,
+    "rate": 4.3,
+    "reviews": 67,
+    "ocop": 5,
+    "heritage": "Vàng",
+    "seasons": [],
+    "occasion": "Quà tân gia",
+    "inStock": false,
+    "preorder": true,
+    "icon": "🧣",
+    "badges": [
+      "Thủ công",
+      "Làng nghề"
+    ],
+    "images": [
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTasirAYt_ogiPCeSg5Zy8HFWcBwqFqEejOiD3YR8yHrCTQi-O5sucjkWc&s=10"
+    ]
+  },
+  {
+    "id": 15,
+    "name": "Túi thổ cẩm Lục Yên",
+    "cat": "Thủ công mỹ nghệ",
+    "type": "Thổ cẩm",
+    "region": "Tây Nguyên",
+    "province": "Gia Lai",
+    "village": "",
+    "price": 340000,
+    "rate": 3.8,
+    "reviews": 114,
+    "ocop": 4,
+    "heritage": "Vàng",
+    "seasons": [],
+    "occasion": null,
+    "inStock": true,
+    "preorder": false,
+    "icon": "👜",
+    "badges": [
+      "Thủ công",
+      "Làng nghề"
+    ],
+    "images": [
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTasirAYt_ogiPCeSg5Zy8HFWcBwqFqEejOiD3YR8yHrCTQi-O5sucjkWc&s=10"
+    ]
+  },
+  {
+    "id": 16,
+    "name": "Nón lá làng Chuồng",
+    "cat": "Thủ công mỹ nghệ",
+    "type": "Khác",
+    "region": "Miền Bắc",
+    "province": "Hà Nội",
+    "village": "Làng Chuồng",
+    "price": 50000,
+    "rate": 4.6,
+    "reviews": 103,
+    "ocop": 0,
+    "heritage": null,
+    "seasons": [],
+    "occasion": "Quà biếu đối tác",
+    "inStock": true,
+    "preorder": false,
+    "icon": "👒",
+    "badges": [
+      "Thủ công",
+      "Làng nghề"
+    ],
+    "images": [
+      "https://tse4.mm.bing.net/th/id/OIP.eriY8agRzC9vT5jCRmTP4AHaE2?r=0&rs=1&pid=ImgDetMain&o=7&rm=3"
+    ]
+  },
+  {
+    "id": 17,
+    "name": "Nón bài thơ Huế",
+    "cat": "Thủ công mỹ nghệ",
+    "type": "Khác",
+    "region": "Miền Trung",
+    "province": "Thừa Thiên Huế",
+    "village": "Tây Hồ",
+    "price": 120000,
+    "rate": 4.5,
+    "reviews": 15,
+    "ocop": 0,
+    "heritage": "Bạc",
+    "seasons": [],
+    "occasion": "Quà biếu đối tác",
+    "inStock": true,
+    "preorder": false,
+    "icon": "👒",
+    "badges": [
+      "Thủ công",
+      "Làng nghề"
+    ],
+    "images": [
+      "https://statics.vinpearl.com/non-bai-tho-hue-3_1630895844.jpg"
+    ]
+  },
+  {
+    "id": 18,
+    "name": "Giỏ tre đan làng nghề Phú Vinh",
+    "cat": "Thủ công mỹ nghệ",
+    "type": "Mây tre đan",
+    "region": "Miền Bắc",
+    "province": "Hà Nội",
+    "village": "Phú Vinh",
+    "price": 185000,
+    "rate": 4.5,
+    "reviews": 63,
+    "ocop": 0,
+    "heritage": null,
+    "seasons": [],
+    "occasion": "Quà tặng",
+    "inStock": true,
+    "preorder": false,
+    "icon": "🧺",
+    "badges": [
+      "Thủ công",
+      "Làng nghề"
+    ],
+    "images": [
+      "https://dunghangviet.vn/wp-content/uploads/2024/12/may-tre-dan-Phu-Vinh-1.jpg"
+    ]
+  },
+  {
+    "id": 19,
+    "name": "Khay tre đan thủ công Phú Vinh",
+    "cat": "Thủ công mỹ nghệ",
+    "type": "Mây tre đan",
+    "region": "Miền Bắc",
+    "province": "Hà Nội",
+    "village": "Phú Vinh",
+    "price": 145000,
+    "rate": 4.5,
+    "reviews": 112,
+    "ocop": 0,
+    "heritage": null,
+    "seasons": [],
+    "occasion": "Quà tặng",
+    "inStock": true,
+    "preorder": false,
+    "icon": "🧺",
+    "badges": [
+      "Thủ công",
+      "Làng nghề"
+    ],
+    "images": [
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTlsYEg8DHiFA8YKFqc_nzqPjDFfcQ11O2KOG7XVpsQzt4G2cphtU0asyg&s=10"
+    ]
+  },
+  {
+    "id": 20,
+    "name": "Xoài sấy dẻo Mộc Châu",
+    "cat": "Đặc sản",
+    "type": "Đặc sản khô",
+    "region": "Miền Bắc",
+    "province": "Sơn La",
+    "village": "",
+    "price": 100000,
+    "rate": 3.7,
+    "reviews": 65,
+    "ocop": 0,
+    "heritage": "Bạc",
+    "seasons": [
+      1,
+      2,
+      3
+    ],
+    "occasion": "Quà tân gia",
+    "inStock": true,
+    "preorder": false,
+    "icon": "🥭",
+    "badges": [
+      "Đặc sản"
+    ],
+    "images": [
+      "https://th.bing.com/th/id/OIP.8k8FKDGL4Vd9AQhjHT4zHAHaHa?w=211&h=211&c=7&r=0&o=7&dpr=1.5&pid=1.7&rm=3"
+    ]
+  },
+  {
+    "id": 22,
+    "name": "Chuối sấy dẻo",
+    "cat": "Đặc sản",
+    "type": "Trái cây sấy",
+    "region": "Tây Nguyên",
+    "province": "Đắk Lắk",
+    "village": "",
+    "price": 75000,
+    "rate": 4.5,
+    "reviews": 67,
+    "ocop": 0,
+    "heritage": null,
+    "seasons": [],
+    "occasion": "Quà Tết",
+    "inStock": true,
+    "preorder": false,
+    "icon": "🍌",
+    "badges": [
+      "Đặc sản"
+    ],
+    "images": [
+      "https://th.bing.com/th/id/OIP.BWcGaDg6PmiyukEBX3gaHwHaHa?w=185&h=184&c=7&r=0&o=7&dpr=1.5&pid=1.7&rm=3"
+    ]
+  },
+  {
+    "id": 23,
+    "name": "Bình gốm Bát Tràng men lam",
+    "cat": "Thủ công mỹ nghệ",
+    "type": "Gốm",
+    "region": "Miền Bắc",
+    "province": "Hà Nội",
+    "village": "Bát Tràng",
+    "price": 390000,
+    "rate": 4.5,
+    "reviews": 68,
+    "ocop": 0,
+    "heritage": null,
+    "seasons": [],
+    "occasion": "Quà tặng",
+    "inStock": true,
+    "preorder": false,
+    "icon": "🏺",
+    "badges": [
+      "Thủ công",
+      "Làng nghề"
+    ],
+    "images": [
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRYKy3V9mP-N5NNQaikOW_GayiGYRte3X436ZCGSMOySBxkBOZP7ikGtgU&s=10"
+    ]
+  },
+  {
+    "id": 24,
+    "name": "Hạt điều rang muối Bình Phước",
+    "cat": "Đặc sản",
+    "type": "Đặc sản khô",
+    "region": "Miền Nam",
+    "province": "Bình Phước",
+    "village": "",
+    "price": 157000,
+    "rate": 3.9,
+    "reviews": 104,
+    "ocop": 0,
+    "heritage": "Vàng",
+    "seasons": [
+      1,
+      2,
+      3
+    ],
+    "occasion": null,
+    "inStock": true,
+    "preorder": false,
+    "icon": "🥜",
+    "badges": [
+      "Đặc sản"
+    ],
+    "images": [
+      "https://media.tripmap.vn/marketplace/2026/02/hat-dieu-rang-muoi-binh-phuoc-500g-gia-re-tang-ngay-ngon-gion-chat-luong-1769958593-uhmydc-600x600.webp"
+    ]
+  },
+  {
+    "id": 25,
+    "name": "Đĩa gốm trang trí Bát Tràng",
+    "cat": "Thủ công mỹ nghệ",
+    "type": "Gốm",
+    "region": "Miền Bắc",
+    "province": "Hà Nội",
+    "village": "Bát Tràng",
+    "price": 220000,
+    "rate": 4.5,
+    "reviews": 54,
+    "ocop": 0,
+    "heritage": null,
+    "seasons": [],
+    "occasion": "Quà tặng",
+    "inStock": true,
+    "preorder": false,
+    "icon": "🏺",
+    "badges": [
+      "Thủ công",
+      "Làng nghề"
+    ],
+    "images": [
+      "https://th.bing.com/th/id/OIP.6uVR25PCilsBt-tDCVMjKQHaE7?w=236&h=180&c=7&r=0&o=7&dpr=1.5&pid=1.7&rm=3"
+    ]
+  },
+  {
+    "id": 26,
+    "name": "Bình gốm Chu Đậu vẽ tay",
+    "cat": "Thủ công mỹ nghệ",
+    "type": "Gốm",
+    "region": "Miền Bắc",
+    "province": "Hải Dương",
+    "village": "Chu Đậu",
+    "price": 465000,
+    "rate": 4.5,
+    "reviews": 61,
+    "ocop": 0,
+    "heritage": null,
+    "seasons": [],
+    "occasion": "Quà tặng",
+    "inStock": true,
+    "preorder": false,
+    "icon": "🏺",
+    "badges": [
+      "Thủ công",
+      "Làng nghề"
+    ],
+    "images": [
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRYKy3V9mP-N5NNQaikOW_GayiGYRte3X436ZCGSMOySBxkBOZP7ikGtgU&s=10"
+    ]
+  },
+  {
+    "id": 27,
+    "name": "Khay sơn mài Hạ Thái",
+    "cat": "Thủ công mỹ nghệ",
+    "type": "Sơn mài",
+    "region": "Miền Bắc",
+    "province": "Hà Nội",
+    "village": "Hạ Thái",
+    "price": 420000,
+    "rate": 4.5,
+    "reviews": 19,
+    "ocop": 0,
+    "heritage": null,
+    "seasons": [],
+    "occasion": "Quà tặng",
+    "inStock": true,
+    "preorder": false,
+    "icon": "🪞",
+    "badges": [
+      "Thủ công",
+      "Làng nghề"
+    ],
+    "images": [
+      "https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lqok5t7yjrxzb0"
+    ]
+  },
+  {
+    "id": 28,
+    "name": "Tranh sơn mài thủ công Hạ Thái",
+    "cat": "Thủ công mỹ nghệ",
+    "type": "Sơn mài",
+    "region": "Miền Bắc",
+    "province": "Hà Nội",
+    "village": "Hạ Thái",
+    "price": 680000,
+    "rate": 4.5,
+    "reviews": 101,
+    "ocop": 0,
+    "heritage": null,
+    "seasons": [],
+    "occasion": "Quà tặng",
+    "inStock": true,
+    "preorder": false,
+    "icon": "🖼️",
+    "badges": [
+      "Thủ công",
+      "Làng nghề"
+    ],
+    "images": [
+      "https://tanmydesign.com/uploaded/san-pham/Son%20mai/Khac/b%C3%A1t%20s%C6%A1n%20m%C3%A0i/PAS001133.1.1370.jpg",
+      "https://dongphuongart.com/uploads/images/BatP11Ca3.png",
+      "https://dongphuongart.com/uploads/images/BatP11CaLS.jpg"
+    ]
+  },
+  {
+    "id": 29,
+    "name": "Khăn lụa tơ tằm Vạn Phúc",
+    "cat": "Thủ công mỹ nghệ",
+    "type": "Lụa tơ tằm",
+    "region": "Miền Bắc",
+    "province": "Hà Nội",
+    "village": "Vạn Phúc",
+    "price": 320000,
+    "rate": 4.5,
+    "reviews": 64,
+    "ocop": 0,
+    "heritage": null,
+    "seasons": [],
+    "occasion": "Quà tặng",
+    "inStock": true,
+    "preorder": false,
+    "icon": "🧣",
+    "badges": [
+      "Thủ công",
+      "Làng nghề"
+    ],
+    "images": [
+      "https://tse2.mm.bing.net/th/id/OIP.ol8q9CJwo6I7GAutgiu-MwHaJC?r=0&rs=1&pid=ImgDetMain&o=7&rm=3"
+    ]
+  },
+  {
+    "id": 30,
+    "name": "Măng khô Tây Bắc",
+    "cat": "Đặc sản",
+    "type": "Đặc sản khô",
+    "region": "Miền Bắc",
+    "province": "Điện Biên",
+    "village": "",
+    "price": 200000,
+    "rate": 4.9,
+    "reviews": 63,
+    "ocop": 0,
+    "heritage": "Vàng",
+    "seasons": [
+      4,
+      5,
+      6
+    ],
+    "occasion": "Quà biếu đối tác",
+    "inStock": true,
+    "preorder": false,
+    "icon": "🎋",
+    "badges": [
+      "Đặc sản"
+    ],
+    "images": [
+      "https://hoabanfood.com/wp-content/uploads/Mang-La-Kho-2020-4.jpg"
+    ]
+  },
+  {
+    "id": 31,
+    "name": "Đèn lồng thủ công Hội An",
+    "cat": "Thủ công mỹ nghệ",
+    "type": "Đèn lồng",
+    "region": "Miền Trung",
+    "province": "Quảng Nam",
+    "village": "Thanh Hà - Hội An",
+    "price": 180000,
+    "rate": 4.5,
+    "reviews": 43,
+    "ocop": 0,
+    "heritage": null,
+    "seasons": [],
+    "occasion": "Quà tặng",
+    "inStock": true,
+    "preorder": false,
+    "icon": "🏮",
+    "badges": [
+      "Thủ công",
+      "Làng nghề"
+    ],
+    "images": [
+      "https://th.bing.com/th/id/OIP.Wntz4s1r7_GvY2Z1sxfrggHaE8?w=279&h=186&c=7&r=0&o=7&dpr=1.5&pid=1.7&rm=3"
+    ]
+  },
+  {
+    "id": 32,
+    "name": "Tranh dân gian Đông Hồ",
+    "cat": "Thủ công mỹ nghệ",
+    "type": "Tranh dân gian",
+    "region": "Miền Bắc",
+    "province": "Bắc Ninh",
+    "village": "Đông Hồ",
+    "price": 250000,
+    "rate": 4.5,
+    "reviews": 56,
+    "ocop": 0,
+    "heritage": null,
+    "seasons": [],
+    "occasion": "Quà tặng",
+    "inStock": true,
+    "preorder": false,
+    "icon": "🖼️",
+    "badges": [
+      "Thủ công",
+      "Làng nghề"
+    ],
+    "images": [
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRSsZzs2xpcu9iFZfYr8fulE9SrldUVTFiKL2Ql-HjaHE8xDhAGxj2DXzNd&s=10"
+    ]
+  },
+  {
+    "id": 33,
+    "name": "Bánh đậu xanh Hải Dương",
+    "cat": "Đặc sản",
+    "type": "Bánh kẹo",
+    "region": "Miền Bắc",
+    "province": "Hải Dương",
+    "village": "",
+    "price": 65000,
+    "rate": 4.1,
+    "reviews": 69,
+    "ocop": 3,
+    "heritage": null,
+    "seasons": [
+      4,
+      5,
+      6
+    ],
+    "occasion": "Quà Tết",
+    "inStock": true,
+    "preorder": false,
+    "icon": "🍬",
+    "badges": [],
+    "images": [
+      "https://th.bing.com/th/id/OIP.Jv4oj3VzRCnd_9f-3PmirwHaGs?w=181&h=180&c=7&r=0&o=7&dpr=1.5&pid=1.7&rm=3"
+    ]
+  },
+  {
+    "id": 34,
+    "name": "Tượng gỗ mỹ nghệ Đồng Kỵ",
+    "cat": "Thủ công mỹ nghệ",
+    "type": "Chạm khắc gỗ",
+    "region": "Miền Bắc",
+    "province": "Bắc Ninh",
+    "village": "Đồng Kỵ",
+    "price": 750000,
+    "rate": 4.5,
+    "reviews": 58,
+    "ocop": 0,
+    "heritage": null,
+    "seasons": [],
+    "occasion": "Quà tặng",
+    "inStock": true,
+    "preorder": false,
+    "icon": "🪵",
+    "badges": [
+      "Thủ công",
+      "Làng nghề"
+    ],
+    "images": [
+      "https://tanmydesign.com/uploaded/san-pham/Son%20mai/Khac/b%C3%A1t%20s%C6%A1n%20m%C3%A0i/PAS001133.1.1370.jpg",
+      "https://dongphuongart.com/uploads/images/BatP11Ca3.png",
+      "https://dongphuongart.com/uploads/images/BatP11CaLS.jpg"
+    ]
+  },
+  {
+    "id": 35,
+    "name": "Xoài sấy dẻo",
+    "cat": "Đặc sản",
+    "type": "Trái cây sấy",
+    "region": "Đồng bằng sông Cửu Long",
+    "province": "An Giang",
+    "village": "",
+    "price": 85000,
+    "rate": 4.5,
+    "reviews": 80,
+    "ocop": 0,
+    "heritage": null,
+    "seasons": [],
+    "occasion": "Quà Tết",
+    "inStock": true,
+    "preorder": false,
+    "icon": "🥭",
+    "badges": [
+      "Đặc sản"
+    ],
+    "images": [
+      "https://cly.1cdn.vn/2024/02/10/anh-4.4.jpg"
+    ]
+  },
+  {
+    "id": 36,
+    "name": "Lụa tơ tằm Vạn Phúc",
+    "cat": "Thủ công mỹ nghệ",
+    "type": "Dệt may",
+    "region": "Miền Bắc",
+    "province": "Hà Nội",
+    "village": "Vạn Phúc",
+    "price": 450000,
+    "rate": 4.2,
+    "reviews": 108,
+    "ocop": 0,
+    "heritage": null,
+    "seasons": [],
+    "occasion": "Quà biếu đối tác",
+    "inStock": true,
+    "preorder": false,
+    "icon": "🧵",
+    "badges": [
+      "Thủ công",
+      "Làng nghề"
+    ],
+    "images": [
+      "https://tse2.mm.bing.net/th/id/OIP.ol8q9CJwo6I7GAutgiu-MwHaJC?r=0&rs=1&pid=ImgDetMain&o=7&rm=3"
+    ]
+  },
+  {
+    "id": 37,
+    "name": "Tranh Đông Hồ",
+    "cat": "Thủ công mỹ nghệ",
+    "type": "Tranh dân gian",
+    "region": "Miền Bắc",
+    "province": "Bắc Ninh",
+    "village": "Đông Hồ",
+    "price": 260000,
+    "rate": 4.9,
+    "reviews": 121,
+    "ocop": 3,
+    "heritage": "Bạc",
+    "seasons": [],
+    "occasion": "Quà tân gia",
+    "inStock": true,
+    "preorder": false,
+    "icon": "🖼️",
+    "badges": [
+      "Thủ công",
+      "Làng nghề"
+    ],
+    "images": [
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRSsZzs2xpcu9iFZfYr8fulE9SrldUVTFiKL2Ql-HjaHE8xDhAGxj2DXzNd&s=10"
+    ]
+  },
+  {
+    "id": 38,
+    "name": "Tranh thêu tay Quất Động",
+    "cat": "Thủ công mỹ nghệ",
+    "type": "Tranh thêu",
+    "region": "Miền Bắc",
+    "province": "Hà Nội",
+    "village": "Quất Động",
+    "price": 480000,
+    "rate": 4.5,
+    "reviews": 134,
+    "ocop": 0,
+    "heritage": null,
+    "seasons": [],
+    "occasion": "Quà tặng",
+    "inStock": true,
+    "preorder": false,
+    "icon": "🪡",
+    "badges": [
+      "Thủ công",
+      "Làng nghề"
+    ],
+    "images": [
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTasirAYt_ogiPCeSg5Zy8HFWcBwqFqEejOiD3YR8yHrCTQi-O5sucjkWc&s=10"
+    ]
+  },
+  {
+    "id": 39,
+    "name": "Guốc mộc Bình Nhâm",
+    "cat": "Thủ công mỹ nghệ",
+    "type": "Đồ gỗ thủ công",
+    "region": "Miền Nam",
+    "province": "Bình Dương",
+    "village": "Bình Nhâm",
+    "price": 160000,
+    "rate": 4.5,
+    "reviews": 22,
+    "ocop": 0,
+    "heritage": null,
+    "seasons": [],
+    "occasion": "Quà tặng",
+    "inStock": true,
+    "preorder": false,
+    "icon": "🪵",
+    "badges": [
+      "Thủ công",
+      "Làng nghề"
+    ],
+    "images": [
+      "https://th.bing.com/th/id/OIP.5RbFmrtkGyIFWVU7XhQO1AHaHs?w=133&h=180&c=7&r=0&o=7&dpr=1.5&pid=1.7&rm=3"
+    ]
+  },
+  {
+    "id": 40,
+    "name": "Trống da thủ công Đọi Tam",
+    "cat": "Thủ công mỹ nghệ",
+    "type": "Nhạc cụ truyền thống",
+    "region": "Miền Bắc",
+    "province": "Hà Nam",
+    "village": "Đọi Tam",
+    "price": 950000,
+    "rate": 4.5,
+    "reviews": 35,
+    "ocop": 0,
+    "heritage": null,
+    "seasons": [],
+    "occasion": "Quà tặng",
+    "inStock": true,
+    "preorder": false,
+    "icon": "🥁",
+    "badges": [
+      "Thủ công",
+      "Làng nghề"
+    ],
+    "images": [
+      "https://th.bing.com/th/id/OIP.8_zUnGvTeg0DUiosXTfwzwHaJ4?w=132&h=180&c=7&r=0&o=7&dpr=1.5&pid=1.7&rm=3"
+    ]
+  },
+  {
+    "id": 41,
+    "name": "Tò he Xuân La",
+    "cat": "Thủ công mỹ nghệ",
+    "type": "Nặn tò he",
+    "region": "Miền Bắc",
+    "province": "Hà Nội",
+    "village": "Xuân La",
+    "price": 85000,
+    "rate": 4.5,
+    "reviews": 48,
+    "ocop": 0,
+    "heritage": null,
+    "seasons": [],
+    "occasion": "Quà tặng",
+    "inStock": true,
+    "preorder": false,
+    "icon": "🎨",
+    "badges": [
+      "Thủ công",
+      "Làng nghề"
+    ],
+    "images": [
+      "https://th.bing.com/th/id/OIP.D9Q6ZuB5pWwSjQUTnll5BAHaHa?w=160&h=180&c=7&r=0&o=7&dpr=1.5&pid=1.7&rm=3"
+    ]
+  },
+  {
+    "id": 42,
+    "name": "Nón lá làng Chuông",
+    "cat": "Thủ công mỹ nghệ",
+    "type": "Nón lá",
+    "region": "Miền Bắc",
+    "province": "Hà Nội",
+    "village": "Làng Chuông",
+    "price": 95000,
+    "rate": 4.5,
+    "reviews": 61,
+    "ocop": 0,
+    "heritage": null,
+    "seasons": [],
+    "occasion": "Quà tặng",
+    "inStock": true,
+    "preorder": false,
+    "icon": "👒",
+    "badges": [
+      "Thủ công",
+      "Làng nghề"
+    ],
+    "images": [
+      "https://tse4.mm.bing.net/th/id/OIP.eriY8agRzC9vT5jCRmTP4AHaE2?r=0&rs=1&pid=ImgDetMain&o=7&rm=3"
+    ]
+  },
+  {
+    "id": 43,
+    "name": "Đĩa gốm Lái Thiêu",
+    "cat": "Thủ công mỹ nghệ",
+    "type": "Gốm",
+    "region": "Miền Nam",
+    "province": "Bình Dương",
+    "village": "Lái Thiêu",
+    "price": 220000,
+    "rate": 4.1,
+    "reviews": 74,
+    "ocop": 5,
+    "heritage": "Bạc",
+    "seasons": [],
+    "occasion": "Quà tân gia",
+    "inStock": true,
+    "preorder": false,
+    "icon": "🍽️",
+    "badges": [
+      "Thủ công",
+      "Làng nghề"
+    ],
+    "images": [
+      "https://th.bing.com/th/id/OIP.6uVR25PCilsBt-tDCVMjKQHaE7?w=236&h=180&c=7&r=0&o=7&dpr=1.5&pid=1.7&rm=3"
+    ]
+  },
+  {
+    "id": 44,
+    "name": "Túi thổ cẩm dệt tay Mường Chanh",
+    "cat": "Thủ công mỹ nghệ",
+    "type": "Thổ cẩm",
+    "region": "Miền Bắc",
+    "province": "Sơn La",
+    "village": "Mường Chanh",
+    "price": 280000,
+    "rate": 4.5,
+    "reviews": 87,
+    "ocop": 0,
+    "heritage": null,
+    "seasons": [],
+    "occasion": "Quà tặng",
+    "inStock": true,
+    "preorder": false,
+    "icon": "👜",
+    "badges": [
+      "Thủ công",
+      "Làng nghề"
+    ],
+    "images": [
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTasirAYt_ogiPCeSg5Zy8HFWcBwqFqEejOiD3YR8yHrCTQi-O5sucjkWc&s=10"
+    ]
+  },
+  {
+    "id": 45,
+    "name": "Móc khóa len thủ công",
+    "cat": "Thủ công mỹ nghệ",
+    "type": "Đồ thủ công nhỏ",
+    "region": "Miền Nam",
+    "province": "TP. Hồ Chí Minh",
+    "village": "",
+    "price": 45000,
+    "rate": 4.5,
+    "reviews": 100,
+    "ocop": 3,
+    "heritage": null,
+    "seasons": [],
+    "occasion": "Quà cưới",
+    "inStock": false,
+    "preorder": true,
+    "icon": "🧶",
+    "badges": [
+      "Thủ công"
+    ],
+    "images": [
+      "https://th.bing.com/th/id/OIP.D9Q6ZuB5pWwSjQUTnll5BAHaHa?w=160&h=180&c=7&r=0&o=7&dpr=1.5&pid=1.7&rm=3"
+    ]
+  },
+  {
+    "id": 46,
+    "name": "Bộ ấm chén gốm Bát Tràng",
+    "cat": "Thủ công mỹ nghệ",
+    "type": "Gốm",
+    "region": "Miền Bắc",
+    "province": "Hà Nội",
+    "village": "Bát Tràng",
+    "price": 520000,
+    "rate": 4.5,
+    "reviews": 89,
+    "ocop": 0,
+    "heritage": null,
+    "seasons": [],
+    "occasion": "Quà tặng",
+    "inStock": true,
+    "preorder": false,
+    "icon": "🫖",
+    "badges": [
+      "Thủ công",
+      "Làng nghề"
+    ],
+    "images": [
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT9f6TGHUEvwGlGlsfnuD8rn5RuHNZoAFQ004-AoqiUiX-KGJYt7I-s_AE&s=10"
+    ]
+  },
+  {
+    "id": 47,
+    "name": "Móc khóa len thủ công",
+    "cat": "Thủ công mỹ nghệ",
+    "type": "Đan móc thủ công",
+    "region": "Miền Nam",
+    "province": "TP. Hồ Chí Minh",
+    "village": "",
+    "price": 65000,
+    "rate": 4.5,
+    "reviews": 126,
+    "ocop": 0,
+    "heritage": null,
+    "seasons": [],
+    "occasion": "Quà tặng",
+    "inStock": true,
+    "preorder": false,
+    "icon": "🧶",
+    "badges": [
+      "Thủ công"
+    ],
+    "images": [
+      "https://th.bing.com/th/id/OIP.D9Q6ZuB5pWwSjQUTnll5BAHaHa?w=160&h=180&c=7&r=0&o=7&dpr=1.5&pid=1.7&rm=3"
+    ]
+  },
+  {
+    "id": 48,
+    "name": "Bánh tráng phơi sương Trảng Bàng",
+    "cat": "Đặc sản",
+    "type": "Đặc sản khô",
+    "region": "Miền Nam",
+    "province": "Tây Ninh",
+    "village": "Trảng Bàng",
+    "price": 78000,
+    "rate": 4.6,
+    "reviews": 139,
+    "ocop": 0,
+    "heritage": null,
+    "seasons": [
+      1,
+      2,
+      3
+    ],
+    "occasion": "Quà Tết",
+    "inStock": true,
+    "preorder": false,
+    "icon": "🫓",
+    "badges": [],
+    "images": [
+      "https://dacsantayninh.info/wp-content/uploads/2015/06/banh-trang-phoi-suong-ngoc-han-1-768x480.jpg"
+    ]
+  },
+  {
+    "id": 49,
+    "name": "Đĩa gốm Lái Thiêu",
+    "cat": "Thủ công mỹ nghệ",
+    "type": "Gốm",
+    "region": "Miền Nam",
+    "province": "Bình Dương",
+    "village": "Lái Thiêu",
+    "price": 195000,
+    "rate": 4.5,
+    "reviews": 27,
+    "ocop": 0,
+    "heritage": null,
+    "seasons": [],
+    "occasion": "Quà tặng",
+    "inStock": true,
+    "preorder": false,
+    "icon": "🏺",
+    "badges": [
+      "Thủ công",
+      "Làng nghề"
+    ],
+    "images": [
+      "https://th.bing.com/th/id/OIP.6uVR25PCilsBt-tDCVMjKQHaE7?w=236&h=180&c=7&r=0&o=7&dpr=1.5&pid=1.7&rm=3"
+    ]
+  },
+  {
+    "id": 50,
+    "name": "Tranh dân gian Đông Hồ đóng khung",
+    "cat": "Thủ công mỹ nghệ",
+    "type": "Tranh dân gian",
+    "region": "Miền Bắc",
+    "province": "Bắc Ninh",
+    "village": "Đông Hồ",
+    "price": 360000,
+    "rate": 4.5,
+    "reviews": 40,
+    "ocop": 0,
+    "heritage": null,
+    "seasons": [],
+    "occasion": "Quà tặng",
+    "inStock": true,
+    "preorder": false,
+    "icon": "🖼️",
+    "badges": [
+      "Thủ công",
+      "Làng nghề"
+    ],
+    "images": [
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRSsZzs2xpcu9iFZfYr8fulE9SrldUVTFiKL2Ql-HjaHE8xDhAGxj2DXzNd&s=10"
+    ]
+  }
+]
