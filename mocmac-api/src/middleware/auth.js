@@ -19,7 +19,11 @@ export async function requireAuth(req, res, next) {
     return res.status(401).json({ message: 'Tài khoản không còn tồn tại' });
   }
 
-  req.user = { id: String(user._id), role: user.role };
+  const isActive = user.isActive !== false;
+  req.user = { id: String(user._id), role: user.role, isActive };
+  if (!isActive) {
+    return res.status(403).json({ message: 'Tài khoản đã bị khóa' });
+  }
   next();
 }
 

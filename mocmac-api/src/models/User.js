@@ -30,8 +30,18 @@ const userSchema = new mongoose.Schema(
 
     role: {
       type: String,
-      enum: ['admin', 'staff', 'customer'],
+      enum: ['admin', 'staff', 'collaborator', 'cooperative', 'customer'],
       default: 'customer'
+    },
+
+    isActive: {
+      type: Boolean,
+      default: true
+    },
+
+    originalEmail: {
+      type: String,
+      trim: true
     }
   },
   { timestamps: true }

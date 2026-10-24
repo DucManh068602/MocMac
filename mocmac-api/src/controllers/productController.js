@@ -48,7 +48,12 @@ export const getProductBySlug = async (req, res) => {
 };
 
 export const createProduct = async (req, res) => {
-  const product = await Product.create(req.body);
+  const body = { ...req.body };
+  if (body.id == null) {
+    const last = await Product.findOne().sort({ id: -1 }).select({ id: 1 }).lean();
+    body.id = last ? last.id + 1 : 1;
+  }
+  const product = await Product.create(body);
 
   const { user, ip } = getRequestInfo(req);
   await logAction({

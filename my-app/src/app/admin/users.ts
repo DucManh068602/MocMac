@@ -25,6 +25,14 @@ import { ToastService } from './toast.service';
           <span class="stat-label">Nhân viên</span>
         </div>
         <div class="stat-card stat--sage">
+          <span class="stat-value">{{ stats().collaborators }}</span>
+          <span class="stat-label">Cộng tác viên</span>
+        </div>
+        <div class="stat-card stat--sky">
+          <span class="stat-value">{{ stats().cooperatives }}</span>
+          <span class="stat-label">Hợp tác xã</span>
+        </div>
+        <div class="stat-card stat--sand">
           <span class="stat-value">{{ stats().customers }}</span>
           <span class="stat-label">Khách hàng</span>
         </div>
@@ -48,12 +56,22 @@ import { ToastService } from './toast.service';
                 <td>{{ u.name }}</td>
                 <td>{{ u.email }}</td>
                 <td>{{ u.role }}</td>
-                <td>{{ u.active ? 'Hoạt động' : 'Vô hiệu' }}</td>
+                <td>{{ u.isActive ? 'Hoạt động' : 'Vô hiệu' }}</td>
                 <td>{{ u.createdAt | date:'short' }}</td>
                 <td>
-                  <button type="button" class="btn-small" (click)="toggleUser(u._id)">
-                    {{ u.active ? 'Vô hiệu' : 'Kích hoạt' }}
-                  </button>
+                  @if (u.isActive) {
+                    <button type="button" class="btn-small btn--warn" (click)="deactivateUser(u._id)">
+                      Vô hiệu
+                    </button>
+                  } @else {
+                    <select #sel (change)="activateUser(u._id, sel.value)">
+                      <option value="">Kích hoạt</option>
+                      <option value="admin">Quản trị viên</option>
+                      <option value="staff">Nhân viên</option>
+                      <option value="collaborator">Cộng tác viên</option>
+                      <option value="cooperative">Hợp tác xã</option>
+                    </select>
+                  }
                 </td>
               </tr>
             } @empty {
@@ -84,6 +102,8 @@ export class AdminUsersComponent {
       total: u.length,
       admins: u.filter((x: any) => x.role === 'admin').length,
       staff: u.filter((x: any) => x.role === 'staff').length,
+      collaborators: u.filter((x: any) => x.role === 'collaborator').length,
+      cooperatives: u.filter((x: any) => x.role === 'cooperative').length,
       customers: u.filter((x: any) => x.role === 'customer').length,
     };
   });
@@ -100,10 +120,18 @@ export class AdminUsersComponent {
     });
   }
 
-  toggleUser(id: string): void {
-    this.http.patch('/api/users/' + id + '/toggle-active', {}).subscribe({
-      next: () => { this.toast.success('Cập nhật trạng thái tài khoản'); this.loadUsers(); },
-      error: () => this.toast.error('Không thể cập nhật tài khoản'),
+  activateUser(id: string, role: string): void {
+    if (!role) return;
+    this.http.patch('/api/users/' + id + '/activate', { role }).subscribe({
+      next: () => { this.toast.success('Kích hoạt tài khoản thành công'); this.loadUsers(); },
+      error: () => this.toast.error('Không thể kích hoạt tài khoản'),
+    });
+  }
+
+  deactivateUser(id: string): void {
+    this.http.patch('/api/users/' + id + '/deactivate', {}).subscribe({
+      next: () => { this.toast.success('Hủy kích hoạt tài khoản'); this.loadUsers(); },
+      error: () => this.toast.error('Không thể hủy kích hoạt tài khoản'),
     });
   }
 }

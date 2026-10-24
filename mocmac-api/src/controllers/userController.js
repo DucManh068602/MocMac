@@ -42,7 +42,7 @@ export const getUserById = async (req, res) => {
 export const updateUserRole = async (req, res) => {
   try {
     const { role } = req.body;
-    const allowedRoles = ['admin', 'staff', 'customer'];
+    const allowedRoles = ['admin', 'staff', 'collaborator', 'cooperative', 'customer'];
     if (!allowedRoles.includes(role)) {
       return res.status(400).json({ success: false, message: 'Vai trò không hợp lệ.' });
     }
@@ -71,6 +71,97 @@ export const updateUserRole = async (req, res) => {
   } catch (error) {
     console.error('❌ Lỗi cập nhật vai trò:', error);
     return res.status(500).json({ success: false, message: 'Không thể cập nhật.', error: error.message });
+  }
+};
+
+const upgradeRoles = ['collaborator', 'cooperative', 'staff', 'admin'];
+
+const roleEmailSuffix = {
+  admin: 'admin.mocmac.vn',
+  staff: 'staff.mocmac.vn',
+  collaborator: 'contr.mocmac.vn',
+  cooperative: 'htx.mocmac.vn',
+};
+
+export const activateUser = async (req, res) => {
+  try {
+    const { role } = req.body;
+    if (!role || !upgradeRoles.includes(role)) {
+      return res.status(400).json({
+        success: false,
+        message: `Vai trò kích hoạt không hợp lệ. Chọn một trong: ${upgradeRoles.join(', ')}.`,
+      });
+    }
+
+    const user = await User.findById(req.params.id);
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'Không tìm thấy người dùng.' });
+    }
+
+    if (!user.originalEmail) {
+      user.originalEmail = user.email;
+    }
+
+    const localPart = String(user.originalEmail).split('@')[0];
+    const suffix = roleEmailSuffix[role];
+    const newEmail = `${localPart}@${suffix}`;
+
+    if (newEmail !== user.email) {
+      const exists = await User.exists({ email: newEmail });
+      if (exists) {
+        return res.status(409).json({ success: false, message: `Email ${newEmail} đã được sử dụng.` });
+      }
+      user.email = newEmail;
+    }
+
+    user.role = role;
+    user.isActive = true;
+    await user.save();
+
+    const { user: reqUser, ip } = getRequestInfo(req);
+    await logAction({
+      action: 'user.activate',
+      resourceType: 'User',
+      resourceId: user._id,
+      user: reqUser,
+      ip,
+      details: { targetUserId: user._id, email: user.email, newRole: role },
+    });
+
+    return res.json({ success: true, message: 'Kích hoạt người dùng thành công.', user });
+  } catch (error) {
+    console.error('❌ Lỗi kích hoạt người dùng:', error);
+    return res.status(500).json({ success: false, message: 'Không thể kích hoạt.', error: error.message });
+  }
+};
+
+export const deactivateUser = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'Không tìm thấy người dùng.' });
+    }
+
+    user.isActive = false;
+    if (user.originalEmail) {
+      user.email = user.originalEmail;
+    }
+    await user.save();
+
+    const { user: reqUser, ip } = getRequestInfo(req);
+    await logAction({
+      action: 'user.deactivate',
+      resourceType: 'User',
+      resourceId: user._id,
+      user: reqUser,
+      ip,
+      details: { targetUserId: user._id, email: user.email, role: user.role },
+    });
+
+    return res.json({ success: true, message: 'Hủy kích hoạt người dùng thành công.', user });
+  } catch (error) {
+    console.error('❌ Lỗi hủy kích hoạt người dùng:', error);
+    return res.status(500).json({ success: false, message: 'Không thể hủy kích hoạt.', error: error.message });
   }
 };
 
