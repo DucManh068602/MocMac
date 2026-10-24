@@ -6,6 +6,7 @@ import { HttpClient } from '@angular/common/http';
 import { CartService } from '../../cart.service';
 import { AuthService } from '../../auth.service';
 import { ProductItem, ProductsService } from '../../products.service';
+import { ToastService } from '../../admin/toast.service';
 
 @Component({
   selector: 'app-product-detail',
@@ -18,6 +19,7 @@ export class ProductDetailComponent {
   private router = inject(Router);
   private svc = inject(ProductsService);
   private http = inject(HttpClient);
+  private toast = inject(ToastService);
   cart = inject(CartService);
   auth = inject(AuthService);
 
@@ -36,6 +38,23 @@ export class ProductDetailComponent {
     return this.all().find((p: ProductItem) => p.slug === targetSlug) ?? null;
   });
 
+  readonly reviews = signal<any[]>([]);
+
+  readonly reviewCount = computed(() => {
+    const p = this.product();
+    const r = this.reviews();
+    if (r.length > 0) return r.length;
+    return p?.reviews ?? 0;
+  });
+
+  readonly avgRating = computed(() => {
+    const r = this.reviews();
+    if (!r.length) return this.product()?.rate ?? 0;
+    return r.reduce((s: number, rev: any) => s + rev.rating, 0) / r.length;
+  });
+
+  readonly showReviewForm = computed(() => this.auth.isAuthenticated());
+
   readonly currentImg = signal(0);
   readonly qty = signal(1);
   readonly brokenImg = signal<Set<string>>(new Set());
@@ -45,6 +64,7 @@ export class ProductDetailComponent {
       this.product();
       this.currentImg.set(0);
       this.qty.set(1);
+      this.loadReviews();
     });
   }
 
@@ -160,9 +180,19 @@ export class ProductDetailComponent {
       next: () => {
         this.reviewRating.set(5);
         this.reviewComment.set('');
-        alert('Cảm ơn bạn đã đánh giá!');
+        this.loadReviews();
+        this.toast.success('Cảm ơn bạn đã đánh giá!');
       },
-      error: () => alert('Bạn cần đăng nhập để đánh giá'),
+      error: () => this.toast.error('Bạn cần đăng nhập để đánh giá'),
+    });
+  }
+
+  loadReviews(): void {
+    const p = this.product();
+    if (!p) return;
+    this.http.get('/api/reviews/product/' + p.id).subscribe((r: any) => {
+      const items = Array.isArray(r.reviews) ? r.reviews : (Array.isArray(r) ? r : []);
+      this.reviews.set(items);
     });
   }
 }

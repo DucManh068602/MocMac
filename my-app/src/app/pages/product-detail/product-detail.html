@@ -47,8 +47,8 @@
         <h1>{{ p.name }}</h1>
 
         <div class="rating">
-          <span class="stars">{{ stars(p.rate) }}</span>
-          <small>({{ p.reviews }} đánh giá)</small>
+          <span class="stars">{{ stars(avgRating()) }}</span>
+          <small>({{ reviewCount() }} đánh giá)</small>
         </div>
 
         <div class="price">{{ fmt(p.price) }}</div>
@@ -204,11 +204,10 @@
         </div>
     </section>
 
-    <!-- REVIEWS -->
-    <section class="reviews-section">
-      <h2>Đánh giá sản phẩm ({{ p.reviews?.length || 0 }})</h2>
+     <section class="reviews-section">
+      <h2>Đánh giá sản phẩm ({{ reviewCount() }})</h2>
 
-      @if (auth.isAuthenticated()) {
+      @if (showReviewForm()) {
         <div class="review-form">
           <h3>Viết đánh giá của bạn</h3>
           <div class="stars-input">
@@ -233,9 +232,9 @@
         </p>
       }
 
-      @if (p.reviews?.length) {
+      @if (reviews().length) {
         <div class="review-list">
-          @for (r of p.reviews; track r._id) {
+          @for (r of reviews(); track r._id) {
             <div class="review-item">
               <div class="review-header">
                 <span class="review-stars">{{ stars(r.rating) }}</span>

@@ -124,7 +124,7 @@
 
             @if (couponApplied()) {
               <div class="row discount">
-                <span>Ưu đãi (Mã MOCMAC10)</span>
+                <span>Mã giảm giá ({{ couponInfo()?.code || 'MOCMAC10' }})</span>
                 <strong>-{{ vnd(discount()) }}</strong>
               </div>
             }
@@ -150,7 +150,7 @@
             </div>
 
             <div class="coupon">
-              <label for="coupon">Mã giảm giá ưu đãi</label>
+              <label for="coupon">Mã giảm giá</label>
               <div class="coupon-row">
                 <input id="coupon" name="coupon" type="text" placeholder="Nhập mã"
                        [(ngModel)]="couponInput" (keyup.enter)="applyCoupon()" />
@@ -160,7 +160,7 @@
                 <small class="error">{{ couponError() }}</small>
               }
               @if (couponApplied()) {
-                <small class="ok">✓ Đã kích hoạt ưu đãi nghệ nhân -{{ vnd(discount()) }}</small>
+                <small class="ok">✓ Đã áp dụng mã giảm giá -{{ vnd(discount()) }}</small>
               }
             </div>
 

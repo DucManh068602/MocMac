@@ -30,6 +30,9 @@
           @if (accountDropdown()) {
             <div class="account-dropdown" (click)="$event.stopPropagation()">
               <a routerLink="/gio-hang" (click)="accountDropdown.set(false)">Đơn hàng của tôi</a>
+              @if (auth.user()?.role === 'admin') {
+                <a routerLink="/admin" (click)="accountDropdown.set(false)">Trang quản trị</a>
+              }
               <a routerLink="/tai-khoan" (click)="accountDropdown.set(false)">Cài đặt tài khoản</a>
               <button type="button" class="dropdown-logout" (click)="onLogout()">Đăng xuất</button>
             </div>

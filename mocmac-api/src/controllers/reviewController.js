@@ -1,22 +1,28 @@
 import { Review } from '../models/Review.js';
 import { Product } from '../models/Product.js';
+import { logAction, getRequestInfo } from '../utils/auditLog.js';
 
 export const getProductReviews = async (req, res) => {
   try {
-    const reviews = await Review.find({ product: req.params.id, status: 'visible' })
-      .populate('user', 'name')
-      .sort({ createdAt: -1 })
-      .lean();
+    const product = await Product.findOne({ id: Number(req.params.id) }).lean();
+    let productReviews = [];
 
-    const avgRating = reviews.length > 0
-      ? reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length
+    if (product) {
+      productReviews = await Review.find({ product: product._id, status: 'visible' })
+        .populate('user', 'name')
+        .sort({ createdAt: -1 })
+        .lean();
+    }
+
+    const avgRating = productReviews.length > 0
+      ? productReviews.reduce((sum, r) => sum + r.rating, 0) / productReviews.length
       : 0;
 
     return res.json({
       success: true,
-      total: reviews.length,
+      total: productReviews.length,
       avgRating: Number(avgRating.toFixed(1)),
-      reviews,
+      reviews: productReviews,
     });
   } catch (error) {
     console.error('❌ Lỗi lấy đánh giá:', error);
@@ -53,6 +59,16 @@ export const createReview = async (req, res) => {
       user: req.user.id,
       rating: Number(rating),
       comment: String(comment || ''),
+    });
+
+    const { user, ip } = getRequestInfo(req);
+    await logAction({
+      action: 'review.create',
+      resourceType: 'Review',
+      resourceId: review._id,
+      user,
+      ip,
+      details: { product: productDoc._id, rating: Number(rating), comment: String(comment || '').slice(0, 100) },
     });
 
     return res.status(201).json({ success: true, message: 'Đánh giá thành công.', review });

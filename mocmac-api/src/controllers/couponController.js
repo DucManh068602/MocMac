@@ -1,4 +1,5 @@
 import { Coupon } from '../models/Coupon.js';
+import { logAction, getRequestInfo } from '../utils/auditLog.js';
 export const getAllCoupons = async (req, res) => {
   try {
     const coupons = await Coupon.find().sort({ createdAt: -1 }).lean();
@@ -34,7 +35,8 @@ export const getCouponByCode = async (req, res) => {
 
 export const validateCoupon = async (req, res) => {
   try {
-    const { code, orderTotal } = req.query;
+    const { orderTotal } = req.query;
+    const code = req.params?.code ?? req.query?.code;
     if (!code) {
       return res.status(400).json({ success: false, message: 'Vui lòng nhập mã giảm giá.' });
     }
@@ -77,6 +79,15 @@ export const validateCoupon = async (req, res) => {
     });
   } catch (error) {
     console.error('❌ Lỗi xác thực mã giảm giá:', error);
+    const { user, ip } = getRequestInfo(req);
+    await logAction({
+      action: 'coupon.validate_error',
+      resourceType: 'Coupon',
+      user,
+      ip,
+      details: { code: req.params?.code ?? req.query?.code, error: error.message },
+      status: 'failed',
+    });
     return res.status(500).json({ success: false, message: 'Không thể xác thực.', error: error.message });
   }
 };
@@ -99,6 +110,16 @@ export const createCoupon = async (req, res) => {
       expiryDate,
     });
 
+    const { user, ip } = getRequestInfo(req);
+    await logAction({
+      action: 'coupon.create',
+      resourceType: 'Coupon',
+      resourceId: coupon._id,
+      user,
+      ip,
+      details: { code: coupon.code, discountType, discountValue, expiryDate },
+    });
+
     return res.status(201).json({ success: true, message: 'Tạo mã giảm giá thành công.', coupon });
   } catch (error) {
     console.error('❌ Lỗi tạo mã giảm giá:', error);
@@ -117,6 +138,17 @@ export const updateCoupon = async (req, res) => {
     if (!updated) {
       return res.status(404).json({ success: false, message: 'Không tìm thấy mã giảm giá.' });
     }
+
+    const { user, ip } = getRequestInfo(req);
+    await logAction({
+      action: 'coupon.update',
+      resourceType: 'Coupon',
+      resourceId: updated._id,
+      user,
+      ip,
+      details: { code: updated.code },
+    });
+
     return res.json({ success: true, message: 'Cập nhật mã giảm giá thành công.', coupon: updated });
   } catch (error) {
     console.error('❌ Lỗi cập nhật mã giảm giá:', error);
@@ -130,6 +162,17 @@ export const deleteCoupon = async (req, res) => {
     if (!deleted) {
       return res.status(404).json({ success: false, message: 'Không tìm thấy mã giảm giá.' });
     }
+
+    const { user, ip } = getRequestInfo(req);
+    await logAction({
+      action: 'coupon.delete',
+      resourceType: 'Coupon',
+      resourceId: deleted._id,
+      user,
+      ip,
+      details: { code: deleted.code },
+    });
+
     return res.json({ success: true, message: 'Xóa mã giảm giá thành công.' });
   } catch (error) {
     console.error('❌ Lỗi xóa mã giảm giá:', error);

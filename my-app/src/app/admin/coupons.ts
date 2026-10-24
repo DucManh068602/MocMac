@@ -1,5 +1,6 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, computed } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { ToastService } from './toast.service';
 
 @Component({
   selector: 'app-admin-coupons',
@@ -8,17 +9,36 @@ import { HttpClient } from '@angular/common/http';
     <div class="list-page">
       <header class="list-header">
         <h2>Mã giảm giá ({{ coupons().length }})</h2>
-        <button type="button" class="btn-add" (click)="showForm.set(true); editing.set(null); form = {}">Thêm</button>
+        <button type="button" class="btn-add" (click)="startCreate(); showForm.set(true)">Thêm</button>
       </header>
+
+      <div class="stats-grid">
+        <div class="stat-card stat--moss">
+          <span class="stat-value">{{ stats().total }}</span>
+          <span class="stat-label">Tổng mã</span>
+        </div>
+        <div class="stat-card stat--clay">
+          <span class="stat-value">{{ stats().active }}</span>
+          <span class="stat-label">Đang hoạt động</span>
+        </div>
+        <div class="stat-card stat--earth">
+          <span class="stat-value">{{ stats().used }}</span>
+          <span class="stat-label">Đã dùng</span>
+        </div>
+      </div>
 
       @if (showForm()) {
         <div class="form-card">
           <h3>{{ editing() ? 'Sửa' : 'Thêm' }} mã giảm giá</h3>
-          <div class="form-grid">
+             <div class="form-grid">
             <input class="form-input" placeholder="Mã" [(ngModel)]="form.code" />
-            <input class="form-input" placeholder="Giảm giá (%)" type="number" [(ngModel)]="form.discount" />
+            <select class="form-input" [(ngModel)]="form.discountType">
+              <option value="percent">Phần trăm (%)</option>
+              <option value="amount">Số tiền (đ)</option>
+            </select>
+            <input class="form-input" placeholder="Giá trị giảm" type="number" [(ngModel)]="form.discountValue" />
             <input class="form-input" placeholder="Số lượng" type="number" [(ngModel)]="form.usageLimit" />
-            <input class="form-input" placeholder="Ngày hết hạn" type="date" [(ngModel)]="form.expiresAt" />
+            <input class="form-input" placeholder="Ngày hết hạn" type="date" [(ngModel)]="form.expiryDate" />
             <input class="form-input" placeholder="Tối thiểu (đơn)" type="number" [(ngModel)]="form.minOrderValue" />
           </div>
           <div class="form-actions">
@@ -44,7 +64,7 @@ import { HttpClient } from '@angular/common/http';
             @for (c of coupons(); track c._id) {
               <tr>
                 <td>{{ c.code }}</td>
-                <td>{{ c.discount }}%</td>
+                <td>{{ c.discountType === 'percent' ? (c.discountValue + '%') : (c.discountValue + 'đ') }}</td>
                 <td>{{ c.usedCount || 0 }}/{{ c.usageLimit }}</td>
                 <td>{{ c.expiresAt | date:'shortDate' }}</td>
                 <td>{{ c.active ? 'Hoạt động' : 'Vô hiệu' }}</td>
@@ -70,12 +90,22 @@ import { HttpClient } from '@angular/common/http';
 })
 export class AdminCouponsComponent {
   private http = inject(HttpClient);
+  private toast = inject(ToastService);
   readonly coupons = signal<any[]>([]);
   readonly page = signal(1);
   readonly totalPages = signal(1);
   readonly showForm = signal(false);
   readonly editing = signal<any>(null);
   form: any = {};
+
+  readonly stats = computed(() => {
+    const c = this.coupons();
+    return {
+      total: c.length,
+      active: c.filter((x: any) => x.active).length,
+      used: c.reduce((s: number, x: any) => s + (x.usedCount || 0), 0),
+    };
+  });
 
   constructor() {
     this.loadCoupons();
@@ -89,6 +119,11 @@ export class AdminCouponsComponent {
     });
   }
 
+  startCreate(): void {
+    this.editing.set(null);
+    this.form = { code: '', discountType: 'percent', discountValue: 0, usageLimit: 0, expiryDate: '', minOrderValue: 0 };
+  }
+
   editCoupon(c: any): void {
     this.editing.set(c);
     this.form = { ...c };
@@ -96,23 +131,26 @@ export class AdminCouponsComponent {
   }
 
   saveCoupon(): void {
-    const f = this.form;
+    const f = { ...this.form };
     if (this.editing()) {
-      this.http.put('/api/coupons/' + f._id, f).subscribe(() => {
-        this.loadCoupons();
-        this.showForm.set(false);
+      this.http.put('/api/coupons/' + f._id, f).subscribe({
+        next: () => { this.toast.success('Cập nhật mã giảm giá thành công'); this.loadCoupons(); this.showForm.set(false); },
+        error: () => this.toast.error('Không thể cập nhật mã giảm giá'),
       });
     } else {
-      this.http.post('/api/coupons', f).subscribe(() => {
-        this.loadCoupons();
-        this.showForm.set(false);
+      this.http.post('/api/coupons', f).subscribe({
+        next: () => { this.toast.success('Thêm mã giảm giá thành công'); this.loadCoupons(); this.showForm.set(false); },
+        error: () => this.toast.error('Không thể thêm mã giảm giá'),
       });
     }
   }
 
   deleteCoupon(id: string): void {
     if (confirm('Xóa mã giảm giá này?')) {
-      this.http.delete('/api/coupons/' + id).subscribe(() => this.loadCoupons());
+      this.http.delete('/api/coupons/' + id).subscribe({
+        next: () => { this.toast.success('Xóa mã giảm giá thành công'); this.loadCoupons(); },
+        error: () => this.toast.error('Không thể xóa mã giảm giá'),
+      });
     }
   }
 }

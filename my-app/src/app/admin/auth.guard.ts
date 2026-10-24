@@ -11,7 +11,9 @@ export const adminGuard: CanActivateFn = () => {
   }
 
   const user = auth.user();
-  if (user?.role !== 'admin') {
+  const isAdminEmail = user?.email?.endsWith('@admin.mocmac.vn');
+
+  if (user?.role !== 'admin' || !isAdminEmail) {
     return router.createUrlTree(['/']);
   }
 

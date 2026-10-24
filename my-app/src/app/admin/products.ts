@@ -1,5 +1,6 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, computed } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { ToastService } from './toast.service';
 
 @Component({
   selector: 'app-admin-products',
@@ -8,10 +9,29 @@ import { HttpClient } from '@angular/common/http';
     <div class="list-page">
       <header class="list-header">
         <h2>Sản phẩm ({{ products().length }})</h2>
-        <button type="button" class="btn-add" (click)="showForm.set(true); editing.set(null); form.set({})">Thêm</button>
+        <button type="button" class="btn-add" (click)="startCreate(); showForm.set(true)">Thêm</button>
       </header>
 
-          @if (showForm()) {
+      <div class="stats-grid">
+        <div class="stat-card stat--moss">
+          <span class="stat-value">{{ stats().total }}</span>
+          <span class="stat-label">Tổng SP</span>
+        </div>
+        <div class="stat-card stat--earth">
+          <span class="stat-value">{{ stats().inStock }}</span>
+          <span class="stat-label">Còn hàng</span>
+        </div>
+        <div class="stat-card stat--clay">
+          <span class="stat-value">{{ stats().outOfStock }}</span>
+          <span class="stat-label">Hết hàng</span>
+        </div>
+        <div class="stat-card stat--sage">
+          <span class="stat-value">{{ stats().avgRating | number:'1.1-1' }}</span>
+          <span class="stat-label">Điểm TB</span>
+        </div>
+      </div>
+
+      @if (showForm()) {
         <div class="form-card">
           <h3>{{ editing() ? 'Sửa' : 'Thêm' }} sản phẩm</h3>
           <div class="form-grid">
@@ -21,7 +41,7 @@ import { HttpClient } from '@angular/common/http';
             <select class="form-input" [(ngModel)]="form.cat">
               <option value="">Danh mục</option>
               <option value="Đặc sản">Đặc sản</option>
-              <option value="Thủ công mỹ nghệ">Thủ công mỹ nghệ</option>
+              <option value="Thủ công mỵ nghệ">Thủ công mỵ nghệ</option>
               <option value="Cà phê - Trà">Cà phê - Trà</option>
               <option value="Sản phẩm OCOP">Sản phẩm OCOP</option>
             </select>
@@ -84,12 +104,27 @@ import { HttpClient } from '@angular/common/http';
 })
 export class AdminProductsComponent {
   private http = inject(HttpClient);
+  private toast = inject(ToastService);
   readonly products = signal<any[]>([]);
   readonly page = signal(1);
   readonly totalPages = signal(1);
   readonly showForm = signal(false);
   readonly editing = signal<any>(null);
   form: any = {};
+
+  readonly stats = computed(() => {
+    const p = this.products();
+    const withRating = p.filter((x: any) => x.rate > 0);
+    const avgRating = withRating.length > 0
+      ? withRating.reduce((s: number, x: any) => s + x.rate, 0) / withRating.length
+      : 0;
+    return {
+      total: p.length,
+      inStock: p.filter((x: any) => x.inStock).length,
+      outOfStock: p.filter((x: any) => !x.inStock).length,
+      avgRating: Number(avgRating.toFixed(1)),
+    };
+  });
 
   constructor() {
     this.loadProducts();
@@ -103,32 +138,44 @@ export class AdminProductsComponent {
     });
   }
 
+  startCreate(): void {
+    this.editing.set(null);
+    this.form = { name: '', slug: '', price: 0, cat: '', region: '', province: '', village: '', images: '', description: '' };
+  }
+
   editProduct(p: any): void {
     this.editing.set(p);
-    this.form.set({ ...p });
+    this.form = { ...p, images: Array.isArray(p.images) ? p.images.join(', ') : p.images };
     this.showForm.set(true);
   }
 
   saveProduct(): void {
-    const f = this.form();
-    const payload = { ...f };
+    const f = { ...this.form };
+    if (Array.isArray(f.images)) {
+      f.images = f.images;
+    } else if (typeof f.images === 'string') {
+      f.images = f.images.split(',').map((s: string) => s.trim()).filter(Boolean);
+    }
 
     if (this.editing()) {
-      this.http.put('/api/products/' + f.slug, payload).subscribe(() => {
-        this.loadProducts();
-        this.showForm.set(false);
+      this.http.put('/api/products/' + f.slug, f).subscribe({
+        next: () => { this.toast.success('Cập nhật sản phẩm thành công'); this.loadProducts(); this.showForm.set(false); },
+        error: () => this.toast.error('Không thể cập nhật sản phẩm'),
       });
     } else {
-      this.http.post('/api/products', payload).subscribe(() => {
-        this.loadProducts();
-        this.showForm.set(false);
+      this.http.post('/api/products', f).subscribe({
+        next: () => { this.toast.success('Thêm sản phẩm thành công'); this.loadProducts(); this.showForm.set(false); },
+        error: () => this.toast.error('Không thể thêm sản phẩm'),
       });
     }
   }
 
   deleteProduct(slug: string): void {
     if (confirm('Xóa sản phẩm này?')) {
-      this.http.delete('/api/products/' + slug).subscribe(() => this.loadProducts());
+      this.http.delete('/api/products/' + slug).subscribe({
+        next: () => { this.toast.success('Xóa sản phẩm thành công'); this.loadProducts(); },
+        error: () => this.toast.error('Không thể xóa sản phẩm'),
+      });
     }
   }
 }

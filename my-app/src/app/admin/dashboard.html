@@ -1,66 +1,110 @@
 <div class="dashboard">
-  <div class="summary-grid">
-    <div class="summary-card">
-      <div class="summary-icon">🛒</div>
-      <div class="summary-info">
-        <strong>{{ summary().orders }}</strong>
-        <span>Đơn hàng</span>
-      </div>
+  <div class="dash-head">
+    <div>
+      <h2>Xin chào, {{ auth.user()?.name || 'Quản trị viên' }}</h2>
+      <p>Tổng quan hoạt động cửa hàng Mộc Mạc</p>
     </div>
-    <div class="summary-card">
-      <div class="summary-icon">📦</div>
-      <div class="summary-info">
-        <strong>{{ summary().products }}</strong>
-        <span>Sản phẩm</span>
-      </div>
+    <button type="button" class="refresh" (click)="load()" [disabled]="loading()">
+      {{ loading() ? 'Đang tải...' : '↻ Làm mới' }}
+    </button>
+  </div>
+
+  @if (failed() && !loading()) {
+    <div class="alert">Một số dữ liệu không tải được. <button type="button" (click)="load()">Thử lại</button></div>
+  }
+
+  <div class="kpi-grid" [class.is-loading]="loading()">
+    <div class="kpi primary">
+      <span>Doanh thu</span>
+      <strong>{{ revenue() | number }}đ</strong>
+      <small>{{ ordersTotal() > orders().length ? orders().length + ' đơn gần nhất' : 'Đơn đã thanh toán / đã nhận' }}</small>
     </div>
-    <div class="summary-card">
-      <div class="summary-icon">🎫</div>
-      <div class="summary-info">
-        <strong>{{ summary().coupons }}</strong>
-        <span>Mã giảm giá</span>
-      </div>
+    <div class="kpi">
+      <span>Đơn hàng</span>
+      <strong>{{ ordersTotal() | number }}</strong>
+      <small>Tổng số đơn</small>
     </div>
-    <div class="summary-card">
-      <div class="summary-icon">💰</div>
-      <div class="summary-info">
-        <strong>{{ summary().payments }}</strong>
-        <span>Thanh toán</span>
-      </div>
+    <div class="kpi" [class.warn]="pending() > 0">
+      <span>Chờ xử lý</span>
+      <strong>{{ pending() }}</strong>
+      <small>Cần xác nhận</small>
     </div>
-    <div class="summary-card">
-      <div class="summary-icon">📨</div>
-      <div class="summary-info">
-        <strong>{{ summary().contacts }}</strong>
-        <span>Liên hệ</span>
-      </div>
-    </div>
-    <div class="summary-card">
-      <div class="summary-icon">👥</div>
-      <div class="summary-info">
-        <strong>{{ summary().users }}</strong>
-        <span>Tài khoản</span>
-      </div>
-    </div>
-    <div class="summary-card">
-      <div class="summary-icon">🔔</div>
-      <div class="summary-info">
-        <strong>{{ summary().notifications }}</strong>
-        <span>Thông báo</span>
-      </div>
+    <div class="kpi">
+      <span>Sản phẩm</span>
+      <strong>{{ counts().products | number }}</strong>
+      <small>Đang kinh doanh</small>
     </div>
   </div>
 
-  <div class="quick-links">
-    <h2>Quản lý nhanh</h2>
-    <div class="link-grid">
-      <a routerLink="/admin/orders" class="quick-link">Đơn hàng</a>
-      <a routerLink="/admin/products" class="quick-link">Sản phẩm</a>
-      <a routerLink="/admin/regions" class="quick-link">Vùng miền</a>
-      <a routerLink="/admin/coupons" class="quick-link">Mã giảm giá</a>
-      <a routerLink="/admin/users" class="quick-link">Tài khoản</a>
-      <a routerLink="/admin/contacts" class="quick-link">Liên hệ</a>
-      <a routerLink="/admin/notifications" class="quick-link">Thông báo</a>
+  <div class="panels">
+    <section class="panel">
+      <h3>Doanh thu 7 ngày qua</h3>
+      <div class="bars">
+        @for (d of chart(); track d.key) {
+          <div class="bar-col" [title]="(d.value | number) + 'đ'">
+            <div class="bar-val">{{ d.value ? (d.value / 1000 | number: '1.0-0') + 'k' : '' }}</div>
+            <div class="bar-track"><div class="bar" [style.height.%]="d.h"></div></div>
+            <div class="bar-label">{{ d.label }}</div>
+          </div>
+        }
+      </div>
+    </section>
+
+    <section class="panel">
+      <h3>Trạng thái đơn hàng</h3>
+      <div class="stack">
+        @for (s of byStatus(); track s.key) {
+          @if (s.n) { <i [style.width.%]="s.pct" [style.background]="s.color"></i> }
+        }
+      </div>
+      <ul class="legend">
+        @for (s of byStatus(); track s.key) {
+          <li>
+            <i [style.background]="s.color"></i>
+            <span>{{ s.label }}</span>
+            <b>{{ s.n }}</b>
+          </li>
+        }
+      </ul>
+    </section>
+  </div>
+
+  <section class="panel">
+    <div class="panel-head">
+      <h3>Đơn hàng gần đây</h3>
+      <a routerLink="/admin/orders">Xem tất cả →</a>
     </div>
+    <div class="table-scroll">
+      <table class="mini-table">
+        <thead>
+          <tr><th>Mã</th><th>Khách hàng</th><th>Tổng</th><th>Trạng thái</th><th>Ngày</th></tr>
+        </thead>
+        <tbody>
+          @for (o of recent(); track o._id) {
+            <tr>
+              <td>#{{ o._id?.toString().slice(-6) }}</td>
+              <td>{{ o.customerInfo?.name || o.user?.name || '—' }}</td>
+              <td><b>{{ o.total | number }}đ</b></td>
+              <td>
+                <span class="badge" [style.--c]="statusOf(o.status)?.color">{{ statusOf(o.status)?.label || o.status }}</span>
+              </td>
+              <td>{{ o.createdAt | date: 'dd/MM HH:mm' }}</td>
+            </tr>
+          } @empty {
+            <tr><td colspan="5" class="empty">{{ loading() ? 'Đang tải...' : 'Chưa có đơn hàng nào.' }}</td></tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <div class="mini-grid">
+    <a routerLink="/admin/coupons" class="mini"><span>🎫 Mã giảm giá</span><b>{{ counts().coupons }}</b></a>
+    <a routerLink="/admin/users" class="mini"><span>👥 Tài khoản</span><b>{{ counts().users }}</b></a>
+    <a routerLink="/admin/contacts" class="mini"><span>📨 Liên hệ</span><b>{{ counts().contacts }}</b></a>
+    <a routerLink="/admin/notifications" class="mini"><span>🔔 Thông báo</span><b>{{ counts().notifications }}</b></a>
+    <a routerLink="/admin/products" class="mini"><span>📦 Sản phẩm</span><b>{{ counts().products }}</b></a>
+    <a routerLink="/admin/regions" class="mini"><span>🗺️ Vùng miền</span><b>→</b></a>
+    <a routerLink="/admin/reviews" class="mini"><span>⭐ Đánh giá</span><b>→</b></a>
   </div>
 </div>

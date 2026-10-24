@@ -1,5 +1,6 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, computed } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { ToastService } from './toast.service';
 
 @Component({
   selector: 'app-admin-notifications',
@@ -9,6 +10,22 @@ import { HttpClient } from '@angular/common/http';
       <header class="list-header">
         <h2>Thông báo ({{ notifications().length }})</h2>
       </header>
+
+      <div class="stats-grid">
+        <div class="stat-card stat--moss">
+          <span class="stat-value">{{ stats().total }}</span>
+          <span class="stat-label">Tổng TB</span>
+        </div>
+        <div class="stat-card stat--clay">
+          <span class="stat-value">{{ stats().unread }}</span>
+          <span class="stat-label">Chưa gửi</span>
+        </div>
+        <div class="stat-card stat--sage">
+          <span class="stat-value">{{ stats().sent }}</span>
+          <span class="stat-label">Đã gửi</span>
+        </div>
+      </div>
+
       <div class="table-wrap">
         <table class="admin-table">
           <thead>
@@ -46,9 +63,19 @@ import { HttpClient } from '@angular/common/http';
 })
 export class AdminNotificationsComponent {
   private http = inject(HttpClient);
+  private toast = inject(ToastService);
   readonly notifications = signal<any[]>([]);
   readonly page = signal(1);
   readonly totalPages = signal(1);
+
+  readonly stats = computed(() => {
+    const n = this.notifications();
+    return {
+      total: n.length,
+      unread: n.filter((x: any) => !x.read).length,
+      sent: n.filter((x: any) => x.read).length,
+    };
+  });
 
   constructor() {
     this.loadNotifications();

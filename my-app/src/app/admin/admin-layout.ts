@@ -28,6 +28,7 @@ export class AdminLayoutComponent {
     { label: 'Tài khoản', path: 'users', icon: '👥' },
     { label: 'Liên hệ', path: 'contacts', icon: '📨' },
     { label: 'Đánh giá', path: 'reviews', icon: '⭐' },
+    { label: 'Lịch sử hệ thống', path: 'audit', icon: '📋' },
     { label: 'Thông báo', path: 'notifications', icon: '🔔' },
   ];
 
@@ -43,5 +44,10 @@ export class AdminLayoutComponent {
 
   setActive(path: string) {
     this.router.navigate(['/admin/' + path]);
+  }
+
+  logout(): void {
+    this.auth.logout();
+    this.router.navigate(['/']);
   }
 }

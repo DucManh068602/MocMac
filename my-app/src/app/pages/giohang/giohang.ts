@@ -21,8 +21,6 @@ interface CartDisplayItem {
 
 const FREE_SHIPPING_THRESHOLD = 500000;
 const SHIPPING_FEE = 30000;
-const COUPON_CODE = 'MOCMAC10';
-const COUPON_RATE = 0.1;
 
 function toCartDisplayItem(product: ProductItem, quantity: number): CartDisplayItem {
   return {
@@ -59,6 +57,7 @@ export class GiohangComponent {
   couponInput = '';
   readonly couponApplied = signal(false);
   readonly couponError = signal('');
+  readonly couponInfo = signal<any>(null);
 
   readonly items = computed(() => {
     const productsById = new Map(this.catalog.products().map(product => [product.id, product]));
@@ -74,9 +73,10 @@ export class GiohangComponent {
   readonly subtotal = computed(() =>
     this.items().reduce((sum, item) => sum + item.price * item.quantity, 0)
   );
-  readonly discount = computed(() =>
-    this.couponApplied() ? Math.round(this.subtotal() * COUPON_RATE) : 0
-  );
+  readonly discount = computed(() => {
+    if (!this.couponApplied()) return 0;
+    return this.couponInfo()?.discountAmount ?? 0;
+  });
   readonly shipping = computed(() => {
     const subtotal = this.subtotal();
     return subtotal === 0 || subtotal >= FREE_SHIPPING_THRESHOLD ? 0 : SHIPPING_FEE;
@@ -108,13 +108,30 @@ export class GiohangComponent {
   }
 
   applyCoupon(): void {
-    if (this.couponInput.trim().toUpperCase() === COUPON_CODE) {
-      this.couponApplied.set(true);
-      this.couponError.set('');
-    } else {
-      this.couponApplied.set(false);
-      this.couponError.set('Mã giảm giá không hợp lệ.');
+    const code = this.couponInput.trim().toUpperCase();
+    if (!code) {
+      this.couponError.set('Vui lòng nhập mã giảm giá.');
+      return;
     }
+
+    this.paymentService.validateCoupon(code, this.subtotal()).subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.couponApplied.set(true);
+          this.couponError.set('');
+          this.couponInfo.set(res);
+        } else {
+          this.couponApplied.set(false);
+          this.couponInfo.set(null);
+          this.couponError.set(res.message || 'Mã giảm giá không hợp lệ.');
+        }
+      },
+      error: (err: any) => {
+        this.couponApplied.set(false);
+        this.couponInfo.set(null);
+        this.couponError.set(err.error?.message || 'Mã giảm giá không hợp lệ.');
+      },
+    });
   }
 
   checkout(): void {

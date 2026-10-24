@@ -9,6 +9,7 @@ import paymentRoutes from './payments.js';
 import notificationRoutes from './notifications.js';
 import userRoutes from './users.js';
 import reviewRoutes from './reviews.js';
+import auditRoutes from './auditRoutes.js';
 
 const route = Router();
 
@@ -22,5 +23,6 @@ route.use('/payments', paymentRoutes);
 route.use('/notifications', notificationRoutes);
 route.use('/users', userRoutes);
 route.use('/reviews', reviewRoutes);
+route.use('/audit-logs', auditRoutes);
 
 export default route;

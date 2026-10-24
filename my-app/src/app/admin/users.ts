@@ -1,5 +1,6 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, computed } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { ToastService } from './toast.service';
 
 @Component({
   selector: 'app-admin-users',
@@ -7,8 +8,28 @@ import { HttpClient } from '@angular/common/http';
   template: `
     <div class="list-page">
       <header class="list-header">
-        <h2>Người dùng ({{ users().length }})</h2>
+        <h2>Tài khoản ({{ users().length }})</h2>
       </header>
+
+      <div class="stats-grid">
+        <div class="stat-card stat--moss">
+          <span class="stat-value">{{ stats().total }}</span>
+          <span class="stat-label">Tổng tài khoản</span>
+        </div>
+        <div class="stat-card stat--clay">
+          <span class="stat-value">{{ stats().admins }}</span>
+          <span class="stat-label">Quản trị viên</span>
+        </div>
+        <div class="stat-card stat--earth">
+          <span class="stat-value">{{ stats().staff }}</span>
+          <span class="stat-label">Nhân viên</span>
+        </div>
+        <div class="stat-card stat--sage">
+          <span class="stat-value">{{ stats().customers }}</span>
+          <span class="stat-label">Khách hàng</span>
+        </div>
+      </div>
+
       <div class="table-wrap">
         <table class="admin-table">
           <thead>
@@ -52,9 +73,20 @@ import { HttpClient } from '@angular/common/http';
 })
 export class AdminUsersComponent {
   private http = inject(HttpClient);
+  private toast = inject(ToastService);
   readonly users = signal<any[]>([]);
   readonly page = signal(1);
   readonly totalPages = signal(1);
+
+  readonly stats = computed(() => {
+    const u = this.users();
+    return {
+      total: u.length,
+      admins: u.filter((x: any) => x.role === 'admin').length,
+      staff: u.filter((x: any) => x.role === 'staff').length,
+      customers: u.filter((x: any) => x.role === 'customer').length,
+    };
+  });
 
   constructor() {
     this.loadUsers();
@@ -69,6 +101,9 @@ export class AdminUsersComponent {
   }
 
   toggleUser(id: string): void {
-    this.http.patch('/api/users/' + id + '/toggle-active', {}).subscribe(() => this.loadUsers());
+    this.http.patch('/api/users/' + id + '/toggle-active', {}).subscribe({
+      next: () => { this.toast.success('Cập nhật trạng thái tài khoản'); this.loadUsers(); },
+      error: () => this.toast.error('Không thể cập nhật tài khoản'),
+    });
   }
 }

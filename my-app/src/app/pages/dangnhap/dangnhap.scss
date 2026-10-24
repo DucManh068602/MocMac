@@ -215,6 +215,40 @@ $error: #b3401f;
 .link-admin {
   color: #3d4a41;
   font-size: 11px;
+  cursor: pointer;
+  transition: color .15s;
+}
+
+.link-admin:hover { color: #1d4a2e; }
+
+.link-back {
+  color: #3d4a41;
+  font-size: 11px;
+  font-weight: 500;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.link-back:hover { color: #1d4a2e; }
+
+.chip--admin {
+  background: #e8f0ed;
+  color: #1d4a2e;
+  font-weight: 600;
+}
+
+/* Hide register tab when in admin mode */
+.header-links {
+  gap: 10px;
+}
+
+.tabs {
+  display: inline-flex;
+  padding: 4px;
+  border-radius: 10px;
+  background: #eeeee9;
 }
 
 .form-body {
@@ -228,6 +262,16 @@ $error: #b3401f;
     font: 700 22px 'Be Vietnam Pro', system-ui, sans-serif;
     text-align: center;
   }
+
+  .admin-title {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    line-height: 1.3;
+  }
+
+  .line-1 { color: #1d4a2e; }
+  .line-2 { color: $muted; font-size: 18px; }
 
   .subtitle {
     margin: 0;

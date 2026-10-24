@@ -1,0 +1,29 @@
+.status-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  margin-right: 6px;
+}
+
+.status-pending { background: rgba(214, 188, 125, 0.2); color: #8b6d1a; }
+.status-processing { background: rgba(209, 122, 70, 0.15); color: #b85b3e; }
+.status-shipped { background: rgba(124, 148, 104, 0.15); color: #4a7c59; }
+.status-delivered { background: rgba(34, 197, 94, 0.15); color: #15803d; }
+.status-cancelled { background: rgba(107, 114, 125, 0.15); color: #494e57; }
+
+.status-select {
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  font-size: 11px;
+  padding: 2px 6px;
+  background: #fff;
+  cursor: pointer;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+
+.status-select:hover { opacity: 1; }

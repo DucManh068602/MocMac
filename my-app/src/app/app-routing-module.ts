@@ -21,6 +21,7 @@ import { AdminUsersComponent } from './admin/users';
 import { AdminContactsComponent } from './admin/contacts';
 import { AdminNotificationsComponent } from './admin/notifications';
 import { AdminReviewsComponent } from './admin/reviews';
+import { AdminAuditComponent } from './admin/audit';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -68,6 +69,7 @@ const routes: Routes = [
       { path: 'contacts', component: AdminContactsComponent },
       { path: 'notifications', component: AdminNotificationsComponent },
       { path: 'reviews', component: AdminReviewsComponent },
+      { path: 'audit', component: AdminAuditComponent },
     ]
   },
   { path: '**', redirectTo: '' }

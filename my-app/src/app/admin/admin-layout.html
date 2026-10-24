@@ -17,12 +17,12 @@
       }
     </nav>
     <div class="admin-logout">
-      <button type="button" class="logout-btn" (click)="auth.logout(); router.navigate(['/'])"> Đăng xuất </button>
+      <button type="button" class="logout-btn" (click)="logout()"> Đăng xuất </button>
     </div>
   </aside>
 
   <div class="admin-main">
-    <header class="admin-header">
+     <header class="admin-header">
       <button type="button" class="menu-toggle" (click)="sidebarOpen.set(true)">☰</button>
       <h1 class="admin-title">
         @switch (currentPath()) {
@@ -34,13 +34,21 @@
           @case ('users') { Tài khoản }
           @case ('contacts') { Liên hệ }
           @case ('reviews') { Đánh giá }
+          @case ('audit') { Lịch sử hệ thống }
           @case ('notifications') { Thông báo }
           @default { Quản trị }
         }
       </h1>
+      @if (auth.user()?.role === 'admin') {
+        <span class="admin-tag">
+          <span class="admin-tag-dot"></span>
+          Quản trị viên
+        </span>
+      }
     </header>
     <main class="admin-content">
       <router-outlet />
     </main>
   </div>
+  <app-toast></app-toast>
 </div>

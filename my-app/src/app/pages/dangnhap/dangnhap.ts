@@ -7,12 +7,10 @@ import {
   ValidationErrors,
   Validators,
 } from '@angular/forms';
-// Đường dẫn đã được sửa lùi ra 2 cấp thư mục để tìm đúng file auth.service ở thư mục app/
 import { AuthService } from '../../auth.service';
 
 type AuthMode = 'login' | 'register';
 
-/** Kiểm tra mật khẩu và xác nhận mật khẩu có khớp nhau không */
 function passwordsMatchValidator(group: AbstractControl): ValidationErrors | null {
   const password = group.get('password')?.value;
   const confirm = group.get('confirmPassword')?.value;
@@ -27,19 +25,22 @@ function passwordsMatchValidator(group: AbstractControl): ValidationErrors | nul
 })
 export class DangnhapComponent {
   private fb = inject(FormBuilder);
-  private auth = inject(AuthService); // Đã inject ở đây, không cần constructor nữa
+  private auth = inject(AuthService);
   private router = inject(Router);
 
   readonly bars = [0, 1, 2];
 
   mode = signal<AuthMode>('login');
   loading = signal(false);
+  submitted = signal(false);
   feedback = signal<{ type: 'error' | 'success'; message: string } | null>(null);
   showLoginPassword = signal(false);
   showRegisterPassword = signal(false);
   showConfirmPassword = signal(false);
 
-  readonly loginForm = this.fb.nonNullable.group({
+  readonly isAdminMode = signal(false);
+
+  readonly loginForm = this.fb.group({
     identifier: ['', Validators.required],
     password: ['', [Validators.required, Validators.minLength(8)]],
     remember: [false],
@@ -60,9 +61,24 @@ export class DangnhapComponent {
   switchMode(mode: AuthMode): void {
     this.mode.set(mode);
     this.feedback.set(null);
+    this.submitted.set(false);
   }
 
-  /** Điểm mạnh mật khẩu: 0 (chưa nhập) → 3 (mạnh) */
+  openAdminLogin(): void {
+    this.isAdminMode.set(true);
+    this.mode.set('login');
+    this.feedback.set(null);
+    this.submitted.set(false);
+    this.loginForm.reset({ identifier: '', password: '', remember: false });
+  }
+
+  backToCustomer(): void {
+    this.isAdminMode.set(false);
+    this.mode.set('login');
+    this.feedback.set(null);
+    this.submitted.set(false);
+  }
+
   get passwordStrength(): number {
     const value = this.registerForm.controls.password.value;
     if (!value) return 0;
@@ -76,12 +92,18 @@ export class DangnhapComponent {
     return ['Chưa nhập', 'Yếu', 'Trung bình', 'Mạnh'][this.passwordStrength];
   }
 
-  hasError(form: AbstractControl, field: string): boolean {
+  hasError(form: AbstractControl, field: string, errorKey?: string): boolean {
     const control = form.get(field);
-    return !!control && control.invalid && (control.touched || control.dirty);
+    if (!control) return false;
+    if (!this.submitted() && !control.touched && !control.dirty) return false;
+    if (errorKey) {
+      return control.hasError(errorKey);
+    }
+    return control.invalid;
   }
 
   onLogin(): void {
+    this.submitted.set(true);
     if (this.loginForm.invalid) {
       this.loginForm.markAllAsTouched();
       return;
@@ -89,13 +111,20 @@ export class DangnhapComponent {
     this.loading.set(true);
     this.feedback.set(null);
     const { identifier, password, remember } = this.loginForm.getRawValue();
-    this.auth.login(identifier, password).subscribe({
-      // Định kiểu dữ liệu 'any' cho response để tránh lỗi TS7006 ẩn danh
+    this.auth.login(identifier ?? '', password ?? '').subscribe({
       next: (response: any) => {
-        this.auth.saveSession(response, remember);
+        this.auth.saveSession(response, remember ?? false);
         this.feedback.set({ type: 'success', message: `Xin chào ${response.user?.name || ''}!` });
         this.loading.set(false);
-        this.router.navigate(['']);
+
+        const email = (response.user?.email || '').toLowerCase();
+        const isAdmin = email.endsWith('@admin.mocmac.vn') || response.user?.role === 'admin';
+
+        if (this.isAdminMode() || isAdmin) {
+          this.router.navigate(['/admin']);
+        } else {
+          this.router.navigate(['']);
+        }
       },
       error: (error: unknown) => {
         this.showRequestError(error);
@@ -113,7 +142,6 @@ export class DangnhapComponent {
     this.feedback.set(null);
     const { fullName, email, phone, password } = this.registerForm.getRawValue();
     this.auth.register({ name: fullName, email, phone, password }).subscribe({
-      // Định kiểu dữ liệu 'any' cho response để tránh lỗi TS7006 ẩn danh
       next: (response: any) => {
         this.auth.saveSession(response, false);
         this.feedback.set({ type: 'success', message: 'Tạo tài khoản thành công.' });
