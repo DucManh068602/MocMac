@@ -164,9 +164,29 @@
               }
             </div>
 
-            <button type="button" class="btn-primary block" (click)="checkout()">
-              Tiến hành Thanh toán &nbsp;→
-            </button>
+             <div class="payment">
+               <label class="payment-label">Phương thức thanh toán</label>
+               <div class="payment-options">
+                 <label class="payment-option">
+                   <input type="radio" name="payment" value="cod"
+                          [checked]="paymentMethod() === 'cod'"
+                          (change)="paymentMethod.set('cod')" />
+                   <span class="payment-text">Thanh toán khi nhận hàng (COD)</span>
+                 </label>
+                 <label class="payment-option">
+                   <input type="radio" name="payment" value="momo"
+                          [checked]="paymentMethod() === 'momo'"
+                          (change)="paymentMethod.set('momo')" />
+                   <span class="payment-text">
+                     <span class="momo-icon">M</span> Ví thanh toán MoMo
+                   </span>
+                 </label>
+               </div>
+             </div>
+
+             <button type="button" class="btn-primary block" (click)="checkout()">
+               Tiến hành Thanh toán &nbsp;→
+             </button>
             <a class="btn-secondary block" routerLink="/san-pham">
               Tiếp tục chọn đặc sản vùng khác
             </a>

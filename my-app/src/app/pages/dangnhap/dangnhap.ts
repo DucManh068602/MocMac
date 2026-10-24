@@ -1,4 +1,5 @@
 import { Component, inject, signal } from '@angular/core';
+import { Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import {
   AbstractControl,
@@ -27,6 +28,7 @@ function passwordsMatchValidator(group: AbstractControl): ValidationErrors | nul
 export class DangnhapComponent {
   private fb = inject(FormBuilder);
   private auth = inject(AuthService); // Đã inject ở đây, không cần constructor nữa
+  private router = inject(Router);
 
   readonly bars = [0, 1, 2];
 
@@ -47,7 +49,7 @@ export class DangnhapComponent {
     {
       fullName: ['', [Validators.required, Validators.minLength(2)]],
       email: ['', [Validators.required, Validators.email]],
-      phone: ['', [Validators.required, Validators.pattern(/^0\d{9}\$/)]],
+      phone: ['', [Validators.required, Validators.pattern(/^0\d{9}$/)]],
       password: ['', [Validators.required, Validators.minLength(8)]],
       confirmPassword: ['', Validators.required],
       agree: [false, Validators.requiredTrue],
@@ -93,6 +95,7 @@ export class DangnhapComponent {
         this.auth.saveSession(response, remember);
         this.feedback.set({ type: 'success', message: `Xin chào ${response.user?.name || ''}!` });
         this.loading.set(false);
+        this.router.navigate(['']);
       },
       error: (error: unknown) => {
         this.showRequestError(error);

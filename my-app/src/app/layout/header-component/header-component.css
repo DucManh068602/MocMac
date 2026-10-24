@@ -45,3 +45,14 @@ nav a:hover,nav a.on{background:rgba(255,255,255,.14)}
 .cart-login-actions .btn:hover{background:var(--moss-d,#35472a)}
 .cart-login-actions .btn-secondary{background:#f4f3ec;color:var(--ink);font-weight:500}
 .cart-login-actions .btn-secondary:hover{background:#e9e8dc}
+
+.user-account{display:inline-block;position:relative}
+.user-trigger{display:inline-flex;align-items:center;gap:6px;font-family:inherit;padding:4px 8px;border:0;border-radius:6px;cursor:pointer;background:transparent;color:inherit;transition:background .2s}
+.user-trigger:hover{background:rgba(255,255,255,.14)}
+.user-trigger:active,.user-trigger:focus{outline:none;background:rgba(255,255,255,.14)}
+.user-icon{display:inline-flex;align-items:center}
+.user-name{font-weight:600;font-size:13}
+.account-dropdown{position:absolute;top:100%;right:0;min-width:180px;margin-top:8px;background:#fff;border:1px solid #eae3d2;border-radius:8px;box-shadow:0 10px 25px rgba(0,0,0,.2);z-index:1000;padding:6px;display:flex;flex-direction:column;gap:2px}
+.account-dropdown a,.account-dropdown button{width:100%;text-align:left;padding:8px 12px;font-size:13;color:var(--ink,#2b2a22);border:none;background:none;cursor:pointer;text-decoration:none}
+.account-dropdown a:hover,.account-dropdown button:hover{background:#f4f3ec}
+.dropdown-logout{color:var(--moss,#435731);font-weight:600}

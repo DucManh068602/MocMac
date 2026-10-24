@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, HostListener, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../../auth.service';
 import { CartService } from '../../cart.service';
@@ -11,10 +11,11 @@ import { CartService } from '../../cart.service';
 })
 export class HeaderComponent {
   cartService = inject(CartService);
-  private readonly auth = inject(AuthService);
+  readonly auth = inject(AuthService);
   private readonly router = inject(Router);
 
   readonly loginPopup = signal(false);
+  readonly accountDropdown = signal(false);
 
   isFilterOpen: boolean = false;
   filterRegion: string = 'all';
@@ -32,7 +33,26 @@ export class HeaderComponent {
     }
   }
 
+  onLogout(): void {
+    this.auth.logout();
+    this.accountDropdown.set(false);
+    this.router.navigate(['/']);
+  }
+
+  toggleAccountDropdown(): void {
+    this.accountDropdown.update((v) => !v);
+  }
+
   closeLoginPopup(): void {
     this.loginPopup.set(false);
+  }
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent): void {
+    if (!this.accountDropdown()) return;
+    const target = event.target as HTMLElement;
+    if (!target.closest('.user-account') && !target.closest('.account-dropdown')) {
+      this.accountDropdown.set(false);
+    }
   }
 }

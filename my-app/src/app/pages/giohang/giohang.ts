@@ -51,6 +51,8 @@ export class GiohangComponent {
 
   readonly loginRequiredPopup = signal(false);
 
+  readonly paymentMethod = signal<'cod' | 'momo'>('cod');
+
   readonly freeShippingThreshold = FREE_SHIPPING_THRESHOLD;
   couponInput = '';
   readonly couponApplied = signal(false);
@@ -124,6 +126,7 @@ export class GiohangComponent {
       discount: this.discount(),
       shipping: this.shipping(),
       total: this.total(),
+      paymentMethod: this.paymentMethod(),
     });
   }
 

@@ -568,6 +568,74 @@ $error: #b3401f;
   }
 }
 
+.payment {
+  margin: 18px 0;
+}
+
+.payment-label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  color: $text-muted;
+}
+
+.payment-options {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.payment-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border: 1px solid $border-strong;
+  border-radius: 8px;
+  background: #fafafa;
+  cursor: pointer;
+  transition: border-color .2s, background .2s;
+
+  input[type="radio"] {
+    width: 16px;
+    height: 16px;
+    accent-color: $green-btn;
+    cursor: pointer;
+  }
+
+  &:hover {
+    border-color: $green-accent;
+    background: #ffffff;
+  }
+
+  &.selected {
+    border-color: $green-btn;
+    background: $green-soft;
+  }
+}
+
+.payment-text {
+  font-size: 13px;
+  color: $text-main;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.momo-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  background: #e70062;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+}
+
 .refund-note {
   margin-top: 14px;
   padding: 10px 12px;

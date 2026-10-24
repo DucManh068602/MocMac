@@ -10,8 +10,34 @@
       <a routerLink="/thong-bao">Thông báo</a>
       <a routerLink="/ho-tro">Hỗ trợ</a>
       <a href="#">Tiếng Việt</a>
-      <a routerLink="/dang-ky">Đăng ký</a>
-      <a routerLink="/dang-nhap">Đăng nhập</a>
+      @if (auth.isAuthenticated()) {
+        <span class="user-account">
+          <button type="button" class="user-trigger" (click)="toggleAccountDropdown()" aria-haspopup="true" [attr.aria-expanded]="accountDropdown()">
+            <span class="user-icon">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor"
+                   stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 21c-4.5 0-8-3.5-8-8 0-5 4-9 8-10 4 1 8 5 8 10 0 4.5-3.5 8-8 8z" />
+                <path d="M12 21V9" />
+                <path d="M12 14l-3-2.5M12 11l3-2.5" />
+              </svg>
+            </span>
+            <span class="user-name">{{ auth.user()?.name }}</span>
+            <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor"
+                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="6 9 12 15 18 9" />
+            </svg>
+          </button>
+          @if (accountDropdown()) {
+            <div class="account-dropdown" (click)="$event.stopPropagation()">
+              <a routerLink="/gio-hang" (click)="accountDropdown.set(false)">Đơn hàng của tôi</a>
+              <a routerLink="/tai-khoan" (click)="accountDropdown.set(false)">Cài đặt tài khoản</a>
+              <button type="button" class="dropdown-logout" (click)="onLogout()">Đăng xuất</button>
+            </div>
+          }
+        </span>
+      } @else {
+        <a routerLink="/dang-nhap">Tài khoản</a>
+      }
     </div>
   </div>
 </div>

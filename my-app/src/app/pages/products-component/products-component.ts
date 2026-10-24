@@ -103,7 +103,6 @@ export class ProductsComponent {
     this.router.navigate([], {
       relativeTo: this.route,
       queryParams: params,
-      queryParamsHandling: 'merge'
     });
   }
 
