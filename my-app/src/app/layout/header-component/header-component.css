@@ -1,4 +1,4 @@
-.top{background:var(--ink);color:#f1eee4;font-size:13px}
+.top{background:var(--beige);color:var(--ink);font-size:13px}
 .top .wrap{display:flex;justify-content:space-between;padding-top:7px;padding-bottom:7px;flex-wrap:wrap;gap:8px}
 .top div{display:flex;align-items:center;gap:18px}
 .brand .wrap{display:flex;align-items:center;gap:28px;padding-top:16px;padding-bottom:16px}
@@ -48,8 +48,8 @@ nav a:hover,nav a.on{background:rgba(255,255,255,.14)}
 
 .user-account{display:inline-block;position:relative}
 .user-trigger{display:inline-flex;align-items:center;gap:6px;font-family:inherit;padding:4px 8px;border:0;border-radius:6px;cursor:pointer;background:transparent;color:inherit;transition:background .2s}
-.user-trigger:hover{background:rgba(255,255,255,.14)}
-.user-trigger:active,.user-trigger:focus{outline:none;background:rgba(255,255,255,.14)}
+.user-trigger:hover{background:rgba(0,0,0,.05)}
+.user-trigger:active,.user-trigger:focus{outline:none;background:rgba(0,0,0,.05)}
 .user-icon{display:inline-flex;align-items:center}
 .user-name{font-weight:600;font-size:13}
 .account-dropdown{position:absolute;top:100%;right:0;min-width:180px;margin-top:8px;background:#fff;border:1px solid #eae3d2;border-radius:8px;box-shadow:0 10px 25px rgba(0,0,0,.2);z-index:1000;padding:6px;display:flex;flex-direction:column;gap:2px}

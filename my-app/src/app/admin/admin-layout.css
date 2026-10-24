@@ -1,185 +1,101 @@
 :host {
-  display: block;
-  min-height: 100vh;
+  @apply block min-h-screen;
 }
 
 .admin-wrapper {
-  display: flex;
-  min-height: 100vh;
-  background: #f5f7fa;
-  font-family: 'Be Vietnam Pro', system-ui, sans-serif;
+  @apply flex min-h-screen bg-slate-50 font-sans;
 }
 
 .admin-sidebar {
-  width: 240px;
-  background: #1e3a2a;
-  color: #f1eee4;
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-  position: sticky;
-  top: 0;
-  overflow-y: auto;
-  transition: transform 0.3s;
+  @apply w-60 bg-beige text-ink flex flex-col h-screen sticky top-0 overflow-y-auto transition-transform duration-300;
 }
 
 .admin-sidebar-head {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 16px 20px;
-  border-bottom: 1px solid #2c523c;
+  @apply flex justify-between items-center p-4 border-b border-line;
 }
 
 .admin-sidebar-head strong {
-  font-size: 15px;
-  font-weight: 600;
+  @apply text-sm font-semibold;
 }
 
 .sidebar-close {
-  display: none;
-  background: none;
-  border: none;
-  color: #ddd;
-  font-size: 18px;
-  cursor: pointer;
+  @apply hidden bg-transparent border-0 text-ink text-lg cursor-pointer;
 }
 
 @media (max-width: 768px) {
   .admin-sidebar {
-    position: fixed;
-    inset: 0;
-    width: 280px;
-    max-width: 80vw;
-    z-index: 1000;
-    transform: translateX(-100%);
+    @apply fixed inset-0 w-80 max-w-[80vw] z-50 -translate-x-full;
   }
   .admin-sidebar.open {
-    transform: translateX(0);
+    @apply translate-x-0;
   }
   .sidebar-close {
-    display: block;
+    @apply block;
   }
 }
 
 .admin-nav {
-  flex: 1;
-  padding: 8px 0;
+  @apply flex-1 p-0;
 }
 
 .nav-item {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 10px 20px;
-  border-radius: 0 6px 6px 0;
-  margin-right: 8px;
-  cursor: pointer;
-  font-size: 13.5px;
-  color: #e0d7c7;
-  transition: all .2s;
-  text-decoration: none;
+  @apply flex items-center gap-3 px-5 py-2.5 rounded-none border-r-4 border-transparent cursor-pointer text-sm text-ink transition-all;
 }
 
 .nav-item:hover {
-  background: #2c523c;
-  color: #fff;
+  @apply bg-moss-d text-white;
 }
 
 .nav-item.active {
-  background: #4a7c59;
-  color: #fff;
-  font-weight: 600;
+  @apply bg-moss-d text-white font-semibold border-sage;
 }
 
 .nav-icon {
-  font-size: 16px;
-  min-width: 24px;
-  text-align: center;
+  @apply text-base min-w-[24px] text-center;
 }
 
 .admin-logout {
-  padding: 12px 20px;
-  border-top: 1px solid #2c523c;
+  @apply p-3 border-t border-line;
 }
 
 .logout-btn {
-  width: 100%;
-  padding: 10px;
-  border: none;
-  border-radius: 6px;
-  background: #e74c3c;
-  color: #fff;
-  font-size: 13px;
-  cursor: pointer;
-  transition: opacity .2s;
+  @apply w-full py-2.5 border-none rounded bg-clay text-white text-sm cursor-pointer transition-opacity;
 }
 
 .logout-btn:hover {
-  background: #c0392b;
+  @apply opacity-90;
 }
 
 .admin-main {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
+  @apply flex-1 flex flex-col min-w-0;
 }
 
 .admin-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 14px 24px;
-  background: #fff;
-  border-bottom: 1px solid #e3e6df;
+  @apply flex items-center justify-between gap-3 p-4 bg-white border-b border-line;
 }
 
 .admin-tag {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 4px 12px;
-  border-radius: 20px;
-  background: linear-gradient(135deg, #435731 0%, #35472a 100%);
-  color: #fff;
-  font-size: 11px;
-  font-weight: 600;
+  @apply inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-moss text-white text-xs font-semibold;
 }
 
 .admin-tag-dot {
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  background: #f4f3ec;
+  @apply w-1.5 h-1.5 rounded-full bg-cream;
 }
 
 .menu-toggle {
-  display: none;
-  background: none;
-  border: none;
-  font-size: 22px;
-  cursor: pointer;
-  color: #333;
+  @apply hidden bg-transparent border-0 text-2xl cursor-pointer text-ink;
 }
 
 @media (max-width: 768px) {
   .menu-toggle {
-    display: block;
+    @apply block;
   }
 }
 
 .admin-title {
-  margin: 0;
-  font-family: 'Lora', Georgia, serif;
-  font-size: 20px;
-  font-weight: 600;
-  color: #1e3a2a;
+  @apply m-0 font-lora text-xl font-semibold text-ink;
 }
 
 .admin-content {
-  flex: 1;
-  padding: 20px 24px;
-  overflow-y: auto;
+  @apply flex-1 bg-white p-6 overflow-y-auto;
 }

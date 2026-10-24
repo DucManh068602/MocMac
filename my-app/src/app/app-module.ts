@@ -20,6 +20,7 @@ import { ProductsComponent } from './pages/products-component/products-component
 import { ProductDetailComponent } from './pages/product-detail/product-detail';
 import { DangnhapComponent } from './pages/dangnhap/dangnhap';
 import { GiohangComponent } from './pages/giohang/giohang';
+import { ThongbaoComponent } from './pages/thong-bao/thong-bao';
 import { RouterModule } from '@angular/router';
 import { Lienhe } from './pages/lienhe/lienhe';
 import { VungmienComponent } from './pages/vung-mien/vung-mien';
@@ -38,6 +39,7 @@ import { AdminReviewsComponent } from './admin/reviews';
 import { AdminAuditComponent } from './admin/audit';
 import { PaginationComponent } from './admin/pagination';
 import { ToastComponent } from './admin/toast';
+import { NotificationPopupComponent } from './pages/notification-popup/notification-popup';
 
 @NgModule({
   declarations: [
@@ -64,8 +66,9 @@ import { ToastComponent } from './admin/toast';
       AdminReviewsComponent,
      AdminAuditComponent,
      PaginationComponent,
-     ToastComponent,
-   ],
+      ToastComponent,
+      NotificationPopupComponent,
+    ],
   imports: [
     BrowserModule,
     CommonModule,
@@ -75,6 +78,7 @@ import { ToastComponent } from './admin/toast';
     RouterModule, // Bắt buộc phải có để chạy <router-outlet> và routerLink
 
     GiohangComponent,
+    ThongbaoComponent,
   ],
   providers: [provideHttpClient(withInterceptors([authInterceptor]))],
   bootstrap: [App],

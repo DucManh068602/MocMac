@@ -10,6 +10,7 @@ import { DangnhapComponent } from './pages/dangnhap/dangnhap';
 import { Lienhe } from './pages/lienhe/lienhe';
 import { VungmienComponent } from './pages/vung-mien/vung-mien';
 import { GiohangComponent } from './pages/giohang/giohang';
+import { ThongbaoComponent } from './pages/thong-bao/thong-bao';
 import { adminGuard } from './admin/auth.guard';
 import { AdminLayoutComponent } from './admin/admin-layout';
 import { AdminDashboardComponent } from './admin/dashboard';
@@ -51,7 +52,7 @@ const routes: Routes = [
   { path: 'gioi-thieu', component: PageComponent, data: { title: 'Giới thiệu' } },
   { path: 'qua-tang-theo-nhu-cau', component: PageComponent, data: { title: 'Quà tặng theo nhu cầu' } },
   { path: 'qua-tang-doanh-nghiep', component: PageComponent, data: { title: 'Quà tặng doanh nghiệp' } },
-  { path: 'thong-bao', component: PageComponent, data: { title: 'Thông báo' } },
+  { path: 'thong-bao', component: ThongbaoComponent, data: { title: 'Thông báo' } },
   { path: 'ho-tro', component: PageComponent, data: { title: 'Hỗ trợ' } },
   { path: 'dang-ky', component: DangnhapComponent, data: { title: 'Đăng ký' } },
   { path: 'gio-hang', component: GiohangComponent, data: { title: 'Giỏ hàng | Mộc Mạc' } },
