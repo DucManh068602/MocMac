@@ -1,0 +1,146 @@
+.list-page {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 18px;
+}
+
+.list-header h2 {
+  margin: 0;
+  font-family: 'Lora', Georgia, serif;
+  font-size: 20px;
+  color: #1e3a2a;
+}
+
+.btn-add {
+  padding: 8px 16px;
+  background: #2e6b45;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.btn-add:hover {
+  background: #245537;
+}
+
+.form-card {
+  background: #fff;
+  border: 1px solid #e3e6df;
+  border-radius: 10px;
+  padding: 16px;
+  margin-bottom: 18px;
+}
+
+.form-card h3 {
+  margin: 0 0 12px;
+  font-size: 16px;
+  color: #1e3a2a;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(autofill, minmax(200px, 1fr));
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.form-input {
+  padding: 8px 12px;
+  border: 1px solid #d6ceb9;
+  border-radius: 6px;
+  font-size: 13px;
+  font-family: inherit;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: #2e6b45;
+}
+
+.form-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.btn-save {
+  padding: 8px 16px;
+  background: #2e6b45;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.btn-cancel {
+  padding: 8px 16px;
+  background: #f4f3ec;
+  color: #5d6b61;
+  border: 1px solid #d6ceb9;
+  border-radius: 6px;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.table-wrap {
+  background: #fff;
+  border: 1px solid #e3e6df;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.admin-table th,
+.admin-table td {
+  text-align: left;
+  padding: 10px 14px;
+  border-bottom: 1px solid #f1eee4;
+}
+
+.admin-table thead {
+  background: #f9f8f4;
+}
+
+.admin-table tbody tr:hover {
+  background: #f9f8f4;
+}
+
+.admin-table select {
+  padding: 4px 8px;
+  border: 1px solid #d6ceb9;
+  border-radius: 4px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.btn-small {
+  padding: 4px 8px;
+  margin-right: 4px;
+  background: none;
+  border: 1px solid #d6ceb9;
+  border-radius: 4px;
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.btn-delete {
+  color: #b3401f;
+  border-color: #e7c2b3;
+}
+
+.btn-delete:hover {
+  background: #fde8e0;
+}

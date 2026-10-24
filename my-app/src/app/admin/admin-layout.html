@@ -1,0 +1,45 @@
+<div class="admin-wrapper">
+  <aside class="admin-sidebar" [class.open]="sidebarOpen()">
+    <div class="admin-sidebar-head">
+      <strong>Quản trị Mộc Mạc</strong>
+      <button type="button" class="sidebar-close" (click)="sidebarOpen.set(false)">✕</button>
+    </div>
+    <nav class="admin-nav">
+      @for (item of navItems; track item.path) {
+        <a
+          (click)="setActive(item.path)"
+          [class.active]="currentPath() === item.path"
+          class="nav-item"
+        >
+          <span class="nav-icon">{{ item.icon }}</span>
+          <span class="nav-label">{{ item.label }}</span>
+        </a>
+      }
+    </nav>
+    <div class="admin-logout">
+      <button type="button" class="logout-btn" (click)="auth.logout(); router.navigate(['/'])"> Đăng xuất </button>
+    </div>
+  </aside>
+
+  <div class="admin-main">
+    <header class="admin-header">
+      <button type="button" class="menu-toggle" (click)="sidebarOpen.set(true)">☰</button>
+      <h1 class="admin-title">
+        @switch (currentPath()) {
+          @case ('') { Bảng điều khiển }
+          @case ('orders') { Đơn hàng }
+          @case ('products') { Sản phẩm }
+          @case ('regions') { Vùng miền }
+          @case ('coupons') { Mã giảm giá }
+          @case ('users') { Tài khoản }
+          @case ('contacts') { Liên hệ }
+          @case ('notifications') { Thông báo }
+          @default { Quản trị }
+        }
+      </h1>
+    </header>
+    <main class="admin-content">
+      <router-outlet />
+    </main>
+  </div>
+</div>

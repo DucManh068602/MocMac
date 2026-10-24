@@ -2,7 +2,8 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import { authInterceptor } from './auth.interceptor';
 
 import { AppRoutingModule } from './app-routing-module';
 import { App } from './app';
@@ -23,6 +24,17 @@ import { RouterModule } from '@angular/router';
 import { Lienhe } from './pages/lienhe/lienhe';
 import { VungmienComponent } from './pages/vung-mien/vung-mien';
 
+// Admin
+import { AdminLayoutComponent } from './admin/admin-layout';
+import { AdminDashboardComponent } from './admin/dashboard';
+import { AdminOrdersComponent } from './admin/orders';
+import { AdminProductsComponent } from './admin/products';
+import { AdminRegionsComponent } from './admin/regions';
+import { AdminCouponsComponent } from './admin/coupons';
+import { AdminUsersComponent } from './admin/users';
+import { AdminContactsComponent } from './admin/contacts';
+import { AdminNotificationsComponent } from './admin/notifications';
+
 @NgModule({
   declarations: [
     App,
@@ -36,6 +48,15 @@ import { VungmienComponent } from './pages/vung-mien/vung-mien';
     VungmienComponent,
     DangnhapComponent,
     Lienhe,
+    AdminLayoutComponent,
+    AdminDashboardComponent,
+    AdminOrdersComponent,
+    AdminProductsComponent,
+    AdminRegionsComponent,
+    AdminCouponsComponent,
+    AdminUsersComponent,
+    AdminContactsComponent,
+    AdminNotificationsComponent,
   ],
   imports: [
     BrowserModule,
@@ -47,7 +68,7 @@ import { VungmienComponent } from './pages/vung-mien/vung-mien';
 
     GiohangComponent,
   ],
-  providers: [provideHttpClient()],
+  providers: [provideHttpClient(withInterceptors([authInterceptor]))],
   bootstrap: [App],
 })
 export class AppModule {}

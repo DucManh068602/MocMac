@@ -10,6 +10,16 @@ import { DangnhapComponent } from './pages/dangnhap/dangnhap';
 import { Lienhe } from './pages/lienhe/lienhe';
 import { VungmienComponent } from './pages/vung-mien/vung-mien';
 import { GiohangComponent } from './pages/giohang/giohang';
+import { adminGuard } from './admin/auth.guard';
+import { AdminLayoutComponent } from './admin/admin-layout';
+import { AdminDashboardComponent } from './admin/dashboard';
+import { AdminOrdersComponent } from './admin/orders';
+import { AdminProductsComponent } from './admin/products';
+import { AdminRegionsComponent } from './admin/regions';
+import { AdminCouponsComponent } from './admin/coupons';
+import { AdminUsersComponent } from './admin/users';
+import { AdminContactsComponent } from './admin/contacts';
+import { AdminNotificationsComponent } from './admin/notifications';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -35,7 +45,7 @@ const routes: Routes = [
   },
   { path: 'vung-mien', component: VungmienComponent, data: { title: 'Vùng miền & Làng nghề | Mộc Mạc' } },
   { path: 'lang-nghe', redirectTo: 'vung-mien' },
-  { path: 'lien-he', component:Lienhe, data: { title: 'Liên hệ' } },
+  { path: 'lien-he', component: Lienhe, data: { title: 'Liên hệ' } },
   { path: 'gioi-thieu', component: PageComponent, data: { title: 'Giới thiệu' } },
   { path: 'qua-tang-theo-nhu-cau', component: PageComponent, data: { title: 'Quà tặng theo nhu cầu' } },
   { path: 'qua-tang-doanh-nghiep', component: PageComponent, data: { title: 'Quà tặng doanh nghiệp' } },
@@ -43,6 +53,21 @@ const routes: Routes = [
   { path: 'ho-tro', component: PageComponent, data: { title: 'Hỗ trợ' } },
   { path: 'dang-ky', component: DangnhapComponent, data: { title: 'Đăng ký' } },
   { path: 'gio-hang', component: GiohangComponent, data: { title: 'Giỏ hàng | Mộc Mạc' } },
+  {
+    path: 'admin',
+    component: AdminLayoutComponent,
+    canActivate: [adminGuard],
+    children: [
+      { path: '', component: AdminDashboardComponent },
+      { path: 'orders', component: AdminOrdersComponent },
+      { path: 'products', component: AdminProductsComponent },
+      { path: 'regions', component: AdminRegionsComponent },
+      { path: 'coupons', component: AdminCouponsComponent },
+      { path: 'users', component: AdminUsersComponent },
+      { path: 'contacts', component: AdminContactsComponent },
+      { path: 'notifications', component: AdminNotificationsComponent },
+    ]
+  },
   { path: '**', redirectTo: '' }
 ];
 

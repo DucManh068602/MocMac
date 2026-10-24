@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { AuthService } from '../../auth.service';
 import { CartService } from '../../cart.service';
+import { PaymentService } from '../../payment.service';
 import { ProductItem, ProductsService } from '../../products.service';
 
 interface CartDisplayItem {
@@ -48,6 +49,7 @@ export class GiohangComponent {
   private readonly catalog = inject(ProductsService);
   private readonly cart = inject(CartService);
   private readonly auth = inject(AuthService);
+  private readonly paymentService = inject(PaymentService);
 
   readonly loginRequiredPopup = signal(false);
 
@@ -120,13 +122,33 @@ export class GiohangComponent {
       this.loginRequiredPopup.set(true);
       return;
     }
-    console.log('Thanh toán', {
-      items: this.items(),
+
+    const items = this.items().map(item => ({
+      productId: item.id,
+      name: item.name,
+      price: item.price,
+      quantity: item.quantity,
+    }));
+
+    this.paymentService.checkout({
+      items,
       subtotal: this.subtotal(),
       discount: this.discount(),
       shipping: this.shipping(),
       total: this.total(),
       paymentMethod: this.paymentMethod(),
+      couponCode: this.couponApplied() ? this.couponInput.trim().toUpperCase() : '',
+    }).subscribe({
+      next: (response: any) => {
+        if (response.success && response.payUrl) {
+          window.location.href = response.payUrl;
+        } else {
+          this.cart.clear();
+        }
+      },
+      error: (error: any) => {
+        console.error('Lỗi thanh toán:', error);
+      },
     });
   }
 

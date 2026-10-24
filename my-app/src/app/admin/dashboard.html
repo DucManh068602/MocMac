@@ -1,0 +1,66 @@
+<div class="dashboard">
+  <div class="summary-grid">
+    <div class="summary-card">
+      <div class="summary-icon">🛒</div>
+      <div class="summary-info">
+        <strong>{{ summary().orders }}</strong>
+        <span>Đơn hàng</span>
+      </div>
+    </div>
+    <div class="summary-card">
+      <div class="summary-icon">📦</div>
+      <div class="summary-info">
+        <strong>{{ summary().products }}</strong>
+        <span>Sản phẩm</span>
+      </div>
+    </div>
+    <div class="summary-card">
+      <div class="summary-icon">🎫</div>
+      <div class="summary-info">
+        <strong>{{ summary().coupons }}</strong>
+        <span>Mã giảm giá</span>
+      </div>
+    </div>
+    <div class="summary-card">
+      <div class="summary-icon">💰</div>
+      <div class="summary-info">
+        <strong>{{ summary().payments }}</strong>
+        <span>Thanh toán</span>
+      </div>
+    </div>
+    <div class="summary-card">
+      <div class="summary-icon">📨</div>
+      <div class="summary-info">
+        <strong>{{ summary().contacts }}</strong>
+        <span>Liên hệ</span>
+      </div>
+    </div>
+    <div class="summary-card">
+      <div class="summary-icon">👥</div>
+      <div class="summary-info">
+        <strong>{{ summary().users }}</strong>
+        <span>Tài khoản</span>
+      </div>
+    </div>
+    <div class="summary-card">
+      <div class="summary-icon">🔔</div>
+      <div class="summary-info">
+        <strong>{{ summary().notifications }}</strong>
+        <span>Thông báo</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="quick-links">
+    <h2>Quản lý nhanh</h2>
+    <div class="link-grid">
+      <a routerLink="/admin/orders" class="quick-link">Đơn hàng</a>
+      <a routerLink="/admin/products" class="quick-link">Sản phẩm</a>
+      <a routerLink="/admin/regions" class="quick-link">Vùng miền</a>
+      <a routerLink="/admin/coupons" class="quick-link">Mã giảm giá</a>
+      <a routerLink="/admin/users" class="quick-link">Tài khoản</a>
+      <a routerLink="/admin/contacts" class="quick-link">Liên hệ</a>
+      <a routerLink="/admin/notifications" class="quick-link">Thông báo</a>
+    </div>
+  </div>
+</div>
