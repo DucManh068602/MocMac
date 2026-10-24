@@ -34,12 +34,16 @@ import { ToastService } from './toast.service';
             <input class="form-input" placeholder="Mã" [(ngModel)]="form.code" />
             <select class="form-input" [(ngModel)]="form.discountType">
               <option value="percent">Phần trăm (%)</option>
-              <option value="amount">Số tiền (đ)</option>
+              <option value="fixed">Số tiền (đ)</option>
             </select>
             <input class="form-input" placeholder="Giá trị giảm" type="number" [(ngModel)]="form.discountValue" />
             <input class="form-input" placeholder="Số lượng" type="number" [(ngModel)]="form.usageLimit" />
             <input class="form-input" placeholder="Ngày hết hạn" type="date" [(ngModel)]="form.expiryDate" />
             <input class="form-input" placeholder="Tối thiểu (đơn)" type="number" [(ngModel)]="form.minOrderValue" />
+            <label class="checkbox">
+              <input type="checkbox" [(ngModel)]="form.active" />
+              <span>Hoạt động</span>
+            </label>
           </div>
           <div class="form-actions">
             <button type="button" class="btn-save" (click)="saveCoupon()">Lưu</button>
@@ -66,8 +70,12 @@ import { ToastService } from './toast.service';
                 <td>{{ c.code }}</td>
                 <td>{{ c.discountType === 'percent' ? (c.discountValue + '%') : (c.discountValue + 'đ') }}</td>
                 <td>{{ c.usedCount || 0 }}/{{ c.usageLimit }}</td>
-                <td>{{ c.expiresAt | date:'shortDate' }}</td>
-                <td>{{ c.active ? 'Hoạt động' : 'Vô hiệu' }}</td>
+                <td>{{ c.expiryDate | date:'shortDate' }}</td>
+                <td>
+                  <span class="status-badge" [ngClass]="c.active ? 'status-visible' : 'status-hidden'">
+                    {{ c.active ? 'Hoạt động' : 'Vô hiệu' }}
+                  </span>
+                </td>
                 <td>
                   <button type="button" class="btn-small" (click)="editCoupon(c)">Sửa</button>
                   <button type="button" class="btn-small btn-delete" (click)="deleteCoupon(c._id)">Xóa</button>
@@ -121,7 +129,7 @@ export class AdminCouponsComponent {
 
   startCreate(): void {
     this.editing.set(null);
-    this.form = { code: '', discountType: 'percent', discountValue: 0, usageLimit: 0, expiryDate: '', minOrderValue: 0 };
+    this.form = { code: '', discountType: 'percent', discountValue: 0, usageLimit: 0, expiryDate: '', minOrderValue: 0, active: true };
   }
 
   editCoupon(c: any): void {
@@ -132,8 +140,9 @@ export class AdminCouponsComponent {
 
   saveCoupon(): void {
     const f = { ...this.form };
+
     if (this.editing()) {
-      this.http.put('/api/coupons/' + f._id, f).subscribe({
+      this.http.patch('/api/coupons/' + f._id, f).subscribe({
         next: () => { this.toast.success('Cập nhật mã giảm giá thành công'); this.loadCoupons(); this.showForm.set(false); },
         error: () => this.toast.error('Không thể cập nhật mã giảm giá'),
       });
