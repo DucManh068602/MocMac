@@ -34,6 +34,8 @@ import { AdminCouponsComponent } from './admin/coupons';
 import { AdminUsersComponent } from './admin/users';
 import { AdminContactsComponent } from './admin/contacts';
 import { AdminNotificationsComponent } from './admin/notifications';
+import { AdminReviewsComponent } from './admin/reviews';
+import { PaginationComponent } from './admin/pagination';
 
 @NgModule({
   declarations: [
@@ -56,8 +58,10 @@ import { AdminNotificationsComponent } from './admin/notifications';
     AdminCouponsComponent,
     AdminUsersComponent,
     AdminContactsComponent,
-    AdminNotificationsComponent,
-  ],
+     AdminNotificationsComponent,
+     AdminReviewsComponent,
+     PaginationComponent,
+   ],
   imports: [
     BrowserModule,
     CommonModule,

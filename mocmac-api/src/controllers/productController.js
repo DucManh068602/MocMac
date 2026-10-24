@@ -1,10 +1,27 @@
 import { Product } from '../models/Product.js';
+import { Review } from '../models/Review.js';
 
 export const getAllProducts = async (req, res) => {
   const filter = {};
   if (req.query.cat) filter.cat = String(req.query.cat);
-  const products = await Product.find(filter).sort({ id: 1 }).lean();
-  res.json(products);
+
+  const page = Math.max(1, Number(req.query.page) || 1);
+  const limit = Math.max(1, Math.min(100, Number(req.query.limit) || 50));
+  const skip = (page - 1) * limit;
+
+  const [products, total] = await Promise.all([
+    Product.find(filter).sort({ id: 1 }).skip(skip).limit(limit).lean(),
+    Product.countDocuments(filter),
+  ]);
+
+  res.json({
+    success: true,
+    page,
+    limit,
+    total,
+    totalPages: Math.ceil(total / limit),
+    products,
+  });
 };
 
 export const getProductBySlug = async (req, res) => {
@@ -12,7 +29,21 @@ export const getProductBySlug = async (req, res) => {
   if (!product) {
     return res.status(404).json({ message: 'Không tìm thấy sản phẩm' });
   }
-  res.json(product);
+
+  const reviews = await Review.find({ product: product._id, status: 'visible' })
+    .populate('user', 'name')
+    .sort({ createdAt: -1 })
+    .lean();
+
+  const avgRating = reviews.length > 0
+    ? Number((reviews.reduce((s, r) => s + r.rating, 0) / reviews.length).toFixed(1))
+    : 0;
+
+  res.json({
+    ...product,
+    avgRating,
+    reviews,
+  });
 };
 
 export const createProduct = async (req, res) => {

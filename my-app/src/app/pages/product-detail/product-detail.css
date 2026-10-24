@@ -145,3 +145,50 @@
   .action-row .btn{flex:1 1 100%}
   .action-row .btn.dark{margin-top:8px}
 }
+
+/* ==================== REVIEWS ==================== */
+.reviews-section{
+  border-top:1px solid var(--line);padding-top:32px;margin-bottom:40px
+}
+.reviews-section h2{
+  margin:0 0 20px;color:var(--moss);font-size:22px;font-family:'Lora',serif
+}
+.review-form{
+  background:#fff;border:1px solid var(--line);border-radius:8px;padding:20px;margin-bottom:24px
+}
+.review-form h3{
+  margin:0 0 12px;font-size:16px;color:var(--ink)
+}
+.stars-input{
+  display:flex;gap:4px;margin-bottom:12px
+}
+.stars-input label{
+  display:flex;align-items:center;cursor:pointer;font-size:22px;color:#ddd
+}
+.stars-input input{display:none}
+.stars-input .star.filled{color:#e0a43a}
+.review-input{
+  width:100%;min-height:80px;padding:10px;border:1px solid var(--line);
+  border-radius:6px;font-family:inherit;font-size:14px;resize:vertical;margin-bottom:12px
+}
+.review-input:focus{outline:none;border-color:var(--moss)}
+.login-to-review{
+  font-size:14px;color:var(--ink2)
+}
+.login-to-review a{color:var(--moss);font-weight:600}
+.review-list{display:flex;flex-direction:column;gap:16px}
+.review-item{
+  background:#fff;border:1px solid var(--line);border-radius:8px;padding:16px
+}
+.review-header{
+  display:flex;align-items:center;gap:8px;margin-bottom:8px
+}
+.review-stars{color:#e0a43a;font-size:16px}
+.review-text{
+  margin:0 0 6px;line-height:1.5;font-size:14px;color:var(--ink)
+}
+.review-date{
+  font-size:12px;color:var(--ink2)}
+.no-reviews{
+  font-size:14px;color:var(--ink2)
+}

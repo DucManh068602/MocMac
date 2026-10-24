@@ -4,61 +4,70 @@ import { HttpClient } from '@angular/common/http';
 @Component({
   selector: 'app-admin-contacts',
   standalone: false,
-  styleUrls: ['./admin-list.css'],
   template: `
     <div class="list-page">
       <header class="list-header">
-        <h2>Liên hệ ({{ contacts().length }})</h2>
+        <h2>Tin nhắn liên hệ ({{ contacts().length }})</h2>
       </header>
       <div class="table-wrap">
         <table class="admin-table">
           <thead>
             <tr>
-              <th>Tên</th>
+              <th>Họ tên</th>
               <th>Email</th>
-              <th>Điện thoại</th>
-              <th>Chủ đề</th>
+              <th>Nội dung</th>
               <th>Trạng thái</th>
               <th>Ngày</th>
+              <th>Thao tác</th>
             </tr>
           </thead>
           <tbody>
             @for (c of contacts(); track c._id) {
-              <tr>
+              <tr [class.unread]="!c.read">
                 <td>{{ c.name }}</td>
                 <td>{{ c.email }}</td>
-                <td>{{ c.phone || '—' }}</td>
-                <td>{{ c.subject || '—' }}</td>
-                <td>
-                  <select (change)="updateStatus(c._id, $event)">
-                    <option value="new" [selected]="c.status === 'new'">Mới</option>
-                    <option value="processing" [selected]="c.status === 'processing'">Đang xử lý</option>
-                    <option value="done" [selected]="c.status === 'done'">Hoàn thành</option>
-                  </select>
-                </td>
+                <td>{{ c.message?.slice(0, 60) }}...</td>
+                <td>{{ c.read ? 'Đã đọc' : 'Mới' }}</td>
                 <td>{{ c.createdAt | date:'short' }}</td>
+                <td>
+                  <button type="button" class="btn-small btn-delete" (click)="markRead(c._id)">Đánh dấu đã đọc</button>
+                </td>
               </tr>
             } @empty {
-              <tr><td colspan="6">Chưa có liên hệ nào.</td></tr>
+              <tr><td colspan="6">Chưa có tin nhắn.</td></tr>
             }
           </tbody>
         </table>
       </div>
+
+      <app-pagination
+        [currentPage]="page()"
+        [totalPages]="totalPages()"
+        (pageChange)="page.set($event); loadContacts()"
+      ></app-pagination>
     </div>
   `,
+  styleUrls: ['./admin-list.css'],
 })
 export class AdminContactsComponent {
   private http = inject(HttpClient);
   readonly contacts = signal<any[]>([]);
+  readonly page = signal(1);
+  readonly totalPages = signal(1);
 
   constructor() {
-    this.http.get('/api/contacts').subscribe((r: any) => this.contacts.set(r.contacts || []));
+    this.loadContacts();
   }
 
-  updateStatus(id: string, event: Event): void {
-    const status = (event.target as HTMLSelectElement).value;
-    this.http.patch('/api/contacts/' + id + '/status', { status }).subscribe(() => {
-      this.contacts.update(list => list.map(c => c._id === id ? { ...c, status } : c));
+  loadContacts(): void {
+    this.http.get('/api/contacts?page=' + this.page() + '&limit=20').subscribe((r: any) => {
+      const items = Array.isArray(r) ? r : (r.contacts || []);
+      this.contacts.set(items);
+      this.totalPages.set(r.totalPages || 1);
     });
+  }
+
+  markRead(id: string): void {
+    this.http.patch('/api/contacts/' + id + '/read', {}).subscribe(() => this.loadContacts());
   }
 }

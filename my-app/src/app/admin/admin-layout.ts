@@ -27,6 +27,7 @@ export class AdminLayoutComponent {
     { label: 'Mã giảm giá', path: 'coupons', icon: '🎫' },
     { label: 'Tài khoản', path: 'users', icon: '👥' },
     { label: 'Liên hệ', path: 'contacts', icon: '📨' },
+    { label: 'Đánh giá', path: 'reviews', icon: '⭐' },
     { label: 'Thông báo', path: 'notifications', icon: '🔔' },
   ];
 

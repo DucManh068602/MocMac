@@ -2,7 +2,9 @@ import { Component, computed, effect, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 import { map } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
 import { CartService } from '../../cart.service';
+import { AuthService } from '../../auth.service';
 import { ProductItem, ProductsService } from '../../products.service';
 
 @Component({
@@ -15,7 +17,9 @@ export class ProductDetailComponent {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private svc = inject(ProductsService);
+  private http = inject(HttpClient);
   cart = inject(CartService);
+  auth = inject(AuthService);
 
   readonly all = this.svc.products;
 
@@ -140,5 +144,25 @@ export class ProductDetailComponent {
     this.cart.add(p.id, p.name);
     this.qty.set(1);
     this.router.navigate(['/giohang']);
+  }
+
+  readonly reviewRating = signal(5);
+  readonly reviewComment = signal('');
+
+  submitReview(): void {
+    const p = this.product();
+    if (!p) return;
+    this.http.post('/api/reviews', {
+      slug: p.slug,
+      rating: this.reviewRating(),
+      comment: this.reviewComment(),
+    }).subscribe({
+      next: () => {
+        this.reviewRating.set(5);
+        this.reviewComment.set('');
+        alert('Cảm ơn bạn đã đánh giá!');
+      },
+      error: () => alert('Bạn cần đăng nhập để đánh giá'),
+    });
   }
 }

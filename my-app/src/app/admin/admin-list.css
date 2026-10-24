@@ -1,5 +1,6 @@
 .list-page {
-  max-width: 1000px;
+  padding: 16px;
+  max-width: 1200px;
   margin: 0 auto;
 }
 
@@ -7,94 +8,33 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 18px;
+  margin-bottom: 16px;
 }
 
 .list-header h2 {
-  margin: 0;
-  font-family: 'Lora', Georgia, serif;
-  font-size: 20px;
-  color: #1e3a2a;
+  font-size: 18px;
+  color: #435731;
 }
 
 .btn-add {
-  padding: 8px 16px;
-  background: #2e6b45;
+  background: #435731;
   color: #fff;
   border: none;
-  border-radius: 6px;
-  font-size: 13px;
+  padding: 6px 16px;
+  border-radius: 4px;
   cursor: pointer;
+  font-size: 13px;
 }
 
 .btn-add:hover {
-  background: #245537;
-}
-
-.form-card {
-  background: #fff;
-  border: 1px solid #e3e6df;
-  border-radius: 10px;
-  padding: 16px;
-  margin-bottom: 18px;
-}
-
-.form-card h3 {
-  margin: 0 0 12px;
-  font-size: 16px;
-  color: #1e3a2a;
-}
-
-.form-grid {
-  display: grid;
-  grid-template-columns: repeat(autofill, minmax(200px, 1fr));
-  gap: 10px;
-  margin-bottom: 12px;
-}
-
-.form-input {
-  padding: 8px 12px;
-  border: 1px solid #d6ceb9;
-  border-radius: 6px;
-  font-size: 13px;
-  font-family: inherit;
-}
-
-.form-input:focus {
-  outline: none;
-  border-color: #2e6b45;
-}
-
-.form-actions {
-  display: flex;
-  gap: 10px;
-}
-
-.btn-save {
-  padding: 8px 16px;
-  background: #2e6b45;
-  color: #fff;
-  border: none;
-  border-radius: 6px;
-  font-size: 13px;
-  cursor: pointer;
-}
-
-.btn-cancel {
-  padding: 8px 16px;
-  background: #f4f3ec;
-  color: #5d6b61;
-  border: 1px solid #d6ceb9;
-  border-radius: 6px;
-  font-size: 13px;
-  cursor: pointer;
+  background: #324320;
 }
 
 .table-wrap {
+  overflow-x: auto;
   background: #fff;
-  border: 1px solid #e3e6df;
-  border-radius: 10px;
-  overflow: hidden;
+  border-radius: 6px;
+  border: 1px solid #e8e0d0;
 }
 
 .admin-table {
@@ -103,44 +43,122 @@
   font-size: 13px;
 }
 
-.admin-table th,
-.admin-table td {
+.admin-table th {
+  background: #f4f3ec;
+  padding: 8px 12px;
   text-align: left;
-  padding: 10px 14px;
-  border-bottom: 1px solid #f1eee4;
+  border-bottom: 2px solid #d6ceb9;
+  color: #435731;
 }
 
-.admin-table thead {
-  background: #f9f8f4;
+.admin-table td {
+  padding: 8px 12px;
+  border-bottom: 1px solid #e8e0d0;
 }
 
 .admin-table tbody tr:hover {
   background: #f9f8f4;
 }
 
-.admin-table select {
-  padding: 4px 8px;
-  border: 1px solid #d6ceb9;
-  border-radius: 4px;
-  font-size: 12px;
-  cursor: pointer;
-}
-
 .btn-small {
   padding: 4px 8px;
-  margin-right: 4px;
-  background: none;
   border: 1px solid #d6ceb9;
   border-radius: 4px;
-  font-size: 11px;
+  background: #fff;
   cursor: pointer;
+  font-size: 12px;
+}
+
+.btn-small:hover {
+  background: #f4f3ec;
 }
 
 .btn-delete {
-  color: #b3401f;
-  border-color: #e7c2b3;
+  color: #c0392b;
+  border-color: #c0392b;
 }
 
 .btn-delete:hover {
-  background: #fde8e0;
+  background: #c0392b;
+  color: #fff;
+}
+
+.btn-cancel {
+  background: #fff;
+  color: #666;
+  border: 1px solid #d6ceb9;
+  padding: 6px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.btn-cancel:hover {
+  background: #f4f3ec;
+}
+
+.btn-save {
+  background: #435731;
+  color: #fff;
+  border: none;
+  padding: 6px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.btn-save:hover {
+  background: #324320;
+}
+
+.form-card {
+  background: #fff;
+  border: 1px solid #d6ceb9;
+  border-radius: 6px;
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+.form-card h3 {
+  margin-top: 0;
+  color: #435731;
+  font-size: 16px;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+}
+
+.form-input {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #d6ceb9;
+  border-radius: 4px;
+  font-size: 13px;
+  font-family: inherit;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: #435731;
+}
+
+.form-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.thumb-img {
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.rating {
+  font-weight: bold;
+  color: #d4a524;
 }

@@ -4,11 +4,10 @@ import { HttpClient } from '@angular/common/http';
 @Component({
   selector: 'app-admin-users',
   standalone: false,
-  styleUrls: ['./admin-list.css'],
   template: `
     <div class="list-page">
       <header class="list-header">
-        <h2>Tài khoản ({{ users().length }})</h2>
+        <h2>Người dùng ({{ users().length }})</h2>
       </header>
       <div class="table-wrap">
         <table class="admin-table">
@@ -17,7 +16,9 @@ import { HttpClient } from '@angular/common/http';
               <th>Tên</th>
               <th>Email</th>
               <th>Vai trò</th>
-              <th>Ngày tạo</th>
+              <th>Trạng thái</th>
+              <th>Ngày</th>
+              <th>Thao tác</th>
             </tr>
           </thead>
           <tbody>
@@ -25,36 +26,49 @@ import { HttpClient } from '@angular/common/http';
               <tr>
                 <td>{{ u.name }}</td>
                 <td>{{ u.email }}</td>
-                <td>
-                  <select (change)="updateRole(u._id, $event)">
-                    <option value="admin" [selected]="u.role === 'admin'">Admin</option>
-                    <option value="staff" [selected]="u.role === 'staff'">Staff</option>
-                    <option value="customer" [selected]="u.role === 'customer'">Customer</option>
-                  </select>
-                </td>
+                <td>{{ u.role }}</td>
+                <td>{{ u.active ? 'Hoạt động' : 'Vô hiệu' }}</td>
                 <td>{{ u.createdAt | date:'short' }}</td>
+                <td>
+                  <button type="button" class="btn-small" (click)="toggleUser(u._id)">
+                    {{ u.active ? 'Vô hiệu' : 'Kích hoạt' }}
+                  </button>
+                </td>
               </tr>
             } @empty {
-              <tr><td colspan="4">Chưa có tài khoản nào.</td></tr>
+              <tr><td colspan="6">Chưa có người dùng.</td></tr>
             }
           </tbody>
         </table>
       </div>
+      <app-pagination
+        [currentPage]="page()"
+        [totalPages]="totalPages()"
+        (pageChange)="page.set($event); loadUsers()"
+      ></app-pagination>
     </div>
   `,
+  styleUrls: ['./admin-list.css'],
 })
 export class AdminUsersComponent {
   private http = inject(HttpClient);
   readonly users = signal<any[]>([]);
+  readonly page = signal(1);
+  readonly totalPages = signal(1);
 
   constructor() {
-    this.http.get('/api/users').subscribe((r: any) => this.users.set(r.users || []));
+    this.loadUsers();
   }
 
-  updateRole(id: string, event: Event): void {
-    const role = (event.target as HTMLSelectElement).value;
-    this.http.patch('/api/users/' + id + '/role', { role }).subscribe(() => {
-      this.users.update(list => list.map(u => u._id === id ? { ...u, role } : u));
+  loadUsers(): void {
+    this.http.get('/api/users?page=' + this.page() + '&limit=20').subscribe((r: any) => {
+      const items = Array.isArray(r) ? r : (r.users || []);
+      this.users.set(items);
+      this.totalPages.set(r.totalPages || 1);
     });
+  }
+
+  toggleUser(id: string): void {
+    this.http.patch('/api/users/' + id + '/toggle-active', {}).subscribe(() => this.loadUsers());
   }
 }

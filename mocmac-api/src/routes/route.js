@@ -8,6 +8,7 @@ import couponRoutes from './coupons.js';
 import paymentRoutes from './payments.js';
 import notificationRoutes from './notifications.js';
 import userRoutes from './users.js';
+import reviewRoutes from './reviews.js';
 
 const route = Router();
 
@@ -20,5 +21,6 @@ route.use('/coupons', couponRoutes);
 route.use('/payments', paymentRoutes);
 route.use('/notifications', notificationRoutes);
 route.use('/users', userRoutes);
+route.use('/reviews', reviewRoutes);
 
 export default route;

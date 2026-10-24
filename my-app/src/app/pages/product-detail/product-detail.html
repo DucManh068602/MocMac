@@ -202,7 +202,55 @@
             </article>
           }
         </div>
-      </section>
+    </section>
+
+    <!-- REVIEWS -->
+    <section class="reviews-section">
+      <h2>Đánh giá sản phẩm ({{ p.reviews?.length || 0 }})</h2>
+
+      @if (auth.isAuthenticated()) {
+        <div class="review-form">
+          <h3>Viết đánh giá của bạn</h3>
+          <div class="stars-input">
+            @for (s of [5, 4, 3, 2, 1]; track s) {
+              <label>
+                <input type="radio" name="rating" [value]="s" [checked]="s === reviewRating()" (change)="reviewRating.set(s)" />
+                <span class="star" [class.filled]="s <= reviewRating()">★</span>
+              </label>
+            }
+          </div>
+          <textarea
+            class="review-input"
+            placeholder="Nhập nhận xét của bạn..."
+            [ngModel]="reviewComment()"
+            (ngModelChange)="reviewComment.set($event)"
+          ></textarea>
+          <button class="btn dark" (click)="submitReview()">Gửi đánh giá</button>
+        </div>
+      } @else {
+        <p class="login-to-review">
+          <a routerLink="/dang-nhap">Đăng nhập</a> để đưa ra đánh giá của bạn.
+        </p>
+      }
+
+      @if (p.reviews?.length) {
+        <div class="review-list">
+          @for (r of p.reviews; track r._id) {
+            <div class="review-item">
+              <div class="review-header">
+                <span class="review-stars">{{ stars(r.rating) }}</span>
+                <strong>{{ r.user?.name || 'Khách hàng' }}</strong>
+              </div>
+              <p class="review-text">{{ r.comment }}</p>
+              <small class="review-date">{{ r.createdAt | date:'short' }}</small>
+            </div>
+          }
+        </div>
+      } @else {
+        <p class="no-reviews">Chưa có đánh giá nào cho sản phẩm này.</p>
+      }
+    </section>
+
     }
 
   </div>

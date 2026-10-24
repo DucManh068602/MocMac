@@ -77,14 +77,26 @@ export const getMyOrders = async (req, res) => {
 
 export const getAllOrders = async (req, res) => {
   try {
-    const orders = await Order.find()
-      .populate('user', 'name email phone')
-      .sort({ createdAt: -1 })
-      .lean();
+    const page = Math.max(1, Number(req.query.page) || 1);
+    const limit = Math.max(1, Math.min(100, Number(req.query.limit) || 20));
+    const skip = (page - 1) * limit;
+
+    const [orders, total] = await Promise.all([
+      Order.find()
+        .populate('user', 'name email phone')
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit)
+        .lean(),
+      Order.countDocuments(),
+    ]);
 
     return res.json({
       success: true,
-      total: orders.length,
+      page,
+      limit,
+      total,
+      totalPages: Math.ceil(total / limit),
       orders,
     });
   } catch (error) {
