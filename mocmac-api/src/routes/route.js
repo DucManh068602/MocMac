@@ -8,6 +8,7 @@ import couponRoutes from './coupons.js';
 import paymentRoutes from './payments.js';
 import notificationRoutes from './notifications.js';
 import userRoutes from './users.js';
+import chatRoutes from './chat.js';
 import reviewRoutes from './reviews.js';
 import auditRoutes from './auditRoutes.js';
 
@@ -23,6 +24,7 @@ route.use('/payments', paymentRoutes);
 route.use('/notifications', notificationRoutes);
 route.use('/users', userRoutes);
 route.use('/reviews', reviewRoutes);
+route.use('/chat', chatRoutes);
 route.use('/audit-logs', auditRoutes);
 
 export default route;

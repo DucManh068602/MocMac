@@ -6,6 +6,7 @@ import morgan from 'morgan';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
 import jwt from 'jsonwebtoken';
+import { ChatMessage } from './models/ChatMessage.js';
 import route from './routes/route.js';
 
 const app = express();
@@ -27,30 +28,88 @@ console.log('Đã kết nối MongoDB');
 
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
-  cors: { origin: process.env.FRONTEND_URL, methods: ['GET', 'POST'] },
+  cors: { origin: process.env.FRONTEND_URL, methods: ['GET', 'POST', 'PATCH'] },
 });
 
 const userSocketMap = new Map();
 
 io.use((socket, next) => {
   const token = socket.handshake.auth?.token || socket.handshake.query?.token;
-  if (!token) return next(new Error('Vui lòng đăng nhập'));
+  const guestId = socket.handshake.query?.guestId;
+  if (!token) {
+    socket.data.userId = guestId || 'guest_' + socket.id;
+    socket.data.role = 'guest';
+    socket.data.guest = true;
+    return next();
+  }
   try {
     const payload = jwt.verify(String(token), process.env.JWT_SECRET);
     socket.data.userId = payload.sub;
     socket.data.role = payload.role;
+    socket.data.guest = false;
     next();
   } catch (err) {
-    next(new Error('Token không hợp lệ'));
+    socket.data.userId = guestId || 'guest_' + socket.id;
+    socket.data.role = 'guest';
+    socket.data.guest = true;
+    next();
   }
 });
 
 io.on('connection', (socket) => {
   const userId = socket.data.userId;
-  if (userId) userSocketMap.set(String(userId), socket.id);
+  const isGuest = socket.data.guest;
+
+  if (!isGuest) {
+    userSocketMap.set(String(userId), socket.id);
+  }
+
+  socket.join('user_' + userId);
+  if (socket.data.role === 'admin' || socket.data.role === 'staff') {
+    socket.join('admin_room');
+  }
+
+  socket.on('chat:send', async ({ to, message }) => {
+    if (!message || !message.trim()) return;
+
+    const doc = await ChatMessage.create({
+      from: userId,
+      to,
+      message: message.trim(),
+    });
+
+    const payload = {
+      _id: doc._id,
+      from: doc.from,
+      to: doc.to,
+      message: doc.message,
+      read: doc.read,
+      createdAt: doc.createdAt,
+      updatedAt: doc.updatedAt,
+    };
+
+    if (to === 'admin') {
+      socket.to('admin_room').emit('chat:message', payload);
+    } else {
+      socket.to('user_' + to).emit('chat:message', payload);
+      socket.to('admin_room').emit('chat:message', payload);
+    }
+
+    socket.emit('chat:message', payload);
+  });
+
+  socket.on('chat:mark-read', async ({ from }) => {
+    await ChatMessage.updateMany(
+      { from, to: userId, read: false },
+      { $set: { read: true } },
+    );
+    socket.to('user_' + from).emit('chat:mark-read', { from: userId, to: from });
+  });
 
   socket.on('disconnect', () => {
-    if (userId) userSocketMap.delete(String(userId));
+    if (!isGuest) {
+      userSocketMap.delete(String(userId));
+    }
   });
 });
 

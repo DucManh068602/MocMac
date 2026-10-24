@@ -4,6 +4,9 @@
 <router-outlet />
 <app-notification-popup />
 <app-toast />
+@if (!isStandaloneAuth() && !isAdminPath()) {
+  <app-chat-popup />
+}
 @if (!isStandaloneAuth()) {
   <app-footer-component />
 }

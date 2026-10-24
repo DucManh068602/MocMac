@@ -40,6 +40,7 @@ import { AdminAuditComponent } from './admin/audit';
 import { PaginationComponent } from './admin/pagination';
 import { ToastComponent } from './admin/toast';
 import { NotificationPopupComponent } from './pages/notification-popup/notification-popup';
+import { ChatPopupComponent } from './chat-popup/chat-popup';
 
 @NgModule({
   declarations: [
@@ -67,7 +68,8 @@ import { NotificationPopupComponent } from './pages/notification-popup/notificat
      AdminAuditComponent,
      PaginationComponent,
       ToastComponent,
-      NotificationPopupComponent,
+       NotificationPopupComponent,
+       ChatPopupComponent,
     ],
   imports: [
     BrowserModule,
