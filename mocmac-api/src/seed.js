@@ -126,7 +126,7 @@ console.log(`Đã nạp ${regions.length} vùng miền (${regionCounts.map(r => 
 // =======================
 
 const adminEmail = (
-  process.env.ADMIN_EMAIL ?? 'admin@mocmac.admin.vn'
+  process.env.ADMIN_EMAIL ?? 'admin@admin.mocmac.vn'
 ).toLowerCase();
 
 if (!(await User.exists({ email: adminEmail }))) {
