@@ -13,3 +13,18 @@
 }
 
 .status-select:hover { @apply opacity-100; }
+
+.payment-badge {
+  @apply inline-block px-2 py-0.5 text-xs font-semibold uppercase rounded text-center mr-1;
+}
+
+.payment-pending { @apply bg-[rgba(214,188,125,0.2)] text-[#8b6d1a]; }
+.payment-paid { @apply bg-[rgba(34,197,94,0.15)] text-[#15803d]; }
+.payment-failed { @apply bg-[rgba(239,68,68,0.15)] text-[#b91c1c]; }
+.payment-refunded { @apply bg-[rgba(59,130,246,0.15)] text-[#1d4ed8]; }
+
+.payment-select {
+  @apply ml-1 border border-line rounded text-xs px-1.5 py-0.5 bg-white cursor-pointer;
+}
+
+.payment-select:hover { @apply opacity-100; }

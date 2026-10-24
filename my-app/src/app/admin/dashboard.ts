@@ -35,7 +35,7 @@ export class AdminDashboardComponent {
 
   readonly revenue = computed(() =>
     this.orders()
-      .filter((o) => o.paymentStatus === 'paid' || o.status === 'delivered')
+      .filter((o) => o.paymentStatus === 'paid')
       .reduce((s, o) => s + (o.total || 0), 0),
   );
 
@@ -56,6 +56,7 @@ export class AdminDashboardComponent {
       return { key: d.toLocaleDateString('en-CA'), label: `${d.getDate()}/${d.getMonth() + 1}`, value: 0 };
     });
     for (const o of this.valid()) {
+      if (o.paymentStatus !== 'paid') continue;
       const day = days.find((d) => d.key === new Date(o.createdAt).toLocaleDateString('en-CA'));
       if (day) day.value += o.total || 0;
     }

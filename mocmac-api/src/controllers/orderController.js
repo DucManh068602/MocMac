@@ -188,3 +188,53 @@ export const updateOrderStatus = async (req, res) => {
     });
   }
 };
+
+export const updatePaymentStatus = async (req, res) => {
+  try {
+    const { paymentStatus } = req.body;
+
+    const allowedPayment = ['pending', 'paid', 'failed', 'refunded'];
+    if (!allowedPayment.includes(paymentStatus)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Trạng thái thanh toán không hợp lệ.',
+      });
+    }
+
+    const order = await Order.findByIdAndUpdate(
+      req.params.id,
+      { paymentStatus },
+      { new: true, runValidators: true }
+    ).lean();
+
+    if (!order) {
+      return res.status(404).json({
+        success: false,
+        message: 'Không tìm thấy đơn hàng.',
+      });
+    }
+
+    const { user: reqUser, ip } = getRequestInfo(req);
+    await logAction({
+      action: 'order.payment_update',
+      resourceType: 'Order',
+      resourceId: order._id,
+      user: reqUser,
+      ip,
+      details: { newPaymentStatus: paymentStatus },
+    });
+
+    return res.json({
+      success: true,
+      message: 'Cập nhật trạng thái thanh toán thành công.',
+      order,
+    });
+  } catch (error) {
+    console.error('❌ Lỗi cập nhật thanh toán:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Không thể cập nhật thanh toán.',
+      error: error.message,
+    });
+  }
+};

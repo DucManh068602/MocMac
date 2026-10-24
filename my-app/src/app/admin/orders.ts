@@ -64,7 +64,15 @@ import { ToastService } from './toast.service';
                     <option value="cancelled">Đã hủy</option>
                   </select>
                 </td>
-                <td>{{ order.paymentStatus || order.paymentMethod }}</td>
+                <td>
+                  <span class="status-badge payment-badge" [ngClass]="'payment-' + (order.paymentStatus || 'pending')">
+                    {{ paymentLabel(order.paymentStatus) }}
+                  </span>
+                  <select class="payment-select" [value]="order.paymentStatus || 'pending'" (change)="updatePayment(order._id, $event)">
+                    <option value="pending">Chưa thanh toán</option>
+                    <option value="paid">Đã thanh toán</option>
+                  </select>
+                </td>
                 <td>{{ order.createdAt | date:'short' }}</td>
               </tr>
             } @empty {
@@ -129,5 +137,23 @@ export class AdminOrdersComponent {
       next: () => { this.toast.success('Cập nhật trạng thái đơn hàng thành công'); this.loadOrders(); },
       error: () => this.toast.error('Không thể cập nhật trạng thái'),
     });
+  }
+
+  updatePayment(id: string, event: Event): void {
+    const paymentStatus = (event.target as HTMLSelectElement).value;
+    this.http.patch('/api/orders/' + id + '/payment', { paymentStatus }).subscribe({
+      next: () => { this.toast.success('Cập nhật trạng thái thanh toán'); this.loadOrders(); },
+      error: () => this.toast.error('Không thể cập nhật thanh toán'),
+    });
+  }
+
+  paymentLabel(status: string): string {
+    const labels: Record<string, string> = {
+      pending: 'Chưa thanh toán',
+      paid: 'Đã thanh toán',
+      failed: 'Thất bại',
+      refunded: 'Hoàn tiền',
+    };
+    return labels[status] || 'Chưa thanh toán';
   }
 }
