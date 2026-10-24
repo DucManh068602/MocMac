@@ -37,6 +37,18 @@ export class AuthService {
     return this.http.post<AuthResponse>('/api/auth/register', payload);
   }
 
+  forgotPassword(email: string): Observable<{ success: boolean; message: string }> {
+    return this.http.post<{ success: boolean; message: string }>('/api/auth/forgot-password', { email });
+  }
+
+  resetPassword(payload: { email: string; otp: string; password: string }): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>('/api/auth/reset-password', payload);
+  }
+
+  adminResetPassword(payload: { email: string; resetSecret: string; password: string }): Observable<{ success: boolean; message: string }> {
+    return this.http.post<{ success: boolean; message: string }>('/api/auth/admin/reset', payload);
+  }
+
   saveSession(response: AuthResponse, remember: boolean): void {
     const storage = remember ? localStorage : sessionStorage;
     const otherStorage = remember ? sessionStorage : localStorage;

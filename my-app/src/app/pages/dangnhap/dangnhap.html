@@ -101,7 +101,7 @@
       </header>
 
       <!-- ---------- FORM ĐĂNG NHẬP ---------- -->
-      @if (mode() === 'login') {
+      @if (mode() === 'login' && !forgot()) {
         <section class="form-body">
 
           @if (isAdminMode()) {
@@ -132,7 +132,7 @@
 
             <div class="label-row">
               <label class="field-label" for="login-password">Mật khẩu</label>
-              <a class="forgot" href="javascript:void(0)">Quên mật khẩu?</a>
+              <a class="forgot" (click)="openForgot()">Quên mật khẩu?</a>
             </div>
             <div class="input-wrap" [class.invalid]="hasError(loginForm, 'password')">
               <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor"
@@ -185,11 +185,168 @@
               </button>
             </div>
           }
-        </section>
-      }
+          </section>
+        }
 
-      <!-- ---------- ĐĂNG KÝ (chỉ hiển thị cho khách hàng) ---------- -->
-      @if (!isAdminMode() && mode() === 'register') {
+        <!-- ---------- QUÊN MẬT KHẨU ---------- -->
+        @if (forgot()) {
+          <section class="form-body">
+
+            @if (isAdminMode()) {
+              <h1 class="admin-title">
+                <span class="line-1">Đặt lại mật khẩu quản trị</span>
+                <span class="line-2">Nhập mã bí mật RESET_SECRET và mật khẩu mới.</span>
+              </h1>
+              <p class="subtitle">Chỉ dành cho tài khoản @admin.mocmac.vn.</p>
+
+              <form [formGroup]="adminResetForm" (ngSubmit)="onAdminReset()" novalidate>
+                <label class="field-label" for="admin-reset-email">Email quản trị</label>
+                <div class="input-wrap" [class.invalid]="hasError(adminResetForm, 'email')">
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor"
+                       stroke-width="1.8" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2" /><path d="M3 7l9 6 9-6" /></svg>
+                  <input id="admin-reset-email" type="email" formControlName="email"
+                         placeholder="admin@mocmac.vn" autocomplete="username" />
+                </div>
+                @if (hasError(adminResetForm, 'email', 'required')) {
+                  <small class="error">Vui lòng nhập email.</small>
+                }
+                @else if (hasError(adminResetForm, 'email', 'email')) {
+                  <small class="error">Email không hợp lệ.</small>
+                }
+
+                <label class="field-label" for="resetSecret">Mã bí mật (RESET_SECRET)</label>
+                <div class="input-wrap" [class.invalid]="hasError(adminResetForm, 'resetSecret')">
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor"
+                       stroke-width="1.8" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2" /><path d="M8 11V7a4 4 0 0 1 8 0v4" /></svg>
+                  <input id="resetSecret" type="password" formControlName="resetSecret"
+                         placeholder="Nhập RESET_SECRET" autocomplete="one-time-code" />
+                </div>
+                @if (hasError(adminResetForm, 'resetSecret', 'required')) {
+                  <small class="error">Vui lòng nhập mã bí mật.</small>
+                }
+
+                <label class="field-label" for="admin-new-password">Mật khẩu mới</label>
+                <div class="input-wrap" [class.invalid]="hasError(adminResetForm, 'password')">
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor"
+                       stroke-width="1.8" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2" /><path d="M8 11V7a4 4 0 0 1 8 0v4" /></svg>
+                  <input id="admin-new-password" type="password" formControlName="password"
+                         placeholder="Tối thiểu 8 ký tự" autocomplete="new-password" />
+                </div>
+                @if (hasError(adminResetForm, 'password', 'required')) {
+                  <small class="error">Vui lòng nhập mật khẩu.</small>
+                }
+                @else if (hasError(adminResetForm, 'password', 'minlength')) {
+                  <small class="error">Mật khẩu tối thiểu 8 ký tự.</small>
+                }
+
+                <label class="field-label" for="admin-confirm-password">Xác nhận mật khẩu mới</label>
+                <div class="input-wrap">
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor"
+                       stroke-width="1.8" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2" /><path d="M8 11V7a4 4 0 0 1 8 0v4" /></svg>
+                  <input id="admin-confirm-password" type="password" formControlName="confirmPassword"
+                         placeholder="Nhập lại mật khẩu mới" autocomplete="new-password" />
+                </div>
+                @if (adminResetForm.hasError('mismatch')) {
+                  <small class="error">Mật khẩu nhập lại không khớp.</small>
+                }
+
+                <button type="submit" class="submit-btn" [disabled]="forgotLoading()">
+                  @if (forgotLoading()) { Đang xử lý... } @else { Đặt lại mật khẩu }
+                </button>
+                <button type="button" class="submit-btn" (click)="backToLogin()">← Quay lại đăng nhập</button>
+              </form>
+            } @else {
+              <h1>Quên mật khẩu</h1>
+              <p class="subtitle">Nhập email đã đăng ký để nhận mã OTP.</p>
+
+              @if (!otpSent()) {
+                <form [formGroup]="forgotEmailForm" (ngSubmit)="sendOtp()" novalidate>
+                  <label class="field-label" for="forgot-email">Email đăng ký</label>
+                  <div class="input-wrap" [class.invalid]="hasError(forgotEmailForm, 'email')">
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor"
+                         stroke-width="1.8" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2" /><path d="M3 7l9 6 9-6" /></svg>
+                    <input id="forgot-email" type="email" formControlName="email"
+                           placeholder="vidu@email.com" autocomplete="email" />
+                  </div>
+                  @if (hasError(forgotEmailForm, 'email', 'required')) {
+                    <small class="error">Vui lòng nhập email.</small>
+                  }
+                  @else if (hasError(forgotEmailForm, 'email', 'email')) {
+                    <small class="error">Email không hợp lệ.</small>
+                  }
+
+                  <button type="submit" class="submit-btn" [disabled]="forgotLoading()">
+                    @if (forgotLoading()) { Gửi... } @else { Gửi mã OTP }
+                  </button>
+                </form>
+              } @else {
+                <form [formGroup]="resetForm" (ngSubmit)="onResetPassword()" novalidate>
+                  <label class="field-label" for="reset-email">Email</label>
+                  <div class="input-wrap">
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor"
+                         stroke-width="1.8" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2" /><path d="M3 7l9 6 9-6" /></svg>
+                    <input id="reset-email" type="email" formControlName="email"
+                           placeholder="vidu@email.com" autocomplete="email" />
+                  </div>
+
+                  <label class="field-label" for="otp">Mã OTP (6 chữ số)</label>
+                  <div class="input-wrap" [class.invalid]="hasError(resetForm, 'otp')">
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor"
+                         stroke-width="1.8" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2" /><path d="M8 11V7a4 4 0 0 1 8 0v4" /></svg>
+                    <input id="otp" type="text" formControlName="otp"
+                           placeholder="Nhập mã OTP" inputmode="numeric" autocomplete="one-time-code" />
+                  </div>
+                  @if (hasError(resetForm, 'otp', 'required')) {
+                    <small class="error">Vui lòng nhập mã OTP.</small>
+                  }
+                  @else if (hasError(resetForm, 'otp', 'pattern')) {
+                    <small class="error">Mã OTP phải là 6 chữ số.</small>
+                  }
+
+                  <label class="field-label" for="new-password">Mật khẩu mới</label>
+                  <div class="input-wrap" [class.invalid]="hasError(resetForm, 'password')">
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor"
+                         stroke-width="1.8" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2" /><path d="M8 11V7a4 4 0 0 1 8 0v4" /></svg>
+                    <input id="new-password" type="password" formControlName="password"
+                           placeholder="Tối thiểu 8 ký tự" autocomplete="new-password" />
+                  </div>
+                  @if (hasError(resetForm, 'password', 'required')) {
+                    <small class="error">Vui lòng nhập mật khẩu.</small>
+                  }
+                  @else if (hasError(resetForm, 'password', 'minlength')) {
+                    <small class="error">Mật khẩu tối thiểu 8 ký tự.</small>
+                  }
+
+                  <label class="field-label" for="reset-confirm">Xác nhận mật khẩu mới</label>
+                  <div class="input-wrap">
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor"
+                         stroke-width="1.8" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2" /><path d="M8 11V7a4 4 0 0 1 8 0v4" /></svg>
+                    <input id="reset-confirm" type="password" formControlName="confirmPassword"
+                           placeholder="Nhập lại mật khẩu mới" autocomplete="new-password" />
+                  </div>
+                  @if (resetForm.hasError('mismatch')) {
+                    <small class="error">Mật khẩu nhập lại không khớp.</small>
+                  }
+
+                  <button type="submit" class="submit-btn" [disabled]="forgotLoading()">
+                    @if (forgotLoading()) { Đặt lại... } @else { Đặt lại mật khẩu }
+                  </button>
+                  <button type="button" class="submit-btn" (click)="backToLogin()">← Quay lại đăng nhập</button>
+                </form>
+              }
+            }
+
+            @if (feedback(); as result) {
+              <small [class.error]="result.type === 'error'"
+                     [class.info-box]="result.type === 'success'" role="status">
+                {{ result.message }}
+              </small>
+            }
+          </section>
+        }
+
+        <!-- ---------- ĐĂNG KÝ (chỉ hiển thị cho khách hàng) ---------- -->
+        @if (!isAdminMode() && mode() === 'register') {
         <section class="form-body">
           <h1>Tạo tài khoản Mộc Mạc</h1>
           <p class="subtitle">Gia nhập cộng đồng người gìn giữ và thưởng thức đặc sản Việt.</p>

@@ -60,9 +60,13 @@ import { ToastService } from './toast.service';
                 <td>{{ u.createdAt | date:'short' }}</td>
                 <td>
                   @if (u.isActive) {
-                    <button type="button" class="btn-small btn--warn" (click)="deactivateUser(u._id)">
-                      Vô hiệu
-                    </button>
+                    @if (!isSuperAdmin(u)) {
+                      <button type="button" class="btn-small btn--warn" (click)="deactivateUser(u._id)">
+                        Vô hiệu
+                      </button>
+                    } @else {
+                      <span class="text-muted">Bảo vệ</span>
+                    }
                   } @else {
                     <select #sel (change)="activateUser(u._id, sel.value)">
                       <option value="">Kích hoạt</option>
@@ -133,5 +137,9 @@ export class AdminUsersComponent {
       next: () => { this.toast.success('Hủy kích hoạt tài khoản'); this.loadUsers(); },
       error: () => this.toast.error('Không thể hủy kích hoạt tài khoản'),
     });
+  }
+
+  isSuperAdmin(u: any): boolean {
+    return u?.email === 'admin@admin.mocmac.vn';
   }
 }

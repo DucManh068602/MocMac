@@ -40,6 +40,10 @@ export class DangnhapComponent {
   showRegisterPassword = signal(false);
   showConfirmPassword = signal(false);
 
+  readonly forgot = signal(false);
+  readonly otpSent = signal(false);
+  readonly forgotLoading = signal(false);
+
   readonly isAdminMode = signal(false);
 
   readonly loginForm = this.fb.group({
@@ -56,6 +60,30 @@ export class DangnhapComponent {
       password: ['', [Validators.required, Validators.minLength(8)]],
       confirmPassword: ['', Validators.required],
       agree: [false, Validators.requiredTrue],
+    },
+    { validators: passwordsMatchValidator }
+  );
+
+  readonly forgotEmailForm = this.fb.group({
+    email: ['', [Validators.required, Validators.email]],
+  });
+
+  readonly resetForm = this.fb.group(
+    {
+      email: ['', [Validators.required, Validators.email]],
+      otp: ['', [Validators.required, Validators.pattern(/^[0-9]{6}$/)]],
+      password: ['', [Validators.required, Validators.minLength(8)]],
+      confirmPassword: ['', Validators.required],
+    },
+    { validators: passwordsMatchValidator }
+  );
+
+  readonly adminResetForm = this.fb.group(
+    {
+      email: ['', [Validators.required, Validators.email]],
+      resetSecret: ['', Validators.required],
+      password: ['', [Validators.required, Validators.minLength(8)]],
+      confirmPassword: ['', Validators.required],
     },
     { validators: passwordsMatchValidator }
   );
@@ -79,6 +107,100 @@ export class DangnhapComponent {
     this.mode.set('login');
     this.feedback.set(null);
     this.submitted.set(false);
+  }
+
+  openForgot(): void {
+    this.forgot.set(true);
+    this.otpSent.set(false);
+    this.feedback.set(null);
+    this.submitted.set(false);
+  }
+
+  backToLogin(): void {
+    this.forgot.set(false);
+    this.otpSent.set(false);
+    this.feedback.set(null);
+  }
+
+  sendOtp(): void {
+    this.submitted.set(true);
+    if (this.forgotEmailForm.invalid) {
+      this.forgotEmailForm.markAllAsTouched();
+      return;
+    }
+    this.forgotLoading.set(true);
+    const email = this.forgotEmailForm.getRawValue().email ?? '';
+    this.auth.forgotPassword(email).subscribe({
+      next: (r: any) => {
+        this.forgotLoading.set(false);
+        if (r?.success) {
+          this.otpSent.set(true);
+          this.feedback.set({ type: 'success', message: 'Mã OTP đã gửi đến email của bạn.' });
+        } else {
+          this.feedback.set({ type: 'error', message: r?.message || 'Gửi mã OTP thất bại.' });
+        }
+      },
+      error: (e: any) => {
+        this.forgotLoading.set(false);
+        this.feedback.set({ type: 'error', message: e?.error?.message || 'Gửi mã OTP thất bại.' });
+      },
+    });
+  }
+
+  onResetPassword(): void {
+    this.submitted.set(true);
+    if (this.resetForm.invalid) {
+      this.resetForm.markAllAsTouched();
+      return;
+    }
+    this.forgotLoading.set(true);
+    const v = this.resetForm.getRawValue();
+    this.auth
+      .resetPassword({ email: v.email ?? '', otp: v.otp ?? '', password: v.password ?? '' })
+      .subscribe({
+        next: (r: any) => {
+          this.forgotLoading.set(false);
+          if (r?.token) {
+            this.auth.saveSession(r, false);
+          }
+          this.feedback.set({ type: 'success', message: 'Đặt lại mật khẩu thành công.' });
+          setTimeout(() => this.router.navigate(['']), 1500);
+        },
+        error: (e: any) => {
+          this.forgotLoading.set(false);
+          this.feedback.set({ type: 'error', message: e?.error?.message || 'Đặt lại mật khẩu thất bại.' });
+        },
+      });
+  }
+
+  onAdminReset(): void {
+    this.submitted.set(true);
+    if (this.adminResetForm.invalid) {
+      this.adminResetForm.markAllAsTouched();
+      return;
+    }
+    this.forgotLoading.set(true);
+    const v = this.adminResetForm.getRawValue();
+    this.auth
+      .adminResetPassword({ email: v.email ?? '', resetSecret: v.resetSecret ?? '', password: v.password ?? '' })
+      .subscribe({
+        next: (r: any) => {
+          this.forgotLoading.set(false);
+          if (r?.success) {
+            this.feedback.set({
+              type: 'success',
+              message: 'Đặt lại mật khẩu thành công. Vui lòng đăng nhập lại.',
+            });
+            setTimeout(() => this.backToLogin(), 1500);
+          } else {
+            this.feedback.set({ type: 'error', message: r?.message || 'Đặt lại mật khẩu thất bại.' });
+          }
+        },
+        error: (e: any) => {
+          this.forgotLoading.set(false);
+          this.feedback.set({ type: 'error', message: e?.error?.message || 'Đặt lại mật khẩu thất bại.' });
+        },
+      });
   }
 
   get passwordStrength(): number {

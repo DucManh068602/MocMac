@@ -202,3 +202,7 @@
 .checkbox {
   @apply flex items-center gap-2 cursor-pointer text-sm;
 }
+
+.protected-label {
+  @apply text-xs text-ink2 font-medium;
+}
