@@ -11,6 +11,8 @@ import userRoutes from './users.js';
 import chatRoutes from './chat.js';
 import reviewRoutes from './reviews.js';
 import auditRoutes from './auditRoutes.js';
+import provinceRoutes from './provinces.js';
+import villageRoutes from './villages.js';
 
 const route = Router();
 
@@ -26,5 +28,7 @@ route.use('/users', userRoutes);
 route.use('/reviews', reviewRoutes);
 route.use('/chat', chatRoutes);
 route.use('/audit-logs', auditRoutes);
+route.use('/provinces', provinceRoutes);
+route.use('/villages', villageRoutes);
 
 export default route;

@@ -1,6 +1,7 @@
 import { Component, inject, signal, computed } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ToastService } from './toast.service';
+import { ProductsService } from '../products.service';
 
 @Component({
   selector: 'app-admin-products',
@@ -35,7 +36,7 @@ import { ToastService } from './toast.service';
         <div class="form-card">
           <h3>{{ editing() ? 'Sửa' : 'Thêm' }} sản phẩm</h3>
           <div class="form-grid">
-            <input class="form-input" placeholder="Tên sản phẩm" [(ngModel)]="form.name" />
+            <input class="form-input" placeholder="Tên sản phẩm" [(ngModel)]="form.name" (input)="genSlug()" />
             <input class="form-input" placeholder="Slug" [(ngModel)]="form.slug" />
             <input class="form-input" placeholder="Giá" type="number" [(ngModel)]="form.price" />
             <select class="form-input" [(ngModel)]="form.cat">
@@ -45,9 +46,24 @@ import { ToastService } from './toast.service';
               <option value="Cà phê - Trà">Cà phê - Trà</option>
               <option value="Sản phẩm OCOP">Sản phẩm OCOP</option>
             </select>
-            <input class="form-input" placeholder="Vùng miền" [(ngModel)]="form.region" />
-            <input class="form-input" placeholder="Tỉnh" [(ngModel)]="form.province" />
-            <input class="form-input" placeholder="Làng nghề" [(ngModel)]="form.village" />
+            <select class="form-input" [(ngModel)]="form.region" placeholder="Vùng miền">
+              <option value="">Chọn vùng miền</option>
+              @for (r of regions(); track r.slug) {
+                <option [ngValue]="r.name">{{ r.name }}</option>
+              }
+            </select>
+            <select class="form-input" [(ngModel)]="form.province" placeholder="Tỉnh">
+              <option value="">Chọn tỉnh</option>
+              @for (p of provinces(); track p.code) {
+                <option [ngValue]="p.name">{{ p.name }}</option>
+              }
+            </select>
+            <select class="form-input" [(ngModel)]="form.village" placeholder="Làng nghề">
+              <option value="">Chọn làng nghề</option>
+              @for (v of villages(); track v) {
+                <option [ngValue]="v">{{ v }}</option>
+              }
+            </select>
             <input class="form-input" placeholder="Ảnh (URL, cách nhau dấu phẩy)" [(ngModel)]="form.images" />
             <textarea class="form-input" placeholder="Mô tả" [(ngModel)]="form.description"></textarea>
           </div>
@@ -105,7 +121,11 @@ import { ToastService } from './toast.service';
 export class AdminProductsComponent {
   private http = inject(HttpClient);
   private toast = inject(ToastService);
+  private ps = inject(ProductsService);
   readonly products = signal<any[]>([]);
+  readonly provinces = signal<any[]>([]);
+  readonly villages = signal<string[]>([]);
+  readonly regions = computed(() => this.ps.regions());
   readonly page = signal(1);
   readonly totalPages = signal(1);
   readonly showForm = signal(false);
@@ -128,6 +148,8 @@ export class AdminProductsComponent {
 
   constructor() {
     this.loadProducts();
+    this.loadProvinces();
+    this.loadVillages();
   }
 
   loadProducts(): void {
@@ -135,6 +157,32 @@ export class AdminProductsComponent {
       const items = Array.isArray(r) ? r : (r.products || []);
       this.products.set(items);
       this.totalPages.set(r.totalPages || 1);
+    });
+  }
+
+  genSlug(): void {
+    if (this.editing()) return;
+    const name: string = this.form.name || '';
+    this.form.slug = name
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/[đ]/g, 'd')
+      .replace(/[^a-z0-9\s-]/g, '')
+      .replace(/\s+/g, '-')
+      .replace(/-+/g, '-')
+      .replace(/^-+|-+$/g, '');
+  }
+
+  loadProvinces(): void {
+    this.http.get('/api/provinces').subscribe((r: any) => {
+      this.provinces.set(Array.isArray(r) ? r : []);
+    });
+  }
+
+  loadVillages(): void {
+    this.http.get('/api/villages').subscribe((r: any) => {
+      this.villages.set(Array.isArray(r) ? r : []);
     });
   }
 
