@@ -1,0 +1,49 @@
+<div class="notif-page">
+  <header class="notif-header">
+    <h1>Thông báo</h1>
+    <div class="notif-actions">
+      @if (loading()) {
+        <span class="notif-loading">Đang tải…</span>
+      } @else if (notifications().length > 0) {
+        <button type="button" class="btn btn-ghost" (click)="markAllRead()" [disabled]="markingAll()">
+          {{ markingAll() ? 'Đang cập nhật…' : 'Đánh dấu tất cả đã đọc' }}
+        </button>
+      }
+    </div>
+  </header>
+
+  @if (loading()) {
+    <div class="notif-empty">
+      <p>Đang tải thông báo…</p>
+    </div>
+  } @else if (notifications().length === 0) {
+    <div class="notif-empty">
+      <p>Chưa có thông báo nào.</p>
+    </div>
+  } @else {
+    <ul class="notif-list">
+      @for (n of notifications(); track n._id ?? $index) {
+        <li class="notif-item" [class.unread]="!n.isRead">
+          <div class="notif-item__dot" [class.read]="n.isRead"></div>
+          <div class="notif-item__body">
+            <div class="notif-item__title">{{ n.title }}</div>
+            @if (n.content) {
+              <div class="notif-item__content">{{ n.content }}</div>
+            }
+            <div class="notif-item__meta">
+              <span>{{ n.createdAt | date:'short' }}</span>
+              @if (n.recipient) {
+                <span class="notif-recipient">→ {{ n.recipient.name || n.recipient }}</span>
+              }
+            </div>
+          </div>
+          @if (!n.isRead) {
+            <button type="button" class="btn btn-small" (click)="markRead(n._id)">
+              Đánh dấu đã đọc
+            </button>
+          }
+        </li>
+      }
+    </ul>
+  }
+</div>

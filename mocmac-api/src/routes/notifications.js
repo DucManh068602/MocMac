@@ -4,6 +4,7 @@ import {
   getAllNotifications,
   getUserNotifications,
   markAllNotificationsRead,
+  markAllNotificationsReadAll,
   getNotificationById,
   createNotification,
   sendNotification,
@@ -16,6 +17,7 @@ const router = Router();
 router.get('/', requireAuth, requireRole('admin', 'staff'), getAllNotifications);
 router.get('/mine', requireAuth, getUserNotifications);
 router.patch('/mine/read-all', requireAuth, markAllNotificationsRead);
+router.patch('/read-all', requireAuth, requireRole('admin', 'staff'), markAllNotificationsReadAll);
 router.get('/:id', requireAuth, requireRole('admin', 'staff'), getNotificationById);
 router.post('/', requireAuth, requireRole('admin', 'staff'), createNotification);
 router.post('/send', requireAuth, requireRole('admin', 'staff'), sendNotification);

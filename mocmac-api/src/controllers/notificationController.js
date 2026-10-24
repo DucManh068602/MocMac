@@ -93,6 +93,19 @@ export const markAllNotificationsRead = async (req, res) => {
   }
 };
 
+export const markAllNotificationsReadAll = async (req, res) => {
+  try {
+    await Notification.updateMany(
+      { isRead: false },
+      { $set: { isRead: true } }
+    );
+    return res.json({ success: true, message: 'Đã đánh dấu tất cả thông báo đã đọc.' });
+  } catch (error) {
+    console.error('❌ Lỗi cập nhật thông báo:', error);
+    return res.status(500).json({ success: false, message: 'Không thể cập nhật.', error: error.message });
+  }
+};
+
 export const createNotification = async (req, res) => {
   try {
     const { title, content, type = 'system', recipient = null, orderId = null, link = '' } = req.body ?? {};
