@@ -1,6 +1,6 @@
 .top{background:var(--ink);color:#f1eee4;font-size:13px}
 .top .wrap{display:flex;justify-content:space-between;padding-top:7px;padding-bottom:7px;flex-wrap:wrap;gap:8px}
-.top div{display:flex;gap:18px}
+.top div{display:flex;align-items:center;gap:18px}
 .brand .wrap{display:flex;align-items:center;gap:28px;padding-top:16px;padding-bottom:16px}
 .logo{font-family:'Lora',serif;font-weight:700;font-size:30px;color:var(--moss);white-space:nowrap}
 .logo small{display:block;font:400 11px 'Be Vietnam Pro';color:var(--ink2);margin-top:-2px}

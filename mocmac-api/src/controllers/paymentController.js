@@ -14,8 +14,18 @@ export const createPayment = async (req, res) => {
       return res.status(400).json({ success: false, message: 'Đơn hàng phải có ít nhất một sản phẩm.' });
     }
 
-    if (typeof total !== 'number' || total < 0) {
+     if (typeof total !== 'number' || total < 0) {
       return res.status(400).json({ success: false, message: 'Tổng đơn hàng không hợp lệ.' });
+    }
+
+    if (couponCode) {
+      const couponDoc = await Coupon.findOne({ code: String(couponCode).toUpperCase() });
+      if (couponDoc) {
+        await Coupon.updateOne(
+          { code: couponDoc.code },
+          { $inc: { usedCount: 1 } }
+        );
+      }
     }
 
     const order = await Order.create({
@@ -120,12 +130,12 @@ export const momoCallback = async (req, res) => {
 
     if (orderIdStr) {
       const payment = await Payment.findOne({ transactionId: orderId }).exec();
-      if (payment) {
-        if (resultCode === 0) {
-          payment.status = 'completed';
-          await Payment.updateOne({ _id: payment._id }, { status: 'completed' });
-          await Order.updateOne({ _id: payment.order }, { paymentStatus: 'paid' });
-        } else {
+       if (payment) {
+          if (resultCode === 0) {
+            payment.status = 'completed';
+            await Payment.updateOne({ _id: payment._id }, { status: 'completed' });
+            await Order.updateOne({ _id: payment.order }, { paymentStatus: 'paid' });
+          } else {
           payment.status = 'failed';
           await Payment.updateOne({ _id: payment._id }, { status: 'failed' });
           await Order.updateOne({ _id: payment.order }, { paymentStatus: 'failed' });
@@ -147,14 +157,14 @@ export const momoIpn = async (req, res) => {
 
     const payment = await Payment.findOne({ transactionId: orderId }).populate('order').exec();
     if (payment) {
-      if (resultCode === 0) {
-        payment.status = 'completed';
-        await payment.save();
-        if (payment.order) {
-          payment.order.paymentStatus = 'paid';
-          await payment.order.save();
-        }
-      } else {
+       if (resultCode === 0) {
+          payment.status = 'completed';
+          await payment.save();
+          if (payment.order) {
+            payment.order.paymentStatus = 'paid';
+            await payment.order.save();
+          }
+        } else {
         payment.status = 'failed';
         await payment.save();
       }

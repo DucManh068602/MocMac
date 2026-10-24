@@ -1,6 +1,7 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { User } from '../models/User.js';
+import { logAction, getRequestInfo } from '../utils/auditLog.js';
 
 const signToken = (user) =>
   jwt.sign({ sub: String(user._id), role: user.role }, process.env.JWT_SECRET, {
@@ -16,6 +17,8 @@ const toPublicUser = (user) => ({
 
 export const login = async (req, res) => {
   const { identifier, password } = req.body ?? {};
+  const { ip } = getRequestInfo(req);
+
   if (!identifier || !password) {
     return res.status(400).json({ message: 'Thiếu thông tin đăng nhập' });
   }
@@ -26,8 +29,23 @@ export const login = async (req, res) => {
   }).select('+passwordHash');
 
   if (!user || !(await bcrypt.compare(String(password), user.passwordHash))) {
+    await logAction({
+      action: 'auth.login_failed',
+      resourceType: 'Auth',
+      ip,
+      details: { identifier: key },
+      status: 'failed',
+    });
     return res.status(401).json({ message: 'Sai tài khoản hoặc mật khẩu' });
   }
+
+  await logAction({
+    action: 'auth.login_success',
+    resourceType: 'Auth',
+    user,
+    ip,
+    details: { email: user.email, role: user.role },
+  });
 
   res.json({ token: signToken(user), user: toPublicUser(user) });
 };

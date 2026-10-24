@@ -1,4 +1,5 @@
 import { Order } from '../models/Order.js';
+import { logAction, getRequestInfo } from '../utils/auditLog.js';
 
 export const createOrder = async (req, res) => {
   try {
@@ -37,6 +38,16 @@ export const createOrder = async (req, res) => {
       paymentMethod,
       customerInfo: customerInfo ?? {},
       note: String(note || ''),
+    });
+
+    const { user, ip } = getRequestInfo(req);
+    await logAction({
+      action: 'order.create',
+      resourceType: 'Order',
+      resourceId: order._id,
+      user,
+      ip,
+      details: { total, paymentMethod, itemCount: items.length },
     });
 
     return res.status(201).json({
@@ -132,7 +143,7 @@ export const updateOrderStatus = async (req, res) => {
       req.params.id,
       { status },
       { new: true, runValidators: true }
-    );
+    ).lean();
 
     if (!order) {
       return res.status(404).json({
@@ -140,6 +151,16 @@ export const updateOrderStatus = async (req, res) => {
         message: 'Không tìm thấy đơn hàng.',
       });
     }
+
+    const { user: reqUser, ip } = getRequestInfo(req);
+    await logAction({
+      action: 'order.status_update',
+      resourceType: 'Order',
+      resourceId: order._id,
+      user: reqUser,
+      ip,
+      details: { newStatus: status },
+    });
 
     return res.json({
       success: true,

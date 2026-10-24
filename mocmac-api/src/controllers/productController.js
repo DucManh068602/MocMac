@@ -1,5 +1,6 @@
 import { Product } from '../models/Product.js';
 import { Review } from '../models/Review.js';
+import { logAction, getRequestInfo } from '../utils/auditLog.js';
 
 export const getAllProducts = async (req, res) => {
   const filter = {};
@@ -48,6 +49,17 @@ export const getProductBySlug = async (req, res) => {
 
 export const createProduct = async (req, res) => {
   const product = await Product.create(req.body);
+
+  const { user, ip } = getRequestInfo(req);
+  await logAction({
+    action: 'product.create',
+    resourceType: 'Product',
+    resourceId: product._id,
+    user,
+    ip,
+    details: { name: product.name, slug: product.slug, price: product.price },
+  });
+
   res.status(201).json(product);
 };
 
@@ -60,6 +72,17 @@ export const updateProduct = async (req, res) => {
   if (!product) {
     return res.status(404).json({ message: 'Không tìm thấy sản phẩm' });
   }
+
+  const { user, ip } = getRequestInfo(req);
+  await logAction({
+    action: 'product.update',
+    resourceType: 'Product',
+    resourceId: product._id,
+    user,
+    ip,
+    details: { slug: product.slug },
+  });
+
   res.json(product);
 };
 

@@ -8,6 +8,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { AuthService } from '../../auth.service';
+import { ToastService } from '../../admin/toast.service';
 
 type AuthMode = 'login' | 'register';
 
@@ -26,6 +27,7 @@ function passwordsMatchValidator(group: AbstractControl): ValidationErrors | nul
 export class DangnhapComponent {
   private fb = inject(FormBuilder);
   private auth = inject(AuthService);
+  private toast = inject(ToastService);
   private router = inject(Router);
 
   readonly bars = [0, 1, 2];
@@ -112,7 +114,7 @@ export class DangnhapComponent {
     this.feedback.set(null);
     const { identifier, password, remember } = this.loginForm.getRawValue();
     this.auth.login(identifier ?? '', password ?? '').subscribe({
-      next: (response: any) => {
+       next: (response: any) => {
         this.auth.saveSession(response, remember ?? false);
         this.feedback.set({ type: 'success', message: `Xin chào ${response.user?.name || ''}!` });
         this.loading.set(false);
@@ -127,8 +129,9 @@ export class DangnhapComponent {
         }
       },
       error: (error: unknown) => {
-        this.showRequestError(error);
         this.loading.set(false);
+        this.toast.error('Sai tài khoản hoặc mật khẩu');
+        this.feedback.set(null);
       },
     });
   }
@@ -148,8 +151,13 @@ export class DangnhapComponent {
         this.loading.set(false);
       },
       error: (error: unknown) => {
-        this.showRequestError(error);
         this.loading.set(false);
+        if (error instanceof HttpErrorResponse) {
+          this.toast.error(error.error?.message || 'Đăng ký thất bại. Vui lòng thử lại.');
+        } else {
+          this.toast.error('Đăng ký thất bại. Vui lòng thử lại.');
+        }
+        this.feedback.set(null);
       },
     });
   }
