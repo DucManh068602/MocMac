@@ -2,27 +2,55 @@ import { Review } from '../models/Review.js';
 import { Product } from '../models/Product.js';
 import { logAction, getRequestInfo } from '../utils/auditLog.js';
 
+async function updateProductStats(productId) {
+  const stats = await Review.aggregate([
+    { $match: { product: productId, status: 'visible' } },
+    { $group: { _id: null, avg: { $avg: '$rating' }, count: { $sum: 1 } } },
+  ]);
+
+  const avgRating = stats[0]?.avg ? Number(stats[0].avg.toFixed(1)) : 0;
+  const numReviews = stats[0]?.count || 0;
+
+  await Product.findByIdAndUpdate(productId, { avgRating, numReviews, rate: avgRating, reviews: numReviews });
+}
+
 export const getProductReviews = async (req, res) => {
   try {
     const product = await Product.findOne({ id: Number(req.params.id) }).lean();
-    let productReviews = [];
+    let reviews = [];
+    let total = 0;
+    let avgRating = 0;
 
     if (product) {
-      productReviews = await Review.find({ product: product._id, status: 'visible' })
-        .populate('user', 'name')
-        .sort({ createdAt: -1 })
-        .lean();
-    }
+      const page = Math.max(1, Number(req.query.page) || 1);
+      const limit = Math.max(1, Math.min(100, Number(req.query.limit) || 20));
+      const skip = (page - 1) * limit;
 
-    const avgRating = productReviews.length > 0
-      ? productReviews.reduce((sum, r) => sum + r.rating, 0) / productReviews.length
-      : 0;
+      const [productReviews, count] = await Promise.all([
+        Review.find({ product: product._id, status: 'visible' })
+          .populate('user', 'name')
+          .sort({ createdAt: -1 })
+          .skip(skip)
+          .limit(limit)
+          .lean(),
+        Review.countDocuments({ product: product._id, status: 'visible' }),
+      ]);
+
+      reviews = productReviews;
+      total = count;
+      avgRating = reviews.length > 0
+        ? Number((reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length).toFixed(1))
+        : 0;
+    }
 
     return res.json({
       success: true,
-      total: productReviews.length,
-      avgRating: Number(avgRating.toFixed(1)),
-      reviews: productReviews,
+      total,
+      page: product ? (Math.max(1, Number(req.query.page) || 1)) : 1,
+      limit: product ? (Math.max(1, Math.min(100, Number(req.query.limit) || 20))) : 0,
+      totalPages: product ? Math.ceil(total / (Math.max(1, Math.min(100, Number(req.query.limit) || 20)))) : 0,
+      avgRating,
+      reviews,
     });
   } catch (error) {
     console.error('❌ Lỗi lấy đánh giá:', error);
@@ -60,6 +88,8 @@ export const createReview = async (req, res) => {
       rating: Number(rating),
       comment: String(comment || ''),
     });
+
+    await updateProductStats(productDoc._id);
 
     const { user, ip } = getRequestInfo(req);
     await logAction({
@@ -130,10 +160,14 @@ export const updateReviewStatus = async (req, res) => {
 
 export const deleteReview = async (req, res) => {
   try {
-    const review = await Review.findByIdAndDelete(req.params.id);
+    const review = await Review.findById(req.params.id);
     if (!review) {
       return res.status(404).json({ success: false, message: 'Không tìm thấy đánh giá.' });
     }
+
+    await review.deleteOne();
+    await updateProductStats(review.product);
+
     return res.json({ success: true, message: 'Xóa đánh giá thành công.' });
   } catch (error) {
     console.error('❌ Lỗi xóa đánh giá:', error);

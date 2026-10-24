@@ -13,6 +13,8 @@ const productSchema = new mongoose.Schema(
     price: { type: Number, required: true },
     rate: { type: Number, default: 0 },
     reviews: { type: Number, default: 0 },
+    avgRating: { type: Number, default: 0 },
+    numReviews: { type: Number, default: 0 },
     ocop: { type: Number, default: 0 },
     heritage: { type: String, default: null },
     seasons: { type: [Number], default: [] },

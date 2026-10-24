@@ -2,8 +2,23 @@ import { Coupon } from '../models/Coupon.js';
 import { logAction, getRequestInfo } from '../utils/auditLog.js';
 export const getAllCoupons = async (req, res) => {
   try {
-    const coupons = await Coupon.find().sort({ createdAt: -1 }).lean();
-    return res.json({ success: true, total: coupons.length, coupons });
+    const page = Math.max(1, Number(req.query.page) || 1);
+    const limit = Math.max(1, Math.min(100, Number(req.query.limit) || 20));
+    const skip = (page - 1) * limit;
+
+    const [coupons, total] = await Promise.all([
+      Coupon.find().sort({ createdAt: -1 }).skip(skip).limit(limit).lean(),
+      Coupon.countDocuments(),
+    ]);
+
+    return res.json({
+      success: true,
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit),
+      coupons,
+    });
   } catch (error) {
     console.error('❌ Lỗi lấy danh sách mã giảm giá:', error);
     return res.status(500).json({ success: false, message: 'Không thể lấy danh sách.', error: error.message });
