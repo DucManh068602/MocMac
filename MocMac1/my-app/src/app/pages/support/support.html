@@ -1,0 +1,166 @@
+<section class="support-page">
+  <!-- BANNER -->
+  <div class="support-banner">
+    <div class="wrap banner-content">
+      <span class="small-title">MỘC MẠC</span>
+      <h1>Hỗ trợ khách hàng</h1>
+      <p class="lead">
+        Mộc Mạc luôn sẵn sàng lắng nghe và hỗ trợ bạn trong mọi thời điểm
+      </p>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <!-- THÔNG TIN LIÊN HỆ -->
+    <section class="contact-info-section">
+      <div class="content-heading">
+        <span class="heading-line"></span>
+        <div>
+          <small>LIÊN HỆ</small>
+          <h2>Thông tin hỗ trợ</h2>
+        </div>
+      </div>
+
+      <div class="contact-grid">
+        <div class="contact-item">
+          <div class="contact-icon">📞</div>
+          <h3>Hotline</h3>
+          <p>036 5507 533</p>
+        </div>
+
+        <div class="contact-item">
+          <div class="contact-icon">📧</div>
+          <h3>Email</h3>
+          <p>mocmac.support@gmail.com</p>
+        </div>
+
+        <div class="contact-item">
+          <div class="contact-icon">📍</div>
+          <h3>Địa chỉ</h3>
+          <p>669 Quốc lộ 1, Linh Xuân, TP. Hồ Chí Minh</p>
+        </div>
+
+        <div class="contact-item">
+          <div class="contact-icon">🕒</div>
+          <h3>Giờ làm việc</h3>
+          <p>8:00 - 22:00 (Thứ 2 - Chủ Nhật)</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- FORM LIÊN HỆ -->
+    <section class="contact-form-section">
+      <div class="content-heading">
+        <span class="heading-line"></span>
+        <div>
+          <small>LIÊN HỆ CHÚNG TÔI</small>
+          <h2>Gửi tin nhắn cho chúng tôi</h2>
+        </div>
+      </div>
+
+      @if (submitted) {
+        <div class="success-message">
+          <div class="success-icon">✓</div>
+          <h3>{{ submitMessage() }}</h3>
+        </div>
+      } @else {
+        <form (submit)="$event.preventDefault(); submitContact()" class="support-form">
+          <div class="form-row">
+            <div class="form-group">
+              <label> Tên của bạn <span class="required">*</span> </label>
+              <input
+                type="text"
+                [(ngModel)]="contactForm.name"
+                name="name"
+                placeholder="Nhập họ và tên"
+                maxlength="80"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <label> Email </label>
+              <input
+                type="email"
+                [(ngModel)]="contactForm.email"
+                name="email"
+                placeholder="example@gmail.com"
+                required
+              />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label> Số điện thoại </label>
+            <input
+              type="tel"
+              [(ngModel)]="contactForm.phone"
+              name="phone"
+              placeholder="0123456789"
+            />
+          </div>
+
+          <div class="form-group">
+            <label> Chủ đề </label>
+            <select name="subject" [(ngModel)]="contactForm.subject">
+              <option value="">Chọn chủ đề</option>
+              <option value="product">Sản phẩm</option>
+              <option value="order">Đơn hàng</option>
+              <option value="payment">Thanh toán</option>
+              <option value="other">Khác</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label> Nội dung <span class="required">*</span> </label>
+            <textarea
+              [(ngModel)]="contactForm.message"
+              name="message"
+              placeholder="Mô tả chi tiết vấn đề của bạn..."
+              maxlength="1500"
+              rows="5"
+              required
+            ></textarea>
+          </div>
+
+          @if (submitMessage()) {
+            <p class="form-message">{{ submitMessage() }}</p>
+          }
+
+          <button
+            type="submit"
+            class="btn-submit"
+            [disabled]="isSubmitting"
+          >
+            {{ isSubmitting ? 'Đang gửi...' : 'Gửi tin nhắn' }}
+          </button>
+        </form>
+      }
+    </section>
+
+    <!-- FAQ -->
+    <section class="faq-section">
+      <div class="content-heading">
+        <span class="heading-line"></span>
+        <div>
+          <small>FAQ</small>
+          <h2>Câu hỏi thường gặp</h2>
+        </div>
+      </div>
+
+      <div class="faq-list">
+        @for (faq of faqs; track $index) {
+          <div class="faq-item" [class.open]="activeFaq() === $index">
+            <div class="faq-question" (click)="toggleFaq($index)">
+              <span>{{ faq.question }}</span>
+              <span class="faq-icon">+</span>
+            </div>
+            <div class="faq-answer">
+              {{ faq.answer }}
+            </div>
+          </div>
+        }
+      </div>
+    </section>
+  </div>
+</section>

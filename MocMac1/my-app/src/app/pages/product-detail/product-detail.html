@@ -1,0 +1,729 @@
+<div class="product-page">
+  <!-- =========================
+       BREADCRUMB
+  ========================== -->
+  <nav class="container breadcrumb" aria-label="Điều hướng">
+    <a class="breadcrumb-link" routerLink="/" aria-label="Về trang chủ">Trang chủ</a>
+    <span class="separator" aria-hidden="true">/</span>
+    <a class="breadcrumb-link" routerLink="/san-pham" aria-label="Đến danh sách sản phẩm"
+      >Sản phẩm</a
+    >
+    <span class="separator" aria-hidden="true">/</span>
+    <a
+      class="breadcrumb-link breadcrumb-current"
+      [routerLink]="['/san-pham', productSlug()]"
+      aria-current="page"
+      title="Mở lại chi tiết sản phẩm hiện tại"
+      >Chi tiết sản phẩm</a
+    >
+  </nav>
+
+  <!-- =========================
+       PRODUCT MAIN
+  ========================== -->
+  <main class="container">
+    @if (productLoading()) {
+      <section class="product-loading">
+        <div class="loading-spinner"></div>
+        <p>Đang tải thông tin sản phẩm...</p>
+      </section>
+    } @else {
+      @if (product(); as p) {
+        <section class="product-main">
+          <!-- =====================
+             LEFT: IMAGE GALLERY
+        ====================== -->
+          <div class="gallery">
+            <div class="image-stage">
+              @if (selectedImage() && !imageBroken()) {
+                <img
+                  class="main-product-image"
+                  [src]="selectedImage()"
+                  [alt]="p.name"
+                  (error)="onImageError()"
+                />
+              } @else {
+                <div class="image-placeholder">
+                  <span>Không có hình ảnh</span>
+                </div>
+              }
+
+              @if (productImages().length > 1) {
+                <button
+                  type="button"
+                  class="gallery-arrow gallery-prev"
+                  (click)="previousImage()"
+                  aria-label="Ảnh trước"
+                >
+                  ‹
+                </button>
+
+                <button
+                  type="button"
+                  class="gallery-arrow gallery-next"
+                  (click)="nextImage()"
+                  aria-label="Ảnh tiếp theo"
+                >
+                  ›
+                </button>
+
+                <div class="image-counter">
+                  {{ selectedImageIndex() + 1 }}/{{ productImages().length }}
+                </div>
+              }
+            </div>
+
+            <!-- thumbnails -->
+            @if (productImages().length > 0) {
+              <div class="thumbnail-list">
+                @for (image of productImages(); track $index) {
+                  <button
+                    type="button"
+                    class="thumbnail"
+                    [class.active]="selectedImageIndex() === $index"
+                    (click)="selectImage($index)"
+                  >
+                    <img [src]="image" [alt]="p.name + ' ' + ($index + 1)" />
+                  </button>
+                }
+              </div>
+            }
+
+            <!-- social -->
+            <div class="share-row">
+              <span class="share-label"> Chia sẻ </span>
+
+              <button
+                type="button"
+                class="social facebook"
+                (click)="shareFacebook()"
+                aria-label="Chia sẻ Facebook"
+              >
+                f
+              </button>
+
+              <button
+                type="button"
+                class="social zalo"
+                (click)="shareZalo()"
+                aria-label="Chia sẻ Zalo"
+              >
+                Zalo
+              </button>
+
+              <button
+                type="button"
+                class="social link"
+                (click)="copyProductLink()"
+                aria-label="Sao chép liên kết sản phẩm"
+              >
+                🔗
+              </button>
+
+              <span class="share-divider"></span>
+
+              <span class="vietnam-badge"> ✦ Sản phẩm Việt </span>
+
+              @if (shareMessage()) {
+                <span class="share-feedback">{{ shareMessage() }}</span>
+              }
+            </div>
+          </div>
+
+          <!-- =====================
+             RIGHT: PRODUCT INFO
+        ====================== -->
+          <div class="product-info">
+            <!-- brand -->
+            <div class="brand-line">
+              <div class="brand-mark">MM</div>
+
+              <div>
+                <strong>MỘC MẠC</strong>
+                <span> Đặc sản và thủ công Việt Nam </span>
+              </div>
+            </div>
+
+            <!-- badges -->
+            <div class="product-badges">
+              @if (p.ocop > 0) {
+                <span class="badge badge-ocop"> OCOP {{ p.ocop }} sao </span>
+              }
+
+              <span class="badge badge-green">
+                {{ p.type }}
+              </span>
+
+              <span class="badge badge-beige"> Hàng Việt </span>
+            </div>
+
+            <!-- title -->
+            <h1>
+              {{ p.name }}
+            </h1>
+
+            <!-- Rating lấy từ review đã lưu trong MongoDB -->
+            <div class="rating-row">
+              @if (reviewRatedCount() > 0) {
+                <strong class="rating-number">
+                  {{ reviewAverage().toFixed(1) }}
+                </strong>
+                <span class="stars">
+                  {{ stars(reviewAverage()) }}
+                </span>
+              } @else {
+                <span class="no-rating-label">Chưa có đánh giá sao</span>
+              }
+
+              <span class="rating-divider"></span>
+
+              <button type="button" class="review-link" (click)="showReviews()">
+                {{ reviewCount() }} đánh giá
+              </button>
+
+              <span class="rating-divider"></span>
+
+              @if (p.inStock) {
+                <span class="stock in-stock"> ● Còn hàng </span>
+              } @else if (p.preorder) {
+                <span class="stock preorder"> ● Đặt trước </span>
+              } @else {
+                <span class="stock out-stock"> ● Hết hàng </span>
+              }
+            </div>
+
+            <!-- price -->
+            <div class="price-card">
+              <span class="price-label"> Giá bán </span>
+
+              <strong class="price">
+                {{ fmt(p.price) }}
+              </strong>
+            </div>
+
+            <!-- information -->
+            <div class="product-specs">
+              <div class="spec-row">
+                <span>Danh mục</span>
+                <strong> {{ p.cat }} · {{ p.type }} </strong>
+              </div>
+
+              <div class="spec-row">
+                <span>Nguồn gốc</span>
+                <strong>
+                  {{ p.province }}
+                </strong>
+              </div>
+
+              <div class="spec-row">
+                <span>Làng nghề</span>
+                <strong>
+                  {{ p.village || 'Đang cập nhật' }}
+                </strong>
+              </div>
+
+              <div class="spec-row">
+                <span>Vùng miền</span>
+                <strong>
+                  {{ p.region }}
+                </strong>
+              </div>
+
+              <div class="spec-row">
+                <span>Tình trạng</span>
+
+                @if (p.inStock) {
+                  <strong class="green-text"> ● Còn hàng </strong>
+                } @else if (p.preorder) {
+                  <strong class="orange-text"> ● Đặt trước </strong>
+                } @else {
+                  <strong class="red-text"> ● Hết hàng </strong>
+                }
+              </div>
+            </div>
+
+            <!-- description -->
+            <p class="short-description">
+              {{
+                p.description ||
+                  'Sản phẩm mang đậm nét văn hóa Việt Nam, được tuyển chọn từ những giá trị đặc sản và làng nghề truyền thống.'
+              }}
+            </p>
+
+            <!-- Quantity + purchase buttons: layout wrapper only; existing handlers stay unchanged -->
+            <div class="purchase-actions-layout">
+              <div class="purchase-row">
+                <div class="quantity-box">
+                  <span class="quantity-label">Số lượng</span>
+                  <div class="quantity-control">
+                    <button type="button" (click)="decreaseQuantity()" aria-label="Giảm số lượng">
+                      −
+                    </button>
+                    <span>{{ quantity() }}</span>
+                    <button type="button" (click)="increaseQuantity()" aria-label="Tăng số lượng">
+                      +
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="action-buttons">
+                <button
+                  type="button"
+                  class="btn-cart"
+                  [disabled]="!p.inStock && !p.preorder"
+                  (click)="addToCart()"
+                >
+                  <span aria-hidden="true">🛒</span>
+                  Thêm vào giỏ hàng
+                </button>
+
+                <button
+                  type="button"
+                  class="btn-buy"
+                  [disabled]="!p.inStock && !p.preorder"
+                  (click)="buyNow()"
+                >
+                  <span aria-hidden="true">⚡</span>
+                  Mua ngay
+                </button>
+              </div>
+            </div>
+
+            <!-- service benefits -->
+            <div class="benefit-grid">
+              <div class="benefit">
+                <div class="benefit-icon">🚚</div>
+
+                <div>
+                  <strong>Giao hàng toàn quốc</strong>
+                  <span>Nhanh chóng, an toàn</span>
+                </div>
+              </div>
+
+              <div class="benefit">
+                <div class="benefit-icon">✓</div>
+
+                <div>
+                  <strong>Sản phẩm chính hãng</strong>
+                  <span>Đảm bảo chất lượng</span>
+                </div>
+              </div>
+
+              <div class="benefit">
+                <div class="benefit-icon">↻</div>
+
+                <div>
+                  <strong>Đổi trả dễ dàng</strong>
+                  <span>Trong vòng 7 ngày</span>
+                </div>
+              </div>
+
+              <div class="benefit">
+                <div class="benefit-icon">♧</div>
+
+                <div>
+                  <strong>Hỗ trợ 24/7</strong>
+                  <span>Tư vấn tận tình</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- =========================
+           PRODUCT DETAILS
+      ========================== -->
+        <section class="details-section" id="product-details-tabs">
+          <!-- tabs -->
+          <div class="detail-tabs">
+            <button
+              type="button"
+              [class.active]="activeTab() === 'description'"
+              (click)="setTab('description')"
+            >
+              Mô tả sản phẩm
+            </button>
+
+            <button
+              type="button"
+              [class.active]="activeTab() === 'information'"
+              (click)="setTab('information')"
+            >
+              Thông tin chi tiết
+            </button>
+
+            <button
+              type="button"
+              [class.active]="activeTab() === 'reviews'"
+              (click)="setTab('reviews')"
+            >
+              Đánh giá ({{ reviewCount() }})
+            </button>
+          </div>
+
+          <!-- description: nội dung và ảnh sản phẩm đặt cạnh nhau -->
+          @if (activeTab() === 'description') {
+            <div class="detail-content description-layout">
+              <div class="description-copy">
+                <div class="content-heading">
+                  <span class="heading-line"></span>
+                  <div>
+                    <small>VỀ SẢN PHẨM</small>
+                    <h2>Mô tả sản phẩm</h2>
+                  </div>
+                </div>
+
+                <p class="description-lead">
+                  {{
+                    p.description ||
+                      p.name +
+                        ' là sản phẩm đặc trưng mang nét văn hóa và giá trị truyền thống của Việt Nam.'
+                  }}
+                </p>
+
+                <p>
+                  Sản phẩm được tuyển chọn nhằm mang đến trải nghiệm chân thực về đặc sản, làng nghề
+                  và những giá trị văn hóa đặc trưng của từng vùng miền Việt Nam.
+                </p>
+
+                <div class="story-box">
+                  <div class="story-icon">✦</div>
+                  <div>
+                    <strong>Câu chuyện phía sau sản phẩm</strong>
+                    <p>
+                      Mỗi sản phẩm tại Mộc Mạc đều được lựa chọn dựa trên nguồn gốc, chất lượng và
+                      câu chuyện văn hóa phía sau.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              @if (productImages().length > 0) {
+                <figure class="description-visual">
+                  <img [src]="productImages()[0]" [alt]="p.name + ' - hình ảnh sản phẩm'" />
+                  <figcaption>
+                    <span>ĐẶC SẢN &amp; THỦ CÔNG VIỆT</span>
+                    <strong>{{ p.name }}</strong>
+                    <small>{{ p.province }} · {{ p.region }}</small>
+                  </figcaption>
+                </figure>
+              } @else {
+                <aside class="description-visual description-visual-empty">
+                  <span class="description-visual-mark">MM</span>
+                  <strong>Giá trị bản địa, tinh hoa Việt</strong>
+                  <small>Mộc Mạc tuyển chọn sản phẩm từ các vùng miền Việt Nam.</small>
+                </aside>
+              }
+            </div>
+          }
+
+          <!-- information -->
+          @if (activeTab() === 'information') {
+            <div class="detail-content information-layout">
+              <div class="content-heading">
+                <span class="heading-line"></span>
+
+                <div>
+                  <small>THÔNG TIN</small>
+                  <h2>Thông tin sản phẩm</h2>
+                </div>
+              </div>
+
+              <div class="information-table">
+                <div>
+                  <span>Tên sản phẩm</span>
+                  <strong>{{ p.name }}</strong>
+                </div>
+
+                <div>
+                  <span>Danh mục</span>
+                  <strong>{{ p.cat }}</strong>
+                </div>
+
+                <div>
+                  <span>Loại sản phẩm</span>
+                  <strong>{{ p.type }}</strong>
+                </div>
+
+                <div>
+                  <span>Vùng miền</span>
+                  <strong>{{ p.region }}</strong>
+                </div>
+
+                <div>
+                  <span>Tỉnh / thành</span>
+                  <strong>{{ p.province }}</strong>
+                </div>
+
+                <div>
+                  <span>Làng nghề</span>
+                  <strong>{{ p.village || 'Đang cập nhật' }}</strong>
+                </div>
+
+                <div>
+                  <span>OCOP</span>
+                  <strong>
+                    {{ p.ocop > 0 ? p.ocop + ' sao' : 'Không có' }}
+                  </strong>
+                </div>
+              </div>
+            </div>
+          }
+
+          <!-- reviews -->
+          @if (activeTab() === 'reviews') {
+            <div class="detail-content reviews-section">
+              <div class="content-heading">
+                <span class="heading-line"></span>
+
+                <div>
+                  <small>KHÁCH HÀNG</small>
+                  <h2>Đánh giá sản phẩm</h2>
+                </div>
+              </div>
+
+              <div class="reviews-layout">
+                <aside class="review-sidebar">
+                  <!-- review summary -->
+                  <div class="review-summary">
+                    <div class="review-score">
+                      <strong>
+                        {{ reviewRatedCount() > 0 ? reviewAverage().toFixed(1) : '—' }}
+                      </strong>
+
+                      <span>/ 5</span>
+
+                      @if (reviewRatedCount() > 0) {
+                        <div class="big-stars">
+                          {{ stars(reviewAverage()) }}
+                        </div>
+                      } @else {
+                        <small>Chưa có đánh giá sao</small>
+                      }
+
+                      <small> {{ reviewCount() }} đánh giá </small>
+                    </div>
+
+                    <div class="review-summary-text">
+                      <strong> Cảm nhận của khách hàng </strong>
+
+                      <p>
+                        Những đánh giá thực tế giúp khách hàng có thêm thông tin trước khi lựa chọn
+                        sản phẩm.
+                      </p>
+                    </div>
+
+                    <a class="write-review-button" href="#review-form">Viết đánh giá sản phẩm</a>
+                  </div>
+
+                  <!-- review form -->
+                  <div class="review-form" id="review-form">
+                    @if (!auth.isAuthenticated()) {
+                      <div class="no-review-permission">
+                        <p>Vui lòng <a routerLink="/dang-nhap" class="login-link">đăng nhập</a> để đánh giá sản phẩm này.</p>
+                      </div>
+                    } @else if (!canReview()) {
+                      <div class="no-review-permission">
+                        <p>Bạn chỉ có thể đánh giá sản phẩm sau khi đã nhận hàng.</p>
+                        <p class="hint">Đơn hàng của bạn sẽ được cập nhật trạng thái "Đã giao" khi hoàn tất.</p>
+                      </div>
+                    } @else {
+                      <h3>Viết đánh giá của bạn</h3>
+
+                      <div class="form-row">
+                        <div class="form-group">
+                          <label> Tên của bạn </label>
+
+                          <input
+                            type="text"
+                            name="reviewName"
+                            [(ngModel)]="reviewName"
+                            placeholder="Nhập tên của bạn"
+                            maxlength="80"
+                          />
+                        </div>
+
+                        <div class="form-group">
+                          <label> Số sao </label>
+
+                          <select name="reviewRating" [(ngModel)]="reviewRating">
+                            <option [ngValue]="5">5 sao</option>
+
+                            <option [ngValue]="4">4 sao</option>
+
+                            <option [ngValue]="3">3 sao</option>
+
+                            <option [ngValue]="2">2 sao</option>
+
+                            <option [ngValue]="1">1 sao</option>
+                          </select>
+                        </div>
+                      </div>
+
+                      <div class="form-group">
+                        <label> Nội dung đánh giá </label>
+
+                        <textarea
+                          name="reviewContent"
+                          [(ngModel)]="reviewContent"
+                          placeholder="Chia sẻ cảm nhận của bạn về sản phẩm..."
+                          maxlength="1500"
+                          rows="5"
+                        ></textarea>
+                      </div>
+
+                      <button
+                        type="button"
+                        class="submit-review"
+                        [disabled]="reviewSubmitting()"
+                        (click)="submitReview()"
+                      >
+                        {{ reviewSubmitting() ? 'Đang gửi...' : 'Gửi đánh giá' }}
+                      </button>
+
+                      @if (reviewMessage()) {
+                        <p class="review-message">
+                          {{ reviewMessage() }}
+                        </p>
+                      }
+                    }
+                  </div>
+                </aside>
+
+                <div class="reviews-main">
+                  <!-- reviews list -->
+                  <div class="reviews-list">
+                    <div class="reviews-list-heading">
+                      <h3>Nhận xét gần đây</h3>
+                      <span>{{ reviewCount() }} đánh giá</span>
+                    </div>
+
+                    @if (reviewLoading()) {
+                      <div class="review-empty">Đang tải đánh giá...</div>
+                    } @else if (reviews().length === 0) {
+                      <div class="review-empty">
+                        Chưa có đánh giá nào. Hãy là người đầu tiên chia sẻ cảm nhận về sản phẩm.
+                      </div>
+                    } @else {
+                      @for (review of reviews(); track review.id) {
+                        <article class="review-item">
+                          <div class="review-avatar">
+                            {{ review.name.charAt(0).toUpperCase() }}
+                          </div>
+
+                          <div class="review-body">
+                            <div class="review-top">
+                              <strong>
+                                {{ review.name }}
+                              </strong>
+
+                              <span>
+                                {{ review.createdAt }}
+                              </span>
+                            </div>
+
+                            @if (review.rating !== undefined) {
+                              <div class="review-stars">
+                                {{ stars(review.rating) }}
+                              </div>
+                            }
+
+                            @if (review.content) {
+                              <p>
+                                {{ review.content }}
+                              </p>
+                            }
+                          </div>
+                        </article>
+                      }
+                    }
+                  </div>
+                </div>
+              </div>
+            </div>
+          }
+        </section>
+
+        <!-- =========================
+           RELATED PRODUCTS
+      ========================== -->
+        @if (relatedProducts().length > 0) {
+          <section class="related-section">
+            <div class="section-heading">
+              <div>
+                <span> GỢI Ý CHO BẠN </span>
+
+                <h2>Có thể bạn cũng thích</h2>
+              </div>
+
+              <button type="button" (click)="goBack()">Xem tất cả →</button>
+            </div>
+
+            <div class="related-grid">
+              @for (item of relatedProducts(); track item.id) {
+                <article class="related-card" (click)="openProduct(item)">
+                  <div class="related-image">
+                    @if (item.images && item.images.length > 0) {
+                      <img [src]="item.images[0]" [alt]="item.name" />
+                    } @else {
+                      <div class="related-placeholder">Mộc Mạc</div>
+                    }
+
+                    @if (item.ocop > 0) {
+                      <span class="related-ocop"> OCOP {{ item.ocop }} </span>
+                    }
+                  </div>
+
+                  <div class="related-info">
+                    <span class="related-region">
+                      {{ item.region }}
+                    </span>
+
+                    <h3>
+                      {{ item.name }}
+                    </h3>
+
+                    <div class="related-bottom">
+                      <strong>
+                        {{ fmt(item.price) }}
+                      </strong>
+
+                      <span class="related-rating">
+                        @if (relatedReviewRatingOf(item) > 0) {
+                          ★ {{ relatedReviewRatingOf(item).toFixed(1) }}
+                        } @else if (relatedReviewCountOf(item) > 0) {
+                          {{ relatedReviewCountOf(item) }} nhận xét
+                        } @else {
+                          Chưa có đánh giá
+                        }
+                      </span>
+                    </div>
+                  </div>
+                </article>
+              }
+            </div>
+          </section>
+        }
+      } @else {
+        <!-- =========================
+           PRODUCT NOT FOUND
+      ========================== -->
+
+        <section class="not-found">
+          <div class="not-found-icon">◌</div>
+
+          <h2>Không tìm thấy sản phẩm</h2>
+
+          @if (productError()) {
+            <p>{{ productError() }}</p>
+          } @else {
+            <p>Sản phẩm bạn đang tìm kiếm không tồn tại hoặc đã được thay đổi.</p>
+          }
+
+          <button type="button" (click)="goBack()">← Quay lại sản phẩm</button>
+        </section>
+      }
+    }
+  </main>
+</div>

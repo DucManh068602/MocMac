@@ -1,0 +1,72 @@
+<section class="gift-business-page">
+  <!-- BANNER -->
+  <div class="gift-banner">
+    <div class="wrap banner-content">
+      <span class="small-title">MỘC MẠC</span>
+      <h1>Quà tặng cho doanh nghiệp</h1>
+      <p class="lead">
+        Giải pháp quà tặng doanh nghiệp chuyên nghiệp – Từng chú ý nhỏ, hoàn thiện thành kết quả lớn
+      </p>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <!-- Lợi ích -->
+    <section class="benefits-section">
+      <div class="content-heading">
+        <span class="heading-line"></span>
+        <div>
+          <small>GIẢI PHÁP</small>
+          <h2>Lợi ích hợp tác cùng Mộc Mạc</h2>
+        </div>
+      </div>
+
+      <div class="benefits-grid">
+        @for (idea of businessIdeas(); track idea.title) {
+          <div class="benefit-card">
+            <div class="benefit-icon">{{ idea.icon }}</div>
+            <h3>{{ idea.title }}</h3>
+            <p>{{ idea.desc }}</p>
+          </div>
+        }
+      </div>
+    </section>
+
+    <!-- Danh mục sản phẩm gợi ý -->
+    <section class="products-section">
+      <div class="content-heading">
+        <span class="heading-line"></span>
+        <div>
+          <small>SẢN PHẨM GỢI Ý</small>
+          <h2>Danh mục sản phẩm phù hợp</h2>
+        </div>
+      </div>
+
+      <div class="products-grid">
+        @for (product of featuredProducts(); track product.id) {
+          <div class="product-card">
+            @if (product.images && product.images.length > 0) {
+              <img [src]="product.images[0]" [alt]="product.name" />
+            } @else {
+              <div class="product-placeholder">{{ product.icon || '🎁' }}</div>
+            }
+            <h3>{{ product.name }}</h3>
+            <p class="product-cat">{{ product.cat }} · {{ product.type }}</p>
+            <p class="product-price">{{ product.price | number: '1.0-0': 'vi-VN' }}đ</p>
+            <a class="btn-buy" routerLink="/san-pham/{{ product.slug }}">Xem chi tiết</a>
+          </div>
+        }
+      </div>
+    </section>
+
+    <!-- Liên hệ -->
+    <section class="contact-cta">
+      <h3>Bạn cần tư vấn giải pháp quà tặng cho doanh nghiệp?</h3>
+      <p>
+        Đội ngũ chuyên gia của chúng tôi sẽ hỗ trợ bạn thiết kế bộ sưu tập quà tặng phù hợp
+        với thương hiệu và ngân sách của bạn.
+      </p>
+      <a class="btn btn-primary" routerLink="/lien-he">Liên hệ ngay</a>
+    </section>
+  </div>
+</section>

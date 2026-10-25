@@ -1,0 +1,248 @@
+.list-page {
+  @apply p-4 max-w-5xl mx-auto;
+}
+
+.list-header {
+  @apply flex justify-between items-center mb-4;
+}
+
+.list-header h2 {
+  @apply text-lg font-semibold text-moss;
+}
+
+.btn-add {
+  @apply bg-moss text-white border-none py-1.5 px-4 rounded cursor-pointer text-sm font-medium transition-colors;
+}
+
+.btn-add:hover {
+  @apply bg-moss-d;
+}
+
+.stats-grid {
+  @apply grid grid-cols-[repeat(auto-fit,minmax(140px,1fr))] gap-3 mb-5;
+}
+
+.stat-card {
+  @apply bg-white rounded-lg p-4 text-center border border-line shadow-sm;
+}
+
+.stat-card:hover {
+  @apply transform -translate-y-0.5;
+}
+
+.stat-value {
+  @apply block text-xl font-bold text-ink font-sans;
+}
+
+.stat-label {
+  @apply text-xs text-ink2 uppercase tracking-wider;
+}
+
+.stat--moss { @apply border-t-4 border-moss; }
+.stat--moss-d { @apply border-t-4 border-moss-d; }
+.stat--earth { @apply border-t-4 border-earth; }
+.stat--sage { @apply border-t-4 border-sage; }
+.stat--clay { @apply border-t-4 border-clay; }
+.stat--ink { @apply border-t-4 border-ink; }
+
+.unread-row {
+  @apply bg-[rgba(67,87,49,0.03)];
+}
+
+.table-wrap {
+  @apply overflow-x-auto bg-white rounded-lg border border-line;
+}
+
+.admin-table {
+  @apply w-full border-collapse text-sm;
+}
+
+.admin-table th {
+  @apply bg-[#f4f3ec] px-3 py-2 text-left font-medium text-moss border-b-2 border-[#d6ceb9];
+}
+
+.admin-table td {
+  @apply px-3 py-2 border-b border-[#e8e0d0];
+}
+
+.admin-table tbody tr:hover {
+  @apply bg-[#f9f8f4];
+}
+
+.btn-small {
+  @apply px-2 py-0.5 border border-[#d6ceb9] rounded bg-white cursor-pointer text-xs font-medium transition-colors;
+}
+
+.btn-small:hover {
+  @apply bg-[#f4f3ec];
+}
+
+.btn-delete {
+  @apply text-[#c0392b] border-[#c0392b];
+}
+
+.btn-delete:hover {
+  @apply bg-[#c0392b] text-white;
+}
+
+.btn-cancel {
+  @apply bg-white text-[#666] border border-[#d6ceb9] py-1.5 px-4 rounded cursor-pointer text-sm font-medium transition-colors;
+}
+
+.btn-cancel:hover {
+  @apply bg-[#f4f3ec];
+}
+
+.btn-save {
+  @apply bg-moss text-white border-none py-1.5 px-4 rounded cursor-pointer text-sm font-medium transition-colors;
+}
+
+.btn-save:hover {
+  @apply bg-moss-d;
+}
+
+.form-card {
+  @apply bg-white border border-[#d6ceb9] rounded-lg p-4 mb-4;
+}
+
+.form-card h3 {
+  @apply mt-0 text-moss font-semibold;
+}
+
+.form-grid {
+  @apply grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-3;
+}
+
+.form-input {
+  @apply w-full px-2 py-2 border border-[#d6ceb9] rounded text-sm font-sans;
+}
+
+.form-input:focus {
+  @apply outline-none border-moss;
+}
+
+.form-actions {
+  @apply flex gap-2 mt-3;
+}
+
+.thumb-img {
+  @apply w-10 h-10 object-cover rounded;
+}
+
+.rating {
+  @apply font-bold text-[#d4a524];
+}
+
+.log-details {
+  @apply font-mono text-xs bg-[#f8f8f8] px-2 py-1 rounded max-w-[200px] overflow-hidden whitespace-pre-wrap break-words;
+}
+
+.status-badge {
+  @apply inline-block px-2 py-0.5 text-xs font-semibold uppercase rounded text-center;
+}
+
+.status-visible {
+  @apply bg-[rgba(82,196,94,0.15)] text-[#15803d] border border-green-200;
+}
+
+.status-hidden {
+  @apply bg-[rgba(107,114,125,0.15)] text-[#494e57] border border-gray-300;
+}
+
+.status-pending {
+  @apply bg-[rgba(214,188,125,0.2)] text-[#8b6d1a] border border-yellow-200;
+}
+
+.status-processing {
+  @apply bg-[rgba(209,122,70,0.15)] text-[#b85b3e] border border-orange-200;
+}
+
+.status-shipped {
+  @apply bg-[rgba(124,148,104,0.15)] text-[#4a7c59] border border-green-200;
+}
+
+.status-delivered {
+  @apply bg-[rgba(34,197,94,0.15)] text-[#15803d] border border-green-200;
+}
+
+.status-cancelled {
+  @apply bg-[rgba(107,114,125,0.15)] text-[#494e57] border border-gray-300;
+}
+
+.status-select {
+  @apply border border-line rounded text-xs px-1.5 py-0.5 bg-white cursor-pointer opacity-70 transition-opacity;
+}
+
+.status-select:hover {
+  @apply opacity-100;
+}
+
+.btn-toggle {
+  @apply text-[#b85b3e] border border-[#b85b3e] ml-1;
+}
+
+.btn-toggle:hover {
+  @apply bg-[#b85b3e] text-white;
+}
+
+.rating-stars {
+  @apply text-[#d4a524] text-sm;
+}
+
+.rating-stars small {
+  @apply text-[#666] text-xs font-normal;
+}
+
+.stars-1 { @apply text-[#d4a524]; }
+.stars-2 { @apply text-[#d4a524]; }
+.stars-3 { @apply text-[#d4a524]; }
+.stars-4 { @apply text-[#d4a524]; }
+.stars-5 { @apply text-[#d4a524]; }
+
+.checkbox {
+  @apply flex items-center gap-2 cursor-pointer text-sm;
+}
+
+.form-checkbox {
+  @apply flex items-center gap-2 cursor-pointer text-sm col-span-full;
+}
+
+.form-checkbox input[type="checkbox"] {
+  @apply w-4 h-4 text-moss border-[#d6ceb9] rounded focus:ring-moss;
+}
+
+.upload-area {
+  @apply relative border-2 border-dashed border-[#d6ceb9] rounded-lg p-6 text-center transition-colors cursor-pointer;
+}
+
+.upload-area:hover, .upload-area.drag-over {
+  @apply border-moss bg-[#e4ebe3];
+}
+
+.upload-placeholder span {
+  @apply block text-moss font-medium mb-1;
+}
+
+.upload-placeholder small {
+  @apply text-ink2;
+}
+
+.preview-grid {
+  @apply grid grid-cols-[repeat(auto-fill,minmax(80px,1fr))] gap-2 mt-3;
+}
+
+.preview-item {
+  @apply relative aspect-square rounded overflow-hidden border border-[#d6ceb9];
+}
+
+.preview-item img {
+  @apply w-full h-full object-cover;
+}
+
+.remove-btn {
+  @apply absolute top-1 right-1 w-5 h-5 bg-red-500 text-white rounded-full text-center leading-none text-xs hover:bg-red-600;
+}
+
+.protected-label {
+  @apply text-xs text-ink2 font-medium;
+}

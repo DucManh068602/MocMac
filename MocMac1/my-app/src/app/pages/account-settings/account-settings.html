@@ -1,0 +1,121 @@
+<section class="settings-page">
+  <div class="wrap settings-container">
+    <h1>Cài đặt tài khoản</h1>
+    <p class="subtitle">Quản lý thông tin cá nhân và yêu cầu nâng cấp vai trò</p>
+
+    <!-- PROFILE -->
+    <section class="profile-section">
+      <h2>Thông tin cá nhân</h2>
+      @if (profile(); as p) {
+        <div class="profile-grid">
+          <div class="profile-item">
+            <label>Tên</label>
+            <span>{{ p.name }}</span>
+          </div>
+          <div class="profile-item">
+            <label>Email</label>
+            <span>{{ p.email }}</span>
+          </div>
+          <div class="profile-item">
+            <label>Số điện thoại</label>
+            <span>{{ p.phone || 'Chưa cập nhật' }}</span>
+          </div>
+          <div class="profile-item">
+            <label>Vai trò</label>
+            <span class="role-badge">{{ p.role === 'customer' ? 'Khách hàng' : p.role }}</span>
+          </div>
+        </div>
+      }
+    </section>
+
+    <!-- ROLE UPGRADE REQUEST -->
+    <section class="role-upgrade-section">
+      <h2>Yêu cầu nâng cấp vai trò</h2>
+
+      @if (profile()?.role === 'customer') {
+        <p class="hint">
+          Nâu bộc nhu cầu nâng cấp vai trò để trở thành cộng tác viên hoặc hợp tác xã tại Mộc Mạc.
+        </p>
+
+        <div class="form-group">
+          <label>Chọn vai trò</label>
+          <select [(ngModel)]="selectedRole" name="selectedRole">
+            <option value="">Chọn vai trò...</option>
+            @for (opt of roleOptions; track opt.value) {
+              <option [ngValue]="opt.value" [disabled]="loading()">
+                {{ opt.label }}
+              </option>
+            }
+          </select>
+        </div>
+
+        @if (selectedRole) {
+          <div class="form-group">
+            <label>Lý do</label>
+            <textarea
+              [(ngModel)]="reasonText"
+              name="reasonText"
+              placeholder="Mô tả lý do bạn cần nâng cấp vai trò..."
+              maxlength="500"
+              rows="4"
+              [disabled]="loading()"
+            ></textarea>
+          </div>
+        }
+
+        @if (message()) {
+          <p class="message">{{ message() }}</p>
+        }
+
+        <button
+          type="button"
+          class="btn-submit"
+          [disabled]="loading() || !selectedRole"
+          (click)="submitRequest()"
+        >
+          {{ loading() ? 'Đang gửi...' : 'Gửi yêu cầu' }}
+        </button>
+      } @else {
+        <p class="hint">
+          Tài khoản của bạn đã có vai trò <strong>{{ profile()?.role }}</strong>.
+        </p>
+      }
+    </section>
+
+    <!-- REQUEST HISTORY -->
+    <section class="request-history-section">
+      <h2>Lịch sử yêu cầu</h2>
+
+      @if (requestsLoading()) {
+        <p class="loading">Đang tải...</p>
+      } @else if (requests().length === 0) {
+        <p class="empty">Bạn chưa có yêu cầu nào.</p>
+      } @else {
+        <table class="requests-table">
+          <thead>
+            <tr>
+              <th>Vai trò</th>
+              <th>Trạng thái</th>
+              <th>Ngày gửi</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (req of requests(); track req._id) {
+              <tr>
+                <td>{{ roleOptions.find(r => r.value === req.requestedRole)?.label || req.requestedRole }}</td>
+                <td>
+                  <span class="status" [ngClass]="'status-' + req.status">
+                    @if (req.status === 'pending') { ⏳ Đang chờ }
+                    @else if (req.status === 'approved') { ✓ Đã duyệt }
+                    @else { ✗ Từ chối }
+                  </span>
+                </td>
+                <td>{{ req.createdAt | date: 'dd/MM/yyyy HH:mm' }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      }
+    </section>
+  </div>
+</section>

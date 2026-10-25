@@ -1,0 +1,76 @@
+<section class="role-requests-page">
+  <div class="list-page">
+    <header class="list-header">
+      <h2>Yêu cầu nâng cấp vai trò ({{ requests().length }})</h2>
+    </header>
+
+    @if (message()) {
+      <div class="message-bar">{{ message() }}</div>
+    }
+
+    @if (loading()) {
+      <div class="loading-bar">Đang tải...</div>
+    } @else if (requests().length === 0) {
+      <div class="empty-state">
+        Chưa có yêu cầu nào.
+      </div>
+    } @else {
+      <table class="requests-table">
+        <thead>
+          <tr>
+            <th>Người dùng</th>
+            <th>Vai trò hiện tại</th>
+            <th>Yêu cầu</th>
+            <th>Lý do</th>
+            <th>Trạng thái</th>
+            <th>Ngày gửi</th>
+            <th>Thao tác</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (req of requests(); track req._id) {
+            <tr>
+              <td>
+                <strong>{{ req.user?.name }}</strong>
+                <br />
+                <small>{{ req.user?.email }}</small>
+              </td>
+              <td>{{ getRoleLabel(req.user?.role || 'customer') }}</td>
+              <td>
+                @if (req.status === 'pending') {
+                  <select [(ngModel)]="req.requestedRole">
+                    <option value="collaborator">Cộng tác viên</option>
+                    <option value="cooperative">Hợp tác xã</option>
+                    <option value="staff">Nhân viên</option>
+                    <option value="admin">Quản trị viên</option>
+                  </select>
+                } @else {
+                  {{ getRoleLabel(req.requestedRole) }}
+                }
+              </td>
+              <td>{{ req.reason || 'Không có' }}</td>
+              <td>
+                <span class="status" [ngClass]="'status-' + req.status">
+                  @if (req.status === 'pending') { Đang chờ }
+                  @else if (req.status === 'approved') { Đã duyệt }
+                  @else { Từ chối }
+                </span>
+              </td>
+              <td>{{ req.createdAt | date: 'dd/MM/yyyy HH:mm' }}</td>
+              <td>
+                @if (req.status === 'pending') {
+                  @if (loading()) {
+                    <span>⏳</span>
+                  } @else {
+                    <button class="btn-approve" (click)="approveRequest(req._id, req.requestedRole)">Chấp nhận</button>
+                    <button class="btn-reject" (click)="rejectRequest(req._id)">Từ chối</button>
+                  }
+                }
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+  </div>
+</section>

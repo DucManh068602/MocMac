@@ -1,0 +1,32 @@
+@if (visible()) {
+  <section class="meomeo-guide">
+    <div class="guide-overlay" [style]="overlayRect()"></div>
+    <div class="guide-overlay-top"></div>
+
+    <div #popup class="guide-popup" [style]="popupStyle()" (click)="$event.stopPropagation()">
+      <div class="guide-header">
+        <span class="guide-mascot">🐱</span>
+        <strong class="guide-title">{{ getStep().title }}</strong>
+        <button type="button" class="btn-voice" (click)="toggleSpeech()" [class.on]="speechEnabled()">
+          {{ speechEnabled() ? '🔊 Tắt giọng nói' : '🔇 Bật giọng nói' }}
+        </button>
+      </div>
+
+      <p class="guide-text">{{ getStep().text }}</p>
+
+      <div class="guide-footer">
+        <span class="step-indicator">
+          Bước {{ currentStep() + 1 }} / {{ steps().length }}
+        </span>
+        <div class="guide-actions">
+          <button type="button" class="btn-secondary" (click)="prev()" [disabled]="currentStep() === 0">
+            ← Trước
+          </button>
+          <button type="button" class="btn-primary" (click)="next()">
+            @if (currentStep() === steps().length - 1) { Hoàn thành } @else { Tiếp theo → }
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+}
