@@ -11,7 +11,7 @@ const MOMO_CONFIG = {
   redirectUrl: process.env.MOMO_REDIRECT_URL || 'https://momo.vn/return',
 };
 
-function generateSignature(amount, orderId, orderInfo, extraData, requestId) {
+function generateSignature(amount, orderId, orderInfo, extraData, requestId, requestType) {
   const rawSignature =
     `accessKey=${MOMO_CONFIG.accessKey}` +
     `&amount=${amount}` +
@@ -22,15 +22,15 @@ function generateSignature(amount, orderId, orderInfo, extraData, requestId) {
     `&partnerCode=${MOMO_CONFIG.partnerCode}` +
     `&redirectUrl=${MOMO_CONFIG.redirectUrl}` +
     `&requestId=${requestId}` +
-    `&requestType=captureWallet`;
+    `&requestType=${requestType}`;
 
   return crypto.createHmac('sha256', MOMO_CONFIG.secretKey).update(rawSignature).digest('hex');
 }
 
-export function createMoMoPayment(amount, orderInfo, extraData = '') {
+export function createMoMoPayment(amount, orderInfo, extraData = '', requestType = 'payWithMethod') {
   const requestId = `${MOMO_CONFIG.partnerCode}${Date.now()}`;
   const orderId = requestId;
-  const signature = generateSignature(amount, orderId, orderInfo, extraData, requestId);
+  const signature = generateSignature(amount, orderId, orderInfo, extraData, requestId, requestType);
 
   return {
     partnerCode: MOMO_CONFIG.partnerCode,
@@ -42,7 +42,7 @@ export function createMoMoPayment(amount, orderInfo, extraData = '') {
     redirectUrl: MOMO_CONFIG.redirectUrl,
     ipnUrl: MOMO_CONFIG.notifyUrl,
     extraData,
-    requestType: 'captureWallet',
+    requestType,
     signature,
     lang: 'vi',
   };

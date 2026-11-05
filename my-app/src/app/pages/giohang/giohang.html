@@ -174,19 +174,22 @@
                    <span class="payment-text">Thanh toán khi nhận hàng (COD)</span>
                  </label>
                  <label class="payment-option">
-                   <input type="radio" name="payment" value="momo"
-                          [checked]="paymentMethod() === 'momo'"
-                          (change)="paymentMethod.set('momo')" />
-                   <span class="payment-text">
-                     <span class="momo-icon">M</span> Ví thanh toán MoMo
-                   </span>
+                   <input type="radio" name="payment" value="vnpay"
+                          [checked]="paymentMethod() === 'vnpay'"
+                          (change)="paymentMethod.set('vnpay')" />
+                    <span class="payment-text">
+                      <span class="momo-icon" style="background:#005baa">V</span> VNPAY (sandbox test)
+                    </span>
                  </label>
                </div>
              </div>
 
-             <button type="button" class="btn-primary block" (click)="checkout()">
-               Tiến hành Thanh toán &nbsp;→
-             </button>
+            <button type="button" class="btn-primary block" (click)="checkout()" [disabled]="paying()">
+              @if (paying()) { Đang chuyển đến VNPAY... } @else { Tiến hành Thanh toán &nbsp;→ }
+            </button>
+            @if (payError()) { <p class="coupon-msg err" style="margin-top:8px">{{ payError() }}</p> }
+            @if (paymentStatus()==='success') { <p class="coupon-msg ok" style="margin-top:8px">Thanh toán thành công. Cảm ơn bạn!</p> }
+            @if (paymentStatus()==='fail') { <p class="coupon-msg err" style="margin-top:8px">Thanh toán VNPAY chưa hoàn tất. Vui lòng thử lại.</p> }
             <a class="btn-secondary block" routerLink="/san-pham">
               Tiếp tục chọn đặc sản vùng khác
             </a>

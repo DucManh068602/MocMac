@@ -108,15 +108,36 @@ export class ChatService {
     });
   }
 
+  aiMessages = signal<{ from: 'user'|'ai'; text: string; at: string }[]>([
+    { from: 'ai', text: 'Xin chào! Mình là Trợ Lý AI Mộc Mạc, luôn sẵn sàng hỗ trợ bạn về sản phẩm, giá, vùng miền, mã giảm giá và đơn hàng.', at: new Date().toISOString() }
+  ]);
+  aiLoading = signal(false);
+
+  askAi(message: string) {
+    const msg = String(message || '').trim();
+    if (!msg) return;
+    this.aiMessages.update(m => [...m, { from: 'user', text: msg, at: new Date().toISOString() }]);
+    this.aiLoading.set(true);
+    this.http.post<any>('/api/ai/chat', { message: msg }).subscribe({
+      next: (r) => {
+        const text = r?.answer || 'Trợ Lý AI chưa có phản hồi phù hợp.';
+        this.aiMessages.update(m => [...m, { from: 'ai', text, at: new Date().toISOString() }]);
+        this.aiLoading.set(false);
+      },
+      error: () => {
+        this.aiMessages.update(m => [...m, { from: 'ai', text: 'Xin lỗi, Trợ Lý AI đang bận. Vui lòng thử lại sau.', at: new Date().toISOString() }]);
+        this.aiLoading.set(false);
+      }
+    });
+  }
+
   loadConversations(): void {
     this.http.get('/api/chat/conversations').subscribe({
       next: (r: any) => {
         this.conversations.set(Array.isArray(r) ? r : (r.conversations || []));
         this.conversationsLoaded.set(true);
       },
-      error: () => {
-        this.conversationsLoaded.set(true);
-      },
+      error: () => this.conversationsLoaded.set(true),
     });
   }
 }

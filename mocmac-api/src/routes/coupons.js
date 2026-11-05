@@ -5,9 +5,15 @@ import {
   createCoupon,
   updateCoupon,
   deleteCoupon,
+  validateCoupon,
+  getCouponByCode,
 } from '../controllers/couponController.js';
 
 const router = Router();
+
+// Public (checkout)
+router.get('/validate/:code', validateCoupon);
+router.get('/code/:code', getCouponByCode);
 
 router.get('/', requireAuth, requireRole('admin', 'staff'), requirePermission('coupons.view'), getAllCoupons);
 router.post('/', requireAuth, requireRole('admin', 'staff'), requirePermission('coupons.create'), createCoupon);

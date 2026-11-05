@@ -8,7 +8,7 @@ export interface CheckoutPayload {
   discount?: number;
   shipping?: number;
   total: number;
-  paymentMethod: 'cod' | 'momo';
+  paymentMethod: 'cod' | 'vnpay';
   customerInfo?: { name: string; phone: string; address: string };
   note?: string;
   couponCode?: string;

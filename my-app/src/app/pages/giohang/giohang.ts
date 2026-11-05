@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { AuthService } from '../../auth.service';
 import { CartService } from '../../cart.service';
 import { PaymentService } from '../../payment.service';
@@ -48,10 +48,14 @@ export class GiohangComponent {
   private readonly cart = inject(CartService);
   private readonly auth = inject(AuthService);
   private readonly paymentService = inject(PaymentService);
+  private readonly route = inject(ActivatedRoute);
 
   readonly loginRequiredPopup = signal(false);
+  readonly paymentStatus = signal<'success'|'fail'|'error'|null>(null);
+  readonly paying = signal(false);
+  readonly payError = signal('');
 
-  readonly paymentMethod = signal<'cod' | 'momo'>('cod');
+  readonly paymentMethod = signal<'cod' | 'vnpay'>('cod');
 
   readonly freeShippingThreshold = FREE_SHIPPING_THRESHOLD;
   couponInput = '';
@@ -90,6 +94,14 @@ export class GiohangComponent {
     Math.min((this.subtotal() / FREE_SHIPPING_THRESHOLD) * 100, 100)
   );
   readonly isEmpty = computed(() => this.items().length === 0);
+
+  constructor() {
+    const st = this.route.snapshot.queryParamMap.get('status');
+    if (st === 'success' || st === 'fail' || st === 'error') {
+      this.paymentStatus.set(st);
+      if (st === 'success') this.cart.clear();
+    }
+  }
 
   increase(id: number): void {
     this.cart.increase(id);
@@ -140,6 +152,8 @@ export class GiohangComponent {
       return;
     }
 
+    this.payError.set('');
+    this.paying.set(true);
     const items = this.items().map(item => ({
       productId: item.id,
       name: item.name,
@@ -157,14 +171,21 @@ export class GiohangComponent {
       couponCode: this.couponApplied() ? this.couponInput.trim().toUpperCase() : '',
     }).subscribe({
       next: (response: any) => {
-        if (response.success && response.payUrl) {
-          window.location.href = response.payUrl;
-        } else {
-          this.cart.clear();
+        if (response?.success && response?.payUrl) {
+          window.location.assign(response.payUrl);
+          return;
         }
+        if (response?.success) {
+          this.cart.clear();
+          this.paymentStatus.set('success');
+        } else {
+          this.payError.set(response?.message || 'Thanh toán thất bại.');
+        }
+        this.paying.set(false);
       },
       error: (error: any) => {
-        console.error('Lỗi thanh toán:', error);
+        this.payError.set(error?.error?.message || 'Không thể tạo thanh toán VNPAY. Vui lòng thử lại.');
+        this.paying.set(false);
       },
     });
   }

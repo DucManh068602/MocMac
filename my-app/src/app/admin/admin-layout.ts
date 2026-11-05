@@ -20,18 +20,18 @@ export class AdminLayoutComponent {
   private router = inject(Router);
 
   readonly navItems: NavItem[] = [
-    { label: 'Bảng điều khiển', path: '', icon: '📊' },
-    { label: 'Đơn hàng', path: 'orders', icon: '🛒' },
-    { label: 'Sản phẩm', path: 'products', icon: '📦' },
-    { label: 'Vùng miền', path: 'regions', icon: '🗺️' },
-    { label: 'Mã giảm giá', path: 'coupons', icon: '🎫' },
-    { label: 'Tài khoản', path: 'users', icon: '👥' },
-    { label: 'Yêu cầu vai trò', path: 'role-requests', icon: '📝' },
-    { label: 'Phân quyền vai trò', path: 'route-permissions', icon: '🔐' },
-    { label: 'Liên hệ', path: 'contacts', icon: '📨' },
-    { label: 'Đánh giá', path: 'reviews', icon: '⭐' },
-    { label: 'Lịch sử hệ thống', path: 'audit', icon: '📋' },
-    { label: 'Thông báo', path: 'notifications', icon: '🔔' },
+    { label: 'Bảng điều khiển', path: '', icon: 'fa-solid fa-gauge-high' },
+    { label: 'Đơn hàng', path: 'orders', icon: 'fa-solid fa-cart-shopping' },
+    { label: 'Sản phẩm', path: 'products', icon: 'fa-solid fa-box' },
+    { label: 'Vùng miền', path: 'regions', icon: 'fa-solid fa-map-location-dot' },
+    { label: 'Mã giảm giá', path: 'coupons', icon: 'fa-solid fa-ticket' },
+    { label: 'Tài khoản', path: 'users', icon: 'fa-solid fa-users' },
+    { label: 'Yêu cầu vai trò', path: 'role-requests', icon: 'fa-solid fa-user-pen' },
+    { label: 'Phân quyền vai trò', path: 'route-permissions', icon: 'fa-solid fa-shield-halved' },
+    { label: 'Liên hệ', path: 'contacts', icon: 'fa-solid fa-envelope' },
+    { label: 'Đánh giá', path: 'reviews', icon: 'fa-solid fa-star' },
+    { label: 'Lịch sử hệ thống', path: 'audit', icon: 'fa-solid fa-clock-rotate-left' },
+    { label: 'Thông báo', path: 'notifications', icon: 'fa-solid fa-bell' },
   ];
 
   readonly sidebarOpen = signal(false);

@@ -12,6 +12,20 @@ const STATUSES = [
   { key: 'cancelled', label: 'Đã hủy', color: '#c0392b' },
 ];
 
+const PAY_STATUSES = [
+  { key: 'pending', label: 'Chờ thanh toán', color: '#e0a43a' },
+  { key: 'paid', label: 'Đã thanh toán', color: '#2e5a3c' },
+  { key: 'failed', label: 'Thất bại', color: '#c0392b' },
+  { key: 'refunded', label: 'Hoàn tiền', color: '#6b7280' },
+];
+
+const PAY_METHODS = [
+  { key: 'cod', label: 'COD', color: '#4a7c59' },
+  { key: 'momo', label: 'MoMo', color: '#a50064' },
+  { key: 'vnpay', label: 'VNPay', color: '#005baa' },
+  { key: 'bank_transfer', label: 'Chuyển khoản', color: '#1e3a2a' },
+];
+
 const pick = (r: any, k: string): any[] => (Array.isArray(r) ? r : r?.[k] ?? []);
 
 @Component({
@@ -25,6 +39,8 @@ export class AdminDashboardComponent {
   auth = inject(AuthService);
 
   readonly statuses = STATUSES;
+  readonly payStatuses = PAY_STATUSES;
+  readonly payMethods = PAY_METHODS;
   readonly orders = signal<any[]>([]);
   readonly ordersTotal = signal(0);
   readonly counts = signal({ products: 0, coupons: 0, contacts: 0, users: 0, notifications: 0 });
@@ -65,6 +81,68 @@ export class AdminDashboardComponent {
   });
 
   readonly recent = computed(() => this.orders().slice(0, 5));
+
+  readonly ordersCountChart = computed(() => {
+    const days = Array.from({ length: 7 }, (_, i) => {
+      const d = new Date();
+      d.setDate(d.getDate() - (6 - i));
+      return { key: d.toLocaleDateString('en-CA'), label: `${d.getDate()}/${d.getMonth() + 1}`, value: 0 };
+    });
+    for (const o of this.orders()) {
+      if (o.status === 'cancelled') continue;
+      const day = days.find((d) => d.key === new Date(o.createdAt).toLocaleDateString('en-CA'));
+      if (day) day.value += 1;
+    }
+    const max = Math.max(...days.map((d) => d.value), 1);
+    return days.map((d) => ({ ...d, h: Math.max((d.value / max) * 100, d.value ? 4 : 0) }));
+  });
+
+  readonly byPaymentStatus = computed(() => {
+    const all = this.orders();
+    return PAY_STATUSES.map((s) => {
+      const n = all.filter((o) => (o.paymentStatus || 'pending') === s.key).length;
+      return { ...s, n, pct: all.length ? (n / all.length) * 100 : 0 };
+    });
+  });
+
+  readonly byPaymentMethod = computed(() => {
+    const all = this.orders();
+    return PAY_METHODS.map((s) => {
+      const n = all.filter((o) => (o.paymentMethod || 'cod') === s.key).length;
+      return { ...s, n, pct: all.length ? (n / all.length) * 100 : 0 };
+    });
+  });
+
+  readonly topProducts = computed(() => {
+    const map = new Map<string, number>();
+    for (const o of this.orders()) {
+      if (o.status === 'cancelled') continue;
+      for (const it of o.items || []) {
+        const name = String(it.name || 'Khác');
+        map.set(name, (map.get(name) || 0) + (Number(it.quantity) || 0));
+      }
+    }
+    const rows = [...map.entries()].map(([label, value]) => ({ label, value }))
+      .sort((a, b) => b.value - a.value).slice(0, 5);
+    const max = Math.max(...rows.map((r) => r.value), 1);
+    return rows.map((r) => ({ ...r, w: Math.max((r.value / max) * 100, r.value ? 4 : 0) }));
+  });
+
+  readonly aovChart = computed(() => {
+    const days = Array.from({ length: 7 }, (_, i) => {
+      const d = new Date();
+      d.setDate(d.getDate() - (6 - i));
+      return { key: d.toLocaleDateString('en-CA'), label: `${d.getDate()}/${d.getMonth() + 1}`, total: 0, count: 0 };
+    });
+    for (const o of this.orders()) {
+      if (o.status === 'cancelled') continue;
+      const day = days.find((d) => d.key === new Date(o.createdAt).toLocaleDateString('en-CA'));
+      if (day) { day.total += Number(o.total) || 0; day.count += 1; }
+    }
+    const vals = days.map((d) => ({ ...d, value: d.count ? Math.round(d.total / d.count) : 0 }));
+    const max = Math.max(...vals.map((d) => d.value), 1);
+    return vals.map((d) => ({ ...d, h: Math.max((d.value / max) * 100, d.value ? 4 : 0) }));
+  });
 
   constructor() {
     this.load();

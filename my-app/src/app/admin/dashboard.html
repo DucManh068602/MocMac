@@ -5,7 +5,8 @@
       <p>Tổng quan hoạt động cửa hàng Mộc Mạc</p>
     </div>
     <button type="button" class="refresh" (click)="load()" [disabled]="loading()">
-      {{ loading() ? 'Đang tải...' : '↻ Làm mới' }}
+      <i class="fa-solid fa-rotate-right ico"></i>
+      {{ loading() ? 'Đang tải...' : 'Làm mới' }}
     </button>
   </div>
 
@@ -38,7 +39,7 @@
 
   <div class="panels">
     <section class="panel">
-      <h3>Doanh thu 7 ngày qua</h3>
+      <h3><i class="fa-solid fa-chart-column ico-title"></i> Doanh thu 7 ngày qua</h3>
       <div class="bars">
         @for (d of chart(); track d.key) {
           <div class="bar-col" [title]="(d.value | number) + 'đ'">
@@ -51,16 +52,16 @@
     </section>
 
     <section class="panel">
-      <h3>Trạng thái đơn hàng</h3>
+      <h3><i class="fa-solid fa-list-check ico-title"></i> Trạng thái đơn hàng</h3>
       <div class="stack">
         @for (s of byStatus(); track s.key) {
-          @if (s.n) { <i [style.width.%]="s.pct" [style.background]="s.color"></i> }
+          @if (s.n) { <span class="bar-seg" [style.width.%]="s.pct" [style.background]="s.color"></span> }
         }
       </div>
       <ul class="legend">
         @for (s of byStatus(); track s.key) {
           <li>
-            <i [style.background]="s.color"></i>
+            <span class="dot" [style.background]="s.color"></span>
             <span>{{ s.label }}</span>
             <b>{{ s.n }}</b>
           </li>
@@ -69,10 +70,91 @@
     </section>
   </div>
 
+  <div class="panels">
+    <section class="panel">
+      <h3><i class="fa-solid fa-cart-shopping ico-title"></i> Số đơn 7 ngày qua</h3>
+      <div class="bars">
+        @for (d of ordersCountChart(); track d.key) {
+          <div class="bar-col" [title]="d.value + ' đơn'">
+            <div class="bar-val">{{ d.value || '' }}</div>
+            <div class="bar-track"><div class="bar bar--blue" [style.height.%]="d.h"></div></div>
+            <div class="bar-label">{{ d.label }}</div>
+          </div>
+        }
+      </div>
+    </section>
+
+    <section class="panel">
+      <h3><i class="fa-solid fa-receipt ico-title"></i> Giá trị TB/đơn 7 ngày</h3>
+      <div class="bars">
+        @for (d of aovChart(); track d.key) {
+          <div class="bar-col" [title]="(d.value | number) + 'đ'">
+            <div class="bar-val">{{ d.value ? (d.value / 1000 | number: '1.0-0') + 'k' : '' }}</div>
+            <div class="bar-track"><div class="bar bar--clay" [style.height.%]="d.h"></div></div>
+            <div class="bar-label">{{ d.label }}</div>
+          </div>
+        }
+      </div>
+    </section>
+  </div>
+
+  <div class="panels">
+    <section class="panel">
+      <h3><i class="fa-solid fa-credit-card ico-title"></i> Trạng thái thanh toán</h3>
+      <div class="stack">
+        @for (s of byPaymentStatus(); track s.key) {
+          @if (s.n) { <span class="bar-seg" [style.width.%]="s.pct" [style.background]="s.color"></span> }
+        }
+      </div>
+      <ul class="legend">
+        @for (s of byPaymentStatus(); track s.key) {
+          <li>
+            <span class="dot" [style.background]="s.color"></span>
+            <span>{{ s.label }}</span>
+            <b>{{ s.n }} ({{ s.pct | number:'1.0-0' }}%)</b>
+          </li>
+        }
+      </ul>
+    </section>
+
+    <section class="panel">
+      <h3><i class="fa-solid fa-wallet ico-title"></i> Phương thức thanh toán</h3>
+      <div class="stack">
+        @for (s of byPaymentMethod(); track s.key) {
+          @if (s.n) { <span class="bar-seg" [style.width.%]="s.pct" [style.background]="s.color"></span> }
+        }
+      </div>
+      <ul class="legend">
+        @for (s of byPaymentMethod(); track s.key) {
+          <li>
+            <span class="dot" [style.background]="s.color"></span>
+            <span>{{ s.label }}</span>
+            <b>{{ s.n }} ({{ s.pct | number:'1.0-0' }}%)</b>
+          </li>
+        }
+      </ul>
+    </section>
+  </div>
+
+  <section class="panel">
+    <h3><i class="fa-solid fa-ranking-star ico-title"></i> Top sản phẩm bán chạy</h3>
+    <div class="hbars">
+      @for (p of topProducts(); track p.label) {
+        <div class="hbar-row" [title]="p.label + ': ' + p.value">
+          <span class="hbar-label">{{ p.label }}</span>
+          <div class="hbar-track"><div class="hbar" [style.width.%]="p.w"></div></div>
+          <b class="hbar-val">{{ p.value }}</b>
+        </div>
+      } @empty {
+        <div class="empty">{{ loading() ? 'Đang tải...' : 'Chưa có dữ liệu.' }}</div>
+      }
+    </div>
+  </section>
+
   <section class="panel">
     <div class="panel-head">
       <h3>Đơn hàng gần đây</h3>
-      <a routerLink="/admin/orders">Xem tất cả →</a>
+      <a routerLink="/admin/orders">Xem tất cả <i class="fa-solid fa-arrow-right ico"></i></a>
     </div>
     <div class="table-scroll">
       <table class="mini-table">
@@ -99,12 +181,12 @@
   </section>
 
   <div class="mini-grid">
-    <a routerLink="/admin/coupons" class="mini"><span>🎫 Mã giảm giá</span><b>{{ counts().coupons }}</b></a>
-    <a routerLink="/admin/users" class="mini"><span>👥 Tài khoản</span><b>{{ counts().users }}</b></a>
-    <a routerLink="/admin/contacts" class="mini"><span>📨 Liên hệ</span><b>{{ counts().contacts }}</b></a>
-    <a routerLink="/admin/notifications" class="mini"><span>🔔 Thông báo</span><b>{{ counts().notifications }}</b></a>
-    <a routerLink="/admin/products" class="mini"><span>📦 Sản phẩm</span><b>{{ counts().products }}</b></a>
-    <a routerLink="/admin/regions" class="mini"><span>🗺️ Vùng miền</span><b>→</b></a>
-    <a routerLink="/admin/reviews" class="mini"><span>⭐ Đánh giá</span><b>→</b></a>
+    <a routerLink="/admin/coupons" class="mini"><span class="mini-label"><i class="fa-solid fa-ticket ico"></i>Mã giảm giá</span><b>{{ counts().coupons }}</b></a>
+    <a routerLink="/admin/users" class="mini"><span class="mini-label"><i class="fa-solid fa-users ico"></i>Tài khoản</span><b>{{ counts().users }}</b></a>
+    <a routerLink="/admin/contacts" class="mini"><span class="mini-label"><i class="fa-solid fa-envelope ico"></i>Liên hệ</span><b>{{ counts().contacts }}</b></a>
+    <a routerLink="/admin/notifications" class="mini"><span class="mini-label"><i class="fa-solid fa-bell ico"></i>Thông báo</span><b>{{ counts().notifications }}</b></a>
+    <a routerLink="/admin/products" class="mini"><span class="mini-label"><i class="fa-solid fa-box ico"></i>Sản phẩm</span><b>{{ counts().products }}</b></a>
+    <a routerLink="/admin/regions" class="mini"><span class="mini-label"><i class="fa-solid fa-map-location-dot ico"></i>Vùng miền</span><b><i class="fa-solid fa-arrow-right ico"></i></b></a>
+    <a routerLink="/admin/reviews" class="mini"><span class="mini-label"><i class="fa-solid fa-star ico"></i>Đánh giá</span><b><i class="fa-solid fa-arrow-right ico"></i></b></a>
   </div>
 </div>

@@ -9,6 +9,7 @@ import paymentRoutes from './payments.js';
 import notificationRoutes from './notifications.js';
 import userRoutes from './users.js';
 import chatRoutes from './chat.js';
+import aiRoutes from './ai.js';
 import reviewRoutes from './reviews.js';
 import roleRequestRoutes from './roleRequests.js';
 import auditRoutes from './auditRoutes.js';
@@ -17,10 +18,12 @@ import villageRoutes from './villages.js';
 import uploadRoutes from './uploads.js';
 import permissionRoutes from './permissions.js';
 import routePermissionRoutes from './routePermissions.js';
+import qrRoutes from './qr.js';
 import { requireAuth } from '../middleware/auth.js';
 
 const route = Router();
 
+route.use('/ai', aiRoutes);
 route.use('/auth', authRoutes);
 route.get('/meomeo', requireAuth, (req, res) => {
   const daysSince = (Date.now() - new Date(req.user.createdAt).getTime()) / (1000 * 60 * 60 * 24);
@@ -42,5 +45,7 @@ route.use('/villages', villageRoutes);
 route.use('/uploads', uploadRoutes);
 route.use('/permissions', permissionRoutes);
 route.use('/route-permissions', routePermissionRoutes);
+route.use('/qr', qrRoutes);
+route.use('/chat', chatRoutes);
 
 export default route;

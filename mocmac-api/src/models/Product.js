@@ -24,6 +24,7 @@ const productSchema = new mongoose.Schema(
     icon: { type: String, default: '' },
     badges: { type: [String], default: [] },
     images: { type: [String], default: [] },
+    qrCode: { type: String, default: '' },
   },
   { timestamps: true }
 );

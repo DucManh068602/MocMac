@@ -3,9 +3,11 @@ dotenv.config();
 import { Product } from '../models/Product.js';
 import { Review } from '../models/Review.js';
 import { logAction, getRequestInfo } from '../utils/auditLog.js';
+import QRCode from 'qrcode';
 
 const BASE_URL = process.env.BACKEND_URL || 'http://localhost:3000';
 const UPLOAD_SERVER_URL = process.env.UPLOAD_SERVER_URL || 'http://localhost:5001';
+const ROOT_QR_URL = (process.env.ROOT_QR_URL || process.env.FRONTEND_URL || 'http://localhost:4200').replace(/\/+$/, '');
 
 async function deleteImageFromUploadServer(imageUrl) {
   try {
@@ -66,7 +68,10 @@ export const getAllProducts = async (req, res) => {
     Product.countDocuments(filter),
   ]);
 
-  const productsWithUrls = products.map(addBaseUrlToImages);
+  const productsWithUrls = products.map((p) => ({
+    ...addBaseUrlToImages(p),
+    qrUrl: `${ROOT_QR_URL}/san-pham/${p.slug}`,
+  }));
 
   res.json({
     success: true,
@@ -97,6 +102,7 @@ export const getProductBySlug = async (req, res) => {
 
   res.json({
     ...productWithUrls,
+    qrUrl: `${ROOT_QR_URL}/san-pham/${product.slug}`,
     avgRating,
     reviews,
   });
@@ -108,6 +114,18 @@ export const createProduct = async (req, res) => {
     const last = await Product.findOne().sort({ id: -1 }).select({ id: 1 }).lean();
     body.id = last ? last.id + 1 : 1;
   }
+  if (!body.slug || !String(body.slug).trim()) {
+    return res.status(400).json({ message: 'Thiếu slug sản phẩm' });
+  }
+  body.slug = String(body.slug).trim();
+
+  const qrUrl = `${ROOT_QR_URL}/san-pham/${body.slug}`;
+  try {
+    body.qrCode = await QRCode.toDataURL(qrUrl, { margin: 1, width: 300 });
+  } catch (e) {
+    console.error('QR generation failed:', e?.message || e);
+  }
+
   const product = await Product.create(body);
 
   const { user, ip } = getRequestInfo(req);
@@ -120,13 +138,23 @@ export const createProduct = async (req, res) => {
     details: { name: product.name, slug: product.slug, price: product.price },
   });
 
-  res.status(201).json(product);
+  res.status(201).json({ success: true, product, qrUrl, qrCode: product.qrCode });
 };
 
 export const updateProduct = async (req, res) => {
+  const body = { ...req.body };
+  if (body.slug) {
+    body.slug = String(body.slug).trim();
+    const qrUrl = `${ROOT_QR_URL}/san-pham/${body.slug}`;
+    try {
+      body.qrCode = await QRCode.toDataURL(qrUrl, { margin: 1, width: 300 });
+    } catch (e) {
+      console.error('QR generation failed:', e?.message || e);
+    }
+  }
   const product = await Product.findOneAndUpdate(
     { slug: req.params.slug },
-    req.body,
+    body,
     { new: true, runValidators: true }
   ).lean();
   if (!product) {
@@ -143,7 +171,7 @@ export const updateProduct = async (req, res) => {
     details: { slug: product.slug },
   });
 
-  res.json(product);
+  res.json({ success: true, product, qrUrl: `${ROOT_QR_URL}/san-pham/${product.slug}`, qrCode: product.qrCode });
 };
 
 export const deleteProduct = async (req, res) => {

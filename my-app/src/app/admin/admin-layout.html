@@ -2,7 +2,7 @@
   <aside class="admin-sidebar" [class.open]="sidebarOpen()">
     <div class="admin-sidebar-head">
       <strong>Quản trị Mộc Mạc</strong>
-      <button type="button" class="sidebar-close" (click)="sidebarOpen.set(false)">✕</button>
+      <button type="button" class="sidebar-close" (click)="sidebarOpen.set(false)" aria-label="Đóng"><i class="fa-solid fa-xmark"></i></button>
     </div>
     <nav class="admin-nav">
       @for (item of navItems; track item.path) {
@@ -11,7 +11,7 @@
           [class.active]="currentPath() === item.path"
           class="nav-item"
         >
-          <span class="nav-icon">{{ item.icon }}</span>
+          <span class="nav-icon"><i [class]="item.icon"></i></span>
           <span class="nav-label">{{ item.label }}</span>
         </a>
       }
@@ -23,7 +23,7 @@
 
   <div class="admin-main">
      <header class="admin-header">
-      <button type="button" class="menu-toggle" (click)="sidebarOpen.set(true)">☰</button>
+      <button type="button" class="menu-toggle" (click)="sidebarOpen.set(true)" aria-label="Mở menu"><i class="fa-solid fa-bars"></i></button>
       <h1 class="admin-title">
         @switch (currentPath()) {
           @case ('') { Bảng điều khiển }

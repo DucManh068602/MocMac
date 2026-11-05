@@ -1,4 +1,4 @@
-@if (!isStandaloneAuth()) {
+@if (!isStandaloneAuth() && !isAdminPath()) {
   <app-header-component />
 }
 <router-outlet />
@@ -10,7 +10,7 @@
 @if (!isStandaloneAuth() && !isAdminPath()) {
   <app-meomeo-guide />
 }
-@if (!isStandaloneAuth()) {
+@if (!isStandaloneAuth() && !isAdminPath()) {
   <app-footer-component />
 }
 @if (cart.notification(); as notification) {

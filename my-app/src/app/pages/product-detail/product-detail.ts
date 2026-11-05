@@ -335,14 +335,15 @@ export class ProductDetailComponent {
     }
   }
 
-  /** Adds the selected quantity and opens the cart page. */
+  /** Buy-now: clear cart, keep only this product (selected qty), go to checkout/cart. */
   buyNow(): void {
     const product = this.product();
     if (!product || (!product.inStock && !product.preorder)) return;
+    this.cartService.clear();
     for (let i = 0; i < this.quantity(); i++) {
       this.cartService.add(product.id, product.name);
     }
-    void this.router.navigate(['/giohang']);
+    void this.router.navigate(['/gio-hang']);
   }
 
   shareFacebook(): void {

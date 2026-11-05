@@ -45,14 +45,6 @@ import { AuthService } from '../auth.service';
           <span class="stat-value">{{ stats().total }}</span>
           <span class="stat-label">Tổng tin</span>
         </div>
-        <div class="stat-card stat--clay">
-          <span class="stat-value">{{ stats().unread }}</span>
-          <span class="stat-label">Chưa đọc</span>
-        </div>
-        <div class="stat-card stat--sage">
-          <span class="stat-value">{{ stats().replied }}</span>
-          <span class="stat-label">Đã trả lời</span>
-        </div>
       </div>
 
       <div class="table-wrap">
@@ -62,25 +54,19 @@ import { AuthService } from '../auth.service';
               <th>Họ tên</th>
               <th>Email</th>
               <th>Nội dung</th>
-              <th>Trạng thái</th>
               <th>Ngày</th>
-              <th>Thao tác</th>
             </tr>
           </thead>
           <tbody>
             @for (c of contacts(); track c._id) {
-              <tr [class.unread-row]="!c.read">
+              <tr>
                 <td>{{ c.name }}</td>
                 <td>{{ c.email }}</td>
                 <td>{{ c.message?.slice(0, 60) }}...</td>
-                <td>{{ c.read ? 'Đã đọc' : 'Mới' }}</td>
                 <td>{{ c.createdAt | date:'short' }}</td>
-                <td>
-                  <button type="button" class="btn-small btn-delete" (click)="markRead(c._id)">Đánh dấu đã đọc</button>
-                </td>
               </tr>
             } @empty {
-              <tr><td colspan="6">Chưa có tin nhắn.</td></tr>
+              <tr><td colspan="4">Chưa có tin nhắn.</td></tr>
             }
           </tbody>
         </table>
@@ -168,8 +154,6 @@ export class AdminContactsComponent implements OnInit {
 
   readonly stats = computed(() => ({
     total: this.contacts().length,
-    unread: this.contacts().filter((c: any) => !c.read).length,
-    replied: this.contacts().filter((c: any) => c.read).length,
   }));
 
   readonly conversations = computed(() => this.chatService.conversations());
@@ -223,13 +207,6 @@ export class AdminContactsComponent implements OnInit {
       const items = Array.isArray(r) ? r : (r.contacts || []);
       this.contacts.set(items);
       this.totalPages.set(r.totalPages || 1);
-    });
-  }
-
-  markRead(id: string): void {
-    this.http.patch('/api/contacts/' + id + '/read', {}).subscribe({
-      next: () => { this.toast.success('Đã đánh dấu tin nhắn'); this.loadContacts(); },
-      error: () => this.toast.error('Không thể cập nhật trạng thái'),
     });
   }
 
