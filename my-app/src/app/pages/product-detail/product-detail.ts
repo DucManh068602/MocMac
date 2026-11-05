@@ -226,23 +226,7 @@ export class ProductDetailComponent {
       return;
     }
 
-    // Legacy numeric-id URLs (/san-pham/1): resolve from the cached catalog.
-    const maybeId = Number(slug);
-    if (Number.isSafeInteger(maybeId) && maybeId > 0) {
-      const byId = untracked(
-        () => (this.allProducts() ?? []).find((item) => Number(item.id) === maybeId) ?? null,
-      );
-      this.product.set(byId);
-      this.productLoading.set(false);
-      const id = Number(byId?.id);
-      if (byId && Number.isSafeInteger(id) && id > 0) {
-        this.loadReviews(id);
-        this.checkCanReview(id);
-      }
-      return;
-    }
-
-    // Slug-based URL: fetch the single product from the backend by slug.
+    // Try slug-based API lookup first (handles numeric slugs like "12341").
     this.product.set(null);
     this.productLoading.set(true);
     this.productsService.getProductBySlug(slug).subscribe({
@@ -255,13 +239,24 @@ export class ProductDetailComponent {
           this.checkCanReview(id);
         }
       },
-      error: (error: unknown) => {
-        this.productLoading.set(false);
-        this.product.set(null);
-        // A 404 just means "no such product" -> the not-found view handles it.
-        if ((error as { status?: number })?.status !== 404) {
-          this.productError.set('Không thể tải thông tin sản phẩm. Vui lòng thử lại.');
+      error: () => {
+        // Fallback: legacy numeric-id URLs (/san-pham/1).
+        const maybeId = Number(slug);
+        if (Number.isSafeInteger(maybeId) && maybeId > 0) {
+          const byId = untracked(
+            () => (this.allProducts() ?? []).find((item) => Number(item.id) === maybeId) ?? null,
+          );
+          this.product.set(byId);
+          this.productLoading.set(false);
+          const id = Number(byId?.id);
+          if (byId && Number.isSafeInteger(id) && id > 0) {
+            this.loadReviews(id);
+            this.checkCanReview(id);
+          }
+          return;
         }
+        this.product.set(null);
+        this.productLoading.set(false);
       },
     });
   }

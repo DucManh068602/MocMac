@@ -10,6 +10,41 @@ import { ToastService } from './toast.service';
     <div class="list-page">
       <header class="list-header">
         <h2>Thông báo ({{ notifications().length }})</h2>
+        <div class="admin-filters">
+          <div class="filter-group">
+            <input
+              class="filter-input"
+              placeholder="Tìm tiêu đề/nội dung..."
+              [(ngModel)]="searchTerm"
+              (input)="onFilterChange()"
+              style="width: 200px"
+            />
+          </div>
+          <div class="filter-group">
+            <select class="filter-select" [(ngModel)]="typeFilter" (change)="onFilterChange()" style="width: 140px">
+              <option value="">Tất cả loại</option>
+              <option value="order">Đơn hàng</option>
+              <option value="contact">Liên hệ</option>
+              <option value="system">Hệ thống</option>
+              <option value="promo">Khuyến mãi</option>
+            </select>
+          </div>
+          <div class="filter-group">
+            <select class="filter-select" [(ngModel)]="sentFilter" (change)="onFilterChange()" style="width: 120px">
+              <option value="">Tất cả trạng thái</option>
+              <option value="sent">Đã gửi</option>
+              <option value="unsent">Chưa gửi</option>
+            </select>
+          </div>
+          <button
+            type="button"
+            class="filter-reset"
+            (click)="resetFilters()"
+            [disabled]="!searchTerm && !typeFilter && !sentFilter"
+          >
+            Xóa bộ lọc
+          </button>
+        </div>
         <button type="button" class="btn-add" (click)="showForm.set(true); resetForm()">Gửi thông báo</button>
       </header>
 
@@ -106,6 +141,9 @@ export class AdminNotificationsComponent {
   readonly totalPages = signal(1);
   readonly showForm = signal(false);
   readonly users = signal<any[]>([]);
+  searchTerm = '';
+  typeFilter = '';
+  sentFilter = '';
 
   form: any = {
     title: '',
@@ -129,8 +167,29 @@ export class AdminNotificationsComponent {
     this.loadNotifications();
   }
 
+  onFilterChange(): void {
+    this.page.set(1);
+    this.loadNotifications();
+  }
+
+  resetFilters(): void {
+    this.searchTerm = '';
+    this.typeFilter = '';
+    this.sentFilter = '';
+    this.page.set(1);
+    this.loadNotifications();
+  }
+
   loadNotifications(): void {
-    this.http.get('/api/notifications?page=' + this.page() + '&limit=20').subscribe((r: any) => {
+    const params = new URLSearchParams({
+      page: String(this.page()),
+      limit: '20',
+    });
+    if (this.searchTerm) params.set('q', this.searchTerm);
+    if (this.typeFilter) params.set('type', this.typeFilter);
+    if (this.sentFilter) params.set('sent', this.sentFilter === 'sent' ? 'true' : 'false');
+
+    this.http.get('/api/notifications?' + params.toString()).subscribe((r: any) => {
       const items = Array.isArray(r) ? r : (r.notifications || []);
       this.notifications.set(items);
       this.totalPages.set(r.totalPages || 1);

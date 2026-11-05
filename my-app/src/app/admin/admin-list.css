@@ -110,7 +110,7 @@
 }
 
 .form-grid {
-  @apply grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-3;
+  @apply grid grid-cols-[repeat(auto-fit,minmax(120px,1fr))] gap-3;
 }
 
 .form-input {
@@ -245,4 +245,76 @@
 
 .protected-label {
   @apply text-xs text-ink2 font-medium;
+}
+
+.admin-filters {
+  @apply flex flex-wrap gap-3 mb-4 items-end;
+}
+
+.filter-group {
+  @apply flex flex-col;
+}
+
+.filter-group label {
+  @apply text-xs text-ink2 mb-0.5;
+}
+
+.filter-input {
+  @apply w-full px-2 py-1.5 border border-[#d6ceb9] rounded text-sm focus:outline-none focus:border-moss;
+}
+
+.filter-select {
+  @apply w-full px-2 py-1.5 border border-[#d6ceb9] rounded text-sm focus:outline-none focus:border-moss bg-white;
+}
+
+.filter-btn {
+  @apply px-3 py-1.5 border border-[#d6ceb9] rounded text-sm font-medium cursor-pointer transition-colors;
+}
+
+.filter-btn:hover {
+  @apply bg-[#f4f3ec];
+}
+
+.filter-reset {
+  @apply px-3 py-1.5 border border-[#d6ceb9] rounded text-sm font-medium cursor-pointer text-ink2;
+}
+
+.filter-reset:hover {
+  @apply bg-[#f4f3ec];
+}
+
+.form-select-sm {
+  @apply max-w-[140px];
+}
+
+.upload-area-sm {
+  @apply border-2 border-dashed border-[#d6ceb9] rounded-lg p-2 text-center cursor-pointer min-h-[60px] flex flex-col items-center justify-center max-w-[140px];
+}
+
+.upload-area-sm:hover, .upload-area-sm.drag-over {
+  @apply border-moss bg-[#e4ebe3];
+}
+
+.upload-placeholder-sm span {
+  @apply block text-moss font-medium text-xs;
+}
+
+.upload-placeholder-sm small {
+  @apply text-ink2 text-[10px];
+}
+
+.preview-grid-sm {
+  @apply grid grid-cols-[repeat(auto-fill,minmax(48px,1fr))] gap-1 mt-1;
+}
+
+.preview-item-sm {
+  @apply relative aspect-square rounded overflow-hidden border border-[#d6ceb9];
+}
+
+.preview-item-sm img {
+  @apply w-full h-full object-cover;
+}
+
+.remove-btn-sm {
+  @apply absolute top-0 right-0 w-3 h-3 bg-red-500 text-white rounded-full text-center leading-none text-[8px] hover:bg-red-600;
 }

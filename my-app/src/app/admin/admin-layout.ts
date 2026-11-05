@@ -27,6 +27,7 @@ export class AdminLayoutComponent {
     { label: 'Mã giảm giá', path: 'coupons', icon: '🎫' },
     { label: 'Tài khoản', path: 'users', icon: '👥' },
     { label: 'Yêu cầu vai trò', path: 'role-requests', icon: '📝' },
+    { label: 'Phân quyền vai trò', path: 'route-permissions', icon: '🔐' },
     { label: 'Liên hệ', path: 'contacts', icon: '📨' },
     { label: 'Đánh giá', path: 'reviews', icon: '⭐' },
     { label: 'Lịch sử hệ thống', path: 'audit', icon: '📋' },

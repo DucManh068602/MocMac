@@ -1,15 +1,40 @@
+import dotenv from "dotenv"; 
+dotenv.config(); 
 import { Product } from '../models/Product.js';
 import { Review } from '../models/Review.js';
 import { logAction, getRequestInfo } from '../utils/auditLog.js';
 
 const BASE_URL = process.env.BACKEND_URL || 'http://localhost:3000';
+const UPLOAD_SERVER_URL = process.env.UPLOAD_SERVER_URL || 'http://localhost:5001';
+
+async function deleteImageFromUploadServer(imageUrl) {
+  try {
+    let filename;
+    if (imageUrl.startsWith('http')) {
+      const url = new URL(imageUrl);
+      filename = url.pathname.split('/uploads/')[1];
+    } else if (imageUrl.startsWith('/uploads/')) {
+      filename = imageUrl.split('/uploads/')[1];
+    }
+    if (!filename) return;
+
+    const deleteUrl = imageUrl.startsWith('http://localhost:5001')
+      ? `${UPLOAD_SERVER_URL}/uploads/${filename}`
+      : `${BASE_URL}/api/uploads/${filename}`;
+
+    await fetch(deleteUrl, { method: 'DELETE' });
+  } catch (error) {
+    console.error('Failed to delete image from upload server:', error.message);
+  }
+}
 
 function addBaseUrlToImages(product) {
   if (!product) return product;
   const prod = product.toObject ? product.toObject() : { ...product };
   if (Array.isArray(prod.images) && prod.images.length > 0) {
     prod.images = prod.images.map(img => {
-      if (img.startsWith('http') || img.startsWith('/uploads')) return img;
+      if (img.startsWith('http')) return img;
+      if (img.startsWith('/uploads')) return `${BASE_URL}${img}`;
       return `${BASE_URL}/uploads/${img}`;
     });
   }
@@ -122,9 +147,18 @@ export const updateProduct = async (req, res) => {
 };
 
 export const deleteProduct = async (req, res) => {
-  const product = await Product.findOneAndDelete({ slug: req.params.slug });
+  const product = await Product.findOne({ slug: req.params.slug });
   if (!product) {
     return res.status(404).json({ message: 'Không tìm thấy sản phẩm' });
   }
+
+  const imageUrls = Array.isArray(product.images) ? product.images : [];
+  for (const imageUrl of imageUrls) {
+    if (typeof imageUrl === 'string' && imageUrl.includes('/uploads/')) {
+      await deleteImageFromUploadServer(imageUrl);
+    }
+  }
+
+  await Product.findByIdAndDelete(product._id);
   res.json({ message: 'Đã xóa sản phẩm' });
 };

@@ -9,6 +9,42 @@ import { ToastService } from './toast.service';
     <div class="list-page">
       <header class="list-header">
         <h2>Đánh giá sản phẩm ({{ reviews().length }})</h2>
+        <div class="admin-filters">
+          <div class="filter-group">
+            <input
+              class="filter-input"
+              placeholder="Tìm sản phẩm/người dùng..."
+              [(ngModel)]="searchTerm"
+              (input)="onFilterChange()"
+              style="width: 200px"
+            />
+          </div>
+          <div class="filter-group">
+            <select class="filter-select" [(ngModel)]="ratingFilter" (change)="onFilterChange()" style="width: 100px">
+              <option value="">Tất cả sao</option>
+              <option value="5">5 sao</option>
+              <option value="4">4 sao</option>
+              <option value="3">3 sao</option>
+              <option value="2">2 sao</option>
+              <option value="1">1 sao</option>
+            </select>
+          </div>
+          <div class="filter-group">
+            <select class="filter-select" [(ngModel)]="statusFilter" (change)="onFilterChange()" style="width: 140px">
+              <option value="">Tất cả trạng thái</option>
+              <option value="visible">Hiển thị</option>
+              <option value="hidden">Ẩn</option>
+            </select>
+          </div>
+          <button
+            type="button"
+            class="filter-reset"
+            (click)="resetFilters()"
+            [disabled]="!searchTerm && !ratingFilter && !statusFilter"
+          >
+            Xóa bộ lọc
+          </button>
+        </div>
       </header>
 
       <div class="stats-grid">
@@ -89,6 +125,9 @@ export class AdminReviewsComponent {
   readonly reviews = signal<any[]>([]);
   readonly page = signal(1);
   readonly totalPages = signal(1);
+  searchTerm = '';
+  ratingFilter = '';
+  statusFilter = '';
 
   readonly stats = computed(() => {
     const r = this.reviews();
@@ -108,11 +147,32 @@ export class AdminReviewsComponent {
     this.loadReviews();
   }
 
+  onFilterChange(): void {
+    this.page.set(1);
+    this.loadReviews();
+  }
+
+  resetFilters(): void {
+    this.searchTerm = '';
+    this.ratingFilter = '';
+    this.statusFilter = '';
+    this.page.set(1);
+    this.loadReviews();
+  }
+
   loadReviews(): void {
-    this.http.get('/api/reviews?page=' + this.page() + '&limit=20').subscribe((r: any) => {
+    const params = new URLSearchParams({
+      page: String(this.page()),
+      limit: '20',
+    });
+    if (this.searchTerm) params.set('q', this.searchTerm);
+    if (this.ratingFilter) params.set('rating', this.ratingFilter);
+    if (this.statusFilter) params.set('status', this.statusFilter);
+
+    this.http.get('/api/reviews?' + params.toString()).subscribe((r: any) => {
       const items = Array.isArray(r) ? r : (r.reviews || []);
       this.reviews.set(items);
-      this.totalPages.set(r.totalPages || 1);
+       this.totalPages.set(r.totalPages || 1);
     });
   }
 

@@ -10,6 +10,34 @@ import { ProductsService } from '../products.service';
     <div class="list-page">
       <header class="list-header">
         <h2>Sản phẩm ({{ products().length }})</h2>
+        <div class="admin-filters">
+          <div class="filter-group">
+            <input
+              class="filter-input"
+              placeholder="Tìm tên sản phẩm..."
+              [(ngModel)]="searchTerm"
+              (input)="onFilterChange()"
+              style="width: 200px"
+            />
+          </div>
+          <div class="filter-group">
+            <select class="filter-select" [(ngModel)]="categoryFilter" (change)="onFilterChange()" style="width: 160px">
+              <option value="">Tất cả danh mục</option>
+              <option value="Đặc sản">Đặc sản</option>
+              <option value="Thủ công mỵ nghệ">Thủ công mỵ nghệ</option>
+              <option value="Cà phê - Trà">Cà phê - Trà</option>
+              <option value="Sản phẩm OCOP">Sản phẩm OCOP</option>
+            </select>
+          </div>
+          <button
+            type="button"
+            class="filter-reset"
+            (click)="resetFilters()"
+            [disabled]="!searchTerm && !categoryFilter"
+          >
+            Xóa bộ lọc
+          </button>
+        </div>
         <button type="button" class="btn-add" (click)="startCreate(); showForm.set(true)">Thêm</button>
       </header>
 
@@ -39,43 +67,43 @@ import { ProductsService } from '../products.service';
             <input class="form-input" placeholder="Tên sản phẩm" [(ngModel)]="form.name" (input)="genSlug()" />
             <input class="form-input" placeholder="Slug" [(ngModel)]="form.slug" />
             <input class="form-input" placeholder="Giá" type="number" [(ngModel)]="form.price" />
-            <select class="form-input" [(ngModel)]="form.cat">
+            <select class="form-input form-select-sm" [(ngModel)]="form.cat">
               <option value="">Danh mục</option>
               <option value="Đặc sản">Đặc sản</option>
               <option value="Thủ công mỵ nghệ">Thủ công mỵ nghệ</option>
               <option value="Cà phê - Trà">Cà phê - Trà</option>
               <option value="Sản phẩm OCOP">Sản phẩm OCOP</option>
             </select>
-            <select class="form-input" [(ngModel)]="form.region" placeholder="Vùng miền">
+            <select class="form-input form-select-sm" [(ngModel)]="form.region" placeholder="Vùng miền">
               <option value="">Chọn vùng miền</option>
               @for (r of regions(); track r.slug) {
                 <option [ngValue]="r.name">{{ r.name }}</option>
               }
             </select>
-            <select class="form-input" [(ngModel)]="form.province" placeholder="Tỉnh">
+            <select class="form-input form-select-sm" [(ngModel)]="form.province" placeholder="Tỉnh">
               <option value="">Chọn tỉnh</option>
               @for (p of provinces(); track p.code) {
                 <option [ngValue]="p.name">{{ p.name }}</option>
               }
             </select>
-            <select class="form-input" [(ngModel)]="form.village" placeholder="Làng nghề">
+            <select class="form-input form-select-sm" [(ngModel)]="form.village" placeholder="Làng nghề">
               <option value="">Chọn làng nghề</option>
               @for (v of villages(); track v) {
                 <option [ngValue]="v">{{ v }}</option>
               }
             </select>
-            <div class="form-input upload-area" (click)="fileInput.click()" (dragover)="onDragOver($event)" (drop)="onDrop($event)">
+            <div class="upload-area-sm" (click)="fileInput.click()" (dragover)="onDragOver($event)" (drop)="onDrop($event)">
               <input type="file" #fileInput multiple accept="image/*" (change)="onFileSelect($event)" style="display:none" />
-              <div class="upload-placeholder">
-                <span>📁 Kéo thả hoặc click để tải lên ảnh</span>
-                <small>Hỗ trợ: JPG, PNG, WebP, GIF (tối đa 5MB/Ảnh)</small>
+              <div class="upload-placeholder-sm">
+                <span>📁 Ảnh</span>
+                <small>JPG, PNG (5MB)</small>
               </div>
               @if (previewImages().length > 0) {
-                <div class="preview-grid">
+                <div class="preview-grid-sm">
                   @for (img of previewImages(); track img; let i = $index) {
-                    <div class="preview-item">
+                    <div class="preview-item-sm">
                       <img [src]="img" alt="Preview" />
-                      <button type="button" class="remove-btn" (click)="removePreview(i)" title="Xóa">×</button>
+                      <button type="button" class="remove-btn-sm" (click)="removePreview(i)" title="Xóa">×</button>
                     </div>
                   }
                 </div>
@@ -148,6 +176,8 @@ export class AdminProductsComponent {
   readonly editing = signal<any>(null);
   readonly previewImages = signal<string[]>([]);
   form: any = {};
+  searchTerm = '';
+  categoryFilter = '';
 
   readonly stats = computed(() => {
     const p = this.products();
@@ -169,8 +199,27 @@ export class AdminProductsComponent {
     this.loadVillages();
   }
 
+  onFilterChange(): void {
+    this.page.set(1);
+    this.loadProducts();
+  }
+
+  resetFilters(): void {
+    this.searchTerm = '';
+    this.categoryFilter = '';
+    this.page.set(1);
+    this.loadProducts();
+  }
+
   loadProducts(): void {
-    this.http.get('/api/products?page=' + this.page() + '&limit=20').subscribe((r: any) => {
+    const params = new URLSearchParams({
+      page: String(this.page()),
+      limit: '50',
+    });
+    if (this.searchTerm) params.set('q', this.searchTerm);
+    if (this.categoryFilter) params.set('cat', this.categoryFilter);
+
+    this.http.get('/api/products?' + params.toString()).subscribe((r: any) => {
       const items = Array.isArray(r) ? r : (r.products || []);
       this.products.set(items);
       this.totalPages.set(r.totalPages || 1);

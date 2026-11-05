@@ -9,6 +9,7 @@ import { GiftPageComponent } from './pages/gift-page/gift-page';
 import { DangnhapComponent } from './pages/dangnhap/dangnhap';
 import { Lienhe } from './pages/lienhe/lienhe';
 import { VungmienComponent } from './pages/vung-mien/vung-mien';
+import { CraftVillageComponent } from './pages/craft-village/craft-village';
 import { GiohangComponent } from './pages/giohang/giohang';
 import { ThongbaoComponent } from './pages/thong-bao/thong-bao';
 import { DonHangComponent } from './pages/don-hang/don-hang';
@@ -31,6 +32,7 @@ import { AdminNotificationsComponent } from './admin/notifications';
 import { AdminReviewsComponent } from './admin/reviews';
 import { AdminAuditComponent } from './admin/audit';
 import { AdminRoleRequestsComponent } from './admin/admin-role-requests';
+import { AdminRoutePermissionsComponent } from './admin/route-permissions';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -55,7 +57,8 @@ const routes: Routes = [
     data: { title: 'Đăng nhập | Mộc Mạc' }
   },
   { path: 'vung-mien', component: VungmienComponent, data: { title: 'Vùng miền & Làng nghề | Mộc Mạc' } },
-  { path: 'lang-nghe', redirectTo: 'vung-mien' },
+  { path: 'lang-nghe', component: CraftVillageComponent, data: { title: 'Làng nghề | Mộc Mạc' } },
+  { path: 'lang-nghe/:slug', component: CraftVillageComponent, data: { title: 'Làng nghề | Mộc Mạc' } },
   { path: 'lien-he', component: Lienhe, data: { title: 'Liên hệ' } },
   { path: 'gioi-thieu', component: AboutComponent, data: { title: 'Giới thiệu' } },
   { path: 'qua-tang-theo-nhu-cau', component: GiftNeedsComponent, data: { title: 'Quà tặng theo nhu cầu' } },
@@ -84,6 +87,7 @@ const routes: Routes = [
       { path: 'coupons', component: AdminCouponsComponent },
        { path: 'users', component: AdminUsersComponent },
       { path: 'role-requests', component: AdminRoleRequestsComponent },
+      { path: 'route-permissions', component: AdminRoutePermissionsComponent },
       { path: 'contacts', component: AdminContactsComponent },
       { path: 'notifications', component: AdminNotificationsComponent },
       { path: 'reviews', component: AdminReviewsComponent },

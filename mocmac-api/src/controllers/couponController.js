@@ -3,12 +3,27 @@ import { logAction, getRequestInfo } from '../utils/auditLog.js';
 export const getAllCoupons = async (req, res) => {
   try {
     const page = Math.max(1, Number(req.query.page) || 1);
-    const limit = Math.max(1, Math.min(100, Number(req.query.limit) || 20));
+    const limit = Math.max(1, Number(req.query.limit) || 20);
     const skip = (page - 1) * limit;
 
+    const filter = {};
+
+    if (req.query.q) {
+      filter.code = new RegExp(String(req.query.q), 'i');
+    }
+
+    if (req.query.active !== undefined) {
+      filter.active = req.query.active === 'true';
+    }
+
+    const sort = {};
+    const sortBy = String(req.query.sortBy || 'createdAt');
+    const sortDir = req.query.sortDir === 'asc' ? 1 : -1;
+    sort[sortBy] = sortDir;
+
     const [coupons, total] = await Promise.all([
-      Coupon.find().sort({ createdAt: -1 }).skip(skip).limit(limit).lean(),
-      Coupon.countDocuments(),
+      Coupon.find(filter).sort(sort).skip(skip).limit(limit).lean(),
+      Coupon.countDocuments(filter),
     ]);
 
     return res.json({

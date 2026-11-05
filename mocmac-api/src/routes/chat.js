@@ -6,16 +6,19 @@ const router = Router();
 
 router.get('/conversations', requireAuth, requireRole('admin', 'staff'), async (req, res) => {
   try {
-    const messages = await ChatMessage.find({ to: 'admin' })
-      .sort({ createdAt: -1 })
-      .lean();
+    const messages = await ChatMessage.find({
+      $or: [
+        { to: 'admin' },
+        { from: 'admin' },
+      ],
+    }).sort({ createdAt: -1 }).lean();
 
     const conversations = new Map();
     for (const msg of messages) {
-      const key = msg.from;
+      const key = msg.from === 'admin' ? msg.to : msg.from;
       if (!conversations.has(key)) {
         conversations.set(key, {
-          from: msg.from,
+          from: key,
           lastMessage: msg.message,
           lastAt: msg.createdAt,
           unread: 0,
@@ -29,18 +32,39 @@ router.get('/conversations', requireAuth, requireRole('admin', 'staff'), async (
     ]);
     const unreadMap = new Map(unreadCounts.map((u) => [u._id, u.count]));
 
-    const result = [];
-    for (const [, data] of conversations) {
+    for (const data of conversations.values()) {
       data.unread = unreadMap.get(data.from) || 0;
-      result.push(data);
     }
 
+    const result = Array.from(conversations.values());
     result.sort((a, b) => new Date(b.lastAt) - new Date(a.lastAt));
 
     return res.json({ success: true, conversations: result });
   } catch (error) {
     console.error('❌ Lỗi lấy cuộc trò chuyện:', error);
     return res.status(500).json({ success: false, message: 'Không thể lấy cuộc trò chuyện.', error: error.message });
+  }
+});
+
+router.get('/user-by-email', requireAuth, requireRole('admin', 'staff'), async (req, res) => {
+  try {
+    const email = String(req.query.email || '').trim().toLowerCase();
+    if (!email) {
+      return res.status(400).json({ success: false, message: 'Vui lòng cung cấp email.' });
+    }
+
+    const latest = await ChatMessage.findOne({ from: email, to: 'admin' })
+      .sort({ createdAt: 1 })
+      .lean();
+
+    if (!latest) {
+      return res.status(404).json({ success: false, message: 'Không tìm thấy người dùng.' });
+    }
+
+    return res.json({ success: true, userId: email });
+  } catch (error) {
+    console.error('❌ Lỗi tìm kiếm người dùng theo email:', error);
+    return res.status(500).json({ success: false, message: 'Không thể tìm kiếm.', error: error.message });
   }
 });
 

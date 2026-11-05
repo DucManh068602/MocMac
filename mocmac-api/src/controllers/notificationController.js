@@ -35,18 +35,44 @@ export const getUserNotifications = async (req, res) => {
 export const getAllNotifications = async (req, res) => {
   try {
     const page = Math.max(1, Number(req.query.page) || 1);
-    const limit = Math.max(1, Math.min(100, Number(req.query.limit) || 20));
+    const limit = Math.max(1, Number(req.query.limit) || 20);
     const skip = (page - 1) * limit;
 
+    const filter = {};
+
+    if (req.query.q) {
+      filter.$or = [
+        { title: new RegExp(String(req.query.q), 'i') },
+        { content: new RegExp(String(req.query.q), 'i') },
+      ];
+    }
+
+    if (req.query.type) {
+      filter.type = String(req.query.type);
+    }
+
+    if (req.query.isRead !== undefined) {
+      filter.isRead = req.query.isRead === 'true';
+    }
+
+    if (req.query.sent !== undefined) {
+      filter.sent = req.query.sent === 'true';
+    }
+
+    const sort = {};
+    const sortBy = String(req.query.sortBy || 'createdAt');
+    const sortDir = req.query.sortDir === 'asc' ? 1 : -1;
+    sort[sortBy] = sortDir;
+
     const [notifications, total] = await Promise.all([
-      Notification.find()
+      Notification.find(filter)
         .populate('recipient', 'name email')
         .populate('orderId', 'total status')
-        .sort({ createdAt: -1 })
+        .sort(sort)
         .skip(skip)
         .limit(limit)
         .lean(),
-      Notification.countDocuments(),
+      Notification.countDocuments(filter),
     ]);
 
     return res.json({

@@ -1,5 +1,5 @@
-import { Component, computed, inject, signal } from '@angular/core';
-import { ProductsService, ProductItem } from '../../products.service';
+import { Component, inject, signal } from '@angular/core';
+import { ProductsService } from '../../products.service';
 
 interface BusinessIdea {
   icon: string;
@@ -40,8 +40,4 @@ export class GiftBusinessComponent {
   ]);
 
   readonly allProducts = this.productsService.products;
-
-  readonly featuredProducts = computed<ProductItem[]>(() =>
-    (this.allProducts() ?? []).filter((p) => p.ocop > 0).slice(0, 8),
-  );
 }

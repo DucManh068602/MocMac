@@ -363,7 +363,7 @@ export class ProductsService {
 
     this.http
       .get<ProductItem[] | { products: ProductItem[] }>(
-        '/api/products'
+        '/api/products?limit=100'
 )
 
       .pipe(

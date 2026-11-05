@@ -1,0 +1,45 @@
+<div class="list-page">
+  <header class="list-header">
+    <h2>Phân quyền vai trò</h2>
+  </header>
+
+  <div class="form-card">
+    <h3>Chọn vai trò</h3>
+    <select class="form-input" [(ngModel)]="role" style="max-width:240px">
+      @for (r of roles; track r.value) {
+        <option [value]="r.value">{{ r.label }}</option>
+      }
+    </select>
+  </div>
+
+  <div class="form-card">
+    <h3>Cấp/thu hồi quyền theo chức năng</h3>
+    <div class="table-wrap">
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>Chức năng</th>
+            <th>Phương thức</th>
+            <th>Đường dẫn</th>
+            <th style="width:120px">Cấp quyền</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (tpl of routeTemplates; track tpl.key) {
+            <tr>
+              <td>{{ tpl.desc }}</td>
+              <td>{{ tpl.method }}</td>
+              <td>{{ tpl.path }}</td>
+              <td>
+                <label style="display:flex;align-items:center;gap:6px">
+                  <input type="checkbox" [checked]="isChecked(tpl)" (change)="toggle(tpl, $any($event.target).checked)" />
+                  <span>Cho phép</span>
+                </label>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

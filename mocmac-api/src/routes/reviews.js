@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { requireAuth, requireRole } from '../middleware/auth.js';
+import { requireAuth, requireRole, requirePermission } from '../middleware/auth.js';
 import {
   getProductReviews,
   createReview,
@@ -11,9 +11,9 @@ import {
 const router = Router();
 
 router.get('/product/:id', getProductReviews);
-router.post('/', requireAuth, createReview);
-router.get('/', requireAuth, requireRole('admin', 'staff'), getAllReviews);
-router.patch('/:id/status', requireAuth, requireRole('admin', 'staff'), updateReviewStatus);
-router.delete('/:id', requireAuth, requireRole('admin'), deleteReview);
+router.post('/', requireAuth, requirePermission('reviews.create'), createReview);
+router.get('/', requireAuth, requireRole('admin', 'staff'), requirePermission('reviews.view'), getAllReviews);
+router.patch('/:id/status', requireAuth, requireRole('admin', 'staff'), requirePermission('reviews.update'), updateReviewStatus);
+router.delete('/:id', requireAuth, requireRole('admin'), requirePermission('reviews.delete'), deleteReview);
 
 export default router;

@@ -70,8 +70,10 @@
         "serve": {
           "builder": "@angular/build:dev-server",
           "options": {
-            "proxyConfig": "proxy.conf.json"
+            "proxyConfig": "proxy.conf.json", 
+             "allowedHosts": ["unshaven-grain-revert.ngrok-free.dev"]
           },
+          
           "configurations": {
             "production": {
               "buildTarget": "my-app:build:production"

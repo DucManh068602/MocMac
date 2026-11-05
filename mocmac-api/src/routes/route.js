@@ -15,6 +15,8 @@ import auditRoutes from './auditRoutes.js';
 import provinceRoutes from './provinces.js';
 import villageRoutes from './villages.js';
 import uploadRoutes from './uploads.js';
+import permissionRoutes from './permissions.js';
+import routePermissionRoutes from './routePermissions.js';
 import { requireAuth } from '../middleware/auth.js';
 
 const route = Router();
@@ -34,10 +36,11 @@ route.use('/notifications', notificationRoutes);
 route.use('/users', userRoutes);
 route.use('/reviews', reviewRoutes);
 route.use('/role-requests', roleRequestRoutes);
-route.use('/chat', chatRoutes);
 route.use('/audit-logs', auditRoutes);
 route.use('/provinces', provinceRoutes);
 route.use('/villages', villageRoutes);
 route.use('/uploads', uploadRoutes);
+route.use('/permissions', permissionRoutes);
+route.use('/route-permissions', routePermissionRoutes);
 
 export default route;

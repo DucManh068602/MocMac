@@ -7,6 +7,8 @@ import { Product } from './models/Product.js';
 import { User } from './models/User.js';
 import { Region } from './models/Region.js';
 import { slugify } from './utils/slugify.js';
+import { Permission } from './models/Permission.js';
+import { RolePermission } from './models/RolePermission.js';
 
 const raw = JSON.parse(
   fs.readFileSync(
@@ -171,6 +173,117 @@ if (!(await User.exists({ email: staffEmail }))) {
 
   console.log(`Đã tạo staff: ${staffEmail}`);
 }
+
+// =======================
+// PERMISSIONS & ROLE PERMISSIONS
+// =======================
+
+const defaultPermissions = [
+  { name: 'auth.me', description: 'Xem thông tin cá nhân của mình', category: 'auth', action: 'view', isSystem: true },
+  { name: 'auth.forgot-password', description: 'Quên mật khẩu cá nhân', category: 'auth', action: 'manage', isSystem: true },
+  { name: 'users.view', description: 'Xem danh sách người dùng', category: 'users', action: 'view', isSystem: true },
+  { name: 'users.create', description: 'Tạo tài khoản mới', category: 'users', action: 'create', isSystem: true },
+  { name: 'users.update', description: 'Cập nhật / kích hoạt / khóa tài khoản', category: 'users', action: 'update', isSystem: true },
+  { name: 'users.delete', description: 'Xóa tài khoản', category: 'users', action: 'delete', isSystem: true },
+  { name: 'products.view', description: 'Xem danh sách sản phẩm', category: 'products', action: 'view', isSystem: true },
+  { name: 'products.create', description: 'Tạo sản phẩm', category: 'products', action: 'create', isSystem: true },
+  { name: 'products.update', description: 'Cập nhật sản phẩm', category: 'products', action: 'update', isSystem: true },
+  { name: 'products.delete', description: 'Xóa sản phẩm', category: 'products', action: 'delete', isSystem: true },
+  { name: 'orders.view', description: 'Xem danh sách đơn hàng', category: 'orders', action: 'view', isSystem: true },
+  { name: 'orders.create', description: 'Tạo đơn hàng', category: 'orders', action: 'create', isSystem: true },
+  { name: 'orders.update', description: 'Cập nhật trạng thái đơn hàng / thanh toán', category: 'orders', action: 'update', isSystem: true },
+  { name: 'orders.delete', description: 'Xóa đơn hàng', category: 'orders', action: 'delete', isSystem: true },
+  { name: 'contacts.view', description: 'Xem danh sách tin nhắn liên hệ', category: 'contacts', action: 'view', isSystem: true },
+  { name: 'contacts.update', description: 'Cập nhật / trả lời tin nhắn liên hệ', category: 'contacts', action: 'update', isSystem: true },
+  { name: 'reviews.view', description: 'Xem đánh giá sản phẩm', category: 'reviews', action: 'view', isSystem: true },
+  { name: 'reviews.update', description: 'Cập nhật / ẩn / xóa đánh giá', category: 'reviews', action: 'update', isSystem: true },
+  { name: 'coupons.view', description: 'Xem danh sách mã giảm giá', category: 'coupons', action: 'view', isSystem: true },
+  { name: 'coupons.create', description: 'Tạo mã giảm giá', category: 'coupons', action: 'create', isSystem: true },
+  { name: 'coupons.update', description: 'Cập nhật / xóa mã giảm giá', category: 'coupons', action: 'update', isSystem: true },
+  { name: 'role-requests.view', description: 'Xem danh sách yêu cầu nâng cấp vai trò', category: 'role-requests', action: 'view', isSystem: true },
+  { name: 'role-requests.create', description: 'Tạo yêu cầu nâng cấp vai trò', category: 'role-requests', action: 'create', isSystem: true },
+  { name: 'role-requests.update', description: 'Duyệt / từ chối yêu cầu nâng cấp vai trò', category: 'role-requests', action: 'update', isSystem: true },
+  { name: 'audit.view', description: 'Xem lịch sử hệ thống', category: 'audit', action: 'view', isSystem: true },
+  { name: 'audit.create', description: 'Ghi nhận hành động hệ thống', category: 'audit', action: 'create', isSystem: true },
+  { name: 'audit.delete', description: 'Xóa lịch sử hệ thống', category: 'audit', action: 'delete', isSystem: true },
+  { name: 'notifications.view', description: 'Xem thông báo', category: 'notifications', action: 'view', isSystem: true },
+  { name: 'notifications.create', description: 'Tạo / gửi thông báo', category: 'notifications', action: 'create', isSystem: true },
+  { name: 'notifications.update', description: 'Đánh dấu / cập nhật thông báo', category: 'notifications', action: 'update', isSystem: true },
+];
+
+const permissionDocs = await Permission.insertMany(defaultPermissions);
+
+const rolePermissionDefs = [
+  // Admin: toàn bộ quyền hệ thống
+  { role: 'admin', permissionName: 'admin.system', description: 'Quyền quản trị hệ thống' },
+  { role: 'admin', permissionName: 'admin.manage', description: 'Quyền quản trị toàn bộ' },
+];
+
+// Gán tất cả permission hệ thống cho admin
+for (const p of permissionDocs) {
+  await RolePermission.findOneAndUpdate(
+    { role: 'admin', permission: p._id },
+    { assignedBy: null, assignedAt: new Date(), notes: 'Auto-assign full' },
+    { upsert: true }
+  );
+}
+
+// Staff: quyền vận hành bán hàng
+for (const p of permissionDocs) {
+  const allowed =
+    p.category === 'products' ||
+    p.category === 'orders' ||
+    p.category === 'contacts' ||
+    p.category === 'reviews' ||
+    p.category === 'coupons' ||
+    p.category === 'notifications' ||
+    p.category === 'auth';
+  if (allowed) {
+    await RolePermission.findOneAndUpdate(
+      { role: 'staff', permission: p._id },
+      { assignedBy: null, assignedAt: new Date(), notes: 'Auto-assign operational' },
+      { upsert: true }
+    );
+  }
+}
+
+// Collaborator: chỉ xem sản phẩm, nộp đánh giá
+for (const p of permissionDocs) {
+  const allowed = ['products.view', 'reviews.create', 'auth.me'].includes(p.name);
+  if (allowed) {
+    await RolePermission.findOneAndUpdate(
+      { role: 'collaborator', permission: p._id },
+      { assignedBy: null, assignedAt: new Date(), notes: 'Auto-assign collaboration' },
+      { upsert: true }
+    );
+  }
+}
+
+// Cooperative: xem sản phẩm và theo dõi đơn hàng
+for (const p of permissionDocs) {
+  const allowed = ['products.view', 'orders.view', 'auth.me'].includes(p.name);
+  if (allowed) {
+    await RolePermission.findOneAndUpdate(
+      { role: 'cooperative', permission: p._id },
+      { assignedBy: null, assignedAt: new Date(), notes: 'Auto-assign business' },
+      { upsert: true }
+    );
+  }
+}
+
+// Customer: chỉ xem sản phẩm
+for (const p of permissionDocs) {
+  const allowed = ['products.view', 'auth.me', 'auth.forgot-password'].includes(p.name);
+  if (allowed) {
+    await RolePermission.findOneAndUpdate(
+      { role: 'customer', permission: p._id },
+      { assignedBy: null, assignedAt: new Date(), notes: 'Auto-assign customer' },
+      { upsert: true }
+    );
+  }
+}
+
+console.log(`Đã nạp ${permissionDocs.length} permission và gán cho các vai trò`);
 
 await mongoose.disconnect();
 

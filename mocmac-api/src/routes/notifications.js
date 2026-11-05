@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { requireAuth, requireRole } from '../middleware/auth.js';
+import { requireAuth, requireRole, requirePermission } from '../middleware/auth.js';
 import {
   getAllNotifications,
   getUserNotifications,
@@ -14,14 +14,14 @@ import {
 
 const router = Router();
 
-router.get('/', requireAuth, requireRole('admin', 'staff'), getAllNotifications);
+router.get('/', requireAuth, requireRole('admin', 'staff'), requirePermission('notifications.view'), getAllNotifications);
 router.get('/mine', requireAuth, getUserNotifications);
 router.patch('/mine/read-all', requireAuth, markAllNotificationsRead);
-router.patch('/read-all', requireAuth, requireRole('admin', 'staff'), markAllNotificationsReadAll);
-router.get('/:id', requireAuth, requireRole('admin', 'staff'), getNotificationById);
-router.post('/', requireAuth, requireRole('admin', 'staff'), createNotification);
-router.post('/send', requireAuth, requireRole('admin', 'staff'), sendNotification);
-router.patch('/:id/read', requireAuth, requireRole('admin', 'staff'), markAsRead);
-router.delete('/:id', requireAuth, requireRole('admin', 'staff'), deleteNotification);
+router.patch('/read-all', requireAuth, requireRole('admin', 'staff'), requirePermission('notifications.update'), markAllNotificationsReadAll);
+router.get('/:id', requireAuth, requireRole('admin', 'staff'), requirePermission('notifications.view'), getNotificationById);
+router.post('/', requireAuth, requireRole('admin', 'staff'), requirePermission('notifications.create'), createNotification);
+router.post('/send', requireAuth, requireRole('admin', 'staff'), requirePermission('notifications.create'), sendNotification);
+router.patch('/:id/read', requireAuth, requireRole('admin', 'staff'), requirePermission('notifications.update'), markAsRead);
+router.delete('/:id', requireAuth, requireRole('admin'), requirePermission('notifications.delete'), deleteNotification);
 
 export default router;

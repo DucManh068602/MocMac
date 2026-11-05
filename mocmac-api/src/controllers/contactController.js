@@ -1,4 +1,8 @@
 import { Contact } from '../models/Contact.js';
+import { ChatMessage } from '../models/ChatMessage.js';
+import { sendMail } from '../utils/mailer.js';
+
+const contactRateLimit = new Map();
 
 export const createContact = async (req, res) => {
   try {
@@ -20,10 +24,21 @@ export const createContact = async (req, res) => {
       });
     }
 
+    let email = String(data.email || '').trim().toLowerCase();
+
+    const now = Date.now();
+    const lastSubmit = contactRateLimit.get(email);
+    if (lastSubmit && now - lastSubmit < 60000) {
+      return res.status(429).json({
+        success: false,
+        field: 'email',
+        message: 'Vui lòng chờ 60 giây trước khi gửi lại liên hệ.'
+      });
+    }
+
     let {
       name,
       phone,
-      email,
       subject,
       message
     } = data;
@@ -156,16 +171,24 @@ export const createContact = async (req, res) => {
     });
 
     console.log('✅ Đã lưu liên hệ vào MongoDB');
-    console.log('Database:', Contact.db.name);
-    console.log('Collection:', Contact.collection.name);
     console.log('ID:', contact._id);
     console.log('Tên:', contact.name);
-    console.log('Điện thoại:', contact.phone);
     console.log('Email:', contact.email);
-    console.log('Chủ đề:', contact.subject);
-    console.log('Nội dung:', contact.message);
-    console.log('Trạng thái:', contact.status);
     console.log('====================================');
+
+    await ChatMessage.create({
+      from: email,
+      to: 'admin',
+      message: `[Liên hệ] ${name} (${email}): ${subject || 'Không có chủ đề'} - ${message.slice(0, 100)}`,
+    });
+
+    await sendMail({
+      to: email,
+      subject: 'Xác nhận đã nhận được liên hệ của bạn',
+      text: `Kính gửi ${name},\n\nChúng tôi đã nhận được liên hệ của bạn và sẽ phản hồi sớm nhất có thể.\n\nTrân trọng,\nĐội ngũ Mộc Mạc`,
+    });
+
+    contactRateLimit.set(email, now);
 
     return res.status(201).json({
       success: true,
@@ -196,26 +219,52 @@ export const createContact = async (req, res) => {
 
 export const getAllContacts = async (req, res) => {
   try {
-    const contacts = await Contact
-      .find()
-      .sort({ createdAt: -1 })
-      .lean();
+    const page = Math.max(1, Number(req.query.page) || 1);
+    const limit = Math.max(1, Number(req.query.limit) || 20);
+    const skip = (page - 1) * limit;
 
-    console.log(`📋 Đã tải ${contacts.length} liên hệ`);
+    const filter = {};
+
+    if (req.query.q) {
+      const search = String(req.query.q);
+      filter.$or = [
+        { name: new RegExp(search, 'i') },
+        { email: new RegExp(search, 'i') },
+        { phone: new RegExp(search, 'i') },
+        { message: new RegExp(search, 'i') },
+      ];
+    }
+
+    if (req.query.status) {
+      filter.status = String(req.query.status);
+    }
+
+    const sort = {};
+    const sortBy = String(req.query.sortBy || 'createdAt');
+    const sortDir = req.query.sortDir === 'asc' ? 1 : -1;
+    sort[sortBy] = sortDir;
+
+    const [contacts, total] = await Promise.all([
+      Contact.find(filter).sort(sort).skip(skip).limit(limit).lean(),
+      Contact.countDocuments(filter),
+    ]);
+
+    console.log(`📋 Đã tải ${contacts.length} liên hệ (trang ${page})`);
 
     return res.json({
       success: true,
-      total: contacts.length,
-      contacts
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit),
+      contacts,
     });
-
   } catch (error) {
     console.error('❌ Lỗi lấy danh sách liên hệ:', error);
-
     return res.status(500).json({
       success: false,
       message: 'Không thể lấy danh sách liên hệ.',
-      error: error.message
+      error: error.message,
     });
   }
 };

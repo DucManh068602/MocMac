@@ -6,7 +6,7 @@ export interface AuthUser {
   id: string;
   name: string;
   email: string;
-   role: 'admin' | 'staff' | 'customer';
+  role: 'admin' | 'staff' | 'collaborator' | 'cooperative' | 'customer';
 }
 
 export interface AuthResponse {

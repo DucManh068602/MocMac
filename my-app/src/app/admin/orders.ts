@@ -9,6 +9,44 @@ import { ToastService } from './toast.service';
     <div class="list-page">
       <header class="list-header">
         <h2>Đơn hàng ({{ orders().length }})</h2>
+        <div class="admin-filters">
+          <div class="filter-group">
+            <input
+              class="filter-input"
+              placeholder="Tìm mã đơn/MST/khách hàng..."
+              [(ngModel)]="searchTerm"
+              (input)="onFilterChange()"
+              style="width: 200px"
+            />
+          </div>
+          <div class="filter-group">
+            <select class="filter-select" [(ngModel)]="statusFilter" (change)="onFilterChange()" style="width: 140px">
+              <option value="">Tất cả trạng thái</option>
+              <option value="pending">Chờ xử lý</option>
+              <option value="processing">Đang xử lý</option>
+              <option value="shipped">Đã giao</option>
+              <option value="delivered">Đã nhận</option>
+              <option value="cancelled">Đã hủy</option>
+            </select>
+          </div>
+          <div class="filter-group">
+            <select class="filter-select" [(ngModel)]="paymentFilter" (change)="onFilterChange()" style="width: 140px">
+              <option value="">Tất cả thanh toán</option>
+              <option value="pending">Chưa thanh toán</option>
+              <option value="paid">Đã thanh toán</option>
+              <option value="failed">Thất bại</option>
+              <option value="refunded">Hoàn tiền</option>
+            </select>
+          </div>
+          <button
+            type="button"
+            class="filter-reset"
+            (click)="resetFilters()"
+            [disabled]="!searchTerm && !statusFilter && !paymentFilter"
+          >
+            Xóa bộ lọc
+          </button>
+        </div>
       </header>
 
       <div class="stats-grid">
@@ -96,6 +134,9 @@ export class AdminOrdersComponent {
   readonly orders = signal<any[]>([]);
   readonly page = signal(1);
   readonly totalPages = signal(1);
+  searchTerm = '';
+  statusFilter = '';
+  paymentFilter = '';
 
   readonly stats = computed(() => {
     const o = this.orders();
@@ -112,6 +153,35 @@ export class AdminOrdersComponent {
     this.loadOrders();
   }
 
+  onFilterChange(): void {
+    this.page.set(1);
+    this.loadOrders();
+  }
+
+  resetFilters(): void {
+    this.searchTerm = '';
+    this.statusFilter = '';
+    this.paymentFilter = '';
+    this.page.set(1);
+    this.loadOrders();
+  }
+
+  loadOrders(): void {
+    const params = new URLSearchParams({
+      page: String(this.page()),
+      limit: '20',
+    });
+    if (this.searchTerm) params.set('q', this.searchTerm);
+    if (this.statusFilter) params.set('status', this.statusFilter);
+    if (this.paymentFilter) params.set('paymentStatus', this.paymentFilter);
+
+    this.http.get('/api/orders?' + params.toString()).subscribe((r: any) => {
+      const items = Array.isArray(r.orders) ? r.orders : (r.orders?.orders || []);
+      this.orders.set(items);
+      this.totalPages.set(r.totalPages || 1);
+    });
+  }
+
   statusLabel(status: string): string {
     const labels: Record<string, string> = {
       pending: 'Chờ xử lý',
@@ -121,14 +191,6 @@ export class AdminOrdersComponent {
       cancelled: 'Đã hủy',
     };
     return labels[status] || 'Chờ xử lý';
-  }
-
-  loadOrders(): void {
-    this.http.get('/api/orders?page=' + this.page() + '&limit=20').subscribe((r: any) => {
-      const items = Array.isArray(r.orders) ? r.orders : (r.orders?.orders || []);
-      this.orders.set(items);
-      this.totalPages.set(r.totalPages || 1);
-    });
   }
 
   updateStatus(id: string, event: Event): void {

@@ -1,0 +1,475 @@
+<section class="craft-page">
+
+  <!-- HERO -->
+  <section class="craft-hero">
+    <div class="container">
+
+      <span class="eyebrow">LÀNG NGHỆ VIỆT</span>
+
+      <h1>
+        Những đôi bàn tay gìn giữ<br>
+        ký ức của một vùng đất
+      </h1>
+
+      <p>
+        Qua nhiều thế hệ, các làng nghề truyền thống Việt Nam
+        không chỉ tạo ra sản phẩm mà còn lưu giữ kỹ thuật,
+        ký ức và bản sắc văn hoá của từng địa phương.
+      </p>
+
+      <a href="#lang-nghe-noi-bat" class="primary-btn">
+        Khám phá làng nghề →
+      </a>
+
+    </div>
+  </section>
+
+
+  <!-- INTRO -->
+  <section class="section intro-section">
+    <div class="container intro-grid">
+
+      <div class="intro-content">
+
+        <span class="eyebrow">
+          CÂU CHUYỆN LÀNG NGHỆ
+        </span>
+
+        <h2>
+          Mỗi sản phẩm là dấu ấn của một cộng đồng
+        </h2>
+
+        <p>
+          Mộc Mạc mong muốn đưa những câu chuyện làng nghề
+          đến gần hơn với người dùng, để mỗi sản phẩm không chỉ
+          được nhìn nhận bằi giá trị sử dụng mà còn bằng hành trình,
+          con người và văn hoá phía sau.
+        </p>
+
+        <p>
+          Từ gốm, lụa, mây tre cho đến tranh dân gian,
+          mỗi nghề đều mang theo kinh nghiệm được truyền lại
+          qua nhiều thế hệ.
+        </p>
+
+      </div>
+
+      <div class="intro-quote">
+        <i class="fa-solid fa-quote-left"></i>
+
+        <p>
+          “Giữ nghề không chỉ là giữ một cách làm,
+          mà còn là giữ ký ức và bản sắc của một vùng đất.”
+        </p>
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- VILLAGES -->
+  <section class="section villages-section" id="lang-nghe-noi-bat">
+    <div class="container">
+
+      <div class="section-heading">
+        <span>LÀNG NGHỆ NỔI BẬT</span>
+        <h2>Những nơi lưu giữ tinh hoa nghề Việt</h2>
+      </div>
+
+      <div class="village-grid">
+
+        @for (v of villages; track v.slug) {
+
+          <article class="village-card">
+
+            <div class="village-image">
+              <img
+                [src]="v.image"
+                [alt]="v.name"
+                loading="lazy"
+              >
+
+              <span class="craft-label">
+                {{ v.craft }}
+              </span>
+            </div>
+
+            <div class="village-body">
+
+              <small>
+                <i class="fa-solid fa-location-dot"></i>
+                {{ v.location }}
+              </small>
+
+              <h3>{{ v.name }}</h3>
+
+              <p>
+                {{ v.description }}
+              </p>
+
+              <div class="village-products">
+                <b>Sản phẩm tiêu biểu</b>
+                <span>{{ v.products }}</span>
+              </div>
+
+              <a [routerLink]="['/lang-nghe', v.slug]">
+                Khám phá câu chuyện →
+              </a>
+
+            </div>
+
+          </article>
+
+        }
+
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ARTICLES -->
+  <section class="section article-section">
+    <div class="container">
+
+      <div class="section-heading">
+        <span>CHUYỆN TỪ LÀNG NGHỆ</span>
+        <h2>Những câu chuyện phía sau sản phẩm</h2>
+
+        <p>
+          Không chỉ là nơi sản xuất,
+          mỗi làng nghề còn mang theo những câu chuyện về con người,
+          kỹ thuật và đời sống văn hoá địa phương.
+        </p>
+      </div>
+
+      <div class="article-grid">
+
+        @for (article of articles; track article.title) {
+
+          <article class="article-card">
+
+            <span class="article-category">
+              {{ article.category }}
+            </span>
+
+            <h3>
+              {{ article.title }}
+            </h3>
+
+            <p>
+              {{ article.text }}
+            </p>
+
+            <a [routerLink]="['/lang-nghe', article.slug]">
+              Đọc câu chuyện →
+            </a>
+
+          </article>
+
+        }
+
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- CRAFT TYPES -->
+  <section class="section craft-section">
+    <div class="container">
+
+      <div class="section-heading">
+        <span>KHÁM PHÁ THEO NGHỆ</span>
+
+        <h2>
+          Mỗi nghề một kỹ thuật, một bản sắc riêng
+        </h2>
+      </div>
+
+      <div class="craft-grid">
+
+        @for (craft of crafts; track craft.title) {
+
+          <article class="craft-card">
+
+            <div class="craft-icon">
+              <i [class]="craft.icon"></i>
+            </div>
+
+            <h3>{{ craft.title }}</h3>
+
+            <p>
+              {{ craft.text }}
+            </p>
+
+          </article>
+
+        }
+
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ARTISANS -->
+  <section class="section artisan-section">
+    <div class="container artisan-grid">
+
+     <div class="artisan-visual">
+  <img
+    src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSeA7DOnPLUohrdWa0ZDLvv46qMe8QSTxMcWwM-nrUotQ&s=10"
+    alt="Con người giữ nghề"
+  >
+
+  <div class="artisan-overlay">
+    <span>CON NGƯỜI GIỮ NGHỆ</span>
+  </div>
+</div>
+
+      <div class="artisan-content">
+
+        <span class="eyebrow">
+          NGHỆ NHÂN & NGƯỜI THỢ
+        </span>
+
+        <h2>
+          Đằng sau mỗi sản phẩm là một đôi bàn tay
+        </h2>
+
+        <p>
+          Đằng sau mỗi làng nghề là những người thợ và nghệ nhân
+          đã dành nhiều năm để học nghề, làm nghề
+          và truyền lại kinh nghiệm cho thế hệ sau.
+        </p>
+
+        <p>
+          Mỗi đường nét trên sản phẩm không chỉ phản ánh kỹ năng
+          mà còn mang theo ký ức, thói quen và cách nhìn
+          của cộng đồng nơi sản phẩm được tạo ra.
+        </p>
+
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- PROCESS -->
+  <section class="section process-section">
+    <div class="container">
+
+      <div class="section-heading">
+        <span>TỪ LÀNG NGHỆ ĐẾN SẢN PHẨM</span>
+        <h2>Hành trình tạo nên giá trị</h2>
+      </div>
+
+      <div class="process-flow">
+
+        <div class="process-item">
+          <span>01</span>
+          <i class="fa-solid fa-seedling"></i>
+          <h3>Nguyên liệu</h3>
+          <p>
+            Nguyên liệu được lựa chọn phù hợp với đặc trưng của từng nghệ.
+          </p>
+        </div>
+
+        <div class="process-arrow">
+          <i class="fa-solid fa-arrow-right"></i>
+        </div>
+
+        <div class="process-item">
+          <span>02</span>
+          <i class="fa-solid fa-user"></i>
+          <h3>Người làm nghề</h3>
+          <p>
+            Nghệ nhân và người thợ sử dụng kinh nghiệm được tích lũy qua nhiều năm.
+          </p>
+        </div>
+
+        <div class="process-arrow">
+          <i class="fa-solid fa-arrow-right"></i>
+        </div>
+
+        <div class="process-item">
+          <span>03</span>
+          <i class="fa-solid fa-screwdriver-wrench"></i>
+          <h3>Kỹ thuật truyền thống</h3>
+          <p>
+            Mỗi nghệ có quy trình, công cụ và kỹ thuật riêng.
+          </p>
+        </div>
+
+        <div class="process-arrow">
+          <i class="fa-solid fa-arrow-right"></i>
+        </div>
+
+        <div class="process-item">
+          <span>04</span>
+          <i class="fa-solid fa-box-open"></i>
+          <h3>Hoàn thiện</h3>
+          <p>
+            Sản phẩm được kiểm tra và hoàn thiện trước khi phân phối.
+          </p>
+        </div>
+
+        <div class="process-arrow">
+          <i class="fa-solid fa-arrow-right"></i>
+        </div>
+
+        <div class="process-item">
+          <span>05</span>
+          <i class="fa-solid fa-link"></i>
+          <h3>Kết nối qua Mộc Mạc</h3>
+          <p>
+            Sản phẩm và câu chuyện được kết nối với người dùng hiện đại.
+          </p>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- PRODUCTS -->
+  <section class="section product-story-section">
+    <div class="container product-story-grid">
+
+      <div>
+
+        <span class="eyebrow">
+          SẢN PHẨM TỪ LÀNG NGHỆ
+        </span>
+
+        <h2>
+          Đưa giá trị truyền thống vào đời sống hiện đại
+        </h2>
+
+        <p>
+          Tại Mộc Mạc, sản phẩm làng nghề không chỉ hiển thị tên và giá bán.
+          Người dùng còn có thể tìm hiểu về nguồn gốc,
+          làng nghề, Heritage Score và hành trình sản phẩm.
+        </p>
+
+        <ul>
+          <li>Làng nghề và tỉnh thành.</li>
+          <li>Kỹ thuật truyền thống.</li>
+          <li>Heritage Score.</li>
+          <li>QR truy xuất nguồn gốc.</li>
+          <li>Câu chuyện sản phẩm.</li>
+        </ul>
+
+        <a routerLink="/san-pham" class="secondary-btn">
+          Khám phá sản phẩm làng nghề →
+        </a>
+
+      </div>
+
+      <div class="product-story-card">
+
+        <i class="fa-solid fa-qrcode"></i>
+
+        <h3>
+          Hiểu sản phẩm trước khi lựa chọn
+        </h3>
+
+        <p>
+          Mộc Mạc giúp kết nối thông tin sản phẩm
+          với câu chuyện về vùng đất,
+          người làm nghề và giá trị văn hoá phía sau.
+        </p>
+
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- MODERN LIFE -->
+  <section class="section modern-section">
+    <div class="container">
+
+      <div class="section-heading">
+        <span>GIỮ NGHỆ TRONG ĐỜI SỐNG HIỆU ĐẠI</span>
+
+        <h2>
+          Khi giá trị truyền thống bước vào không gian số
+        </h2>
+
+        <p>
+          Các làng nghề đang đứng trước nhiều thay đổi về thị trường,
+          nhu cầu người tiêu dùng và cách thức sản xuất.
+          Việc đưa sản phẩm truyền thống lên nền tảng số
+          không chỉ mở rộng cơ hội tiếp cận khách hàng
+          mà còn giúp câu chuyện và giá trị văn hoá được nhìn thấy nhiều hơn.
+        </p>
+      </div>
+
+      <div class="modern-grid">
+
+        <article>
+          <i class="fa-solid fa-store"></i>
+          <h3>Mở rộng thị trường</h3>
+          <p>
+            Giúp sản phẩm địa phương tiếp cận nhiều người dùng hơn.
+          </p>
+        </article>
+
+        <article>
+          <i class="fa-solid fa-book-open"></i>
+          <h3>Kể câu chuyện</h3>
+          <p>
+            Đưa văn hoá, kỹ thuật và con người phía sau sản phẩm đến gần khách hàng.
+          </p>
+        </article>
+
+        <article>
+          <i class="fa-solid fa-leaf"></i>
+          <h3>Gìn giữ giá trị</h3>
+          <p>
+            Góp phần duy trì nghề truyền thống và sinh kế địa phương.
+          </p>
+        </article>
+
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- CTA -->
+  <section class="craft-cta">
+    <div class="container">
+
+      <span>
+        KHÁM PHÁ CÂU CHUYỆN LÀNG NGHỆ VIỆT
+      </span>
+
+      <h2>
+        Mỗi ngôi làng có một câu chuyện
+      </h2>
+
+      <p>
+        Mỗi người thợ có một hành trình.
+        Mỗi sản phẩm mang theo dấu ấn của một vùng đất.
+      </p>
+
+      <div class="cta-actions">
+
+        <a href="#lang-nghe-noi-bat" class="btn-orange">
+          Khám phá làng nghề
+        </a>
+
+        <a routerLink="/san-pham" class="btn-outline">
+          Xem sản phẩm
+        </a>
+
+      </div>
+
+    </div>
+  </section>
+
+</section>

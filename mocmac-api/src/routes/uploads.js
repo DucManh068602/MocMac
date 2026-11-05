@@ -1,12 +1,16 @@
+import dotenv from "dotenv"; 
+dotenv.config(); 
+import fs from 'fs';
 import { Router } from 'express';
 import multer from 'multer';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { requireAuth, requireRole } from '../middleware/auth.js';
 
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const uploadsDir = path.join(__dirname, '..', 'public', 'uploads');
+const uploadsDir = path.join(__dirname, '..', '..', 'public', 'uploads');
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => cb(null, uploadsDir),
@@ -19,7 +23,10 @@ const storage = multer.diskStorage({
 
 const fileFilter = (req, file, cb) => {
   const allowed = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
-  if (allowed.includes(file.mimetype)) {
+  const ext = path.extname(file.originalname).toLowerCase();
+  const allowedExt = ['.jpg', '.jpeg', '.png', '.webp', '.gif'];
+
+  if (allowed.includes(file.mimetype) || (!file.mimetype && allowedExt.includes(ext))) {
     cb(null, true);
   } else {
     cb(new Error('Chỉ chấp nhận file ảnh (jpg, png, webp, gif)'), false);
@@ -33,11 +40,32 @@ const router = Router();
 router.post('/image', requireAuth, requireRole('admin'), upload.array('images', 10), (req, res) => {
   const files = req.files;
   if (!files || files.length === 0) {
-    return res.status(400).json({ message: 'Không có file nào được tải lên' });
+    return res.status(400).json({ success: false, message: 'Không có file nào được tải lên' });
   }
 
   const urls = files.map(f => `/uploads/${f.filename}`);
   res.json({ success: true, urls });
+});
+
+router.delete('/:filename', requireAuth, requireRole('admin'), (req, res) => {
+  const filepath = path.join(uploadsDir, req.params.filename);
+  if (fs.existsSync(filepath)) {
+    fs.unlinkSync(filepath);
+    res.json({ success: true, message: 'File deleted' });
+  } else {
+    res.status(404).json({ error: 'File not found' });
+  }
+});
+
+router.use((err, req, res, next) => {
+  if (err instanceof multer.MulterError) {
+    return res.status(400).json({ success: false, message: err.message });
+  }
+  if (err) {
+    console.error('Upload error:', err.message);
+    return res.status(400).json({ success: false, message: err.message });
+  }
+  next();
 });
 
 export default router;

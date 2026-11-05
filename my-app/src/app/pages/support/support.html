@@ -1,166 +1,391 @@
 <section class="support-page">
-  <!-- BANNER -->
-  <div class="support-banner">
-    <div class="wrap banner-content">
-      <span class="small-title">MỘC MẠC</span>
-      <h1>Hỗ trợ khách hàng</h1>
-      <p class="lead">
-        Mộc Mạc luôn sẵn sàng lắng nghe và hỗ trợ bạn trong mọi thời điểm
+
+  <!-- HERO -->
+  <section class="support-hero">
+    <div class="support-container">
+
+      <span class="hero-label">TRUNG TÂM HỖ TRỢ MỘC MẠC</span>
+
+      <h1>Chúng tôi có thể giúp gì cho bạn?</h1>
+
+      <p>
+        Mộc Mạc luôn mong muốn mang đến trải nghiệm mua sắm thuận tiện,
+        minh bạch và đáng tin cậy.
       </p>
+
+      <div class="search-box">
+        <span>🔍</span>
+
+        <input
+          type="text"
+          placeholder="Tìm kiếm câu hỏi, hướng dẫn hoặc chính sách..."
+        >
+
+        <button type="button">
+          Tìm kiếm
+        </button>
+      </div>
+
     </div>
-  </div>
+  </section>
 
-  <div class="wrap">
-    <!-- THÔNG TIN LIÊN HỆ -->
-    <section class="contact-info-section">
-      <div class="content-heading">
-        <span class="heading-line"></span>
-        <div>
-          <small>LIÊN HỆ</small>
-          <h2>Thông tin hỗ trợ</h2>
-        </div>
+
+  <!-- NHÓM HỖ TRỢ -->
+  <section class="support-section">
+    <div class="support-container">
+
+      <div class="section-heading">
+        <span>BẠN CẦN HỖ TRỢ VỀ</span>
+        <h2>Chọn nội dung bạn đang quan tâm</h2>
       </div>
 
-      <div class="contact-grid">
-        <div class="contact-item">
-          <div class="contact-icon">📞</div>
-          <h3>Hotline</h3>
-          <p>036 5507 533</p>
-        </div>
+      <div class="support-grid">
 
-        <div class="contact-item">
-          <div class="contact-icon">📧</div>
-          <h3>Email</h3>
-          <p>mocmac.support@gmail.com</p>
-        </div>
+        <a href="#mua-hang" class="support-card">
+          <div class="support-icon">🛒</div>
+          <h3>Đặt hàng</h3>
+          <p>
+            Hướng dẫn lựa chọn sản phẩm, thêm vào giỏ và hoàn tất đơn hàng.
+          </p>
+        </a>
 
-        <div class="contact-item">
-          <div class="contact-icon">📍</div>
-          <h3>Địa chỉ</h3>
-          <p>669 Quốc lộ 1, Linh Xuân, TP. Hồ Chí Minh</p>
-        </div>
+        <a href="#thanh-toan" class="support-card">
+          <div class="support-icon">💳</div>
+          <h3>Thanh toán</h3>
+          <p>
+            Tìm hiểu phương thức thanh toán và cách xử lý khi gặp vấn đề.
+          </p>
+        </a>
 
-        <div class="contact-item">
-          <div class="contact-icon">🕒</div>
-          <h3>Giờ làm việc</h3>
-          <p>8:00 - 22:00 (Thứ 2 - Chủ Nhật)</p>
-        </div>
+        <a href="#van-chuyen" class="support-card">
+          <div class="support-icon">🚚</div>
+          <h3>Vận chuyển</h3>
+          <p>
+            Thông tin về giao hàng, thời gian vận chuyển và nhận hàng.
+          </p>
+        </a>
+
+        <a href="#doi-tra" class="support-card">
+          <div class="support-icon">↩</div>
+          <h3>Đổi trả</h3>
+          <p>
+            Xem điều kiện, thời gian và quy trình đổi hoặc trả sản phẩm.
+          </p>
+        </a>
+
+        <a href="#tai-khoan" class="support-card">
+          <div class="support-icon">👤</div>
+          <h3>Tài khoản</h3>
+          <p>
+            Hướng dẫn đăng ký, đăng nhập và quản lý tài khoản cá nhân.
+          </p>
+        </a>
+
+        <a href="#voucher" class="support-card">
+          <div class="support-icon">🎟</div>
+          <h3>Voucher & ưu đãi</h3>
+          <p>
+            Hướng dẫn sử dụng mã giảm giá và chương trình ưu đãi.
+          </p>
+        </a>
+
       </div>
-    </section>
 
-    <!-- FORM LIÊN HỆ -->
-    <section class="contact-form-section">
-      <div class="content-heading">
-        <span class="heading-line"></span>
-        <div>
-          <small>LIÊN HỆ CHÚNG TÔI</small>
-          <h2>Gửi tin nhắn cho chúng tôi</h2>
-        </div>
-      </div>
+    </div>
+  </section>
 
-      @if (submitted) {
-        <div class="success-message">
-          <div class="success-icon">✓</div>
-          <h3>{{ submitMessage() }}</h3>
-        </div>
-      } @else {
-        <form (submit)="$event.preventDefault(); submitContact()" class="support-form">
-          <div class="form-row">
-            <div class="form-group">
-              <label> Tên của bạn <span class="required">*</span> </label>
-              <input
-                type="text"
-                [(ngModel)]="contactForm.name"
-                name="name"
-                placeholder="Nhập họ và tên"
-                maxlength="80"
-                required
-              />
-            </div>
 
-            <div class="form-group">
-              <label> Email </label>
-              <input
-                type="email"
-                [(ngModel)]="contactForm.email"
-                name="email"
-                placeholder="example@gmail.com"
-                required
-              />
-            </div>
-          </div>
+  <!-- FAQ -->
+  <section class="support-section faq-section" id="faq">
+    <div class="support-container">
 
-          <div class="form-group">
-            <label> Số điện thoại </label>
-            <input
-              type="tel"
-              [(ngModel)]="contactForm.phone"
-              name="phone"
-              placeholder="0123456789"
-            />
-          </div>
-
-          <div class="form-group">
-            <label> Chủ đề </label>
-            <select name="subject" [(ngModel)]="contactForm.subject">
-              <option value="">Chọn chủ đề</option>
-              <option value="product">Sản phẩm</option>
-              <option value="order">Đơn hàng</option>
-              <option value="payment">Thanh toán</option>
-              <option value="other">Khác</option>
-            </select>
-          </div>
-
-          <div class="form-group">
-            <label> Nội dung <span class="required">*</span> </label>
-            <textarea
-              [(ngModel)]="contactForm.message"
-              name="message"
-              placeholder="Mô tả chi tiết vấn đề của bạn..."
-              maxlength="1500"
-              rows="5"
-              required
-            ></textarea>
-          </div>
-
-          @if (submitMessage()) {
-            <p class="form-message">{{ submitMessage() }}</p>
-          }
-
-          <button
-            type="submit"
-            class="btn-submit"
-            [disabled]="isSubmitting"
-          >
-            {{ isSubmitting ? 'Đang gửi...' : 'Gửi tin nhắn' }}
-          </button>
-        </form>
-      }
-    </section>
-
-    <!-- FAQ -->
-    <section class="faq-section">
-      <div class="content-heading">
-        <span class="heading-line"></span>
-        <div>
-          <small>FAQ</small>
-          <h2>Câu hỏi thường gặp</h2>
-        </div>
+      <div class="section-heading">
+        <span>CÂU HỎI THƯỜNG GẶP</span>
+        <h2>Có thể bạn đang tìm câu trả lời này</h2>
       </div>
 
       <div class="faq-list">
-        @for (faq of faqs; track $index) {
-          <div class="faq-item" [class.open]="activeFaq() === $index">
-            <div class="faq-question" (click)="toggleFaq($index)">
+
+        @for (faq of faqs; track faq.question; let i = $index) {
+
+          <div
+            class="faq-item"
+            [class.open]="openFaq === i"
+          >
+
+            <button
+              type="button"
+              class="faq-question"
+              (click)="toggleFaq(i)"
+            >
               <span>{{ faq.question }}</span>
-              <span class="faq-icon">+</span>
-            </div>
-            <div class="faq-answer">
-              {{ faq.answer }}
-            </div>
+
+              <b>
+                {{ openFaq === i ? '−' : '+' }}
+              </b>
+            </button>
+
+            @if (openFaq === i) {
+              <div class="faq-answer">
+                <p>{{ faq.answer }}</p>
+              </div>
+            }
+
           </div>
+
         }
+
       </div>
-    </section>
-  </div>
+
+    </div>
+  </section>
+
+
+  <!-- HƯỚNG DẪN MUA HÀNG -->
+  <section class="support-section buying-section" id="mua-hang">
+    <div class="support-container">
+
+      <div class="section-heading">
+        <span>HƯỚNG DẪN MUA HÀNG</span>
+        <h2>5 bước mua sắm tại Mộc Mạc</h2>
+      </div>
+
+      <div class="steps-grid">
+
+        <div class="step-card">
+          <div class="step-number">01</div>
+          <h3>Khám phá sản phẩm</h3>
+          <p>
+            Tìm kiếm sản phẩm theo danh mục, vùng miền,
+            tỉnh thành hoặc làng nghề.
+          </p>
+        </div>
+
+        <div class="step-card">
+          <div class="step-number">02</div>
+          <h3>Xem thông tin</h3>
+          <p>
+            Kiểm tra giá, nguồn gốc, Heritage Score,
+            OCOP và đánh giá sản phẩm.
+          </p>
+        </div>
+
+        <div class="step-card">
+          <div class="step-number">03</div>
+          <h3>Thêm vào giỏ</h3>
+          <p>
+            Chọn sản phẩm phù hợp và thêm vào giỏ hàng.
+          </p>
+        </div>
+
+        <div class="step-card">
+          <div class="step-number">04</div>
+          <h3>Thanh toán</h3>
+          <p>
+            Kiểm tra địa chỉ, voucher và lựa chọn
+            phương thức thanh toán.
+          </p>
+        </div>
+
+        <div class="step-card">
+          <div class="step-number">05</div>
+          <h3>Theo dõi đơn</h3>
+          <p>
+            Theo dõi trạng thái đơn hàng cho đến khi nhận sản phẩm.
+          </p>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- THANH TOÁN + VẬN CHUYỂN + ĐỔI TRẢ -->
+  <section class="support-section policy-section">
+    <div class="support-container policy-grid">
+
+      <article class="policy-card" id="thanh-toan">
+        <span class="policy-icon">💳</span>
+        <h2>Phương thức thanh toán</h2>
+
+        <p>
+          Mộc Mạc hỗ trợ thanh toán khi nhận hàng (COD)
+          và các hình thức thanh toán trực tuyến được tích hợp trên hệ thống.
+        </p>
+
+        <ul>
+          <li>Thanh toán COD khi nhận hàng.</li>
+          <li>Thanh toán trực tuyến theo hình thức được hỗ trợ.</li>
+          <li>Áp dụng voucher tại bước thanh toán.</li>
+        </ul>
+      </article>
+
+
+      <article class="policy-card" id="van-chuyen">
+        <span class="policy-icon">🚚</span>
+        <h2>Chính sách vận chuyển</h2>
+
+        <p>
+          Thời gian giao hàng phụ thuộc vào nơi xuất phát của sản phẩm
+          và địa chỉ nhận hàng.
+        </p>
+
+        <ul>
+          <li>Giao hàng trên toàn quốc.</li>
+          <li>Thời gian giao dự kiến được hiển thị khi đặt hàng.</li>
+          <li>Một số sản phẩm thủ công cần thêm thời gian chuẩn bị.</li>
+        </ul>
+      </article>
+
+
+      <article class="policy-card" id="doi-tra">
+        <span class="policy-icon">↩</span>
+        <h2>Chính sách đổi trả</h2>
+
+        <p>
+          Khách hàng có thể yêu cầu hỗ trợ nếu sản phẩm bị lỗi,
+          hư hỏng hoặc giao không đúng đơn hàng.
+        </p>
+
+        <ul>
+          <li>Giữ lại hình ảnh sản phẩm và bao bì.</li>
+          <li>Liên hệ hỗ trợ để gửi yêu cầu đổi trả.</li>
+          <li>Sản phẩm phải đáp ứng điều kiện đổi trả của Mộc Mạc.</li>
+        </ul>
+      </article>
+
+    </div>
+  </section>
+
+
+  <!-- LƯU Ý NHẬN HÀNG -->
+  <section class="support-section receive-section">
+    <div class="support-container receive-box">
+
+      <div class="receive-icon">
+        📦
+      </div>
+
+      <div>
+        <span class="section-label-small">LƯU Ý KHI NHẬN HÀNG</span>
+
+        <h2>Kiểm tra sản phẩm trước khi sử dụng</h2>
+
+        <p>
+          Khi nhận sản phẩm, bạn nên kiểm tra tình trạng bên ngoài
+          của kiện hàng trước khi hoàn tất việc nhận hàng.
+        </p>
+
+        <p>
+          Nếu phát hiện sản phẩm bị hư hỏng, giao sai hoặc có dấu hiệu
+          bất thường, hãy chụp hình sản phẩm và bao bì để Mộc Mạc
+          có thể hỗ trợ xử lý nhanh hơn.
+        </p>
+
+        <p>
+          Đối với thực phẩm hoặc đặc sản theo mùa,
+          hãy kiểm tra hướng dẫn bảo quản và hạn sử dụng.
+        </p>
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- TÀI KHOẢN + VOUCHER -->
+  <section class="support-section">
+    <div class="support-container info-grid">
+
+      <div class="info-box" id="tai-khoan">
+        <div class="info-icon">👤</div>
+
+        <div>
+          <h3>Tài khoản Mộc Mạc</h3>
+
+          <p>
+            Đăng ký tài khoản để theo dõi đơn hàng,
+            quản lý thông tin cá nhân và lưu sản phẩm yêu thích.
+          </p>
+
+          <a routerLink="/dang-nhap">
+            Đăng nhập tài khoản →
+          </a>
+        </div>
+      </div>
+
+
+      <div class="info-box" id="voucher">
+        <div class="info-icon">🎟</div>
+
+        <div>
+          <h3>Voucher & ưu đãi</h3>
+
+          <p>
+            Nhập hoặc lựa chọn voucher tại bước thanh toán.
+            Hệ thống sẽ tự kiểm tra điều kiện và tính lại tổng đơn hàng.
+          </p>
+
+          <a routerLink="/san-pham">
+            Khám phá sản phẩm →
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- CẦN HỖ TRỢ THÊM -->
+  <section class="more-support">
+    <div class="support-container">
+
+      <div class="section-heading light-heading">
+        <span>CẦN HỖ TRỢ THÊM?</span>
+        <h2>Mộc Mạc luôn sẵn sàng đồng hành cùng bạn</h2>
+        <p>
+          Nếu chưa tìm thấy câu trả lời phù hợp,
+          hãy lựa chọn một trong các hình thức hỗ trợ dưới đây.
+        </p>
+      </div>
+
+      <div class="contact-grid">
+
+        <div class="contact-card">
+          <span>📞</span>
+          <h3>Hotline</h3>
+          <p>
+            Liên hệ trực tiếp với đội ngũ hỗ trợ khách hàng.
+          </p>
+        </div>
+
+        <div class="contact-card">
+          <span>✉️</span>
+          <h3>Email</h3>
+          <p>
+            Gửi nội dung cần hỗ trợ và thông tin đơn hàng.
+          </p>
+        </div>
+
+        <a routerLink="/lien-he" class="contact-card">
+          <span>💬</span>
+          <h3>Liên hệ</h3>
+          <p>
+            Gửi yêu cầu trực tiếp thông qua biểu mẫu liên hệ.
+          </p>
+        </a>
+
+        <a routerLink="/theo-doi-don-hang" class="contact-card">
+          <span>📦</span>
+          <h3>Theo dõi đơn hàng</h3>
+          <p>
+            Kiểm tra trạng thái và hành trình của đơn hàng.
+          </p>
+        </a>
+
+      </div>
+
+    </div>
+  </section>
+
 </section>

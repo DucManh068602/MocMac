@@ -125,18 +125,54 @@ export const createReview = async (req, res) => {
 export const getAllReviews = async (req, res) => {
   try {
     const page = Math.max(1, Number(req.query.page) || 1);
-    const limit = Math.max(1, Math.min(100, Number(req.query.limit) || 20));
+    const limit = Math.max(1, Number(req.query.limit) || 20);
     const skip = (page - 1) * limit;
 
+    const filter = {};
+
+    if (req.query.q) {
+      const search = String(req.query.q);
+      filter.$or = [
+        { 'product.name': new RegExp(search, 'i') },
+        { 'user.name': new RegExp(search, 'i') },
+        { 'user.email': new RegExp(search, 'i') },
+        { comment: new RegExp(search, 'i') },
+      ];
+    }
+
+    if (req.query.rating) {
+      const r = Number(req.query.rating);
+      if (!isNaN(r) && r >= 1 && r <= 5) {
+        filter.rating = r;
+      }
+    }
+
+    if (req.query.status) {
+      filter.status = String(req.query.status);
+    }
+
+    if (req.query.productId) {
+      filter.product = req.query.productId;
+    }
+
+    if (req.query.userId) {
+      filter.user = req.query.userId;
+    }
+
+    const sort = {};
+    const sortBy = String(req.query.sortBy || 'createdAt');
+    const sortDir = req.query.sortDir === 'asc' ? 1 : -1;
+    sort[sortBy] = sortDir;
+
     const [reviews, total] = await Promise.all([
-      Review.find()
+      Review.find(filter)
         .populate('product', 'name')
         .populate('user', 'name email')
-        .sort({ createdAt: -1 })
+        .sort(sort)
         .skip(skip)
         .limit(limit)
         .lean(),
-      Review.countDocuments(),
+      Review.countDocuments(filter),
     ]);
 
     return res.json({
@@ -149,7 +185,11 @@ export const getAllReviews = async (req, res) => {
     });
   } catch (error) {
     console.error('❌ Lỗi lấy tất cả đánh giá:', error);
-    return res.status(500).json({ success: false, message: 'Không thể lấy.', error: error.message });
+    return res.status(500).json({
+      success: false,
+      message: 'Không thể lấy.',
+      error: error.message,
+    });
   }
 };
 

@@ -5,6 +5,11 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
 import { authInterceptor } from './auth.interceptor';
+import { LOCALE_ID } from '@angular/core';
+import { registerLocaleData } from '@angular/common';
+import localeVi from '@angular/common/locales/vi';
+
+registerLocaleData(localeVi);
 
 import { AppRoutingModule } from './app-routing-module';
 import { App } from './app';
@@ -45,6 +50,7 @@ import { AdminNotificationsComponent } from './admin/notifications';
 import { AdminReviewsComponent } from './admin/reviews';
 import { AdminAuditComponent } from './admin/audit';
 import { AdminRoleRequestsComponent } from './admin/admin-role-requests';
+import { AdminRoutePermissionsComponent } from './admin/route-permissions';
 import { PaginationComponent } from './admin/pagination';
 import { ToastComponent } from './admin/toast';
 import { NotificationPopupComponent } from './pages/notification-popup/notification-popup';
@@ -75,6 +81,7 @@ import { ChatPopupComponent } from './chat-popup/chat-popup';
     AdminReviewsComponent,
     AdminAuditComponent,
     AdminRoleRequestsComponent,
+    AdminRoutePermissionsComponent,
     ToastComponent,
     NotificationPopupComponent,
     ChatPopupComponent,
@@ -98,7 +105,7 @@ import { ChatPopupComponent } from './chat-popup/chat-popup';
     DonHangComponent,
     PaginationComponent,
   ],
-  providers: [provideHttpClient(withInterceptors([authInterceptor]))],
+  providers: [provideHttpClient(withInterceptors([authInterceptor])), { provide: LOCALE_ID, useValue: 'vi' }],
   bootstrap: [App],
 })
 export class AppModule {}

@@ -31,7 +31,7 @@ export class GiftNeedsComponent {
   readonly filteredProducts = computed<ProductItem[]>(() => {
     const list = this.allProducts() ?? [];
     const need = this.selectedNeed();
-    if (need === 'all') return list.slice(0, 16);
+    if (need === 'all') return list.slice(0, 20);
 
     const occasionMap: Record<string, string> = {
       wedding: 'Quà cưới',
@@ -42,14 +42,14 @@ export class GiftNeedsComponent {
     };
 
     const target = occasionMap[need];
-    if (!target) return list.slice(0, 16);
+    if (!target) return list.slice(0, 20);
 
     return list
       .filter((p) => {
         const occasions: string[] = p.occasion ?? [];
         return occasions.some((o: string) => o.includes(target) || target.includes(o));
       })
-      .slice(0, 16);
+      .slice(0, 20);
   });
 
   setCategory(id: string): void {

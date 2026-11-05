@@ -10,6 +10,43 @@ import { FormsModule } from '@angular/forms';
     <div class="list-page">
       <header class="list-header">
         <h2>Tài khoản ({{ users().length }})</h2>
+        <div class="admin-filters">
+          <div class="filter-group">
+            <input
+              class="filter-input"
+              placeholder="Tìm tên/email..."
+              [(ngModel)]="searchTerm"
+              (input)="onFilterChange()"
+              style="width: 180px"
+            />
+          </div>
+          <div class="filter-group">
+            <select class="filter-select" [(ngModel)]="roleFilter" (change)="onFilterChange()" style="width: 140px">
+              <option value="">Tất cả vai trò</option>
+              <option value="admin-staff">Quản trị + Nhân viên</option>
+              <option value="admin">Quản trị viên</option>
+              <option value="staff">Nhân viên</option>
+              <option value="collaborator">Cộng tác viên</option>
+              <option value="cooperative">Hợp tác xã</option>
+              <option value="customer">Khách hàng</option>
+            </select>
+          </div>
+          <div class="filter-group">
+            <select class="filter-select" [(ngModel)]="statusFilter" (change)="onFilterChange()" style="width: 120px">
+              <option value="">Tất cả trạng thái</option>
+              <option value="active">Hoạt động</option>
+              <option value="inactive">Vô hiệu</option>
+            </select>
+          </div>
+          <button
+            type="button"
+            class="filter-reset"
+            (click)="resetFilters()"
+            [disabled]="!searchTerm && !roleFilter && !statusFilter"
+          >
+            Xóa bộ lọc
+          </button>
+        </div>
         <button type="button" class="btn-add" (click)="startCreate(); showForm.set(true)">Thêm</button>
       </header>
 
@@ -102,13 +139,13 @@ import { FormsModule } from '@angular/forms';
                       <span class="text-muted">Bảo vệ</span>
                     }
                   } @else {
-                    <select #sel (change)="activateUser(u._id, sel.value)">
+                    <select (change)="onActivateSelect(u._id, $event)">
                       <option value="">Kích hoạt</option>
+                      <option value="customer">Khách hàng</option>
                       <option value="admin">Quản trị viên</option>
                       <option value="staff">Nhân viên</option>
                       <option value="collaborator">Cộng tác viên</option>
                       <option value="cooperative">Hợp tác xã</option>
-                      <option value="customer">Khách hàng</option>
                     </select>
                     <button type="button" class="btn-small btn-toggle" (click)="toggleLock(u._id, false, u.role)">
                       🔓 Mở khóa
@@ -140,6 +177,9 @@ export class AdminUsersComponent {
   readonly showForm = signal(false);
   readonly editing = signal<any>(null);
   form: any = {};
+  searchTerm = '';
+  roleFilter = '';
+  statusFilter = '';
 
   readonly stats = computed(() => {
     const u = this.users();
@@ -157,8 +197,29 @@ export class AdminUsersComponent {
     this.loadUsers();
   }
 
+  onFilterChange(): void {
+    this.page.set(1);
+    this.loadUsers();
+  }
+
+  resetFilters(): void {
+    this.searchTerm = '';
+    this.roleFilter = '';
+    this.statusFilter = '';
+    this.page.set(1);
+    this.loadUsers();
+  }
+
   loadUsers(): void {
-    this.http.get('/api/users?page=' + this.page() + '&limit=20').subscribe((r: any) => {
+    const params = new URLSearchParams({
+      page: String(this.page()),
+      limit: '20',
+    });
+    if (this.searchTerm) params.set('q', this.searchTerm);
+    if (this.roleFilter) params.set('role', this.roleFilter);
+    if (this.statusFilter) params.set('isActive', this.statusFilter === 'active' ? 'true' : 'false');
+
+    this.http.get('/api/users?' + params.toString()).subscribe((r: any) => {
       const items = Array.isArray(r) ? r : (r.users || []);
       this.users.set(items);
       this.totalPages.set(r.totalPages || 1);
@@ -173,6 +234,11 @@ export class AdminUsersComponent {
     });
   }
 
+  onActivateSelect(id: string, event: Event): void {
+    const role = (event.target as HTMLSelectElement).value;
+    this.activateUser(id, role);
+  }
+
   deactivateUser(id: string): void {
     this.http.patch('/api/users/' + id + '/deactivate', {}).subscribe({
       next: () => { this.toast.success('Hủy kích hoạt tài khoản'); this.loadUsers(); },
@@ -182,11 +248,16 @@ export class AdminUsersComponent {
 
   toggleLock(id: string, lock: boolean, currentRole?: string): void {
     const endpoint = lock ? 'deactivate' : 'activate';
-    // Backend chỉ chấp nhận: collaborator, cooperative, staff, admin
-    // Nếu role hiện tại là customer hoặc không hợp lệ, dùng collaborator làm mặc định
-    const validRoles = ['collaborator', 'cooperative', 'staff', 'admin'];
-    const roleToSend = lock ? undefined : (validRoles.includes(currentRole || '') ? currentRole : 'collaborator');
-    const payload = lock ? {} : { role: roleToSend };
+    let payload: any = {};
+    if (!lock) {
+      if (currentRole === 'customer') {
+        payload = { role: 'customer' };
+      } else if (['collaborator', 'cooperative', 'staff', 'admin'].includes(currentRole || '')) {
+        payload = { role: currentRole };
+      } else {
+        payload = { role: 'collaborator' };
+      }
+    }
     this.http.patch('/api/users/' + id + '/' + endpoint, payload).subscribe({
       next: () => { this.toast.success(lock ? 'Đã khóa tài khoản' : 'Đã mở khóa tài khoản'); this.loadUsers(); },
       error: () => this.toast.error(lock ? 'Không thể khóa tài khoản' : 'Không thể mở khóa tài khoản'),

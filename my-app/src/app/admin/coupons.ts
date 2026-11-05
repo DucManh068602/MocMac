@@ -9,6 +9,32 @@ import { ToastService } from './toast.service';
     <div class="list-page">
       <header class="list-header">
         <h2>Mã giảm giá ({{ coupons().length }})</h2>
+        <div class="admin-filters">
+          <div class="filter-group">
+            <input
+              class="filter-input"
+              placeholder="Tìm mã..."
+              [(ngModel)]="searchTerm"
+              (input)="onFilterChange()"
+              style="width: 160px"
+            />
+          </div>
+          <div class="filter-group">
+            <select class="filter-select" [(ngModel)]="activeFilter" (change)="onFilterChange()" style="width: 130px">
+              <option value="">Tất cả trạng thái</option>
+              <option value="active">Đang hoạt động</option>
+              <option value="inactive">Vô hiệu</option>
+            </select>
+          </div>
+          <button
+            type="button"
+            class="filter-reset"
+            (click)="resetFilters()"
+            [disabled]="!searchTerm && !activeFilter"
+          >
+            Xóa bộ lọc
+          </button>
+        </div>
         <button type="button" class="btn-add" (click)="startCreate(); showForm.set(true)">Thêm</button>
       </header>
 
@@ -105,6 +131,8 @@ export class AdminCouponsComponent {
   readonly showForm = signal(false);
   readonly editing = signal<any>(null);
   form: any = {};
+  searchTerm = '';
+  activeFilter = '';
 
   readonly stats = computed(() => {
     const c = this.coupons();
@@ -119,8 +147,27 @@ export class AdminCouponsComponent {
     this.loadCoupons();
   }
 
+  onFilterChange(): void {
+    this.page.set(1);
+    this.loadCoupons();
+  }
+
+  resetFilters(): void {
+    this.searchTerm = '';
+    this.activeFilter = '';
+    this.page.set(1);
+    this.loadCoupons();
+  }
+
   loadCoupons(): void {
-    this.http.get('/api/coupons?page=' + this.page() + '&limit=20').subscribe((r: any) => {
+    const params = new URLSearchParams({
+      page: String(this.page()),
+      limit: '20',
+    });
+    if (this.searchTerm) params.set('q', this.searchTerm);
+    if (this.activeFilter) params.set('active', this.activeFilter === 'active' ? 'true' : 'false');
+
+    this.http.get('/api/coupons?' + params.toString()).subscribe((r: any) => {
       const items = Array.isArray(r) ? r : (r.coupons || []);
       this.coupons.set(items);
       this.totalPages.set(r.totalPages || 1);

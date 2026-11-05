@@ -1,24 +1,35 @@
 <section class="gift-needs-page">
-  <!-- BANNER -->
-  <div class="needs-banner">
-    <div class="wrap banner-content">
-      <span class="small-title">MỘC MẠC</span>
-      <h1>Quà tặng theo nhu cầu</h1>
-      <p class="lead">
-        Tìm kiếm quà tặng phù hợp với từng nhu cầu và dịp đặặc biệt của bạn
-      </p>
-    </div>
-  </div>
 
-  <div class="wrap">
-    <!-- DANH MỤC NHU CẦU -->
-    <section class="needs-filters">
-      <div class="content-heading">
-        <span class="heading-line"></span>
-        <div>
-          <small>LOẠI QUÀ</small>
-          <h2>Chọn theo nhu cầu</h2>
-        </div>
+  <!-- HERO -->
+  <section
+    class="hero"
+    style="
+      background-image:
+        linear-gradient(rgba(53, 84, 58, 0.65), rgba(53, 84, 58, 0.65)),
+        url('https://images.unsplash.com/photo-1513201099705-a9746e1e201f?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+    "
+  >
+    <div class="hero-content">
+      <p class="hero-label">MỘC MẠC</p>
+      <h1>Quà tặng theo nhu cầu</h1>
+      <p class="hero-desc">
+        Tìm kiếm quà tặng phù hợp với từng nhu cầu và dịp đặc biệt của bạn
+      </p>
+      <a routerLink="/san-pham" class="hero-btn">
+        Khám phá sản phẩm
+      </a>
+    </div>
+  </section>
+
+  <!-- NHU CẦU -->
+  <section class="section needs-section">
+    <div class="container">
+      <div class="section-heading">
+        <span class="section-label">CHỌN THEO NHU CẦU</span>
+        <h2>Danh mục nhu cầu</h2>
+        <p class="section-subtitle">
+          Lựa chọn dịp tặng để chúng tôi gợi ý những món quà phù hợp nhất
+        </p>
       </div>
 
       <div class="categories-grid">
@@ -34,32 +45,39 @@
           </button>
         }
       </div>
-    </section>
+    </div>
+  </section>
 
-    <!-- SẢN PHẨM -->
-    <section class="needs-products">
-      <div class="content-heading">
-        <span class="heading-line"></span>
-        <div>
-          <small>SẢN PHẨM</small>
-          <h2>Kết quả tìm được</h2>
-        </div>
+  <!-- SẢN PHẨM -->
+  <section class="section products-section">
+    <div class="container">
+      <div class="section-heading">
+        <span class="section-label">SẢN PHẨM GỢI Ý</span>
+        <h2>Kết quả tìm được</h2>
+        <p class="section-subtitle">
+          Những sản phẩm đặc sản Việt Nam phù hợp với nhu cầu bạn đang tìm
+        </p>
       </div>
 
       <div class="products-grid">
         @for (product of filteredProducts(); track product.id) {
-          <div class="product-card">
-            @if (product.images && product.images.length > 0) {
-              <img [src]="product.images[0]" [alt]="product.name" />
-            } @else {
-              <div class="product-placeholder">{{ product.icon || '🎁' }}</div>
-            }
-            <h3>{{ product.name }}</h3>
-            <p class="product-cat">{{ product.cat }} · {{ product.type }}</p>
-            <p class="product-region">{{ product.region }} · {{ product.province }}</p>
-            <p class="product-price">{{ product.price | number: '1.0-0': 'vi-VN' }}đ</p>
-            <a class="btn-view" routerLink="/san-pham/{{ product.slug }}">Xem chi tiết</a>
-          </div>
+          <article class="product-card">
+            <a class="product-image-link" routerLink="/san-pham/{{ product.slug }}">
+              @if (product.images && product.images.length > 0) {
+                <img [src]="product.images[0]" [alt]="product.name" />
+              } @else {
+                <div class="product-placeholder">{{ product.icon || '🎁' }}</div>
+              }
+            </a>
+            <div class="product-body">
+              <p class="product-cat">{{ product.cat }} · {{ product.region }}</p>
+              <h3 class="product-title">
+                <a routerLink="/san-pham/{{ product.slug }}">{{ product.name }}</a>
+              </h3>
+              <p class="product-price">{{ product.price | number: '1.0-0': 'vi-VN' }}đ</p>
+              <a class="product-btn" routerLink="/lien-he">Yêu cầu báo giá</a>
+            </div>
+          </article>
         }
 
         @if (filteredProducts().length === 0) {
@@ -68,40 +86,43 @@
           </p>
         }
       </div>
-    </section>
+    </div>
+  </section>
 
-    <!-- GỢI Ý THÊM -->
-    <section class="tips-section">
-      <div class="content-heading">
-        <span class="heading-line"></span>
-        <div>
-          <small>GỢI Ý</small>
-          <h2>Cách chọn quà tặng phù hợp</h2>
-        </div>
+  <!-- GỢI Ý -->
+  <section class="section tips-section">
+    <div class="container">
+      <div class="section-heading">
+        <span class="section-label">MẸO CHỌN QUÀ</span>
+        <h2>Cách chọn quà tặng phù hợp</h2>
+        <p class="section-subtitle">
+          Một món quà ý nghĩa sẽ tạo ấn tượng sâu sắc hơn bất kỳ giá trị vật chất nào
+        </p>
       </div>
 
       <div class="tips-grid">
-        <div class="tip-card">
+        <article class="tip-card">
           <div class="tip-icon">💡</div>
           <h3>Hiểu nhu cầu người nhận</h3>
           <p>Lắng nghe sở thích, nghề nghiệp và phong cách sống để chọn được món quà ý nghĩa.</p>
-        </div>
-        <div class="tip-card">
+        </article>
+        <article class="tip-card">
           <div class="tip-icon">🎨</div>
           <h3>Chú trọng chất lượng</h3>
-          <p>Lựa chọn sản phẩm thủ công, độc đáo mang giá trị văn hoá và thời gian thực sự.</p>
-        </div>
-        <div class="tip-card">
+          <p>Lựa chọn sản phẩm thủ công, độc đáo mang giá trị văn hoá Việt Nam.</p>
+        </article>
+        <article class="tip-card">
           <div class="tip-icon">📦</div>
           <h3>Đóng gói đẹp</h3>
-          <p>Bao bì, hộp đựng được thiết kế công kĩ để tạo thiện cảm nhận ban đầu.</p>
-        </div>
-        <div class="tip-card">
+          <p>Bao bì tinh tế giúp món quà trở nên trọn vẹn và trang trọng hơn.</p>
+        </article>
+        <article class="tip-card">
           <div class="tip-icon">🚚</div>
           <h3>Giao hàng an toàn</h3>
-          <p>Chọn dịch vụ giao hàng uy tín, theo dõi được giao hàng tận tay người nhận.</p>
-        </div>
+          <p>Chọn dịch vụ giao hàng uy tín, đảm bảo quà đến tay người nhận nguyên vẹn.</p>
+        </article>
       </div>
-    </section>
-  </div>
+    </div>
+  </section>
+
 </section>

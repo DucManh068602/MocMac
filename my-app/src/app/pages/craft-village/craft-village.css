@@ -1,0 +1,823 @@
+:host {
+  --moss: #35543a;
+  --green: #35543a;
+  --green-light: #7fa17a;
+  --cream: #f8f4ea;
+  --beige: #e8dcc4;
+  --earth: #b56f45;
+  --orange: #df8a4f;
+  --dark: #403f37;
+  --text: #6c675e;
+  --line: #e7dfcf;
+  --white: #ffffff;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.craft-page {
+  background: #fffdf8;
+  color: var(--text);
+  font-family: "Be Vietnam Pro", "Segoe UI", Arial, sans-serif;
+}
+
+.container {
+  width: min(1120px, 90%);
+  margin: 0 auto;
+}
+
+.section {
+  padding: 58px 0;
+}
+
+/* HEADING */
+
+.eyebrow {
+  display: inline-block;
+
+  margin-bottom: 8px;
+
+  color: var(--earth);
+
+  font-size: 11px;
+  font-weight: 700;
+
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.section-heading {
+  max-width: 720px;
+
+  margin: 0 auto 36px;
+
+  text-align: center;
+}
+
+.section-heading > span {
+  color: var(--earth);
+
+  font-size: 11px;
+  font-weight: 700;
+
+  letter-spacing: 2px;
+}
+
+.section-heading h2 {
+  margin: 7px 0;
+
+  color: var(--moss);
+
+  font-size: 32px;
+}
+
+.section-heading p {
+  margin: 0;
+
+  line-height: 1.7;
+}
+
+/* HERO */
+
+.craft-hero {
+  padding: 90px 0;
+
+  text-align: center;
+
+  background:
+    linear-gradient(
+      rgba(53,84,58,.72),
+      rgba(53,84,58,.72)
+    ),
+    url("https://media.vneconomy.vn/images/upload/2022/11/23/lang-nghe-2.jpg")
+    center / cover no-repeat;
+}
+
+.craft-hero .eyebrow {
+  color: #edc79e;
+}
+
+.craft-hero h1 {
+  margin: 4px 0 15px;
+
+  color: white;
+
+  font-size: 48px;
+  line-height: 1.2;
+}
+
+.craft-hero p {
+  max-width: 700px;
+
+  margin: 0 auto 25px;
+
+  color: #f0ece4;
+
+  line-height: 1.75;
+}
+
+.primary-btn,
+.secondary-btn {
+  display: inline-block;
+
+  padding: 12px 23px;
+
+  border-radius: 7px;
+
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.primary-btn {
+  color: white;
+  background: var(--orange);
+}
+
+.secondary-btn {
+  margin-top: 12px;
+
+  color: white;
+  background: var(--earth);
+}
+
+/* INTRO */
+
+.intro-section {
+  background: var(--cream);
+}
+
+.intro-grid {
+  display: grid;
+  grid-template-columns: 1fr .75fr;
+
+  gap: 50px;
+
+  align-items: center;
+}
+
+.intro-content h2,
+.artisan-content h2,
+.product-story-grid h2 {
+  margin: 4px 0 15px;
+
+  color: var(--moss);
+
+  font-size: 31px;
+  line-height: 1.3;
+}
+
+.intro-content p,
+.artisan-content p,
+.product-story-grid p {
+  line-height: 1.75;
+}
+
+.intro-quote {
+  padding: 32px;
+
+  background: white;
+
+  border-left: 4px solid var(--earth);
+  border-radius: 10px;
+}
+
+.intro-quote i {
+  color: var(--earth);
+
+  font-size: 25px;
+}
+
+.intro-quote p {
+  margin: 14px 0 0;
+
+  color: var(--moss);
+
+  font-family: "Lora", serif;
+  font-size: 19px;
+  font-style: italic;
+
+  line-height: 1.6;
+}
+
+/* VILLAGES */
+
+.villages-section {
+  background: #fffdf8;
+}
+
+.village-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+
+  gap: 22px;
+}
+
+.village-card {
+  overflow: hidden;
+
+  background: white;
+
+  border: 1px solid var(--line);
+  border-radius: 13px;
+
+  transition: .25s;
+}
+
+.village-card:hover {
+  transform: translateY(-4px);
+
+  box-shadow: 0 10px 25px rgba(53,84,58,.08);
+}
+
+.village-image {
+  height: 270px;
+
+  position: relative;
+
+  overflow: hidden;
+}
+
+.village-image img {
+  width: 100%;
+  height: 100%;
+
+  display: block;
+
+  object-fit: cover;
+}
+
+.village-card:hover img {
+  transform: scale(1.03);
+}
+
+.craft-label {
+  position: absolute;
+
+  left: 15px;
+  bottom: 15px;
+
+  padding: 6px 11px;
+
+  color: white;
+  background: var(--moss);
+
+  border-radius: 20px;
+
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.village-body {
+  padding: 21px;
+}
+
+.village-body > small {
+  color: var(--earth);
+
+  font-size: 11px;
+}
+
+.village-body h3 {
+  margin: 7px 0 10px;
+
+  color: var(--moss);
+
+  font-size: 21px;
+}
+
+.village-body p {
+  margin: 0;
+
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.village-products {
+  margin-top: 14px;
+  padding-top: 12px;
+
+  border-top: 1px solid var(--line);
+}
+
+.village-products b,
+.village-products span {
+  display: block;
+}
+
+.village-products b {
+  color: var(--moss);
+
+  font-size: 11px;
+}
+
+.village-products span {
+  margin-top: 3px;
+
+  font-size: 12px;
+}
+
+.village-body > a {
+  display: inline-block;
+
+  margin-top: 14px;
+
+  color: var(--earth);
+
+  text-decoration: none;
+
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/* ARTICLES */
+
+.article-section {
+  background: var(--cream);
+}
+
+.article-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+
+  gap: 17px;
+}
+
+.article-card {
+  padding: 25px;
+
+  background: white;
+
+  border: 1px solid var(--line);
+  border-radius: 11px;
+}
+
+.article-category {
+  color: var(--earth);
+
+  font-size: 10px;
+  font-weight: 700;
+
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.article-card h3 {
+  margin: 10px 0;
+
+  color: var(--moss);
+
+  font-size: 19px;
+  line-height: 1.4;
+}
+
+.article-card p {
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.article-card a {
+  color: var(--earth);
+
+  font-size: 12px;
+  font-weight: 600;
+
+  text-decoration: none;
+}
+
+/* CRAFT */
+
+.craft-section {
+  background: #fffdf8;
+}
+
+.craft-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+
+  gap: 15px;
+}
+
+.craft-card {
+  padding: 23px;
+
+  background: white;
+
+  border: 1px solid var(--line);
+  border-radius: 10px;
+}
+
+.craft-icon {
+  width: 46px;
+  height: 46px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: var(--moss);
+  background: var(--cream);
+
+  border-radius: 50%;
+}
+
+.craft-card h3 {
+  margin: 12px 0 7px;
+
+  color: var(--moss);
+}
+
+.craft-card p {
+  margin: 0;
+
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+/* ARTISANS */
+
+.artisan-section {
+  background: var(--cream);
+}
+
+.artisan-grid {
+  display: grid;
+  grid-template-columns: .75fr 1fr;
+
+  gap: 50px;
+
+  align-items: center;
+}
+
+.artisan-visual {
+  position: relative;
+  min-height: 320px;
+
+  overflow: hidden;
+
+  border-radius: 14px;
+}
+
+.artisan-visual img {
+  width: 100%;
+  height: 320px;
+
+  display: block;
+
+  object-fit: cover;
+  object-position: center;
+}
+
+.artisan-overlay {
+  position: absolute;
+  inset: 0;
+
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+
+  padding: 24px;
+
+  background:
+    linear-gradient(
+      to top,
+      rgba(40, 65, 44, 0.72),
+      rgba(40, 65, 44, 0.05) 60%
+    );
+}
+
+.artisan-overlay span {
+  color: white;
+
+  font-size: 12px;
+  font-weight: 700;
+
+  letter-spacing: 2px;
+}
+
+.artisan-icon {
+  width: 80px;
+  height: 80px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin-bottom: 15px;
+
+  border: 1px solid rgba(255,255,255,.25);
+  border-radius: 50%;
+
+  font-size: 28px;
+}
+
+.artisan-visual span {
+  font-size: 11px;
+  font-weight: 700;
+}
+
+/* PROCESS */
+
+.process-section {
+  background: #fffdf8;
+}
+
+.process-flow {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+
+  gap: 9px;
+}
+
+.process-item {
+  width: 160px;
+
+  text-align: center;
+}
+
+.process-item > span {
+  color: var(--earth);
+
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1px;
+}
+
+.process-item > i {
+  width: 50px;
+  height: 50px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin: 7px auto 10px;
+
+  color: white;
+  background: var(--green-light);
+
+  border-radius: 50%;
+}
+
+.process-item h3 {
+  margin: 0 0 7px;
+
+  color: var(--moss);
+
+  font-size: 14px;
+}
+
+.process-item p {
+  margin: 0;
+
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.process-arrow {
+  padding-top: 30px;
+
+  color: var(--earth);
+}
+
+/* PRODUCT STORY */
+
+.product-story-section {
+  background: var(--cream);
+}
+
+.product-story-grid {
+  display: grid;
+  grid-template-columns: 1fr .7fr;
+
+  gap: 50px;
+
+  align-items: center;
+}
+
+.product-story-grid li {
+  margin-bottom: 7px;
+
+  font-size: 13px;
+}
+
+.product-story-card {
+  padding: 32px;
+
+  background: white;
+
+  border-radius: 14px;
+
+  text-align: center;
+}
+
+.product-story-card > i {
+  width: 65px;
+  height: 65px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin: 0 auto 14px;
+
+  color: var(--earth);
+  background: var(--cream);
+
+  border-radius: 50%;
+
+  font-size: 24px;
+}
+
+.product-story-card h3 {
+  color: var(--moss);
+}
+
+/* MODERN */
+
+.modern-section {
+  background: #fffdf8;
+}
+
+.modern-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+
+  gap: 16px;
+}
+
+.modern-grid article {
+  padding: 23px;
+
+  background: var(--cream);
+
+  border-radius: 10px;
+
+  text-align: center;
+}
+
+.modern-grid i {
+  width: 48px;
+  height: 48px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin: 0 auto 12px;
+
+  color: var(--moss);
+  background: white;
+
+  border-radius: 50%;
+}
+
+.modern-grid h3 {
+  color: var(--moss);
+}
+
+.modern-grid p {
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+/* CTA */
+
+.craft-cta {
+  padding: 65px 20px;
+
+  text-align: center;
+
+  color: white;
+  background: var(--moss);
+}
+
+.craft-cta > .container > span {
+  color: #edc79e;
+
+  font-size: 11px;
+  font-weight: 700;
+
+  letter-spacing: 2px;
+}
+
+.craft-cta h2 {
+  margin: 7px 0 10px;
+
+  color: white;
+
+  font-size: 33px;
+}
+
+.craft-cta p {
+  max-width: 650px;
+
+  margin: 0 auto;
+
+  line-height: 1.7;
+}
+
+.cta-actions {
+  display: flex;
+  justify-content: center;
+
+  gap: 12px;
+
+  margin-top: 22px;
+}
+
+.btn-orange,
+.btn-outline {
+  display: inline-block;
+
+  padding: 12px 22px;
+
+  border-radius: 7px;
+
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.btn-orange {
+  color: white;
+  background: var(--orange);
+}
+
+.btn-outline {
+  color: white;
+
+  border: 1px solid white;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 950px) {
+
+  .intro-grid,
+  .artisan-grid,
+  .product-story-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .article-grid,
+  .craft-grid,
+  .modern-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .process-flow {
+    flex-wrap: wrap;
+  }
+
+  .process-arrow {
+    display: none;
+  }
+}
+
+@media (max-width: 650px) {
+
+  .section {
+    padding: 42px 0;
+  }
+
+  .craft-hero {
+    padding: 65px 0;
+  }
+
+  .craft-hero h1 {
+    font-size: 34px;
+  }
+
+  .village-grid,
+  .article-grid,
+  .craft-grid,
+  .modern-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .village-image {
+    height: 230px;
+  }
+
+  .process-flow {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+
+    gap: 25px;
+  }
+
+  .process-item {
+    width: auto;
+  }
+
+  .cta-actions {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .cta-actions a {
+    width: 100%;
+    max-width: 270px;
+  }
+}

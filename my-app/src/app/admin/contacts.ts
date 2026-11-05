@@ -11,6 +11,33 @@ import { AuthService } from '../auth.service';
     <div class="list-page">
       <header class="list-header">
         <h2>Tin nhắn liên hệ ({{ contacts().length }})</h2>
+        <div class="admin-filters">
+          <div class="filter-group">
+            <input
+              class="filter-input"
+              placeholder="Tìm tên/email..."
+              [(ngModel)]="searchTerm"
+              (input)="onFilterChange()"
+              style="width: 200px"
+            />
+          </div>
+          <div class="filter-group">
+            <select class="filter-select" [(ngModel)]="statusFilter" (change)="onFilterChange()" style="width: 140px">
+              <option value="">Tất cả trạng thái</option>
+              <option value="new">Mới</option>
+              <option value="processing">Đang xử lý</option>
+              <option value="done">Hoàn thành</option>
+            </select>
+          </div>
+          <button
+            type="button"
+            class="filter-reset"
+            (click)="resetFilters()"
+            [disabled]="!searchTerm && !statusFilter"
+          >
+            Xóa bộ lọc
+          </button>
+        </div>
       </header>
 
       <div class="stats-grid">
@@ -136,6 +163,8 @@ export class AdminContactsComponent implements OnInit {
   readonly contacts = signal<any[]>([]);
   readonly page = signal(1);
   readonly totalPages = signal(1);
+  searchTerm = '';
+  statusFilter = '';
 
   readonly stats = computed(() => ({
     total: this.contacts().length,
@@ -170,8 +199,27 @@ export class AdminContactsComponent implements OnInit {
     this.chatService.loadConversations();
   }
 
+  onFilterChange(): void {
+    this.page.set(1);
+    this.loadContacts();
+  }
+
+  resetFilters(): void {
+    this.searchTerm = '';
+    this.statusFilter = '';
+    this.page.set(1);
+    this.loadContacts();
+  }
+
   loadContacts(): void {
-    this.http.get('/api/contacts?page=' + this.page() + '&limit=20').subscribe((r: any) => {
+    const params = new URLSearchParams({
+      page: String(this.page()),
+      limit: '20',
+    });
+    if (this.searchTerm) params.set('q', this.searchTerm);
+    if (this.statusFilter) params.set('status', this.statusFilter);
+
+    this.http.get('/api/contacts?' + params.toString()).subscribe((r: any) => {
       const items = Array.isArray(r) ? r : (r.contacts || []);
       this.contacts.set(items);
       this.totalPages.set(r.totalPages || 1);

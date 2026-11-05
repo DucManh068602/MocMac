@@ -104,17 +104,45 @@ export const getMyOrders = async (req, res) => {
 export const getAllOrders = async (req, res) => {
   try {
     const page = Math.max(1, Number(req.query.page) || 1);
-    const limit = Math.max(1, Math.min(100, Number(req.query.limit) || 20));
+    const limit = Math.max(1, Number(req.query.limit) || 20);
     const skip = (page - 1) * limit;
 
+    const filter = {};
+
+    if (req.query.q) {
+      const search = String(req.query.q);
+      filter.$or = [
+        { orderId: new RegExp(search, 'i') },
+        { 'customerInfo.name': new RegExp(search, 'i') },
+        { 'customerInfo.phone': new RegExp(search, 'i') },
+      ];
+    }
+
+    if (req.query.status) {
+      filter.status = String(req.query.status);
+    }
+
+    if (req.query.paymentStatus) {
+      filter.paymentStatus = String(req.query.paymentStatus);
+    }
+
+    if (req.query.paymentMethod) {
+      filter.paymentMethod = String(req.query.paymentMethod);
+    }
+
+    const sort = {};
+    const sortBy = String(req.query.sortBy || 'createdAt');
+    const sortDir = req.query.sortDir === 'asc' ? 1 : -1;
+    sort[sortBy] = sortDir;
+
     const [orders, total] = await Promise.all([
-      Order.find()
+      Order.find(filter)
         .populate('user', 'name email phone')
-        .sort({ createdAt: -1 })
+        .sort(sort)
         .skip(skip)
         .limit(limit)
         .lean(),
-      Order.countDocuments(),
+      Order.countDocuments(filter),
     ]);
 
     return res.json({
