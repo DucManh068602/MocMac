@@ -75,10 +75,10 @@
           <div class="tabs" role="tablist">
             <button type="button" role="tab" class="tab"
                     [class.active]="mode() === 'login'"
-                    (click)="switchMode('login')">Đăng nhập</button>
+                    (click)="switchMode('login')">{{ t('Đăng nhập','Log in') }}</button>
             <button type="button" role="tab" class="tab"
                     [class.active]="mode() === 'register'"
-                    (click)="switchMode('register')">Đăng ký</button>
+                    (click)="switchMode('register')">{{ t('Đăng ký','Sign up') }}</button>
           </div>
         }
         <div class="header-links">
@@ -86,17 +86,21 @@
             <span class="chip">
               <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor"
                    stroke-width="2" aria-hidden="true"><circle cx="12" cy="8" r="4" /><path d="M4 21c0-4 4-6 8-6s8 2 8 6" /></svg>
-              Cổng Khách Hàng
+              {{ t('Cổng Khách Hàng','Customer Portal') }}
             </span>
-            <a class="link-admin" (click)="openAdminLogin()" style="cursor:pointer">Cổng Admin</a>
+            <a class="link-admin" (click)="openAdminLogin()" style="cursor:pointer">{{ t('Cổng Admin','Admin Portal') }}</a>
           } @else {
-            <a class="link-back" (click)="backToCustomer()" style="cursor:pointer">← Về trang chủ</a>
+            <a class="link-back" (click)="backToCustomer()" style="cursor:pointer">← {{ t('Về trang chủ','Back to home') }}</a>
             <span class="chip chip--admin">
               <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor"
                    stroke-width="2" aria-hidden="true"><path d="M12 2l4 8h-8l4-8z" /><path d="M5 12h4l-2 4 4 4-4 4H5l3-6-3-4z" /></svg>
-              Cổng Quản Trị
+              {{ t('Cổng Quản Trị','Admin Portal') }}
             </span>
           }
+          <div class="lang-switch" data-no-translate>
+            <button type="button" [class.on]="i18n.lang()==='vi'" (click)="i18n.setLang('vi')">VI</button>
+            <button type="button" [class.on]="i18n.lang()==='en'" (click)="i18n.setLang('en')">EN</button>
+          </div>
         </div>
       </header>
 

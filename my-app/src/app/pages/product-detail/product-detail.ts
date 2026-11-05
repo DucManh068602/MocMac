@@ -8,6 +8,8 @@ import { ProductItem, ProductsService } from '../../products.service';
 import { CartService } from '../../cart.service';
 import { ReviewsService, ProductReviewItem } from '../../reviews-service';
 import { AuthService } from '../../auth.service';
+import { I18nService } from '../../i18n.service';
+import { ContentTranslateService } from '../../content-translate.service';
 
 type DetailTab = 'description' | 'information' | 'reviews';
 
@@ -25,9 +27,13 @@ export class ProductDetailComponent {
   private readonly reviewsService = inject(ReviewsService);
   private readonly http = inject(HttpClient);
   readonly auth = inject(AuthService);
+  readonly i18n = inject(I18nService);
+  private readonly ct = inject(ContentTranslateService);
 
   readonly allProducts = this.productsService.products;
   readonly shareMessage = signal('');
+  readonly translatedDesc = signal('');
+  readonly translating = signal(false);
 
   // The route is /san-pham/:slug. The product is fetched from the backend by
   // slug because the shared catalog signal only holds the first page of
@@ -195,11 +201,29 @@ export class ProductDetailComponent {
     });
 
     effect(() => {
+      const p = this.product();
+      const lang = this.i18n.lang();
+      const raw = String((p as any)?.description || (p as any)?.story || '').trim();
+      if (!p || !raw || lang === 'vi') { this.translatedDesc.set(raw); this.translating.set(false); return; }
+      this.translating.set(true);
+      this.ct.t$(raw).subscribe(v => { this.translatedDesc.set(v || raw); this.translating.set(false); });
+    });
+
+    effect(() => {
       const related = this.relatedProducts();
       if (related.length > 0) {
         untracked(() => this.loadRelatedReviewStats(related));
       }
     });
+  }
+
+  displayDescription(p: any): string {
+    if (this.i18n.lang() === 'en' && this.translatedDesc()) return this.translatedDesc();
+    const raw = String(p?.description || p?.story || '').trim();
+    if (raw) return raw;
+    return this.i18n.lang() === 'en'
+      ? 'A Vietnamese specialty product, carefully selected to reflect traditional craft and local cultural value.'
+      : 'Sản phẩm mang đậm nét văn hóa Việt Nam, được tuyển chọn từ những giá trị đặc sản và làng nghề truyền thống.';
   }
 
   private resetDetailState(): void {

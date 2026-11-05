@@ -9,6 +9,7 @@ import {
 } from '@angular/forms';
 import { AuthService } from '../../auth.service';
 import { ToastService } from '../../admin/toast.service';
+import { I18nService } from '../../i18n.service';
 
 type AuthMode = 'login' | 'register';
 
@@ -29,6 +30,8 @@ export class DangnhapComponent {
   private auth = inject(AuthService);
   private toast = inject(ToastService);
   private router = inject(Router);
+  readonly i18n = inject(I18nService);
+  t(vi: string, en: string): string { return this.i18n.lang() === 'en' ? en : vi; }
 
   readonly bars = [0, 1, 2];
 
@@ -135,14 +138,14 @@ export class DangnhapComponent {
         this.forgotLoading.set(false);
         if (r?.success) {
           this.otpSent.set(true);
-          this.feedback.set({ type: 'success', message: 'Mã OTP đã gửi đến email của bạn.' });
+          this.feedback.set({ type: 'success', message: this.t('Mã OTP đã gửi đến email của bạn.', 'An OTP code has been sent to your email.') });
         } else {
-          this.feedback.set({ type: 'error', message: r?.message || 'Gửi mã OTP thất bại.' });
+          this.feedback.set({ type: 'error', message: r?.message || this.t('Gửi mã OTP thất bại.', 'Failed to send OTP.') });
         }
       },
       error: (e: any) => {
         this.forgotLoading.set(false);
-        this.feedback.set({ type: 'error', message: e?.error?.message || 'Gửi mã OTP thất bại.' });
+        this.feedback.set({ type: 'error', message: e?.error?.message || this.t('Gửi mã OTP thất bại.', 'Failed to send OTP.') });
       },
     });
   }
@@ -163,12 +166,12 @@ export class DangnhapComponent {
           if (r?.token) {
             this.auth.saveSession(r, false);
           }
-          this.feedback.set({ type: 'success', message: 'Đặt lại mật khẩu thành công.' });
+          this.feedback.set({ type: 'success', message: this.t('Đặt lại mật khẩu thành công.', 'Password reset successfully.') });
           setTimeout(() => this.router.navigate(['']), 1500);
         },
         error: (e: any) => {
           this.forgotLoading.set(false);
-          this.feedback.set({ type: 'error', message: e?.error?.message || 'Đặt lại mật khẩu thất bại.' });
+          this.feedback.set({ type: 'error', message: e?.error?.message || this.t('Đặt lại mật khẩu thất bại.', 'Password reset failed.') });
         },
       });
   }
@@ -187,18 +190,15 @@ export class DangnhapComponent {
         next: (r: any) => {
           this.forgotLoading.set(false);
           if (r?.success) {
-            this.feedback.set({
-              type: 'success',
-              message: 'Đặt lại mật khẩu thành công. Vui lòng đăng nhập lại.',
-            });
+            this.feedback.set({ type: 'success', message: this.t('Đặt lại mật khẩu thành công. Vui lòng đăng nhập lại.', 'Password reset successfully. Please log in again.') });
             setTimeout(() => this.backToLogin(), 1500);
           } else {
-            this.feedback.set({ type: 'error', message: r?.message || 'Đặt lại mật khẩu thất bại.' });
+            this.feedback.set({ type: 'error', message: r?.message || this.t('Đặt lại mật khẩu thất bại.', 'Password reset failed.') });
           }
         },
         error: (e: any) => {
           this.forgotLoading.set(false);
-          this.feedback.set({ type: 'error', message: e?.error?.message || 'Đặt lại mật khẩu thất bại.' });
+          this.feedback.set({ type: 'error', message: e?.error?.message || this.t('Đặt lại mật khẩu thất bại.', 'Password reset failed.') });
         },
       });
   }
@@ -213,7 +213,9 @@ export class DangnhapComponent {
   }
 
   get strengthLabel(): string {
-    return ['Chưa nhập', 'Yếu', 'Trung bình', 'Mạnh'][this.passwordStrength];
+    return this.i18n.lang() === 'en'
+      ? ['Not entered', 'Weak', 'Medium', 'Strong'][this.passwordStrength]
+      : ['Chưa nhập', 'Yếu', 'Trung bình', 'Mạnh'][this.passwordStrength];
   }
 
   hasError(form: AbstractControl, field: string, errorKey?: string): boolean {
@@ -238,21 +240,20 @@ export class DangnhapComponent {
     this.auth.login(identifier ?? '', password ?? '').subscribe({
        next: (response: any) => {
         this.auth.saveSession(response, remember ?? false);
-        this.feedback.set({ type: 'success', message: `Xin chào ${response.user?.name || ''}!` });
+        this.feedback.set({ type: 'success', message: this.t(`Xin chào ${response.user?.name || ''}!`, `Hello ${response.user?.name || ''}!`) });
         this.loading.set(false);
 
         const email = (response.user?.email || '').toLowerCase();
         const isAdmin = email.endsWith('@admin.mocmac.vn') || response.user?.role === 'admin';
-
         if (this.isAdminMode() || isAdmin) {
           this.router.navigate(['/admin']);
         } else {
           this.router.navigate(['']);
         }
       },
-      error: (error: unknown) => {
+      error: () => {
         this.loading.set(false);
-        this.toast.error('Sai tài khoản hoặc mật khẩu');
+        this.toast.error(this.t('Sai tài khoản hoặc mật khẩu', 'Incorrect account or password'));
         this.feedback.set(null);
       },
     });
@@ -269,15 +270,15 @@ export class DangnhapComponent {
     this.auth.register({ name: fullName, email, phone, password }).subscribe({
       next: (response: any) => {
         this.auth.saveSession(response, false);
-        this.feedback.set({ type: 'success', message: 'Tạo tài khoản thành công.' });
+        this.feedback.set({ type: 'success', message: this.t('Tạo tài khoản thành công.', 'Account created successfully.') });
         this.loading.set(false);
       },
       error: (error: unknown) => {
         this.loading.set(false);
         if (error instanceof HttpErrorResponse) {
-          this.toast.error(error.error?.message || 'Đăng ký thất bại. Vui lòng thử lại.');
+          this.toast.error(error.error?.message || this.t('Đăng ký thất bại. Vui lòng thử lại.', 'Registration failed. Please try again.'));
         } else {
-          this.toast.error('Đăng ký thất bại. Vui lòng thử lại.');
+          this.toast.error(this.t('Đăng ký thất bại. Vui lòng thử lại.', 'Registration failed. Please try again.'));
         }
         this.feedback.set(null);
       },
@@ -288,7 +289,7 @@ export class DangnhapComponent {
     const message =
       error instanceof HttpErrorResponse && typeof error.error?.message === 'string'
         ? error.error.message
-        : 'Không thể kết nối máy chủ. Vui lòng thử lại sau.';
+        : this.t('Không thể kết nối máy chủ. Vui lòng thử lại sau.', 'Cannot connect to server. Please try again later.');
     this.feedback.set({ type: 'error', message });
   }
 

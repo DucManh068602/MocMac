@@ -490,6 +490,10 @@ $error: #b3401f;
   svg { flex-shrink: 0; margin-top: 1px; color: #2e6b45; }
 }
 
+.lang-switch{display:inline-flex;border:1px solid #d9dfd3;border-radius:999px;overflow:hidden;background:#fff}
+.lang-switch button{border:0;background:transparent;padding:5px 9px;font:700 10px 'Be Vietnam Pro',sans-serif;color:#5d6b61;cursor:pointer}
+.lang-switch button.on{background:#1d4a2e;color:#fff}
+
 .form-footer {
   display: flex;
   justify-content: space-between;
@@ -549,7 +553,8 @@ $error: #b3401f;
   .brand-name { font-size: 19px; }
   .brand-sub { font-size: 8px; }
   .tag-pill { max-width: 140px; margin-top: 0; padding: 5px 9px; font-size: 9px; }
-  .brand-middle, .feature-list, .header-links { display: none; }
+  .brand-middle, .feature-list { display: none; }
+  .header-links .chip, .header-links .link-admin, .header-links .link-back { display: none; }
   .form-panel { max-width: 440px; justify-self: center; padding: 20px; }
   .form-header { align-items: center; }
   .trust-bar { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px 8px; padding-block: 12px; }

@@ -4,6 +4,7 @@ import { CartService } from './cart.service';
 import { AuthService } from './auth.service';
 import { NotificationService } from './notification.service';
 import { ChatService } from './chat.service';
+import { AutoTranslateService } from './auto-translate.service';
 
 @Component({
   selector: 'app-root',
@@ -18,6 +19,8 @@ export class App {
   private auth = inject(AuthService);
   private notif = inject(NotificationService);
   private chatService = inject(ChatService);
+  private autoT = inject(AutoTranslateService);
+  constructor() { this.autoT.init(); }
 
   isStandaloneAuth(): boolean {
     const path = this.router.url.split(/[?#]/, 1)[0].replace(/\/+$/, '');

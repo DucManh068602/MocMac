@@ -244,10 +244,7 @@
 
             <!-- description -->
             <p class="short-description">
-              {{
-                p.description ||
-                  'Sản phẩm mang đậm nét văn hóa Việt Nam, được tuyển chọn từ những giá trị đặc sản và làng nghề truyền thống.'
-              }}
+              {{ displayDescription(p) }}@if (translating()) { <em class="t-hint"> ({{ i18n.lang()==='en'?'translating...':'đang dịch...' }})</em> }
             </p>
 
             <!-- Quantity + purchase buttons: layout wrapper only; existing handlers stay unchanged -->
@@ -375,11 +372,7 @@
                 </div>
 
                 <p class="description-lead">
-                  {{
-                    p.description ||
-                      p.name +
-                        ' là sản phẩm đặc trưng mang nét văn hóa và giá trị truyền thống của Việt Nam.'
-                  }}
+                  {{ displayDescription(p) }}
                 </p>
 
                 <p>

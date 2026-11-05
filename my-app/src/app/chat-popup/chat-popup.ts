@@ -1,6 +1,9 @@
 import { Component, inject, signal, OnInit, OnDestroy, AfterViewChecked, ViewChild, ElementRef, effect } from '@angular/core';
+import { Router } from '@angular/router';
 import { ChatService } from '../chat.service';
+import { CartService } from '../cart.service';
 import { ToastService } from '../admin/toast.service';
+import { I18nService } from '../i18n.service';
 
 @Component({
   selector: 'app-chat-popup',
@@ -8,27 +11,27 @@ import { ToastService } from '../admin/toast.service';
   template: `
     <div class="ai-float">
       @if (!open()) {
-        <button type="button" class="ai-fab" (click)="open.set(true); onOpen()" aria-label="Trợ Lý AI Mộc Mạc">
+        <button type="button" class="ai-fab" (click)="open.set(true); onOpen()" [attr.aria-label]="'agent.title' | t">
           <span class="ai-fab-ring"></span>
           <i class="fa-solid fa-wand-magic-sparkles"></i>
-          <span class="ai-fab-tip">Trợ Lý AI</span>
+          <span class="ai-fab-tip">{{ 'agent.tip' | t }}</span>
         </button>
       }
 
       @if (open()) {
-        <div #chatBox class="ai-window" role="dialog" aria-label="Trợ Lý AI Mộc Mạc">
+        <div #chatBox class="ai-window" role="dialog" [attr.aria-label]="'agent.title' | t">
           <header class="ai-head">
             <div class="ai-brand">
               <div class="ai-avatar"><i class="fa-solid fa-robot"></i></div>
               <div class="ai-brand-txt">
-                <strong>Trợ Lý AI Mộc Mạc</strong>
-                <span class="ai-status"><i class="dot"></i> Luôn sẵn sàng hỗ trợ</span>
+                <strong>{{ 'agent.title' | t }}</strong>
+                <span class="ai-status"><i class="dot"></i> {{ 'agent.status' | t }}</span>
               </div>
             </div>
             <div class="ai-head-actions">
               <div class="ai-tabs" role="tablist">
-                <button type="button" [class.active]="mode()==='ai'" (click)="mode.set('ai')"><i class="fa-solid fa-sparkles"></i> AI</button>
-                <button type="button" [class.active]="mode()==='admin'" (click)="mode.set('admin'); chatService.connect()"><i class="fa-solid fa-headset"></i> Hỗ trợ</button>
+                <button type="button" [class.active]="mode()==='ai'" (click)="mode.set('ai')"><i class="fa-solid fa-sparkles"></i> {{ 'agent.tab' | t }}</button>
+                <button type="button" [class.active]="mode()==='admin'" (click)="mode.set('admin'); chatService.connect()"><i class="fa-solid fa-headset"></i> {{ 'agent.supportTab' | t }}</button>
               </div>
               <button type="button" class="ai-close" (click)="open.set(false)" aria-label="Đóng"><i class="fa-solid fa-chevron-down"></i></button>
             </div>
@@ -39,11 +42,11 @@ import { ToastService } from '../admin/toast.service';
               @if (aiMessages().length <= 1 && !aiLoading()) {
                 <li class="ai-welcome">
                   <div class="ai-welcome-icon"><i class="fa-solid fa-seedling"></i></div>
-                  <p>Mình có thể tra cứu nhanh từ dữ liệu Mộc Mạc (quét DB theo từng chunk) để hỗ trợ bạn.</p>
+                  <p>{{ 'agent.welcome' | t }}</p>
                 </li>
                 <li class="ai-suggests">
-                  @for (s of suggestions; track s) {
-                    <button type="button" (click)="msgText.set(s); send()">{{ s }}</button>
+                  @for (s of suggestions(); track s) {
+                    <button type="button" (click)="askSuggestion(s)">{{ s }}</button>
                   }
                 </li>
               }
@@ -51,15 +54,20 @@ import { ToastService } from '../admin/toast.service';
                 <li class="msg" [class.user]="m.from==='user'" [class.ai]="m.from==='ai'">
                   @if (m.from==='ai') { <span class="msg-ava"><i class="fa-solid fa-robot"></i></span> }
                   <div class="bubble">
-                    <div class="text">{{ m.text }}</div>
-                    <div class="meta">{{ m.at | date:'HH:mm' }}</div>
+                    @if (m.from==='ai' && m.streaming && !m.text) {
+                      <div class="typing"><span></span><span></span><span></span></div>
+                    } @else {
+                      <div class="text" [class.streaming]="m.streaming">{{ m.text }}@if (m.streaming) {<span class="cursor">▍</span>}</div>
+                    }
+                    @if (!m.streaming && m.actions?.length) {
+                      <div class="agent-actions">
+                        @for (a of m.actions; track $index) {
+                          <button type="button" class="agent-action" (click)="runAction(a)"><i class="fa-solid fa-bolt"></i> {{ actionLabel(a) }}</button>
+                        }
+                      </div>
+                    }
+                    @if (!m.streaming || m.text) { <div class="meta">{{ m.at | date:'HH:mm' }}</div> }
                   </div>
-                </li>
-              }
-              @if (aiLoading()) {
-                <li class="msg ai">
-                  <span class="msg-ava"><i class="fa-solid fa-robot"></i></span>
-                  <div class="bubble typing"><span></span><span></span><span></span><em>Đang quét dữ liệu...</em></div>
                 </li>
               }
             } @else {
@@ -80,11 +88,11 @@ import { ToastService } from '../admin/toast.service';
           <form class="ai-input" (ngSubmit)="$event.preventDefault(); send()">
             <input
               #msgInput type="text"
-              [placeholder]="mode()==='ai' ? 'Hỏi về sản phẩm, giá, mã giảm giá...' : 'Nhắn cho quản trị viên...'"
+              [attr.placeholder]="(mode()==='ai' ? 'agent.placeholder' : 'agent.supportPlaceholder') | t"
               [value]="msgText()" (input)="msgText.set($any($event.target).value)" maxlength="1000" autocomplete="off"
             />
-            <button type="submit" [disabled]="!msgText().trim() || (mode()==='admin' && !connected()) || aiLoading()" aria-label="Gửi">
-              <i class="fa-solid" [class.fa-paper-plane]="!aiLoading()" [class.fa-spinner]="aiLoading()" [class.fa-spin]="aiLoading()"></i>
+            <button type="submit" [disabled]="!msgText().trim() || (mode()==='admin' && !connected()) || aiBusy()" aria-label="Gửi">
+              <i class="fa-solid" [class.fa-paper-plane]="!aiBusy()" [class.fa-spinner]="aiBusy()" [class.fa-spin]="aiBusy()"></i>
             </button>
           </form>
         </div>
@@ -97,17 +105,59 @@ export class ChatPopupComponent implements OnInit, AfterViewChecked, OnDestroy {
   @ViewChild('messagesList', { static: false }) messagesList!: ElementRef;
 
   public chatService = inject(ChatService);
+  private cart = inject(CartService);
+  private router = inject(Router);
   private toast = inject(ToastService);
+  readonly i18n = inject(I18nService);
 
   readonly open = signal(false);
   readonly msgText = signal('');
   readonly mode = signal<'ai'|'admin'>('ai');
-  readonly suggestions = ['Sản phẩm nổi bật là gì?', 'Có mã giảm giá nào không?', 'Đặc sản vùng nào đang bán?', 'Thanh toán MoMo thế nào?'];
+  readonly suggestions = () => this.i18n.lang() === 'en'
+    ? ['Find standout teas and add to cart', 'Any active coupons?', 'Open my cart', 'How do COD/VNPAY payments work?', 'Track my order', 'Suggest specialties by region']
+    : ['Tìm cho mình trà nổi bật và thêm vào giỏ', 'Có mã giảm giá nào đang dùng được?', 'Mở giỏ hàng giúp mình', 'Thanh toán VNPAY/COD thế nào?', 'Tra cứu đơn hàng của tôi', 'Gợi ý đặc sản theo vùng miền'];
 
   readonly messages = this.chatService.messages;
   readonly aiMessages = this.chatService.aiMessages;
   readonly aiLoading = this.chatService.aiLoading;
   readonly connected = this.chatService.connected;
+
+  aiBusy(): boolean {
+    return this.aiLoading() || this.aiMessages().some(m => m.from === 'ai' && m.streaming);
+  }
+
+  actionLabel(a: any): string {
+    switch (a?.type) {
+      case 'open_product': return 'Xem sản phẩm';
+      case 'add_to_cart': return `Thêm vào giỏ${a?.name ? ': '+a.name : ''}`;
+      case 'open_cart': return 'Mở giỏ hàng';
+      case 'navigate': return a?.path === '/don-hang' ? 'Xem đơn hàng' : a?.path === '/lien-he' ? 'Mở liên hệ' : 'Mở trang';
+      case 'contact_support': return 'Liên hệ hỗ trợ';
+      case 'my_orders': return 'Đơn hàng của tôi';
+      default: return 'Thực hiện';
+    }
+  }
+
+  askSuggestion(text: string): void {
+    if (this.aiBusy()) return;
+    this.msgText.set(text);
+    this.send();
+  }
+
+  runAction(a: any): void {
+    if (!a?.type) return;
+    if (a.type === 'add_to_cart' && a.productId) {
+      const qty = Math.max(1, Number(a.quantity)||1);
+      for (let i=0;i<qty;i++) this.cart.add(Number(a.productId), a.name || 'Sản phẩm');
+      this.toast.success(`Đã thêm "${a.name || 'sản phẩm'}" vào giỏ.`);
+      return;
+    }
+    if (a.type === 'open_product' && a.slug) { this.router.navigate(['/san-pham', a.slug]); return; }
+    if (a.type === 'open_cart') { this.router.navigate(['/gio-hang']); return; }
+    if (a.type === 'contact_support') { this.router.navigate(['/lien-he']); return; }
+    if (a.type === 'my_orders') { this.router.navigate(['/don-hang']); return; }
+    if (a.type === 'navigate' && a.path) { this.router.navigateByUrl(a.path); }
+  }
 
   private _notifyEffect = effect(() => {
     const msg = this.chatService.messageReceived();

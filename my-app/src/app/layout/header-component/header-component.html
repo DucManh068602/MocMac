@@ -1,15 +1,17 @@
 <div class="top">
   <div class="wrap">
     <div>
-      <a routerLink="/gioi-thieu">Giới thiệu</a>
-      <a routerLink="/qua-tang-theo-nhu-cau">Quà tặng theo nhu cầu</a>
-      <a routerLink="/qua-tang-doanh-nghiep">Quà tặng doanh nghiệp</a>
+      <a routerLink="/gioi-thieu">{{ 'top.about' | t }}</a>
+      <a routerLink="/qua-tang-theo-nhu-cau">{{ 'top.giftNeeds' | t }}</a>
+      <a routerLink="/qua-tang-doanh-nghiep">{{ 'top.giftBusiness' | t }}</a>
     </div>
 
     <div>
-      <a routerLink="/thong-bao">Thông báo</a>
-      <a routerLink="/ho-tro">Hỗ trợ</a>
-      <a href="#">Tiếng Việt</a>
+      <a routerLink="/thong-bao">{{ 'top.notifications' | t }}</a>
+      <a routerLink="/ho-tro">{{ 'top.support' | t }}</a>
+      <button type="button" class="lang-btn" (click)="i18n.toggle()" [attr.aria-label]="'lang.' + i18n.lang() | t">
+        <i class="fa-solid fa-globe"></i> {{ i18n.lang() === 'vi' ? 'EN' : 'VI' }}
+      </button>
       @if (auth.isAuthenticated()) {
         <span class="user-account">
           <button type="button" class="user-trigger" (click)="toggleAccountDropdown()" aria-haspopup="true" [attr.aria-expanded]="accountDropdown()">
@@ -29,17 +31,17 @@
           </button>
           @if (accountDropdown()) {
             <div class="account-dropdown" (click)="$event.stopPropagation()">
-              <a routerLink="/don-hang" (click)="accountDropdown.set(false)">Đơn hàng của tôi</a>
+              <a routerLink="/don-hang" (click)="accountDropdown.set(false)">{{ 'account.myOrders' | t }}</a>
               @if (auth.user()?.role !== 'customer' && auth.isAuthenticated()) {
-                <a routerLink="/admin" (click)="accountDropdown.set(false)">Trang quản trị</a>
+                <a routerLink="/admin" (click)="accountDropdown.set(false)">{{ 'account.admin' | t }}</a>
               }
-              <a routerLink="/tai-khoan" (click)="accountDropdown.set(false)">Cài đặt tài khoản</a>
-              <button type="button" class="dropdown-logout" (click)="onLogout()">Đăng xuất</button>
+              <a routerLink="/tai-khoan" (click)="accountDropdown.set(false)">{{ 'account.settings' | t }}</a>
+              <button type="button" class="dropdown-logout" (click)="onLogout()">{{ 'account.logout' | t }}</button>
             </div>
           }
         </span>
       } @else {
-        <a routerLink="/dang-nhap">Tài khoản</a>
+        <a routerLink="/dang-nhap">{{ 'top.account' | t }}</a>
       }
     </div>
   </div>
@@ -54,7 +56,7 @@
     <form class="search search-box" (submit)="onSearch($event)">
       <input
         type="search"
-        placeholder="Tìm đặc sản, làng nghề, vùng miền..."
+        [attr.placeholder]="'search.placeholder' | t"
         [ngModel]="searchQuery()"
         [ngModelOptions]="{standalone: true}"
         (ngModelChange)="onSearchInput($event)"
@@ -79,42 +81,23 @@
       }
     </form>
 
-    <a class="cart cart-trigger" (click)="onCartClick()">
-      &#128722; Giỏ hàng <b>{{ cartService.count() }}</b>
-    </a>
+      <a class="cart cart-trigger" (click)="onCartClick()" [attr.aria-label]="'cart.aria' | t">
+        <i class="fa-solid fa-cart-shopping" aria-hidden="true"></i>
+        <span class="cart-label">{{ 'cart.label' | t }}</span>
+        @if (cartService.count() > 0) { <b class="cart-badge">{{ cartService.count() }}</b> }
+      </a>
   </div>
 </div>
 
 <div class="nav">
   <div class="wrap">
     <nav>
-      <a
-        routerLink="/"
-        routerLinkActive="on"
-        [routerLinkActiveOptions]="{ exact: true }"
-      >
-        Trang chủ
-      </a>
-
-      <a routerLink="/san-pham" routerLinkActive="on">
-        Sản phẩm
-      </a>
-
-      <a routerLink="/qua-tang" routerLinkActive="on">
-        Quà tặng
-      </a>
-
-      <a routerLink="/vung-mien" routerLinkActive="on">
-        Vùng miền
-      </a>
-
-      <a routerLink="/lang-nghe" routerLinkActive="on">
-        Làng nghề
-      </a>
-
-      <a routerLink="/lien-he" routerLinkActive="on">
-        Liên hệ
-      </a>
+      <a routerLink="/" routerLinkActive="on" [routerLinkActiveOptions]="{ exact: true }">{{ 'nav.home' | t }}</a>
+      <a routerLink="/san-pham" routerLinkActive="on">{{ 'nav.products' | t }}</a>
+      <a routerLink="/qua-tang" routerLinkActive="on">{{ 'nav.gifts' | t }}</a>
+      <a routerLink="/vung-mien" routerLinkActive="on">{{ 'nav.regions' | t }}</a>
+      <a routerLink="/lang-nghe" routerLinkActive="on">{{ 'nav.villages' | t }}</a>
+      <a routerLink="/lien-he" routerLinkActive="on">{{ 'nav.contact' | t }}</a>
     </nav>
   </div>
 </div>
@@ -124,11 +107,11 @@
   <div class="cart-login-overlay" (click)="closeLoginPopup()">
     <div class="cart-login-popup" (click)="$event.stopPropagation()">
       <div class="cart-login-icon">🔒</div>
-      <h3>Bạn cần đăng nhập</h3>
-      <p>Để mua hàng và quản lý giỏ hàng, vui lòng đăng nhập tài khoản.</p>
+      <h3>{{ 'login.title' | t }}</h3>
+      <p>{{ 'login.text' | t }}</p>
       <div class="cart-login-actions">
-        <a class="btn" routerLink="/dang-nhap" (click)="closeLoginPopup()">Đăng nhập ngay</a>
-        <button type="button" class="btn btn-secondary" (click)="closeLoginPopup()">Hủy</button>
+        <a class="btn" routerLink="/dang-nhap" (click)="closeLoginPopup()">{{ 'login.action' | t }}</a>
+        <button type="button" class="btn btn-secondary" (click)="closeLoginPopup()">{{ 'login.cancel' | t }}</button>
       </div>
     </div>
   </div>

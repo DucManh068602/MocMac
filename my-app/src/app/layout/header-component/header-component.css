@@ -1,14 +1,20 @@
 .top{background:var(--beige);color:var(--ink);font-size:13px}
 .top .wrap{display:flex;justify-content:space-between;padding-top:7px;padding-bottom:7px;flex-wrap:wrap;gap:8px}
 .top div{display:flex;align-items:center;gap:18px}
+.lang-btn{display:inline-flex;align-items:center;gap:6px;border:1px solid rgba(67,87,49,.2);background:transparent;color:inherit;padding:3px 10px;border-radius:999px;cursor:pointer;font:600 12px inherit}
+.lang-btn:hover{background:rgba(67,87,49,.08)}
+
 .brand .wrap{display:flex;align-items:center;gap:28px;padding-top:16px;padding-bottom:16px}
 .logo{font-family:'Lora',serif;font-weight:700;font-size:30px;color:var(--moss);white-space:nowrap}
 .logo small{display:block;font:400 11px 'Be Vietnam Pro';color:var(--ink2);margin-top:-2px}
 .search{flex:1;display:flex;border:2px solid var(--moss);border-radius:12px;overflow:hidden;background:#fff;position:relative}
 .search input{flex:1;border:0;padding:12px 16px;font:inherit;outline:0;min-width:0}
 .search button{background:var(--moss);color:#fff;border:0;padding:0 20px;cursor:pointer}
-.cart{font-weight:600;color:var(--moss);white-space:nowrap}
-.cart b{background:var(--clay);color:#fff;border-radius:10px;padding:0 8px;font-size:12px}
+.cart{display:inline-flex;align-items:center;gap:8px;font-weight:600;color:var(--moss);white-space:nowrap;padding:6px 10px;border-radius:999px;text-decoration:none;cursor:pointer;transition:background .15s,color .15s}
+.cart:hover{background:rgba(67,87,49,.08)}
+.cart .fa-cart-shopping{font-size:16px}
+.cart-label{font-size:14px}
+.cart-badge{min-width:20px;height:20px;padding:0 6px;display:inline-flex;align-items:center;justify-content:center;background:var(--clay,#C77A4A);color:#fff;border-radius:999px;font-size:11.5px;font-weight:700;line-height:1}
 
 .search-results{position:absolute;top:100%;left:0;right:0;background:#fff;border:1px solid #e8e0d0;border-radius:8px;box-shadow:0 10px 25px rgba(0,0,0,.15);z-index:1000;max-height:320px;overflow-y:auto;margin-top:4px}
 .search-result-item{display:flex;gap:10px;align-items:center;padding:10px 12px;text-decoration:none;color:inherit;transition:background .2s}

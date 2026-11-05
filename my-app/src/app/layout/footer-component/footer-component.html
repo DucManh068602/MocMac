@@ -9,11 +9,10 @@
             <img src="data/images/Logo.png" alt="Mộc Mạc Logo">
           </a>
 
-          <p class="slogan">Tinh hoa Việt – Giá trị thật</p>
+          <p class="slogan">{{ t('Tinh hoa Việt – Giá trị thật','Vietnamese Essence – True Value') }}</p>
 
           <p class="about-text">
-            Mộc Mạc mang đến những sản phẩm đặc sản và làng nghề Việt Nam,
-            gìn giữ giá trị truyền thống và lan tỏa nét đẹp văn hóa Việt.
+            {{ t('Mộc Mạc mang đến những sản phẩm đặc sản và làng nghề Việt Nam, gìn giữ giá trị truyền thống và lan tỏa nét đẹp văn hóa Việt.','Moc Mac brings Vietnamese specialty and craft-village products, preserving traditional values and spreading the beauty of Vietnamese culture.') }}
           </p>
 
           <div class="soc">
@@ -45,57 +44,47 @@
 
         <!-- CỘT 2 -->
         <div class="footer-col">
-          <h4>Về Mộc Mạc</h4>
+          <h4>{{ t('Về Mộc Mạc','About Moc Mac') }}</h4>
 
-          <a routerLink="/gioi-thieu">Giới thiệu</a>
-          <a href="#">Câu chuyện thương hiệu</a>
-          <a href="#">Cam kết chất lượng</a>
-          <a href="#">Tin tức</a>
-          <a href="#">Tuyển dụng</a>
+          <a routerLink="/gioi-thieu">{{ t('Giới thiệu','About') }}</a>
+          <a href="#">{{ t('Câu chuyện thương hiệu','Brand Story') }}</a>
+          <a href="#">{{ t('Cam kết chất lượng','Quality Commitment') }}</a>
+          <a href="#">{{ t('Tin tức','News') }}</a>
+          <a href="#">{{ t('Tuyển dụng','Careers') }}</a>
         </div>
 
         <!-- CỘT 3 -->
         <div class="footer-col">
-          <h4>Hỗ trợ khách hàng</h4>
+          <h4>{{ t('Hỗ trợ khách hàng','Customer Support') }}</h4>
 
-          <a href="#">Hướng dẫn mua hàng</a>
-          <a href="#">Phương thức thanh toán</a>
-          <a href="#">Chính sách vận chuyển</a>
-          <a href="#">Chính sách đổi trả</a>
-          <a href="#">Câu hỏi thường gặp (FAQ)</a>
-          <a routerLink="/lien-he">Liên hệ</a>
+          <a href="#">{{ t('Hướng dẫn mua hàng','Shopping Guide') }}</a>
+          <a href="#">{{ t('Phương thức thanh toán','Payment Methods') }}</a>
+          <a href="#">{{ t('Chính sách vận chuyển','Shipping Policy') }}</a>
+          <a href="#">{{ t('Chính sách đổi trả','Return Policy') }}</a>
+          <a href="#">{{ t('Câu hỏi thường gặp (FAQ)','Frequently Asked Questions (FAQ)') }}</a>
+          <a routerLink="/lien-he">{{ t('Liên hệ','Contact') }}</a>
         </div>
 
         <!-- CỘT 4 -->
         <div class="footer-col">
-          <h4>Danh mục</h4>
+          <h4>{{ t('Danh mục','Categories') }}</h4>
 
-          <a routerLink="/san-pham">Sản phẩm</a>
-          <a routerLink="/qua-tang">Quà tặng</a>
-          <a routerLink="/vung-mien">Vùng miền</a>
-          <a routerLink="/lang-nghe">Làng nghề</a>
-          <a href="#">Dịch vụ</a>
+          <a routerLink="/san-pham">{{ t('Sản phẩm','Products') }}</a>
+          <a routerLink="/qua-tang">{{ t('Quà tặng','Gifts') }}</a>
+          <a routerLink="/vung-mien">{{ t('Vùng miền','Regions') }}</a>
+          <a routerLink="/lang-nghe">{{ t('Làng nghề','Craft Villages') }}</a>
+          <a href="#">{{ t('Dịch vụ','Services') }}</a>
         </div>
 
         <!-- CỘT 5 -->
         <div class="footer-col newsletter">
-          <h4>Đăng ký nhận tin</h4>
+          <h4>{{ t('Đăng ký nhận tin','Subscribe to Newsletter') }}</h4>
 
-          <p>
-            Nhận thông tin sản phẩm mới, ưu đãi và những câu chuyện
-            văn hóa Việt từ Mộc Mạc.
-          </p>
+          <p>{{ t('Nhận thông tin sản phẩm mới, ưu đãi và những câu chuyện văn hóa Việt từ Mộc Mạc.','Get new product updates, offers, and Vietnamese cultural stories from Moc Mac.') }}</p>
 
           <form class="newsletter-form" action="#">
-            <input
-              type="email"
-              placeholder="✉ Nhập email của bạn"
-              required
-            >
-
-            <button type="submit">
-              Đăng ký
-            </button>
+            <input type="email" [attr.placeholder]="t('✉ Nhập email của bạn','✉ Enter your email')" required>
+            <button type="submit">{{ t('Đăng ký','Subscribe') }}</button>
           </form>
         </div>
 
@@ -105,7 +94,7 @@
       <div class="partner-section">
 
         <div class="partner-group">
-          <h4>PHƯƠNG THỨC THANH TOÁN</h4>
+          <h4>{{ t('PHƯƠNG THỨC THANH TOÁN','PAYMENT METHODS') }}</h4>
 
           <div class="partner-logos">
             <img
@@ -135,7 +124,7 @@
         </div>
 
         <div class="partner-group">
-          <h4>ĐƠN VỊ VẬN CHUYỂN</h4>
+          <h4>{{ t('ĐƠN VỊ VẬN CHUYỂN','SHIPPING PARTNERS') }}</h4>
 
           <div class="partner-logos">
             <img
@@ -163,34 +152,17 @@
     <div class="container bottom-wrapper">
 
       <div class="company-info">
-        <strong>
-          © Công Ty Cổ Phần TM & DV Mộc Mạc.
-          MST: (028) 372 44 555.
-        </strong>
-
-        <a
-          href="https://maps.app.goo.gl/upxYFEVHobfBSbx76"
-          target="_blank"
-          rel="noopener"
-        >
-          669 Đỗ Mười, khu phố 13, phường Linh Xuân,
-          TP. Thủ Đức, TP. Hồ Chí Minh
+        <strong>{{ t('© Công Ty Cổ Phần TM & DV Mộc Mạc. MST: (028) 372 44 555.','© Moc Mac Trading & Services JSC. Tax ID: (028) 372 44 555.') }}</strong>
+        <a href="https://maps.app.goo.gl/upxYFEVHobfBSbx76" target="_blank" rel="noopener">
+          {{ t('669 Đỗ Mười, khu phố 13, phường Linh Xuân, TP. Thủ Đức, TP. Hồ Chí Minh','669 Do Muoi, Quarter 13, Linh Xuan Ward, Thu Duc City, Ho Chi Minh City') }}
         </a>
       </div>
 
       <div class="bottom-newsletter">
-        <p>Đăng ký để nhận thông tin và ưu đãi</p>
-
+        <p>{{ t('Đăng ký để nhận thông tin và ưu đãi','Subscribe for updates and offers') }}</p>
         <form class="bottom-form" action="#">
-          <input
-            type="text"
-            placeholder="Nhập số điện thoại của bạn"
-            required
-          >
-
-          <button type="submit">
-            ĐĂNG KÝ
-          </button>
+          <input type="text" [attr.placeholder]="t('Nhập số điện thoại của bạn','Enter your phone number')" required>
+          <button type="submit">{{ t('ĐĂNG KÝ','SUBSCRIBE') }}</button>
         </form>
       </div>
 

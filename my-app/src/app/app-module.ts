@@ -8,8 +8,10 @@ import { authInterceptor } from './auth.interceptor';
 import { LOCALE_ID } from '@angular/core';
 import { registerLocaleData } from '@angular/common';
 import localeVi from '@angular/common/locales/vi';
+import localeEn from '@angular/common/locales/en';
 
 registerLocaleData(localeVi);
+registerLocaleData(localeEn);
 
 import { AppRoutingModule } from './app-routing-module';
 import { App } from './app';
@@ -55,6 +57,7 @@ import { PaginationComponent } from './admin/pagination';
 import { ToastComponent } from './admin/toast';
 import { NotificationPopupComponent } from './pages/notification-popup/notification-popup';
 import { ChatPopupComponent } from './chat-popup/chat-popup';
+import { TranslatePipe } from './translate.pipe';
 
 @NgModule({
   declarations: [
@@ -85,6 +88,7 @@ import { ChatPopupComponent } from './chat-popup/chat-popup';
     ToastComponent,
     NotificationPopupComponent,
     ChatPopupComponent,
+    TranslatePipe,
     AboutComponent,
     GiftBusinessComponent,
     GiftNeedsComponent,
