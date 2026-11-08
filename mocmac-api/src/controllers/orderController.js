@@ -1,4 +1,5 @@
 import { Order } from '../models/Order.js';
+import { Product } from '../models/Product.js';
 import { logAction, getRequestInfo } from '../utils/auditLog.js';
 import { generateOrderId, initStatusHistory, appendStatusHistory } from '../utils/orderUtils.js';
 
@@ -42,6 +43,16 @@ export const createOrder = async (req, res) => {
       note: String(note || ''),
       statusHistory: initStatusHistory({ status: 'pending', paymentStatus: 'pending' }, 'Đơn hàng mới được tạo'),
     });
+
+    // Tự động tăng số lượng đã bán (sold) cho mỗi sản phẩm trong đơn
+    for (const it of items) {
+      if (it.productId != null) {
+        await Product.findOneAndUpdate(
+          { id: Number(it.productId) },
+          { $inc: { sold: Number(it.quantity) || 1 } },
+        );
+      }
+    }
 
     const { user, ip } = getRequestInfo(req);
     await logAction({

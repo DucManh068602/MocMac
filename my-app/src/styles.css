@@ -1,15 +1,36 @@
-@import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=Lora:wght@600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,600;1,700&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-:root{--moss:#435731;--moss-d:#35472A;--sage:#7C9468;--cream:#FBFAF3;--beige:#EBE5D4;--earth:#AA4D2D;--clay:#C77A4A;--ink:#2B2A22;--ink2:#6B6A5C;--line:#E4DDC8}
+:root{--moss:#3f634d;--moss-d:#294a38;--sage:#9bb69c;--cream:#fffcf7;--beige:#f3eadb;--earth:#a95f3d;--clay:#d49667;--ink:#253128;--ink2:#667166;--line:#e8ded0;--surface:#ffffff;--surface-muted:#faf6ef;--focus:#2e7251;--danger:#b5473d;--warning:#a86b16;--shadow-soft:0 14px 36px rgba(52,71,56,.07)}
+:root[data-theme='dark']{--moss:#a8d9ad;--moss-d:#dcf4dc;--sage:#638e6c;--cream:#0c110e;--beige:#121b15;--earth:#f0ae78;--clay:#e3a26b;--ink:#f2f8f1;--ink2:#c2d0c3;--line:#39513e;--surface:#17221a;--surface-muted:#223025;--focus:#b8efc0;--danger:#ff9a90;--warning:#ffd082;--shadow-soft:0 18px 44px rgba(0,0,0,.42)}
 
 *{box-sizing:border-box}
-body{margin:0;background:var(--cream);color:var(--ink);font-family:'Segoe UI','Be Vietnam Pro',system-ui,sans-serif;line-height:1.55;font-size:15px}
+body{margin:0;background:var(--cream);color:var(--ink);font-family:'Segoe UI',system-ui,sans-serif;line-height:1.6;font-size:15px;letter-spacing:.005em;scrollbar-color:var(--sage) var(--surface-muted);scrollbar-width:thin}
+:root[data-theme='dark'] body{color-scheme:dark;background:radial-gradient(circle at 92% -10%,#243e2b 0,transparent 30rem),radial-gradient(circle at -8% 55%,#222d1f 0,transparent 26rem),var(--cream)}
+:root[data-theme='dark'] .product-page{background:linear-gradient(180deg,#0c110e,#132017 47%,#0c110e)!important}
+:root[data-theme='dark'] .product-page :is(.product-main,.details-section,.review-card,.related-card,.price-card,.benefit,.story-card){background:var(--surface)!important;color:var(--ink)!important;border-color:var(--line)!important}
+:root[data-theme='dark'] .admin-header,:root[data-theme='dark'] .panel,:root[data-theme='dark'] .kpi,:root[data-theme='dark'] .mini{background:var(--surface)!important;border-color:var(--line)!important;color:var(--ink)!important}
+:root[data-theme='dark'] :is(.brand,.search-results,.account-dropdown,.cart-login-popup,footer){background:var(--surface)!important;color:var(--ink)!important;border-color:var(--line)!important}
+:root[data-theme='dark'] :is(input,select,textarea){background:var(--surface-muted)!important;color:var(--ink)!important;border-color:var(--line)!important}
+:root[data-theme='dark'] :is(input,textarea)::placeholder{color:#9daf9f!important}
+:root[data-theme='dark'] .top{background:#101a13!important;color:var(--ink2)!important;border-color:var(--line)!important}
+:root[data-theme='dark'] .nav{background:linear-gradient(90deg,#1d472c,#285a39)!important;border-top:1px solid #3c7450;border-bottom:1px solid #3c7450}
+:root[data-theme='dark'] .search{background:var(--surface-muted)!important;border-color:#537e5c!important}
+:root[data-theme='dark'] :is(.card,.pcard,.panel,.kpi,.mini,.support-card,.gift-card,.product-card){box-shadow:0 14px 34px rgba(0,0,0,.28)!important}
+:root[data-theme='dark'] .product-page :is(h1,h2,h3,h4,strong,.price,.rating-number,.brand-mark){color:var(--ink)!important}
+:root[data-theme='dark'] .product-page :is(p,small,.short-description,.spec-row span){color:var(--ink2)!important}
+:root[data-theme='dark'] .product-page :is(.btn-cart,.btn-buy,.add-to-cart){box-shadow:0 8px 24px rgba(0,0,0,.24)}
+*::-webkit-scrollbar{width:10px;height:10px}
+*::-webkit-scrollbar-track{background:var(--surface-muted)}
+*::-webkit-scrollbar-thumb{background:var(--sage);border:3px solid var(--surface-muted);border-radius:999px}
+*::-webkit-scrollbar-thumb:hover{background:var(--moss)}
+@media (forced-colors: active){*{scrollbar-color:auto}}
 a{color:inherit;text-decoration:none}
-h1,h2,h3{font-family:'Lora',serif}
+h1,h2,h3{font-family:'Segoe UI',system-ui,sans-serif;letter-spacing:-.02em}
 .wrap{max-width:1180px;margin:0 auto;padding:0 20px}
 .btn{display:inline-block;background:var(--earth);color:#fff;border:0;border-radius:8px;padding:11px 22px;font:600 14px inherit;font-family:inherit;cursor:pointer}
 .btn:hover{background:var(--moss)}
+button:focus-visible,a:focus-visible,select:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid color-mix(in srgb,var(--focus) 38%,transparent);outline-offset:2px}

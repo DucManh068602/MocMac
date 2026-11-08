@@ -1,5 +1,4 @@
 <section class="about-page">
-
   <!-- HERO -->
   <section
     class="hero"
@@ -10,331 +9,137 @@
     "
   >
     <div class="hero-content">
-      <p class="hero-label">MỘC MẠC</p>
-
+      <p class="hero-label"><i class="fa-solid fa-leaf" aria-hidden="true"></i> MỘC MẠC</p>
       <h1>Tinh hoa Việt – Giá trị thật</h1>
-
       <p class="hero-desc">
-        Nơi kết nối những sản phẩm đặc sản vùng miền và làng nghề truyền thống
-        với người tiêu dùng hiện đại.
+        Nơi kết nối những sản phẩm đặc sản vùng miền và làng nghề truyền thống với người tiêu dùng hiện đại.
       </p>
-
       <a routerLink="/san-pham" class="hero-btn">
-        Khám phá sản phẩm
+        <i class="fa-solid fa-bag-shopping" aria-hidden="true"></i> Khám phá sản phẩm
       </a>
     </div>
   </section>
 
-
   <!-- CÂU CHUYỆN MỘC MẠC -->
   <section class="section story-section">
     <div class="container two-column">
-
       <div class="story-image">
         <img
           src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSArfH4FeJkXOBn-o3uE14z2yUG2O_LxLbFNYcsIl3TgQ&s=10"
           alt="Câu chuyện Mộc Mạc"
-        >
+        />
       </div>
 
       <div class="story-content">
-
-        <span class="section-label">
-          CÂU CHUYỆN MỘC MẠC
-        </span>
-
+        <span class="section-label"><i class="fa-solid fa-book-open" aria-hidden="true"></i> CÂU CHUYỆN MỘC MẠC</span>
         <h2>Mỗi sản phẩm là một câu chuyện</h2>
-
         <p>
-          Việt Nam sở hữu nhiều sản phẩm đặc trưng gắn liền với từng vùng miền
-          và làng nghề như gốm Bát Tràng, lụa Vạn Phúc, mây tre đan Phú Vinh,
-          cà phê Tây Nguyên, trà Thái Nguyên hay nước mắm Phú Quốc.
+          Việt Nam sở hữu nhiều sản phẩm đặc trưng gắn liền với từng vùng miền và làng nghề như gốm Bát Tràng,
+          lụa Vạn Phúc, mây tre đan Phú Vinh, cà phê Tây Nguyên, trà Thái Nguyên hay nước mắm Phú Quốc.
         </p>
-
         <p>
-          Tuy nhiên, trong môi trường thương mại điện tử hiện nay, những giá trị
-          về nguồn gốc, văn hoá và câu chuyện phía sau sản phẩm đôi khi chưa
-          được thể hiện đầy đủ.
+          Trong thương mại điện tử, giá trị về nguồn gốc, văn hoá và câu chuyện phía sau sản phẩm đôi khi chưa được
+          thể hiện đầy đủ.
         </p>
-
         <p>
-          Mộc Mạc được xây dựng với mong muốn tạo nên một không gian mua sắm
-          nơi mỗi sản phẩm không chỉ được lựa chọn bởi giá cả mà còn bởi
-          nguồn gốc, bản sắc và giá trị truyền thống mà nó mang theo.
+          Mộc Mạc được xây dựng để tạo nên một không gian mua sắm nơi sản phẩm được lựa chọn bởi nguồn gốc, bản sắc
+          và giá trị truyền thống mà nó mang theo.
         </p>
-
       </div>
     </div>
   </section>
-
 
   <!-- SỨ MỆNH -->
   <section class="section mission-section">
     <div class="container">
-
       <div class="section-heading">
-        <span class="section-label">SỨ MỆNH</span>
-
-        <h2>
-          Đưa giá trị truyền thống đến gần hơn với cuộc sống hiện đại
-        </h2>
+        <span class="section-label"><i class="fa-solid fa-bullseye" aria-hidden="true"></i> SỨ MỆNH</span>
+        <h2>Đưa giá trị truyền thống đến gần hơn với cuộc sống hiện đại</h2>
       </div>
 
       <div class="mission-grid">
-
-        <div
-          class="mission-card"
-          *ngFor="let mission of missions"
-        >
-
-          <div class="mission-icon">
-            {{ mission.icon }}
-          </div>
-
-          <h3>{{ mission.title }}</h3>
-
-          <p>
-            {{ mission.description }}
-          </p>
-
-        </div>
-
+        @for (mission of missions; track mission.title) {
+          <article class="mission-card">
+            <div class="mission-icon" aria-hidden="true">
+              <i [class]="mission.icon"></i>
+            </div>
+            <h3>{{ mission.title }}</h3>
+            <p>{{ mission.description }}</p>
+          </article>
+        }
       </div>
     </div>
   </section>
-
 
   <!-- ĐIỀU LÀM NÊN MỘC MẠC -->
   <section class="section feature-section">
     <div class="container">
-
       <div class="section-heading">
-        <span class="section-label">
-          ĐIỀU LÀM NÊN MỘC MẠC
-        </span>
-
+        <span class="section-label"><i class="fa-solid fa-star" aria-hidden="true"></i> ĐIỀU LÀM NÊN MỘC MẠC</span>
         <h2>Không chỉ là một nơi mua sắm</h2>
       </div>
 
+      @for (f of features; track f.title; let i = $index) {
+        <div class="feature-item" [class.reverse]="i % 2 === 1">
+          <div class="feature-image">
+            <img [src]="f.image" [alt]="f.title" />
+          </div>
 
-      <!-- 01 VÙNG MIỀN -->
-      <div class="feature-item">
-
-        <div class="feature-image">
-          <img
-            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSArfH4FeJkXOBn-o3uE14z2yUG2O_LxLbFNYcsIl3TgQ&s=10"
-            alt="Khám phá sản phẩm theo vùng miền"
-          >
+          <div class="feature-content">
+            <div class="feature-number">
+              <i [class]="f.icon" aria-hidden="true"></i>
+              <span>{{ (i + 1).toString().padStart(2, '0') }}</span>
+            </div>
+            <h3>{{ f.title }}</h3>
+            <p>{{ f.description }}</p>
+          </div>
         </div>
-
-        <div class="feature-content">
-
-          <div class="feature-number">01</div>
-
-          <h3>Khám phá theo vùng miền</h3>
-
-          <p>
-            Tìm kiếm sản phẩm theo miền Bắc, Trung, Nam,
-            tỉnh thành và các làng nghề nổi tiếng trên khắp Việt Nam.
-          </p>
-
-        </div>
-      </div>
-
-
-      <!-- 02 HERITAGE -->
-      <div class="feature-item reverse">
-
-        <div class="feature-image">
-          <img
-            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRSjGKMoB-e1Zor1xNwLHutn8fQBfMIpc6IUrgoxNg8kg&s=10"
-            alt="Heritage Score"
-          >
-        </div>
-
-        <div class="feature-content">
-
-          <div class="feature-number">02</div>
-
-          <h3>Heritage Score</h3>
-
-          <p>
-            Hệ thống đánh giá mức độ gắn kết của sản phẩm với nguồn gốc,
-            kỹ thuật truyền thống, làng nghề và giá trị văn hoá.
-          </p>
-
-        </div>
-      </div>
-
-
-      <!-- 03 QR -->
-      <div class="feature-item">
-
-        <div class="feature-image">
-          <img
-            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQAeGTusx3F7yxy5i5ehO5FNq2_DHJgsaasffoTo0o3RQ&s=10"
-            alt="QR truy xuất nguồn gốc"
-          >
-        </div>
-
-        <div class="feature-content">
-
-          <div class="feature-number">03</div>
-
-          <h3>QR truy xuất nguồn gốc</h3>
-
-          <p>
-            Thông qua mã QR, khách hàng có thể khám phá thông tin
-            về nguồn gốc, nơi sản xuất và hành trình tạo nên sản phẩm.
-          </p>
-
-        </div>
-      </div>
-
-
-      <!-- 04 QUÀ TẶNG -->
-      <div class="feature-item reverse">
-
-        <div class="feature-image">
-          <img
-            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSyiOtT15mXI1pkr79tFjFkn65GkWmClxS0BgnxIhJY4A&s=10"
-            alt="Quà tặng mang bản sắc Việt"
-          >
-        </div>
-
-        <div class="feature-content">
-
-          <div class="feature-number">04</div>
-
-          <h3>Quà tặng mang bản sắc Việt</h3>
-
-          <p>
-            Gợi ý những món quà phù hợp theo dịp, nhu cầu và vùng miền
-            như Tết, cưới hỏi, tân gia hay quà tặng đối tác.
-          </p>
-
-        </div>
-      </div>
-
+      }
     </div>
   </section>
-
 
   <!-- GIÁ TRỊ CỐT LÕI -->
   <section class="section values-section">
     <div class="container">
-
-      <div class="section-heading light">
-
-        <span class="section-label">
-          GIÁ TRỊ CỐT LÕI
-        </span>
-
+      <div class="section-heading">
+        <span class="section-label"><i class="fa-solid fa-gem" aria-hidden="true"></i> GIÁ TRỊ CỐT LÕI</span>
         <h2>Những điều Mộc Mạc theo đuổi</h2>
-
       </div>
 
       <div class="values-grid">
-
-        <div class="value-card">
-          <span class="value-icon">\u2713</span>
-          <h3>Chân thật</h3>
-          <p>
-            Tôn trọng nguồn gốc, câu chuyện và giá trị thực
-            của từng sản phẩm.
-          </p>
-        </div>
-
-        <div class="value-card">
-          <span class="value-icon">\u2754</span>
-          <h3>Bản sắc</h3>
-          <p>
-            Ưu tiên những sản phẩm mang đặc trưng văn hoá
-            và vùng miền Việt Nam.
-          </p>
-        </div>
-
-        <div class="value-card">
-          <span class="value-icon">\u221e</span>
-          <h3>Kết nối</h3>
-          <p>
-            Kết nối người tiêu dùng, người sản xuất,
-            nghệ nhân và làng nghề.
-          </p>
-        </div>
-
-        <div class="value-card">
-          <span class="value-icon">\u267B</span>
-          <h3>Bền vững</h3>
-          <p>
-            Góp phần duy trì nghệ truyền thống
-            và hỗ trợ phát triển kinh tế địa phương.
-          </p>
-        </div>
-
+        @for (v of values; track v.title) {
+          <article class="value-card">
+            <span class="value-icon" aria-hidden="true"><i [class]="v.icon"></i></span>
+            <h3>{{ v.title }}</h3>
+            <p>{{ v.description }}</p>
+          </article>
+        }
       </div>
     </div>
   </section>
-
 
   <!-- HÀNH TRÌNH SẢN PHẨM -->
   <section class="section journey-section">
     <div class="container">
-
       <div class="section-heading">
-
-        <span class="section-label">
-          HÀNH TRÌNH SẢN PHẨM
-        </span>
-
+        <span class="section-label"><i class="fa-solid fa-route" aria-hidden="true"></i> HÀNH TRÌNH SẢN PHẨM</span>
         <h2>Từ làng nghề đến tay người dùng</h2>
-
-        <p>
-          Mộc Mạc mong muốn giúp khách hàng hiểu rõ hơn hành trình
-          tạo nên từng sản phẩm Việt.
-        </p>
-
+        <p>Mộc Mạc mong muốn giúp khách hàng hiểu rõ hơn hành trình tạo nên từng sản phẩm Việt.</p>
       </div>
 
       <div class="journey">
-
-        <div class="journey-item">
-          <div class="journey-circle">1</div>
-          <h3>Vùng nguyên liệu</h3>
-          <p>
-            Nguồn nguyên liệu đặc trưng được lựa chọn từ từng địa phương.
-          </p>
-        </div>
-
-        <div class="journey-item">
-          <div class="journey-circle">2</div>
-          <h3>Người nghệ nhân</h3>
-          <p>
-            Sản phẩm được tạo nên từ kinh nghiệm và kỹ thuật truyền thống.
-          </p>
-        </div>
-
-        <div class="journey-item">
-          <div class="journey-circle">3</div>
-          <h3>Hoàn thiện sản phẩm</h3>
-          <p>
-            Sản phẩm được kiểm tra, hoàn thiện và chuẩn bị trước khi phân phối.
-          </p>
-        </div>
-
-        <div class="journey-item">
-          <div class="journey-circle">4</div>
-          <h3>Đến tay khách hàng</h3>
-          <p>
-            Giá trị văn hoá được kết nối với người tiêu dùng thông qua Mộc Mạc.
-          </p>
-        </div>
-
+        @for (step of journey; track step.title; let i = $index) {
+          <article class="journey-item">
+            <div class="journey-circle" aria-hidden="true">
+              <i [class]="step.icon"></i>
+            </div>
+            <h3>{{ step.title }}</h3>
+            <p>{{ step.description }}</p>
+          </article>
+        }
       </div>
-
     </div>
   </section>
-
 
   <!-- CTA -->
   <section
@@ -345,42 +150,16 @@
         url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSyiOtT15mXI1pkr79tFjFkn65GkWmClxS0BgnxIhJY4A&s=10');
     "
   >
-
     <div class="cta-content">
-
-      <p class="section-label">
-        ĐỒNG HÀNH CÙNG MỘC MẠC
-      </p>
-
-      <h2>
-        Khám phá tinh hoa Việt qua từng sản phẩm
-      </h2>
-
+      <p class="section-label"><i class="fa-solid fa-hand-holding-heart" aria-hidden="true"></i> ĐỒNG HÀNH CÙNG MỘC MẠC</p>
+      <h2>Khám phá tinh hoa Việt qua từng sản phẩm</h2>
       <p>
-        Mỗi lựa chọn hôm nay là một cách góp phần lan tỏa giá trị
-        của những vùng đất, làng nghề và con người Việt Nam.
+        Mỗi lựa chọn hôm nay là một cách góp phần lan tỏa giá trị của những vùng đất, làng nghề và con người Việt Nam.
       </p>
-
       <div class="cta-actions">
-
-        <a
-          routerLink="/san-pham"
-          class="btn-primary"
-        >
-          Khám phá sản phẩm
-        </a>
-
-        <a
-          routerLink="/vung-mien"
-          class="btn-outline"
-        >
-          Khám phá vùng miền
-        </a>
-
+        <a routerLink="/san-pham" class="btn-primary"><i class="fa-solid fa-store" aria-hidden="true"></i> Khám phá sản phẩm</a>
+        <a routerLink="/vung-mien" class="btn-outline"><i class="fa-solid fa-earth-asia" aria-hidden="true"></i> Khám phá vùng miền</a>
       </div>
-
     </div>
-
   </section>
-
 </section>

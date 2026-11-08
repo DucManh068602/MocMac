@@ -1,6 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import {
   AbstractControl,
   FormBuilder,
@@ -30,6 +31,8 @@ export class DangnhapComponent {
   private auth = inject(AuthService);
   private toast = inject(ToastService);
   private router = inject(Router);
+  private route = inject(ActivatedRoute);
+  private http = inject(HttpClient);
   readonly i18n = inject(I18nService);
   t(vi: string, en: string): string { return this.i18n.lang() === 'en' ? en : vi; }
 
@@ -90,6 +93,13 @@ export class DangnhapComponent {
     },
     { validators: passwordsMatchValidator }
   );
+
+  ngOnInit(): void {
+    const path = this.router.url.split(/[?#]/, 1)[0].replace(/\/+$/, '');
+    if (path === '/dang-ky') {
+      this.mode.set('register');
+    }
+  }
 
   switchMode(mode: AuthMode): void {
     this.mode.set(mode);
@@ -294,6 +304,35 @@ export class DangnhapComponent {
   }
 
   loginWithSocial(provider: 'google' | 'facebook'): void {
-    console.log('Đăng nhập bằng', provider);
+    if (provider === 'facebook') {
+      this.toast.error('Đăng nhập Facebook chưa được hỗ trợ.');
+      return;
+    }
+    this.http.get<{ clientId: string }>('/api/auth/google/config').subscribe({
+      next: ({ clientId }) => {
+        if (!clientId) { this.toast.error('Đăng nhập Google chưa được cấu hình.'); return; }
+        const start = () => {
+          const google = (window as any).google;
+          google.accounts.id.initialize({ client_id: clientId, callback: (response: { credential: string }) => this.completeGoogleLogin(response.credential) });
+          google.accounts.id.prompt();
+        };
+        if ((window as any).google?.accounts?.id) { start(); return; }
+        const script = document.createElement('script');
+        script.src = 'https://accounts.google.com/gsi/client';
+        script.async = true;
+        script.onload = start;
+        script.onerror = () => this.toast.error('Không tải được dịch vụ Google.');
+        document.head.appendChild(script);
+      },
+      error: () => this.toast.error('Không thể khởi tạo đăng nhập Google.'),
+    });
+  }
+
+  private completeGoogleLogin(credential: string): void {
+    this.loading.set(true);
+    this.http.post('/api/auth/google', { credential }).subscribe({
+      next: (response: any) => { this.auth.saveSession(response, false); this.loading.set(false); this.router.navigate(['/']); },
+      error: (error: HttpErrorResponse) => { this.loading.set(false); this.toast.error(error.error?.message || 'Đăng nhập Google thất bại.'); },
+    });
   }
 }

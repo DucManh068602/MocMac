@@ -404,7 +404,7 @@ $error: #b3401f;
 
 .social-row {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr;
   gap: 10px;
 }
 
@@ -429,19 +429,6 @@ $error: #b3401f;
   background-clip: text;
   color: transparent;
   font-size: 15px;
-  font-weight: 700;
-}
-
-.fb-logo {
-  width: 18px;
-  height: 18px;
-  display: inline-grid;
-  place-items: center;
-  border-radius: 50%;
-  background: #1877f2;
-  color: #fff;
-  font-size: 12px;
-  font-weight: 700;
 }
 
 .grid-2 {

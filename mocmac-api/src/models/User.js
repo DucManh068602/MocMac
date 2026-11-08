@@ -24,9 +24,18 @@ const userSchema = new mongoose.Schema(
 
     passwordHash: {
       type: String,
-      required: true,
+      required: function () { return !this.googleId; },
       select: false
     },
+
+    googleId: {
+      type: String,
+      unique: true,
+      sparse: true,
+      trim: true,
+    },
+
+    refreshTokenHash: { type: String, select: false, default: null },
 
     role: {
       type: String,
@@ -52,7 +61,22 @@ const userSchema = new mongoose.Schema(
     resetOTPExpires: {
       type: Date,
       default: null,
-    }
+    },
+
+    addresses: [
+      {
+        fullName: { type: String, required: true },
+        phone: { type: String, required: true },
+        provinceCode: { type: Number },
+        provinceName: { type: String },
+        districtCode: { type: Number },
+        districtName: { type: String },
+        wardCode: { type: Number },
+        wardName: { type: String },
+        streetAddress: { type: String, required: true },
+        isDefault: { type: Boolean, default: false },
+      },
+    ],
   },
   { timestamps: true }
 );

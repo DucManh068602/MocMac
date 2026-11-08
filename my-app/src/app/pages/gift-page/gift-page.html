@@ -140,7 +140,9 @@
                 </div>
                 <div class="card-action-row">
                   <span class="item-price">{{ formatPrice(item.price) }}</span>
-                  <button class="cart-add-btn" type="button"><span class="cart-icon">🛒</span></button>
+                  <label class="quote-checkbox" (click)="toggleQuote(item); $event.stopPropagation()">
+                    <input type="checkbox" [checked]="inQuote(item)" />
+                  </label>
                 </div>
               </div>
             </div>
@@ -154,8 +156,10 @@
             </div>
           </ng-template>
 
-          <div class="cta-center-bar">
-            <button class="btn-gold-action">YÊU CẦU BÁO GIÁ →</button>
+          <div class="cta-center-bar" *ngIf="selectedItems().length > 0">
+            <button class="btn-gold-action" (click)="openQuoteModal()">
+              Gửi yêu cầu báo giá ({{ selectedItems().length }} sản phẩm)
+            </button>
           </div>
         </main>
 
@@ -168,7 +172,7 @@
               <div class="filter-group">
                 <div class="filter-title-icon">🔎 Tìm kiếm & gợi ý</div>
                 <div class="search-input-wrap">
-                  <input type="text" placeholder="Tìm sản phẩm..." class="filter-input-search" />
+                  <input type="text" placeholder="Tìm sản phẩm..." class="filter-input-search" [(ngModel)]="searchKeyword" />
                   <span class="search-icon">🔍</span>
                 </div>
               </div>
@@ -192,10 +196,10 @@
 
               <div class="filter-group">
                 <h4 class="filter-section-title">🌿 Vùng miền</h4>
-                <label class="filter-checkbox-item"><input type="checkbox" /> Miền Bắc <span class="count">(0)</span></label>
-                <label class="filter-checkbox-item"><input type="checkbox" /> Miền Trung <span class="count">(0)</span></label>
-                <label class="filter-checkbox-item"><input type="checkbox" /> Tây Nguyên <span class="count">(0)</span></label>
-                <label class="filter-checkbox-item"><input type="checkbox" /> Miền Nam <span class="count">(0)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" [(ngModel)]="filterRegion" [ngModelOptions]="{standalone:true}" (change)="filterRegion = $event.target.checked ? 'Miền Bắc' : 'all'" /> Miền Bắc <span class="count">(0)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" [(ngModel)]="filterRegion" [ngModelOptions]="{standalone:true}" (change)="filterRegion = $event.target.checked ? 'Miền Trung' : 'all'" /> Miền Trung <span class="count">(0)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" [(ngModel)]="filterRegion" [ngModelOptions]="{standalone:true}" (change)="filterRegion = $event.target.checked ? 'Tây Nguyên' : 'all'" /> Tây Nguyên <span class="count">(0)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" [(ngModel)]="filterRegion" [ngModelOptions]="{standalone:true}" (change)="filterRegion = $event.target.checked ? 'Miền Nam' : 'all'" /> Miền Nam <span class="count">(0)</span></label>
               </div>
 
               <div class="filter-group">
@@ -214,10 +218,10 @@
 
               <div class="filter-group">
                 <h4 class="filter-section-title">Khoảng giá</h4>
-                <label class="filter-checkbox-item"><input type="checkbox" /> Dưới 200.000đ <span class="count">(0)</span></label>
-                <label class="filter-checkbox-item"><input type="checkbox" /> 200.000đ - 500.000đ <span class="count">(0)</span></label>
-                <label class="filter-checkbox-item"><input type="checkbox" /> 500.000đ - 1.000.000đ <span class="count">(0)</span></label>
-                <label class="filter-checkbox-item"><input type="checkbox" /> Trên 1.000.000đ <span class="count">(0)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" [(ngModel)]="filterPriceRange" [ngModelOptions]="{standalone:true}" (change)="filterPriceRange = $event.target.checked ? 'under-300k' : 'all'" /> Dưới 200.000đ <span class="count">(0)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" [(ngModel)]="filterPriceRange" [ngModelOptions]="{standalone:true}" (change)="filterPriceRange = $event.target.checked ? '300k-700k' : 'all'" /> 200.000đ - 500.000đ <span class="count">(0)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" [(ngModel)]="filterPriceRange" [ngModelOptions]="{standalone:true}" (change)="filterPriceRange = $event.target.checked ? '500k-1m' : 'all'" /> 500.000đ - 1.000.000đ <span class="count">(0)</span></label>
+                <label class="filter-checkbox-item"><input type="checkbox" [(ngModel)]="filterPriceRange" [ngModelOptions]="{standalone:true}" (change)="filterPriceRange = $event.target.checked ? 'above-1m' : 'all'" /> Trên 1.000.000đ <span class="count">(0)</span></label>
               </div>
 
               <div class="filter-action-btns">
@@ -289,31 +293,126 @@
     </div>
   </section>
 
-  <!-- CÂU CHUYỆN QUÀ TẶNG -->
-  <section class="partner-story-section">
+  <!-- CÂU CHUYỆN QUÀ TẶNG + LÀNG NGHỀ -->
+  <section class="partner-story-section craft-story-section">
     <div class="site-wrap">
       <div class="center-head">
-        <h2 class="section-heading-dark">CÂU CHUYỆN QUÀ TẶNG</h2>
+        <span class="section-tag-gold">LÀNG NGHỀ &amp; QUÀ TẶNG</span>
+        <h2 class="section-heading-dark">CÂU CHUYỆN LÀNG NGHỀ TRONG MỖI MÓN QUÀ</h2>
       </div>
 
       <div class="story-dual-block">
         <div class="story-info-col">
-          <span class="partner-eyebrow">{{ projectStory.partner }}</span>
-          <h3 class="story-main-title">{{ projectStory.title }}</h3>
-          <p class="story-body">{{ projectStory.description }}</p>
+          <span class="partner-eyebrow">{{ activeCraftStory().village }}</span>
+          <h3 class="story-main-title">{{ activeCraftStory().title }}</h3>
+          <p class="story-body">{{ activeCraftStory().description }}</p>
+
+          <div class="craft-story-dots" aria-label="Chọn câu chuyện">
+            @for (s of craftStories; track s.title; let i = $index) {
+              <button type="button" class="craft-dot" [class.active]="craftStoryIndex() === i" (click)="craftStoryIndex.set(i)" [attr.aria-label]="s.village"></button>
+            }
+          </div>
         </div>
 
         <div class="story-image-col">
           <div class="img-slot story-img-slot">
-            <img src="/data/images/đối tác.jpg" alt="Dự án Đối tác" class="story-img" />
+            <img [src]="activeCraftStory().imageUrl" [alt]="activeCraftStory().title" class="story-img" />
           </div>
           <div class="story-nav-circles">
-            <button class="nav-circle">‹</button>
-            <button class="nav-circle">›</button>
+            <button type="button" class="nav-circle" (click)="prevCraftStory()" aria-label="Câu chuyện trước">‹</button>
+            <button type="button" class="nav-circle" (click)="nextCraftStory()" aria-label="Câu chuyện sau">›</button>
           </div>
         </div>
+      </div>
+
+      <div class="craft-story-grid">
+        @for (story of craftStories; track story.title; let i = $index) {
+          <button type="button" class="craft-story-card" [class.active]="craftStoryIndex() === i" (click)="craftStoryIndex.set(i)">
+            <div class="img-slot craft-story-thumb">
+              <img [src]="story.imageUrl" [alt]="story.title" />
+            </div>
+            <div class="craft-story-meta">
+              <span class="craft-village">{{ story.village }}</span>
+              <strong>{{ story.title }}</strong>
+            </div>
+          </button>
+        }
       </div>
     </div>
   </section>
 
-</div>
+    <!-- MODAL YÊU CẦU BÁO GIÁ -->
+    @if (showQuoteModal()) {
+      <div class="quote-overlay" (click)="closeQuoteModal()">
+        <div class="quote-modal" (click)="$event.stopPropagation()">
+          <button type="button" class="quote-close" (click)="closeQuoteModal()">✕</button>
+          <h2>Yêu cầu báo giá quà tặng</h2>
+          <p class="quote-sub">Chọn lại số lượng và để lại thông tin liên hệ. Chúng tôi sẽ gọi lại trong khung giờ bạn chọn.</p>
+
+          <div class="quote-items">
+            <h3>Sản phẩm đã chọn</h3>
+            <div class="quote-item-list">
+              @for (it of selectedItems(); track it.name) {
+                <div class="quote-item-row">
+                  <div class="quote-item-info">
+                    <strong>{{ it.name }}</strong>
+                    <div class="quote-item-qty">
+                      <button type="button" class="quote-qty-btn" (click)="changeQty(it, -1)">−</button>
+                      <span>{{ it.quantity }}</span>
+                      <button type="button" class="quote-qty-btn" (click)="changeQty(it, 1)">+</button>
+                      <button type="button" class="quote-remove" (click)="removeFromQuote(it.productId)">Xóa</button>
+                    </div>
+                  </div>
+                  <div class="quote-item-price">{{ formatPrice(it.price * it.quantity) }}</div>
+                </div>
+              }
+            </div>
+            <div class="quote-total">
+              <span>Tổng ước tính:</span>
+              <strong>{{ formatPrice(quoteTotal()) }}</strong>
+            </div>
+          </div>
+
+          <form class="quote-form" (submit)="$event.preventDefault(); submitQuote()">
+            <div class="form-row">
+              <label>Họ tên <input type="text" [(ngModel)]="quoteForm.name" [ngModelOptions]="{standalone: true}" placeholder="Nhập họ tên" required /></label>
+              <label>Số điện thoại <input type="tel" [(ngModel)]="quoteForm.phone" [ngModelOptions]="{standalone: true}" placeholder="09xxxxxxxx" required /></label>
+            </div>
+            <div class="form-row">
+              <label>Email <input type="email" [(ngModel)]="quoteForm.email" [ngModelOptions]="{standalone: true}" placeholder="email@example.com" /></label>
+              <label>Công ty <input type="text" [(ngModel)]="quoteForm.company" [ngModelOptions]="{standalone: true}" placeholder="Tên công ty (nếu có)" /></label>
+            </div>
+            <div class="form-row">
+              <label>Dịp tặng
+                <select [(ngModel)]="quoteForm.occasion" [ngModelOptions]="{standalone: true}">
+                  <option value="">-- Chọn dịp --</option>
+                  <option value="Quà Tết">Quà Tết</option>
+                  <option value="Quà cưới">Quà cưới</option>
+                  <option value="Quà tân gia">Quà tân gia</option>
+                  <option value="Quà biếu đối tác">Quà biếu đối tác</option>
+                  <option value="Quà lưu niệm">Quà lưu niệm</option>
+                  <option value="Khác">Khác</option>
+                </select>
+              </label>
+              <label>Khung giờ liên hệ
+                <select [(ngModel)]="quoteForm.preferredSlot" [ngModelOptions]="{standalone: true}" required>
+                  <option value="">-- Chọn khung giờ --</option>
+                  @for (slot of quoteSlots; track slot) {
+                    <option [value]="slot">{{ slot }}</option>
+                  }
+                </select>
+              </label>
+            </div>
+            <div class="form-full">
+              <label>Địa chỉ giao hàng <input type="text" [(ngModel)]="quoteForm.address" [ngModelOptions]="{standalone: true}" placeholder="Số nhà, tên đường, phường, thành phố" /></label>
+            </div>
+            <div class="form-full">
+              <label>Lời nhắn <textarea [(ngModel)]="quoteForm.message" [ngModelOptions]="{standalone: true}" placeholder="Ghi chú thêm (tùy chọn)"></textarea></label>
+            </div>
+            <button type="submit" class="quote-submit" [disabled]="quoteSending()">{{ quoteSending() ? 'Đang gửi...' : 'Gửi yêu cầu báo giá' }}</button>
+          </form>
+        </div>
+      </div>
+    }
+
+  </div>

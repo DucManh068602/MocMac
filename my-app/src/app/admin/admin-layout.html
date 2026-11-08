@@ -7,8 +7,8 @@
     <nav class="admin-nav">
       @for (item of navItems; track item.path) {
         <a
-          (click)="setActive(item.path)"
-          [class.active]="currentPath() === item.path"
+          [routerLink]="item.path === '/' ? ['/'] : ['/admin', item.path]"
+          [class.active]="item.path !== '/' && currentPath() === item.path"
           class="nav-item"
         >
           <span class="nav-icon"><i [class]="item.icon"></i></span>
@@ -25,20 +25,30 @@
      <header class="admin-header">
       <button type="button" class="menu-toggle" (click)="sidebarOpen.set(true)" aria-label="Mở menu"><i class="fa-solid fa-bars"></i></button>
       <h1 class="admin-title">
-        @switch (currentPath()) {
+        @switch (currentPath().split('/')[0] || '') {
           @case ('') { Bảng điều khiển }
           @case ('orders') { Đơn hàng }
           @case ('products') { Sản phẩm }
           @case ('regions') { Vùng miền }
+          @case ('region-stories') { Câu chuyện vùng miền }
+          @case ('village-stories') { Câu chuyện làng nghề }
           @case ('coupons') { Mã giảm giá }
+          @case ('deals') { Quản lý Deal }
           @case ('users') { Tài khoản }
+          @case ('role-requests') { Yêu cầu vai trò }
+          @case ('route-permissions') { Phân quyền vai trò }
           @case ('contacts') { Liên hệ }
           @case ('reviews') { Đánh giá }
           @case ('audit') { Lịch sử hệ thống }
           @case ('notifications') { Thông báo }
+          @case ('flash-sale') { Săn sale }
+          @case ('quotation-requests') { Yêu cầu báo giá }
+          @case ('legal') { Sửa điều khoản & chính sách }
           @default { Quản trị }
         }
       </h1>
+      <button type="button" class="admin-theme-toggle" (click)="theme.toggle()" [attr.aria-label]="theme.theme() === 'dark' ? 'Chuyển sang giao diện sáng' : 'Chuyển sang giao diện tối'"><i [class]="theme.theme() === 'dark' ? 'fa-solid fa-sun' : 'fa-solid fa-moon'" aria-hidden="true"></i></button>
+      <a routerLink="/admin" class="btn-home"><i class="fa-solid fa-gauge-high" aria-hidden="true"></i> <span class="btn-home-label">Bảng điều khiển</span></a>
       @if (auth.user()?.role === 'admin') {
         <span class="admin-tag">
           <span class="admin-tag-dot"></span>

@@ -67,6 +67,10 @@ import { ProductsService } from '../products.service';
             <input class="form-input" placeholder="Tên sản phẩm" [(ngModel)]="form.name" (input)="genSlug()" />
             <input class="form-input" placeholder="Slug" [(ngModel)]="form.slug" />
             <input class="form-input" placeholder="Giá" type="number" [(ngModel)]="form.price" />
+            <select class="form-input form-select-sm" [(ngModel)]="form.deal">
+              <option [ngValue]="null">Không áp dụng Deal</option>
+              @for (deal of deals(); track deal._id) { <option [ngValue]="deal._id">{{ deal.title }} · {{ deal.discountType === 'percent' ? '-' + deal.discountValue + '%' : '-' + deal.discountValue + 'đ' }}</option> }
+            </select>
             <select class="form-input form-select-sm" [(ngModel)]="form.cat">
               <option value="">Danh mục</option>
               <option value="Đặc sản">Đặc sản</option>
@@ -170,6 +174,7 @@ export class AdminProductsComponent {
   readonly provinces = signal<any[]>([]);
   readonly villages = signal<string[]>([]);
   readonly regions = computed(() => this.ps.regions());
+  readonly deals = signal<any[]>([]);
   readonly page = signal(1);
   readonly totalPages = signal(1);
   readonly showForm = signal(false);
@@ -197,6 +202,7 @@ export class AdminProductsComponent {
     this.loadProducts();
     this.loadProvinces();
     this.loadVillages();
+    this.loadDeals();
   }
 
   onFilterChange(): void {
@@ -252,15 +258,17 @@ export class AdminProductsComponent {
     });
   }
 
+  loadDeals(): void { this.http.get<any>('/api/deals?active=true&limit=100').subscribe(r => this.deals.set(r.deals || [])); }
+
   startCreate(): void {
     this.editing.set(null);
-    this.form = { name: '', slug: '', price: 0, cat: '', region: '', province: '', village: '', images: [], description: '' };
+    this.form = { name: '', slug: '', price: 0, deal: null, cat: '', region: '', province: '', village: '', images: [], description: '' };
     this.previewImages.set([]);
   }
 
   editProduct(p: any): void {
     this.editing.set(p);
-    this.form = { ...p, images: p.images || [] };
+    this.form = { ...p, deal: p.deal?._id || p.deal || null, images: p.images || [] };
     this.previewImages.set(p.images || []);
     this.showForm.set(true);
   }

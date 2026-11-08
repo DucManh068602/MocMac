@@ -117,5 +117,110 @@
         </table>
       }
     </section>
-  </div>
-</section>
+
+    <!-- ADDRESS MANAGEMENT -->
+    <section class="address-section">
+      <h2>Quản lý địa chỉ giao hàng</h2>
+      <p class="hint">Lưu nhiều địa chỉ để chọn khi đặt hàng. Địa chỉ mặc định sẽ được chọn trước.</p>
+
+      <div class="address-actions">
+        <button type="button" class="btn-add-address" (click)="openAddAddressForm()">
+          <span>+</span> Thêm địa chỉ mới
+        </button>
+      </div>
+
+      @if (addressesLoading()) {
+        <p class="loading">Đang tải địa chỉ...</p>
+      } @else if (addresses().length === 0) {
+        <p class="empty">Bạn chưa có địa chỉ nào. Hãy thêm địa chỉ đầu tiên.</p>
+      } @else {
+        <div class="address-list">
+          @for (addr of addresses(); track addr._id) {
+            <div class="address-card" [class.default]="addr.isDefault">
+              <div class="address-header">
+                <span class="address-label">{{ addr.isDefault ? 'Mặc định' : 'Thứ hai' }}</span>
+                <span class="address-fullname">{{ addr.fullName }}</span>
+                <span class="address-phone">{{ addr.phone }}</span>
+              </div>
+              <div class="address-detail">
+                {{ addr.streetAddress }}, {{ addr.wardName }}, {{ addr.provinceName }}
+              </div>
+              <div class="address-actions">
+                <button type="button" class="btn-edit" (click)="editAddress(addr)">Sửa</button>
+                <button type="button" class="btn-default" [disabled]="addr.isDefault" (click)="setDefaultAddress(addr._id)">
+                  {{ addr.isDefault ? 'Đã là mặc định' : 'Đặt làm mặc định' }}
+                </button>
+                <button type="button" class="btn-delete" (click)="deleteAddress(addr._id)">Xóa</button>
+              </div>
+            </div>
+          }
+        </div>
+      }
+
+      <!-- ADDRESS FORM -->
+      @if (showAddressForm()) {
+        <div class="address-form-card">
+          <h3>{{ editingAddressId() ? 'Cập nhật địa chỉ' : 'Thêm địa chỉ mới' }}</h3>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Họ và tên <span class="required">*</span></label>
+              <input type="text" [(ngModel)]="addressForm().fullName" name="addrFullName" placeholder="Nguyễn Văn A" />
+            </div>
+            <div class="form-group">
+              <label>Số điện thoại <span class="required">*</span></label>
+              <input type="tel" [(ngModel)]="addressForm().phone" name="addrPhone" placeholder="09xxxxxxxx" />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Tỉnh/Thành phố <span class="required">*</span></label>
+              <select
+                name="addrProvince"
+                [value]="addressForm().provinceCode || ''"
+                (change)="onProvinceChange($any($event.target).value)"
+              >
+                <option value="">Chọn tỉnh...</option>
+                @for (p of provinces(); track p.code) {
+                  <option [value]="p.code">{{ p.name }}</option>
+                }
+              </select>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Phường/Xã <span class="required">*</span></label>
+              <select
+                name="addrWard"
+                [value]="addressForm().wardCode || ''"
+                (change)="onWardChange($any($event.target).value)"
+                [disabled]="wardsLoading() || !addressForm().provinceCode"
+              >
+                <option value="">{{ wardsLoading() ? 'Đang tải...' : 'Chọn phường/xã...' }}</option>
+                @for (w of wards(); track w.code) {
+                  <option [value]="w.code">{{ w.name }}</option>
+                }
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Địa chỉ chi tiết <span class="required">*</span></label>
+            <textarea [(ngModel)]="addressForm().streetAddress" name="addrStreet" placeholder="Số nhà, tên đường..." rows="3"></textarea>
+          </div>
+          <div class="form-group default-checkbox">
+            <label>
+              <input type="checkbox" [(ngModel)]="addressForm().isDefault" name="addrIsDefault" />
+              Đặt làm địa chỉ mặc định
+            </label>
+          </div>
+          <div class="form-actions">
+            <button type="button" class="btn-cancel" (click)="closeAddressForm()">Hủy</button>
+            <button type="button" class="btn-save" [disabled]="loading()" (click)="saveAddress()">
+              {{ loading() ? 'Đang lưu...' : (editingAddressId() ? 'Cập nhật' : 'Thêm địa chỉ') }}
+            </button>
+          </div>
+          @if (message()) {
+            <p class="message">{{ message() }}</p>
+          }
+        </div>
+      }
+    </section>

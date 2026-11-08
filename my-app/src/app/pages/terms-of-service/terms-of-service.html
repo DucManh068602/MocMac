@@ -1,0 +1,22 @@
+<section class="legal-page">
+  <div class="container">
+    <header class="legal-header">
+      <a routerLink="/" class="back-link">← Về trang chủ</a>
+      <h1>{{ title() }}</h1>
+      <p class="legal-date">Cập nhật lần cuối: {{ updatedAt() }}</p>
+    </header>
+
+    <article class="legal-content">
+      @for (s of sections(); track $index) {
+        <section>
+          @if (s.heading) { <h2>{{ s.heading }}</h2> }
+          @for (p of paragraphs(s.body); track $index) {
+            <p>{{ p }}</p>
+          }
+        </section>
+      } @empty {
+        <p>Nội dung đang được cập nhật.</p>
+      }
+    </article>
+  </div>
+</section>

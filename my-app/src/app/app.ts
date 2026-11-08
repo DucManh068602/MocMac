@@ -24,7 +24,7 @@ export class App {
 
   isStandaloneAuth(): boolean {
     const path = this.router.url.split(/[?#]/, 1)[0].replace(/\/+$/, '');
-    return path === '/dang-nhap';
+    return path === '/dang-nhap' || path === '/dang-ky';
   }
 
   isAdminPath(): boolean {

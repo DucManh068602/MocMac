@@ -17,6 +17,8 @@ import { OrderTrackingComponent } from './pages/order-tracking/order-tracking';
 import { AboutComponent } from './pages/about/about';
 import { GiftBusinessComponent } from './pages/gift-business/gift-business';
 import { GiftNeedsComponent } from './pages/gift-needs/gift-needs';
+import { TermsOfServiceComponent } from './pages/terms-of-service/terms-of-service';
+import { PrivacyPolicyComponent } from './pages/privacy-policy/privacy-policy';
 import { SupportComponent } from './pages/support/support';
 import { AccountSettingsComponent } from './pages/account-settings/account-settings';
 import { adminGuard } from './admin/auth.guard';
@@ -32,7 +34,13 @@ import { AdminNotificationsComponent } from './admin/notifications';
 import { AdminReviewsComponent } from './admin/reviews';
 import { AdminAuditComponent } from './admin/audit';
 import { AdminRoleRequestsComponent } from './admin/admin-role-requests';
+import { AdminFlashSaleComponent } from './admin/flash-sale';
+import { AdminQuotationRequestsComponent } from './admin/quotation-requests';
 import { AdminRoutePermissionsComponent } from './admin/route-permissions';
+import { AdminDealsComponent } from './admin/deals';
+import { AdminRegionStoriesComponent } from './admin/region-stories';
+import { AdminVillageStoriesComponent } from './admin/village-stories';
+import { AdminLegalContentComponent } from './admin/legal-content';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -56,7 +64,7 @@ const routes: Routes = [
     component: DangnhapComponent,
     data: { title: 'Đăng nhập | Mộc Mạc' }
   },
-  { path: 'vung-mien', component: VungmienComponent, data: { title: 'Vùng miền & Làng nghề | Mộc Mạc' } },
+  { path: 'vung-mien', component: VungmienComponent, data: { title: 'Vùng miền | Mộc Mạc' } },
   { path: 'lang-nghe', component: CraftVillageComponent, data: { title: 'Làng nghề | Mộc Mạc' } },
   { path: 'lang-nghe/:slug', component: CraftVillageComponent, data: { title: 'Làng nghề | Mộc Mạc' } },
   { path: 'lien-he', component: Lienhe, data: { title: 'Liên hệ' } },
@@ -72,6 +80,8 @@ const routes: Routes = [
     data: { title: 'Tra cứu đơn hàng | Mộc Mạc' }
   },
   { path: 'ho-tro', component: SupportComponent, data: { title: 'Hỗ trợ' } },
+  { path: 'dieu-khoan-dich-vu', component: TermsOfServiceComponent, data: { title: 'Điều khoản dịch vụ | Mộc Mạc' } },
+  { path: 'chinh-sach-bao-ve-du-lieu', component: PrivacyPolicyComponent, data: { title: 'Chính sách bảo vệ dữ liệu | Mộc Mạc' } },
   { path: 'tai-khoan', component: AccountSettingsComponent, data: { title: 'Cài đặt tài khoản' } },
   { path: 'dang-ky', component: DangnhapComponent, data: { title: 'Đăng ký' } },
   { path: 'gio-hang', component: GiohangComponent, data: { title: 'Giỏ hàng | Mộc Mạc' } },
@@ -84,14 +94,21 @@ const routes: Routes = [
       { path: 'orders', component: AdminOrdersComponent },
       { path: 'products', component: AdminProductsComponent },
       { path: 'regions', component: AdminRegionsComponent },
+      { path: 'region-stories', component: AdminRegionStoriesComponent },
+      { path: 'village-stories', component: AdminVillageStoriesComponent },
       { path: 'coupons', component: AdminCouponsComponent },
+      { path: 'deals', component: AdminDealsComponent },
        { path: 'users', component: AdminUsersComponent },
       { path: 'role-requests', component: AdminRoleRequestsComponent },
       { path: 'route-permissions', component: AdminRoutePermissionsComponent },
+      { path: 'flash-sale', component: AdminFlashSaleComponent },
+      { path: 'quotation-requests', component: AdminQuotationRequestsComponent },
       { path: 'contacts', component: AdminContactsComponent },
       { path: 'notifications', component: AdminNotificationsComponent },
       { path: 'reviews', component: AdminReviewsComponent },
       { path: 'audit', component: AdminAuditComponent },
+      { path: 'legal/terms', component: AdminLegalContentComponent, data: { legalKey: 'terms' } },
+      { path: 'legal/privacy', component: AdminLegalContentComponent, data: { legalKey: 'privacy' } },
     ]
   },
   { path: '**', redirectTo: '' }

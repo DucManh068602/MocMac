@@ -1,77 +1,36 @@
 <section class="gift-business-page">
 
   <!-- HERO -->
-  <section
-    class="hero"
-    style="
-      background-image:
-        linear-gradient(rgba(53, 84, 58, 0.65), rgba(53, 84, 58, 0.65)),
-        url('https://images.unsplash.com/photo-1549465220-1a8b9238cd48?q=80&w=2040&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
-    "
-  >
+  <section class="hero">
+    <div class="hero-bg"></div>
     <div class="hero-content">
-      <p class="hero-label">MỘC MẠC</p>
-      <h1>Quà tặng cho doanh nghiệp</h1>
+      <span class="hero-badge">GIẢI PHÁP DOANH NGHIỆP</span>
+      <h1>Quà tặng doanh nghiệp<br><span class="accent">đậm nét truyền thống Việt</span></h1>
       <p class="hero-desc">
-        Giải pháp quà tặng doanh nghiệp chuyên nghiệp – Từng chú ý nhỏ, hoàn thiện thành kết quả lớn
+        Bộ sưu tập quà tặng thủ công, làng nghề và đặc sản Việt Nam — thiết kế riêng cho doanh nghiệp,
+        đối tác, khách hàng và nhân viên. Từng món quà gắn liền câu chuyện, gắn kết thương hiệu.
       </p>
-      <a routerLink="/lien-he" class="hero-btn">
-        Liên hệ tư vấn
-      </a>
+      <div class="hero-actions">
+        <a routerLink="/lien-he" class="btn btn-primary">Liên hệ tư vấn miễn phí</a>
+        <a routerLink="/san-pham" class="btn btn-outline">Xem toàn bộ sản phẩm</a>
+      </div>
     </div>
   </section>
 
-  <!-- LỢI ÍCH -->
-  <section class="section benefits-section">
+  <!-- VALUE PROPS -->
+  <section class="section section--props">
     <div class="container">
-      <div class="section-heading">
-        <span class="section-label">GIẢI PHÁP</span>
-        <h2>Lợi ích hợp tác cùng Mộc Mạc</h2>
-        <p class="section-subtitle">
-          Chúng tôi đồng hành cùng doanh nghiệp trong việc xây dựng bộ quà tặng mang đậm dấu ấn thương hiệu
-        </p>
+      <div class="section-head text-center">
+        <span class="tag">Tại sao chọn Mộc Mạc</span>
+        <h2>Đồng hành cùng doanh nghiệp xây dựng thương hiệu</h2>
       </div>
-
-      <div class="benefits-grid">
+      <div class="props-grid">
         @for (idea of businessIdeas(); track idea.title) {
-          <article class="benefit-card">
-            <div class="benefit-icon">{{ idea.icon }}</div>
-            <h3>{{ idea.title }}</h3>
-            <p>{{ idea.desc }}</p>
-          </article>
-        }
-      </div>
-    </div>
-  </section>
-
-  <!-- SẢN PHẨM GỢI Ý -->
-  <section class="section products-section">
-    <div class="container">
-      <div class="section-heading">
-        <span class="section-label">SẢN PHẨM GỢI Ý</span>
-        <h2>Danh mục sản phẩm phù hợp</h2>
-        <p class="section-subtitle">
-          Những sản phẩm thủ công truyền thống được nhiều doanh nghiệp lựa chọn làm quà tặng
-        </p>
-      </div>
-
-      <div class="products-grid">
-        @for (product of allProducts() | slice:0:12; track product.id) {
-          <article class="product-card">
-            <a class="product-image-link" routerLink="/san-pham/{{ product.slug }}">
-              @if (product.images && product.images.length > 0) {
-                <img [src]="product.images[0]" [alt]="product.name" />
-              } @else {
-                <div class="product-placeholder">{{ product.icon || '🎁' }}</div>
-              }
-            </a>
-            <div class="product-body">
-              <p class="product-cat">{{ product.cat }}</p>
-              <h3 class="product-title">
-                <a routerLink="/san-pham/{{ product.slug }}">{{ product.name }}</a>
-              </h3>
-              <p class="product-price">{{ product.price | number: '1.0-0': 'vi-VN' }}đ</p>
-              <a class="product-btn" routerLink="/lien-he">Yêu cầu báo giá</a>
+          <article class="prop-card">
+            <div class="prop-icon"><i [class]="idea.icon" aria-hidden="true"></i></div>
+            <div class="prop-body">
+              <h3>{{ idea.title }}</h3>
+              <p>{{ idea.desc }}</p>
             </div>
           </article>
         }
@@ -79,20 +38,107 @@
     </div>
   </section>
 
-  <!-- CTA -->
-  <section class="section cta-section">
+  <!-- PRODUCTS -->
+  <section class="section section--products">
     <div class="container">
-      <div class="cta-card">
-        <h2>Bạn cần tư vấn giải pháp quà tặng cho doanh nghiệp?</h2>
-        <p>
-          Đội ngũ chuyên gia của Mộc Mạc sẽ hỗ trợ bạn thiết kế bộ sưu tập quà tặng phù hợp
-          với thương hiệu, ngân sách và thông điệp của doanh nghiệp.
-        </p>
-        <div class="cta-actions">
-          <a class="btn-primary" routerLink="/lien-he">Liên hệ ngay</a>
-          <a class="btn-secondary" routerLink="/san-pham">Xem tất cả sản phẩm</a>
-        </div>
+      <div class="section-head">
+        <span class="tag">Danh mục gợi ý</span>
+        <h2>Sản phẩm phù hợp cho quà tặng doanh nghiệp</h2>
+        <p class="sub">Những món hàng thủ công truyền thống được nhiều doanh nghiệp tin chọn.</p>
       </div>
+      <div class="products-grid">
+        @for (product of allProducts() | slice:0:12; track product.id) {
+          <article class="product-card">
+            <a class="product-link">
+              <div class="product-media">
+                @if (product.images && product.images.length > 0) {
+                  <img [src]="product.images[0]" [alt]="product.name" loading="lazy" />
+                } @else {
+                  <div class="product-placeholder">{{ product.icon || '🎁' }}</div>
+                }
+                <span class="quote-tag" [class.selected]="inQuote(product.id)" (click)="toggleQuote(product, $event)">
+                  <i class="fa-solid fa-circle-plus" aria-hidden="true"></i>
+                  {{ inQuote(product.id) ? 'Đã chọn' : 'Thêm báo giá' }}
+                </span>
+              </div>
+              <div class="product-info">
+                <span class="product-cat">{{ product.cat }}</span>
+                <h3 class="product-title">{{ product.name }}</h3>
+                <div class="product-price">{{ product.price | number: '1.0-0': 'vi-VN' }}đ</div>
+              </div>
+            </a>
+          </article>
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- QUOTE BAR -->
+  <section class="section section--quote" *ngIf="selectedItems().length > 0">
+    <div class="container">
+      <div class="quote-bar">
+        <div class="quote-summary">
+          <strong>{{ selectedItems().length }} sản phẩm đã chọn</strong>
+          <span>· Tổng ước tính: {{ quoteTotal() | number:'1.0-0':'vi-VN' }}đ</span>
+        </div>
+        <button class="btn btn-primary btn--quote" (click)="openQuoteModal()">
+          Gửi yêu cầu báo giá
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="section section--cta">
+    <div class="cta-card">
+      <div class="cta-text">
+        <h2>Cần tư vấn bộ quà tặng cho toàn bộ nhân viên?</h2>
+        <p>Đội ngũ Mộc Mạc hỗ trợ thiết kế bộ sưu tập quà tặng phù hợp với thương hiệu, ngân sách và thông điệp của doanh nghiệp.</p>
+      </div>
+      <a routerLink="/lien-he" class="btn btn-primary btn--cta">Liên hệ ngay</a>
+    </div>
+  </section>
+
+  <!-- QUOTE MODAL -->
+  <section class="quote-modal" *ngIf="quoteModalOpen()" (click)="closeQuoteModal()">
+    <div class="quote-modal-backdrop" (click)="$event.stopPropagation()"></div>
+    <div class="quote-modal-content" (click)="$event.stopPropagation()">
+      <button class="quote-modal-close" (click)="closeQuoteModal()">&times;</button>
+      <h3 class="quote-modal-title">Gửi yêu cầu báo giá</h3>
+      <p class="quote-modal-sub">
+        {{ selectedItems().length }} sản phẩm · Tổng ước tính:
+        <strong>{{ quoteTotal() | number:'1.0-0':'vi-VN' }}đ</strong>
+      </p>
+
+      <form class="quote-modal-form" (ngSubmit)="submitQuote()">
+        <div class="form-row">
+          <label>Họ tên <span class="req">*</span></label>
+          <input type="text" name="name" [(ngModel)]="quoteForm().name" (input)="updateField('name', $any($event.target).value)" required />
+        </div>
+        <div class="form-row">
+          <label>Số điện thoại <span class="req">*</span></label>
+          <input type="tel" name="phone" [(ngModel)]="quoteForm().phone" (input)="updateField('phone', $any($event.target).value)" required />
+        </div>
+        <div class="form-row">
+          <label>Email</label>
+          <input type="email" name="email" [(ngModel)]="quoteForm().email" (input)="updateField('email', $any($event.target).value)" />
+        </div>
+        <div class="form-row">
+          <label>Công ty / đơn vị</label>
+          <input type="text" name="company" [(ngModel)]="quoteForm().company" (input)="updateField('company', $any($event.target).value)" />
+        </div>
+        <div class="form-row">
+          <label>Thông điệp / yêu cầu thêm</label>
+          <textarea name="message" rows="4" [(ngModel)]="quoteForm().message" (input)="updateField('message', $any($event.target).value)"></textarea>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn btn-outline" (click)="closeQuoteModal()">Hủy</button>
+          <button type="submit" class="btn btn-primary" [disabled]="submitting()">
+            {{ submitting() ? 'Đang gửi...' : 'Gửi yêu cầu báo giá' }}
+          </button>
+        </div>
+      </form>
     </div>
   </section>
 

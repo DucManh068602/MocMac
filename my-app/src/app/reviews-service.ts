@@ -8,6 +8,7 @@ export interface ProductReviewItem {
   rating: number;
   content: string;
   createdAt: string;
+  adminReply?: string;
 }
 
 export interface CreateReviewData {
@@ -58,6 +59,7 @@ export class ReviewsService {
       comment?: unknown;
       content?: unknown;
       createdAt?: unknown;
+      adminReply?: unknown;
     };
 
     const user = r.user;
@@ -71,6 +73,7 @@ export class ReviewsService {
       rating: Number(r.rating) || 0,
       content: String(r.comment ?? r.content ?? ''),
       createdAt: String(r.createdAt ?? new Date().toISOString()),
+      adminReply: String(r.adminReply ?? '').trim() || undefined,
     };
   }
 }

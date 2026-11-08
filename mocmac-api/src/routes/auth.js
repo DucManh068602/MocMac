@@ -5,11 +5,17 @@ import {
   forgotPassword,
   resetPassword,
   adminResetPassword,
+  googleConfig,
+  googleLogin,
+  refreshSession,
 } from '../controllers/authController.js';
 
 const router = Router();
 
 router.post('/login', login);
+router.get('/google/config', googleConfig);
+router.post('/google', googleLogin);
+router.post('/refresh', refreshSession);
 router.post('/register', register);
 router.post('/forgot-password', forgotPassword);
 router.post('/reset-password', resetPassword);

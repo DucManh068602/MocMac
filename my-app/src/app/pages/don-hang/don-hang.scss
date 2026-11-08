@@ -13,6 +13,8 @@ $text-main: #1c2a20;
 $text-muted: #5d6b61;
 $error: #b3401f;
 
+.order-review{grid-column:1/-1;margin-top:12px;padding:16px;background:#fffaf3;border:1px solid #eadcc8;border-radius:10px}.review-head{display:flex;justify-content:space-between;gap:12px}.review-head button{border:0;background:transparent;font-size:22px;cursor:pointer}.star-picker{display:flex;gap:4px;margin:10px 0}.star-picker button{border:0;background:transparent;color:#d9d4ca;font-size:28px;cursor:pointer;padding:0}.star-picker button.active{color:#d28b38}.order-review textarea{display:block;width:100%;resize:none;border:1px solid #dcd5c9;border-radius:7px;padding:10px;font:inherit}.submit-order-review{margin-top:10px;border:0;border-radius:7px;background:$green-btn;color:#fff;padding:9px 14px;font:600 13px 'Be Vietnam Pro',sans-serif;cursor:pointer}.submit-order-review:disabled{opacity:.6;cursor:wait}.review-trigger{display:block;margin-top:5px;border:0;background:transparent;color:$green-accent;font:600 12px 'Be Vietnam Pro',sans-serif;cursor:pointer;padding:0}.review-trigger:hover{text-decoration:underline}
+
 .orders-page {
   min-height: 100vh;
   padding: 32px 16px 48px;

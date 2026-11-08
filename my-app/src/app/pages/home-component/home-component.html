@@ -1,4 +1,4 @@
-<!-- HERO: thay background bằng ảnh thật trong src/assets -->
+﻿<!-- HERO: thay background bằng ảnh thật trong src/assets -->
 <section class="hero"><div class="wrap">
   <h1>Mộc Mạc</h1>
   <p class="sl">ĐẶC SẢN VIỆT – TINH HOA BẢN ĐỊA</p>
@@ -9,10 +9,10 @@
 
 <div class="wrap feat">
   
-    <div><span>🌿</span><div><b>Sản phẩm chính gốc</b><small>Gắn với vùng miền, làng nghề cụ thể</small></div></div>
-    <div><span>🛡️</span><div><b>Heritage Score minh bạch</b><small>Đánh giá nguồn gốc & giá trị văn hoá</small></div></div>
-    <div><span>▦</span><div><b>Truy xuất QR dễ dàng</b><small>Xem nguồn gốc, câu chuyện sản phẩm</small></div></div>
-    <div><span>🚚</span><div><b>Giao hàng toàn quốc</b><small>Hỗ trợ đổi trả linh hoạt</small></div></div>
+    <div><span class="feature-icon"><i class="fa-solid fa-seedling" aria-hidden="true"></i></span><div><b>Sản phẩm chính gốc</b><small>Gắn với vùng miền, làng nghề cụ thể</small></div></div>
+    <div><span class="feature-icon"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i></span><div><b>Heritage Score minh bạch</b><small>Đánh giá nguồn gốc & giá trị văn hoá</small></div></div>
+    <div><span class="feature-icon"><i class="fa-solid fa-qrcode" aria-hidden="true"></i></span><div><b>Truy xuất QR dễ dàng</b><small>Xem nguồn gốc, câu chuyện sản phẩm</small></div></div>
+    <div><span class="feature-icon"><i class="fa-solid fa-truck-fast" aria-hidden="true"></i></span><div><b>Giao hàng toàn quốc</b><small>Hỗ trợ đổi trả linh hoạt</small></div></div>
   
 </div>
 
@@ -74,6 +74,16 @@
 </section>
 
 <section class="wrap" id="sp">
+  @if (flashSale()?.live) {
+    <div class="flash-sale-banner">
+      <span class="flash-sale-icon"><i class="fa-solid fa-bolt" aria-hidden="true"></i></span>
+      <div class="flash-sale-copy"><strong>Săn sale toàn shop · Giảm {{ flashSale()?.discountPercent }}%</strong><small><i class="fa-regular fa-clock" aria-hidden="true"></i> {{ flashSale()?.startsAt | date:'HH:mm dd/MM' }} — {{ flashSale()?.endsAt | date:'HH:mm dd/MM' }}</small></div>
+      <div class="sale-countdown" aria-label="Thời gian còn lại"><span><b>{{ saleRemaining().days }}</b><small>ngày</small></span><i>:</i><span><b>{{ saleRemaining().hours | number:'2.0-0' }}</b><small>giờ</small></span><i>:</i><span><b>{{ saleRemaining().minutes | number:'2.0-0' }}</b><small>phút</small></span><i>:</i><span><b>{{ saleRemaining().secs | number:'2.0-0' }}</b><small>giây</small></span></div>
+      <a href="#best-sellers">Xem hàng bán chạy <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+      <div class="sale-range" aria-label="Tiến trình thời gian sale"><div class="sale-elapsed" [style.width.%]="saleProgress()"></div><div class="sale-remaining" [style.width.%]="100 - saleProgress()"></div></div>
+      <span class="sale-bolt" aria-hidden="true">⚡</span>
+    </div>
+  }
   <div class="sh"><h2>Sản phẩm nổi bật <small>Tinh hoa từ khắp mọi miền Việt Nam</small></h2>
     <div class="tabs">
       <button [class.on]="tab() === 'Tất cả'" (click)="tab.set('Tất cả')">Tất cả</button>
@@ -86,12 +96,30 @@
   <div class="grid">
     @for (p of shown(); track p.id) {
         <article class="card" [routerLink]="['/san-pham', p.slug]">
-        <div class="img">{{ p.icon }}<span class="heart">♡</span></div>
+        <div class="img">
+          @if (imageOf(p); as image) {
+            <img [src]="image" [alt]="p.name" loading="lazy" (error)="onProductImageError(p.slug)" />
+          } @else {
+            <span class="image-fallback"><i class="fa-solid fa-image" aria-hidden="true"></i></span>
+          }
+          <span class="heart"><i class="fa-regular fa-heart" aria-hidden="true"></i></span>
+          @if (flashSaleLive()) { <span class="deal-chip">-{{ flashSalePercent() }}%</span> } @else if (p.deal?.discountType === 'percent') { <span class="deal-chip">-{{ p.deal?.discountValue }}%</span> }
+        </div>
         <h3>{{ p.name }}</h3>
         <div class="stars">★★★★★ <small>({{ p.reviews }})</small></div>
-        <small class="loc">📍 {{ p.province }}{{ p.region ? ' · ' + p.region : '' }}{{ p.village ? ' · ' + p.village : '' }}</small>
-        <div class="row"><b>{{ p.price | number }}đ</b><button class="add" (click)="$event.stopPropagation(); cart.add(p.id, p.name)" aria-label="Thêm vào giỏ">🛒</button></div>
+        <small class="loc"><i class="fa-solid fa-location-dot" aria-hidden="true"></i> {{ p.province }}{{ p.region ? ' · ' + p.region : '' }}{{ p.village ? ' · ' + p.village : '' }}</small>
+        <div class="row"><div class="price-stack">@if (flashSaleLive()) { <small>{{ p.price | number }}đ</small> } @else if (p.dealPrice) { <small>{{ p.price | number }}đ</small> }<b>{{ (flashSaleLive() ? flashSalePrice(p) : (p.dealPrice || p.price)) | number }}đ</b></div><button class="add" (click)="$event.stopPropagation(); cart.add(p.id, p.name)" aria-label="Thêm vào giỏ"><i class="fa-solid fa-bag-shopping" aria-hidden="true"></i></button></div>
       </article>
+    }
+  </div>
+</section>
+
+<section class="wrap best-sellers" id="best-sellers">
+  <div class="sh"><h2><i class="fa-solid fa-ranking-star" aria-hidden="true"></i> Hàng bán chạy <small>Được khách hàng Mộc Mạc yêu thích</small></h2><a routerLink="/san-pham">Xem tất cả →</a></div>
+  <div class="grid">
+    @for (p of bestSellers(); track p.id) {
+      <article class="card" [routerLink]="['/san-pham', p.slug]"><div class="img">@if (imageOf(p); as image) { <img [src]="image" [alt]="p.name" loading="lazy" (error)="onProductImageError(p.slug)" /> } @else { <span class="image-fallback"><i class="fa-solid fa-image" aria-hidden="true"></i></span> } @if (flashSaleLive()) { <span class="deal-chip">-{{ flashSalePercent() }}%</span> } @else if (p.deal?.discountType === 'percent') { <span class="deal-chip">-{{ p.deal?.discountValue }}%</span> }</div><h3>{{ p.name }}</h3><div class="stars">★★★★★ <small>({{ p.reviews }})</small></div>        <div class="row"><div class="price-stack">@if (flashSaleLive()) { <small>{{ p.price | number }}đ</small> } @else if (p.dealPrice) { <small>{{ p.price | number }}đ</small> }<b>{{ (flashSaleLive() ? flashSalePrice(p) : (p.dealPrice || p.price)) | number }}đ</b></div>
+        <button class="add" (click)="$event.stopPropagation(); cart.add(p.id, p.name)" aria-label="Thêm vào giỏ"><i class="fa-solid fa-bag-shopping" aria-hidden="true"></i></button></div></article>
     }
   </div>
 </section>
@@ -100,9 +128,9 @@
   <div class="commit">
     <div><small>Mộc Mạc cam kết</small><h2>NÂNG TẦM ĐẶC SẢN VIỆT<br>LAN TOẢ GIÁ TRỊ BẢN ĐỊA</h2><a class="btn" href="#">Khám phá thêm →</a></div>
     <ul>
-      <li><span>🤝</span><b>Ủng hộ</b><small>làng nghề truyền thống</small></li>
-      <li><span>🌱</span><b>Thúc đẩy</b><small>phát triển bền vững</small></li>
-      <li><span>👥</span><b>Đồng hành</b><small>cùng người dân địa phương</small></li>
+      <li><span><i class="fa-solid fa-handshake" aria-hidden="true"></i></span><b>Ủng hộ</b><small>làng nghề truyền thống</small></li>
+      <li><span><i class="fa-solid fa-leaf" aria-hidden="true"></i></span><b>Thúc đẩy</b><small>phát triển bền vững</small></li>
+      <li><span><i class="fa-solid fa-people-group" aria-hidden="true"></i></span><b>Đồng hành</b><small>cùng người dân địa phương</small></li>
     </ul>
   </div>
 </section>

@@ -9,6 +9,18 @@ const signToken = (user) =>
     expiresIn: process.env.JWT_EXPIRES_IN || '1h',
   });
 
+const signRefreshToken = (user) => jwt.sign({ sub: String(user._id), type: 'refresh' }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_REFRESH_EXPIRES_IN || '14d' });
+const authResponse = async (user) => {
+  const response = { token: signToken(user), user: toPublicUser(user) };
+  if (user.role === 'admin' || user.role === 'staff') {
+    const refreshToken = signRefreshToken(user);
+    user.refreshTokenHash = await bcrypt.hash(refreshToken, 10);
+    await user.save();
+    response.refreshToken = refreshToken;
+  }
+  return response;
+};
+
 const toPublicUser = (user) => ({
   id: String(user._id),
   name: user.name,
@@ -48,7 +60,7 @@ export const login = async (req, res) => {
     details: { email: user.email, role: user.role },
   });
 
-  res.json({ token: signToken(user), user: toPublicUser(user) });
+  res.json(await authResponse(user));
 };
 
 export const register = async (req, res) => {
@@ -74,7 +86,52 @@ export const register = async (req, res) => {
     role: 'customer',
   });
 
-  res.status(201).json({ token: signToken(user), user: toPublicUser(user) });
+  res.status(201).json(await authResponse(user));
+};
+
+export const refreshSession = async (req, res) => {
+  const refreshToken = String(req.body?.refreshToken || '');
+  if (!refreshToken) return res.status(401).json({ message: 'Phiên đăng nhập đã hết hạn.' });
+  try {
+    const payload = jwt.verify(refreshToken, process.env.JWT_SECRET);
+    if (payload.type !== 'refresh') throw new Error('Invalid refresh token');
+    const user = await User.findById(payload.sub).select('+refreshTokenHash');
+    if (!user || user.isActive === false || !user.refreshTokenHash || !(await bcrypt.compare(refreshToken, user.refreshTokenHash))) throw new Error('Invalid refresh token');
+    return res.json(await authResponse(user));
+  } catch { return res.status(401).json({ message: 'Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.' }); }
+};
+
+export const googleConfig = (_req, res) => {
+  res.json({ clientId: process.env.GOOGLE_CLIENT_ID || '' });
+};
+
+export const googleLogin = async (req, res) => {
+  const credential = String(req.body?.credential || '');
+  if (!credential || !process.env.GOOGLE_CLIENT_ID) {
+    return res.status(400).json({ message: 'Đăng nhập Google chưa được cấu hình.' });
+  }
+  try {
+    const response = await fetch(`https://oauth2.googleapis.com/tokeninfo?id_token=${encodeURIComponent(credential)}`);
+    if (!response.ok) return res.status(401).json({ message: 'Phiên đăng nhập Google không hợp lệ.' });
+    const profile = await response.json();
+    if (profile.aud !== process.env.GOOGLE_CLIENT_ID || profile.email_verified !== 'true') {
+      return res.status(401).json({ message: 'Không thể xác minh tài khoản Google.' });
+    }
+    const email = String(profile.email || '').toLowerCase().trim();
+    if (!email || !profile.sub) return res.status(401).json({ message: 'Tài khoản Google thiếu thông tin cần thiết.' });
+    let user = await User.findOne({ $or: [{ googleId: profile.sub }, { email }] });
+    if (!user) {
+      user = await User.create({ name: profile.name || email.split('@')[0], email, googleId: profile.sub, role: 'customer' });
+    } else if (!user.googleId) {
+      user.googleId = profile.sub;
+      await user.save();
+    }
+    if (user.isActive === false) return res.status(403).json({ message: 'Tài khoản đã bị khóa.' });
+    return res.json(await authResponse(user));
+  } catch (error) {
+    console.error('Google login error:', error);
+    return res.status(502).json({ message: 'Không thể xác minh Google. Vui lòng thử lại.' });
+  }
 };
 
 export const forgotPassword = async (req, res) => {
@@ -154,12 +211,7 @@ export const resetPassword = async (req, res) => {
     user,
   });
 
-  return res.json({
-    success: true,
-    message: 'Đặt lại mật khẩu thành công.',
-    token: signToken(user),
-    user: toPublicUser(user),
-  });
+  return res.json({ success: true, message: 'Đặt lại mật khẩu thành công.', ...(await authResponse(user)) });
 };
 
 export const adminResetPassword = async (req, res) => {

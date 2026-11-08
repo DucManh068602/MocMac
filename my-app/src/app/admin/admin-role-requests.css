@@ -10,7 +10,7 @@
 }
 
 .list-header h2 {
-  font-family: 'Lora', serif;
+  font-family: 'Segoe UI', system-ui, sans-serif;
   font-size: 22px;
   color: var(--moss, #435731);
   margin: 0;

@@ -182,10 +182,7 @@
 
             <div class="social-row">
               <button type="button" class="social-btn" (click)="loginWithSocial('google')">
-                <span class="g-logo">G</span> Google
-              </button>
-              <button type="button" class="social-btn" (click)="loginWithSocial('facebook')">
-                <span class="fb-logo">f</span> Facebook
+                <i class="fa-brands fa-google g-logo" aria-hidden="true"></i> Tiếp tục với Google
               </button>
             </div>
           }
@@ -451,8 +448,8 @@
             <label class="checkbox terms">
               <input type="checkbox" formControlName="agree" />
               <span>
-                Tôi đồng ý với <a href="javascript:void(0)">Điều khoản dịch vụ</a> và
-                <a href="javascript:void(0)">Chính sách bảo vệ dữ liệu làng nghề Mộc Mạc</a>.
+                Tôi đồng ý với <a routerLink="/dieu-khoan-dich-vu">Điều khoản dịch vụ</a> và
+                <a routerLink="/chinh-sach-bao-ve-du-lieu">Chính sách bảo vệ dữ liệu làng nghề Mộc Mạc</a>.
               </span>
             </label>
             @if (hasError(registerForm, 'agree')) {

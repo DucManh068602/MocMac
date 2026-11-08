@@ -117,8 +117,20 @@
         <ul class="item-list">
           @for (item of selected()!.items; track item.productId) {
             <li class="item-row">
-              <span class="item-name">{{ item.name }} ×{{ item.quantity }}</span>
+              <div><span class="item-name">{{ item.name }} ×{{ item.quantity }}</span>
+                @if (canReview(selected()!)) { <button type="button" class="review-trigger" (click)="openReview(item.productId)"><i class="fa-solid fa-star" aria-hidden="true"></i> Đánh giá sản phẩm</button> }
+              </div>
               <span class="item-price">{{ vnd(item.price * item.quantity) }}</span>
+              @if (reviewProductId() === item.productId) {
+                <form class="order-review" (ngSubmit)="submitReview(item)" novalidate>
+                  <div class="review-head"><strong>Đánh giá {{ item.name }}</strong><button type="button" (click)="closeReview()" aria-label="Đóng đánh giá">×</button></div>
+                  <div class="star-picker" role="radiogroup" aria-label="Chọn số sao">
+                    @for (star of [1,2,3,4,5]; track star) { <button type="button" [class.active]="star <= reviewRating()" (click)="reviewRating.set(star)" [attr.aria-label]="star + ' sao'" [attr.aria-pressed]="star === reviewRating()"><i class="fa-star" [class.fa-solid]="star <= reviewRating()" [class.fa-regular]="star > reviewRating()" aria-hidden="true"></i></button> }
+                  </div>
+                  <textarea [(ngModel)]="reviewComment" name="comment" placeholder="Chia sẻ trải nghiệm của bạn về sản phẩm này…" rows="3"></textarea>
+                  <button class="submit-order-review" type="submit" [disabled]="reviewSubmitting()">{{ reviewSubmitting() ? 'Đang gửi…' : 'Gửi đánh giá' }}</button>
+                </form>
+              }
             </li>
           }
         </ul>

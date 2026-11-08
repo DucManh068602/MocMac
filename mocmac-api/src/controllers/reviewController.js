@@ -228,3 +228,27 @@ export const deleteReview = async (req, res) => {
     return res.status(500).json({ success: false, message: 'Không thể xóa.', error: error.message });
   }
 };
+
+export const adminReplyReview = async (req, res) => {
+  try {
+    const { reply } = req.body ?? {};
+    if (!reply || String(reply).trim().length === 0) {
+      return res.status(400).json({ success: false, message: 'Vui lòng nhập nội dung phản hồi.' });
+    }
+
+    const review = await Review.findByIdAndUpdate(
+      req.params.id,
+      { adminReply: String(reply).trim() },
+      { new: true }
+    ).lean();
+
+    if (!review) {
+      return res.status(404).json({ success: false, message: 'Không tìm thấy đánh giá.' });
+    }
+
+    return res.json({ success: true, message: 'Đã phản hồi đánh giá.', review });
+  } catch (error) {
+    console.error('❌ Lỗi phản hồi đánh giá:', error);
+    return res.status(500).json({ success: false, message: 'Không thể phản hồi.', error: error.message });
+  }
+};

@@ -14,6 +14,7 @@ import {
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { catchError, forkJoin, map, of } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
 import { CartService } from '../../cart.service';
 import { ReviewsService, ProductReviewItem } from '../../reviews-service';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -66,6 +67,13 @@ export class ProductsComponent implements OnDestroy, AfterViewInit {
   private route = inject(ActivatedRoute);
   cart = inject(CartService);
   private readonly reviewsService = inject(ReviewsService);
+  private readonly http = inject(HttpClient);
+
+  readonly flashSale = signal<any>(null);
+  readonly now = signal(Date.now());
+  private readonly countdownTimer = window.setInterval(() => this.now.set(Date.now()), 1000);
+  readonly flashSaleLive = computed(() => Boolean(this.flashSale()?.live));
+  readonly flashSalePercent = computed(() => Number(this.flashSale()?.discountPercent || 0));
 
   all = this.svc.products;
 
@@ -127,11 +135,6 @@ export class ProductsComponent implements OnDestroy, AfterViewInit {
     if (this.relatedCarouselElement) {
       this.relatedTimer = setInterval(() => this.advanceRelatedCarousel(), 3200);
     }
-  }
-
-  ngOnDestroy(): void {
-    if (this.relatedTimer) clearInterval(this.relatedTimer);
-    if (this.discoveryTimer) clearInterval(this.discoveryTimer);
   }
 
   pauseDiscoveryCarousel(): void {
@@ -306,6 +309,17 @@ export class ProductsComponent implements OnDestroy, AfterViewInit {
         untracked(() => this.loadReviewStats(products));
       }
     });
+
+    this.http.get<any>('/api/flash-sale').subscribe({
+      next: r => this.flashSale.set(r.sale || null),
+      error: () => this.flashSale.set(null),
+    });
+  }
+
+  ngOnDestroy(): void {
+    if (this.relatedTimer) clearInterval(this.relatedTimer);
+    if (this.discoveryTimer) clearInterval(this.discoveryTimer);
+    if (this.countdownTimer) window.clearInterval(this.countdownTimer);
   }
 
   private loadReviewStats(products: ProductItem[]): void {
@@ -572,6 +586,11 @@ export class ProductsComponent implements OnDestroy, AfterViewInit {
   }
   fmt(n: number): string {
     return n.toLocaleString('vi-VN') + 'đ';
+  }
+
+  flashSalePrice(p: { price: number }): number {
+    if (!this.flashSaleLive()) return p.price;
+    return Math.max(0, Math.round(p.price * (100 - this.flashSalePercent()) / 100));
   }
 
   imgs(p: ProductItem): string[] {

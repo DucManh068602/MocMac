@@ -29,18 +29,11 @@ import { ToastService } from './toast.service';
               <option value="1">1 sao</option>
             </select>
           </div>
-          <div class="filter-group">
-            <select class="filter-select" [(ngModel)]="statusFilter" (change)="onFilterChange()" style="width: 140px">
-              <option value="">Tất cả trạng thái</option>
-              <option value="visible">Hiển thị</option>
-              <option value="hidden">Ẩn</option>
-            </select>
-          </div>
           <button
             type="button"
             class="filter-reset"
             (click)="resetFilters()"
-            [disabled]="!searchTerm && !ratingFilter && !statusFilter"
+            [disabled]="!searchTerm && !ratingFilter"
           >
             Xóa bộ lọc
           </button>
@@ -56,14 +49,6 @@ import { ToastService } from './toast.service';
           <span class="stat-value">{{ stats().avg | number:'1.1-1' }}</span>
           <span class="stat-label">Điểm trung bình</span>
         </div>
-        <div class="stat-card stat--earth">
-          <span class="stat-value">{{ stats().hidden }}</span>
-          <span class="stat-label">Đã ẩn</span>
-        </div>
-        <div class="stat-card stat--sage">
-          <span class="stat-value">{{ stats().visible }}</span>
-          <span class="stat-label">Hiển thị</span>
-        </div>
       </div>
 
       <div class="table-wrap">
@@ -74,7 +59,7 @@ import { ToastService } from './toast.service';
               <th>Người dùng</th>
               <th>Điểm</th>
               <th>Nội dung</th>
-              <th>Trạng thái</th>
+              <th>Phản hồi admin</th>
               <th>Ngày</th>
               <th>Thao tác</th>
             </tr>
@@ -92,12 +77,15 @@ import { ToastService } from './toast.service';
                 </td>
                 <td>{{ r.comment?.slice(0, 60) || '—' }}</td>
                 <td>
-                  <span class="status-badge" [ngClass]="r.status === 'visible' ? 'status-visible' : 'status-hidden'">
-                    {{ r.status === 'visible' ? 'Hiện' : 'Ẩn' }}
-                  </span>
-                  <button type="button" class="btn-small btn-toggle" (click)="toggleStatus(r)">
-                    {{ r.status === 'visible' ? 'Ẩn' : 'Hiện' }}
-                  </button>
+                  @if (r.adminReply) {
+                    <div class="admin-reply">
+                      <span class="reply-badge">Đã phản hồi</span>
+                      <span class="reply-text">{{ r.adminReply }}</span>
+                      <button type="button" class="btn-small btn-reply" (click)="openReplyModal(r)">Sửa</button>
+                    </div>
+                  } @else {
+                    <button type="button" class="btn-small btn-reply" (click)="openReplyModal(r)">Phản hồi</button>
+                  }
                 </td>
                 <td>{{ r.createdAt | date:'short' }}</td>
                 <td>
@@ -115,6 +103,51 @@ import { ToastService } from './toast.service';
         [totalPages]="totalPages()"
         (pageChange)="page.set($event); loadReviews()"
       ></app-pagination>
+
+      @if (replyModalOpen()) {
+        <div class="modal-overlay" (click)="closeReplyModal()">
+          <div class="modal modal-wide review-reply-modal" (click)="$event.stopPropagation()">
+            <header class="modal-header">
+              <h3>Phản hồi đánh giá khách hàng</h3>
+              <button type="button" class="modal-close" (click)="closeReplyModal()" [disabled]="replyModalSaving()">×</button>
+            </header>
+
+            @if (replyModalReview(); as rr) {
+              <div class="review-reply-context">
+                <div class="context-grid">
+                  <div><strong>Sản phẩm:</strong> {{ rr.product?.name || '—' }}</div>
+                  <div><strong>Khách hàng:</strong> {{ rr.user?.name || rr.user?.email || '—' }}</div>
+                  <div><strong>Điểm:</strong> {{ rr.rating }}/5</div>
+                  <div><strong>Ngày:</strong> {{ rr.createdAt | date:'short' }}</div>
+                </div>
+                <div class="context-comment">
+                  <strong>Nội dung đánh giá</strong>
+                  <p>{{ rr.comment || '—' }}</p>
+                </div>
+              </div>
+            }
+
+            <div class="reply-form">
+              <label for="adminReplyText"><strong>Nội dung phản hồi</strong></label>
+              <textarea
+                id="adminReplyText"
+                rows="6"
+                class="reply-textarea"
+                [(ngModel)]="replyModalText"
+                placeholder="Nhập phản hồi của Mộc Mạc cho đánh giá này..."
+              ></textarea>
+              <p class="reply-hint">Phản hồi sẽ hiển thị ngay dưới bình luận của khách hàng tại trang sản phẩm (thụt vào ô riêng).</p>
+            </div>
+
+            <div class="modal-actions">
+              <button type="button" class="btn-cancel" (click)="closeReplyModal()" [disabled]="replyModalSaving()">Đóng</button>
+              <button type="button" class="btn-save" (click)="submitReplyModal()" [disabled]="replyModalSaving()">
+                {{ replyModalSaving() ? 'Đang gửi...' : 'Gửi phản hồi' }}
+              </button>
+            </div>
+          </div>
+        </div>
+      }
     </div>
   `,
   styleUrls: ['./admin-list.css'],
@@ -127,21 +160,59 @@ export class AdminReviewsComponent {
   readonly totalPages = signal(1);
   searchTerm = '';
   ratingFilter = '';
-  statusFilter = '';
+  readonly replyModalOpen = signal(false);
+  readonly replyModalSaving = signal(false);
+  readonly replyModalReview = signal<any | null>(null);
+  replyModalText = '';
 
   readonly stats = computed(() => {
     const r = this.reviews();
-    const visible = r.filter((x: any) => x.status === 'visible');
-    const avg = visible.length > 0
-      ? visible.reduce((s: number, x: any) => s + x.rating, 0) / visible.length
+    const avg = r.length > 0
+      ? r.reduce((s: number, x: any) => s + x.rating, 0) / r.length
       : 0;
     return {
       total: r.length,
       avg: Number(avg.toFixed(1)),
-      visible: visible.length,
-      hidden: r.filter((x: any) => x.status === 'hidden').length,
     };
   });
+
+  readonly replying = signal<{ [id: string]: boolean }>({});
+
+  openReplyModal(review: any): void {
+    this.replyModalReview.set(review);
+    this.replyModalText = String(review?.adminReply || '');
+    this.replyModalOpen.set(true);
+  }
+
+  closeReplyModal(): void {
+    if (this.replyModalSaving()) return;
+    this.replyModalOpen.set(false);
+    this.replyModalReview.set(null);
+    this.replyModalText = '';
+  }
+
+  submitReplyModal(): void {
+    const review = this.replyModalReview();
+    const reply = (this.replyModalText || '').trim();
+    if (!review?._id) return;
+    if (!reply) {
+      this.toast.error('Vui lòng nhập nội dung phản hồi.');
+      return;
+    }
+    this.replyModalSaving.set(true);
+    this.http.patch('/api/reviews/' + review._id + '/reply', { reply }).subscribe({
+      next: () => {
+        this.toast.success('Đã phản hồi đánh giá');
+        this.replyModalSaving.set(false);
+        this.closeReplyModal();
+        this.loadReviews();
+      },
+      error: () => {
+        this.toast.error('Không thể phản hồi đánh giá');
+        this.replyModalSaving.set(false);
+      },
+    });
+  }
 
   constructor() {
     this.loadReviews();
@@ -155,7 +226,6 @@ export class AdminReviewsComponent {
   resetFilters(): void {
     this.searchTerm = '';
     this.ratingFilter = '';
-    this.statusFilter = '';
     this.page.set(1);
     this.loadReviews();
   }
@@ -167,28 +237,11 @@ export class AdminReviewsComponent {
     });
     if (this.searchTerm) params.set('q', this.searchTerm);
     if (this.ratingFilter) params.set('rating', this.ratingFilter);
-    if (this.statusFilter) params.set('status', this.statusFilter);
 
     this.http.get('/api/reviews?' + params.toString()).subscribe((r: any) => {
       const items = Array.isArray(r) ? r : (r.reviews || []);
       this.reviews.set(items);
-       this.totalPages.set(r.totalPages || 1);
-    });
-  }
-
-  updateStatus(id: string, event: Event): void {
-    const status = (event.target as HTMLSelectElement).value;
-    this.http.patch('/api/reviews/' + id + '/status', { status }).subscribe({
-      next: () => { this.toast.success('Cập nhật trạng thái đánh giá'); this.loadReviews(); },
-      error: () => this.toast.error('Không thể cập nhật trạng thái'),
-    });
-  }
-
-  toggleStatus(r: any): void {
-    const newStatus = r.status === 'visible' ? 'hidden' : 'visible';
-    this.http.patch('/api/reviews/' + r._id + '/status', { status: newStatus }).subscribe({
-      next: () => { this.toast.success('Cập nhật trạng thái'); this.loadReviews(); },
-      error: () => this.toast.error('Không thể cập nhật'),
+      this.totalPages.set(r.totalPages || 1);
     });
   }
 

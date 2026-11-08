@@ -1,37 +1,27 @@
 <section class="gift-needs-page">
 
   <!-- HERO -->
-  <section
-    class="hero"
-    style="
-      background-image:
-        linear-gradient(rgba(53, 84, 58, 0.65), rgba(53, 84, 58, 0.65)),
-        url('https://images.unsplash.com/photo-1513201099705-a9746e1e201f?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
-    "
-  >
+  <section class="hero">
+    <div class="hero-bg"></div>
     <div class="hero-content">
-      <p class="hero-label">MỘC MẠC</p>
-      <h1>Quà tặng theo nhu cầu</h1>
+      <span class="hero-badge">CHỌN THEO NHU CẦU</span>
+      <h1>Quà tặng theo nhu cầu<br><span class="accent">dành cho mọi dịp đặc biệt</span></h1>
       <p class="hero-desc">
-        Tìm kiếm quà tặng phù hợp với từng nhu cầu và dịp đặc biệt của bạn
+        Từ cưới hỏi, Tết, sinh nhật đến tri ân và khai trương — Mộc Mạc gợi ý món quà thủ công,
+        đặc sản Việt Nam phù hợp với từng khoảnh khắc ý nghĩa trong cuộc sống.
       </p>
-      <a routerLink="/san-pham" class="hero-btn">
-        Khám phá sản phẩm
-      </a>
+      <a routerLink="/san-pham" class="btn btn-primary btn--hero">Khám phá sản phẩm</a>
     </div>
   </section>
 
-  <!-- NHU CẦU -->
-  <section class="section needs-section">
+  <!-- NEED CATEGORIES -->
+  <section class="section section--categories">
     <div class="container">
-      <div class="section-heading">
-        <span class="section-label">CHỌN THEO NHU CẦU</span>
-        <h2>Danh mục nhu cầu</h2>
-        <p class="section-subtitle">
-          Lựa chọn dịp tặng để chúng tôi gợi ý những món quà phù hợp nhất
-        </p>
+      <div class="section-head text-center">
+        <span class="tag">DANH MỤC</span>
+        <h2>Lựa chọn theo dịp tặng</h2>
+        <p class="sub">Chọn danh mục bạn quan tâm để chúng tôi gợi ý món quà phù hợp nhất.</p>
       </div>
-
       <div class="categories-grid">
         @for (cat of categories; track cat.id) {
           <button
@@ -40,7 +30,7 @@
             (click)="setCategory(cat.id)"
             type="button"
           >
-            <span class="cat-icon">{{ cat.icon }}</span>
+            <span class="cat-icon"><i [class]="cat.icon" aria-hidden="true"></i></span>
             <span class="cat-name">{{ cat.name }}</span>
           </button>
         }
@@ -48,79 +38,125 @@
     </div>
   </section>
 
-  <!-- SẢN PHẨM -->
-  <section class="section products-section">
+  <!-- PRODUCTS -->
+  <section class="section section--products">
     <div class="container">
-      <div class="section-heading">
-        <span class="section-label">SẢN PHẨM GỢI Ý</span>
-        <h2>Kết quả tìm được</h2>
-        <p class="section-subtitle">
-          Những sản phẩm đặc sản Việt Nam phù hợp với nhu cầu bạn đang tìm
-        </p>
+      <div class="section-head">
+        <span class="tag">SẢN PHẨM GỢI Ý</span>
+        <h2>{{ selectedNeed() === 'all' ? 'Tất cả sản phẩm' : 'Kết quả gợi ý' }}</h2>
+        <p class="sub">{{ selectedNeed() === 'all' ? 'Khám phá bộ sưu tập quà tặng độc đáo của Mộc Mạc.' : 'Những món quà đặc sản Việt Nam phù hợp với nhu cầu bạn đang tìm.' }}</p>
       </div>
-
       <div class="products-grid">
         @for (product of filteredProducts(); track product.id) {
           <article class="product-card">
-            <a class="product-image-link" routerLink="/san-pham/{{ product.slug }}">
-              @if (product.images && product.images.length > 0) {
-                <img [src]="product.images[0]" [alt]="product.name" />
-              } @else {
-                <div class="product-placeholder">{{ product.icon || '🎁' }}</div>
-              }
+            <a class="product-link">
+              <div class="product-media">
+                @if (product.images && product.images.length > 0) {
+                  <img [src]="product.images[0]" [alt]="product.name" loading="lazy" />
+                } @else {
+                  <div class="product-placeholder">{{ product.icon || '🎁' }}</div>
+                }
+                <span class="quote-tag" [class.selected]="inQuote(product.id)" (click)="toggleQuote(product, $event)">
+                  <i class="fa-solid fa-circle-plus" aria-hidden="true"></i>
+                  {{ inQuote(product.id) ? 'Đã chọn' : 'Thêm báo giá' }}
+                </span>
+              </div>
+              <div class="product-info">
+                <span class="product-cat">{{ product.cat }} · {{ product.region }}</span>
+                <h3 class="product-title">{{ product.name }}</h3>
+                <div class="product-price">{{ product.price | number: '1.0-0': 'vi-VN' }}đ</div>
+              </div>
             </a>
-            <div class="product-body">
-              <p class="product-cat">{{ product.cat }} · {{ product.region }}</p>
-              <h3 class="product-title">
-                <a routerLink="/san-pham/{{ product.slug }}">{{ product.name }}</a>
-              </h3>
-              <p class="product-price">{{ product.price | number: '1.0-0': 'vi-VN' }}đ</p>
-              <a class="product-btn" routerLink="/lien-he">Yêu cầu báo giá</a>
-            </div>
           </article>
         }
-
         @if (filteredProducts().length === 0) {
-          <p class="empty-state">
-            Hiện chưa có sản phẩm phù hợp với lựa chọn của bạn. Hãy thử chọn danh mục khác!
-          </p>
+          <div class="empty-state">
+            <span class="empty-icon">🔍</span>
+            <h3>Chưa có sản phẩm phù hợp</h3>
+            <p>Hãy thử chọn danh mục khác hoặc xem toàn bộ sản phẩm.</p>
+            <a routerLink="/san-pham" class="btn btn-outline btn--sm">Xem tất cả sản phẩm</a>
+          </div>
         }
       </div>
     </div>
   </section>
 
-  <!-- GỢI Ý -->
-  <section class="section tips-section">
+  <!-- QUOTE BAR -->
+  <section class="section section--quote" *ngIf="selectedItems().length > 0">
     <div class="container">
-      <div class="section-heading">
-        <span class="section-label">MẸO CHỌN QUÀ</span>
-        <h2>Cách chọn quà tặng phù hợp</h2>
-        <p class="section-subtitle">
-          Một món quà ý nghĩa sẽ tạo ấn tượng sâu sắc hơn bất kỳ giá trị vật chất nào
-        </p>
+      <div class="quote-bar">
+        <div class="quote-summary">
+          <strong>{{ selectedItems().length }} sản phẩm đã chọn</strong>
+          <span>· Tổng ước tính: {{ quoteTotal() | number:'1.0-0':'vi-VN' }}đ</span>
+        </div>
+        <button class="btn btn-primary btn--quote" (click)="openQuoteModal()">
+          Gửi yêu cầu báo giá
+        </button>
       </div>
+    </div>
+  </section>
 
+  <!-- QUOTE MODAL -->
+  <section class="quote-modal" *ngIf="quoteModalOpen()" (click)="closeQuoteModal()">
+    <div class="quote-modal-backdrop" (click)="$event.stopPropagation()"></div>
+    <div class="quote-modal-content" (click)="$event.stopPropagation()">
+      <button class="quote-modal-close" (click)="closeQuoteModal()">&times;</button>
+      <h3 class="quote-modal-title">Gửi yêu cầu báo giá</h3>
+      <p class="quote-modal-sub">
+        {{ selectedItems().length }} sản phẩm · Tổng ước tính:
+        <strong>{{ quoteTotal() | number:'1.0-0':'vi-VN' }}đ</strong>
+      </p>
+
+      <form class="quote-modal-form" (ngSubmit)="submitQuote()">
+        <div class="form-row">
+          <label>Họ tên <span class="req">*</span></label>
+          <input type="text" name="name" [(ngModel)]="quoteForm().name" (input)="updateField('name', $any($event.target).value)" required />
+        </div>
+        <div class="form-row">
+          <label>Số điện thoại <span class="req">*</span></label>
+          <input type="tel" name="phone" [(ngModel)]="quoteForm().phone" (input)="updateField('phone', $any($event.target).value)" required />
+        </div>
+        <div class="form-row">
+          <label>Email</label>
+          <input type="email" name="email" [(ngModel)]="quoteForm().email" (input)="updateField('email', $any($event.target).value)" />
+        </div>
+        <div class="form-row">
+          <label>Công ty / đơn vị</label>
+          <input type="text" name="company" [(ngModel)]="quoteForm().company" (input)="updateField('company', $any($event.target).value)" />
+        </div>
+        <div class="form-row">
+          <label>Thông điệp / yêu cầu thêm</label>
+          <textarea name="message" rows="4" [(ngModel)]="quoteForm().message" (input)="updateField('message', $any($event.target).value)"></textarea>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn btn-outline" (click)="closeQuoteModal()">Hủy</button>
+          <button type="submit" class="btn btn-primary" [disabled]="submitting()">
+            {{ submitting() ? 'Đang gửi...' : 'Gửi yêu cầu báo giá' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <!-- TIPS -->
+  <section class="section section--tips">
+    <div class="container">
+      <div class="section-head text-center">
+        <span class="tag">MẸO CHỌN QUÀ</span>
+        <h2>Cách chọn quà tặng ý nghĩa</h2>
+        <p class="sub">Một món quà giá trị không nằm ở giá tiền, mà nằm ở tâm ý đằng sau.</p>
+      </div>
       <div class="tips-grid">
-        <article class="tip-card">
-          <div class="tip-icon">💡</div>
-          <h3>Hiểu nhu cầu người nhận</h3>
-          <p>Lắng nghe sở thích, nghề nghiệp và phong cách sống để chọn được món quà ý nghĩa.</p>
-        </article>
-        <article class="tip-card">
-          <div class="tip-icon">🎨</div>
-          <h3>Chú trọng chất lượng</h3>
-          <p>Lựa chọn sản phẩm thủ công, độc đáo mang giá trị văn hoá Việt Nam.</p>
-        </article>
-        <article class="tip-card">
-          <div class="tip-icon">📦</div>
-          <h3>Đóng gói đẹp</h3>
-          <p>Bao bì tinh tế giúp món quà trở nên trọn vẹn và trang trọng hơn.</p>
-        </article>
-        <article class="tip-card">
-          <div class="tip-icon">🚚</div>
-          <h3>Giao hàng an toàn</h3>
-          <p>Chọn dịch vụ giao hàng uy tín, đảm bảo quà đến tay người nhận nguyên vẹn.</p>
-        </article>
+        @for (tip of tips(); track tip.title) {
+          <article class="tip-card">
+            <div class="tip-icon"><i [class]="tip.icon" aria-hidden="true"></i></div>
+            <div class="tip-body">
+              <h3>{{ tip.title }}</h3>
+              <p>{{ tip.desc }}</p>
+            </div>
+          </article>
+        }
       </div>
     </div>
   </section>

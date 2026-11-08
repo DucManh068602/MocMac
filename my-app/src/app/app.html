@@ -15,7 +15,7 @@
 }
 @if (cart.notification(); as notification) {
   <div class="cart-notification" role="status" aria-live="polite">
-    <span class="cart-notification-icon" aria-hidden="true">✓</span>
+    <span class="cart-notification-icon" aria-hidden="true"><i class="fa-solid fa-check"></i></span>
     <span>{{ notification }}</span>
     <a routerLink="/gio-hang">{{ 'cart.label' | t }}</a>
   </div>

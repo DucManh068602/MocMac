@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { AuthService } from '../../auth.service';
 import { CartService } from '../../cart.service';
 import { I18nService } from '../../i18n.service';
+import { ThemeService } from '../../theme.service';
 
 @Component({
   selector: 'app-header-component',
@@ -15,6 +16,7 @@ export class HeaderComponent {
   cartService = inject(CartService);
   readonly auth = inject(AuthService);
   readonly i18n = inject(I18nService);
+  readonly theme = inject(ThemeService);
   private readonly router = inject(Router);
   private http = inject(HttpClient);
 

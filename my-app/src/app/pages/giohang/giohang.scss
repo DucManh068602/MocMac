@@ -768,3 +768,464 @@ $error: #b3401f;
     align-items: flex-start;
   }
 }
+
+/* ================= Hàng dưới giỏ hàng ================= */
+.cart-bottom-row {
+  margin-top: 40px;
+  padding: 24px 0;
+  border-top: 1px solid $border;
+}
+
+.cart-bottom-row .container {
+  max-width: 1080px;
+  margin: 0 auto;
+}
+
+.bottom-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 18px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.bottom-head h3 {
+  margin: 0;
+  font-size: 18px;
+  color: $text-main;
+  font-weight: 600;
+}
+
+.bottom-head a {
+  font-size: 13px;
+  color: $green-btn;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.bottom-head a:hover {
+  text-decoration: underline;
+}
+
+.bottom-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+
+.bottom-card {
+  background: #ffffff;
+  border: 1px solid $border;
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: box-shadow .2s;
+}
+
+.bottom-card:hover {
+  box-shadow: 0 4px 12px rgba(0,0,0,.06);
+}
+
+.bottom-img {
+  width: 56px;
+  height: 56px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #a3906a 0%, #6e5a3d 60%, #4a3b27 100%);
+  display: grid;
+  place-items: center;
+  font-size: 26px;
+  margin-bottom: 6px;
+}
+
+.bottom-info h4 {
+  margin: 0 0 4px;
+  font-size: 14px;
+  font-weight: 700;
+  color: $text-main;
+  line-height: 1.35;
+}
+
+.bottom-info p {
+  margin: 0;
+  font-size: 12px;
+  color: $text-muted;
+  line-height: 1.5;
+  margin-bottom: 10px;
+}
+
+.bottom-btn {
+  width: 100%;
+  padding: 8px 0;
+  border: none;
+  border-radius: 8px;
+  background: $green-btn;
+  color: #ffffff;
+  font: 600 12px 'Be Vietnam Pro', sans-serif;
+  cursor: pointer;
+}
+
+.bottom-btn:hover {
+  background: $green-btn-hover;
+}
+
+@media (max-width: 900px) {
+  .bottom-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 560px) {
+  .bottom-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ===== Thông tin người nhận ===== */
+.receiver-info {
+  margin: 18px 0;
+  padding: 18px;
+  border-radius: 14px;
+  background: #fbfdfb;
+  border: 1px solid #eef3ec;
+}
+
+.receiver-info h3 {
+  margin: 0 0 14px;
+  font-size: 16px;
+  color: #1e3a2a;
+  font-weight: 600;
+}
+
+.receiver-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.receiver-info label {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #3d4f43;
+}
+
+.receiver-info input,
+.receiver-info textarea {
+  padding: 8px 10px;
+  border: 1px solid #d6ceb9;
+  border-radius: 8px;
+  background: #fff;
+  font: inherit;
+  font-size: 13px;
+  color: #2b2a22;
+}
+
+.receiver-info input:focus,
+.receiver-info textarea:focus {
+  border-color: #a25633;
+  outline: none;
+}
+
+.receiver-note {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 6px 0 10px;
+  font-size: 12px;
+  color: #555;
+}
+
+.receiver-note i {
+  color: #a25633;
+  flex: none;
+}
+
+.receiver-info textarea {
+  min-height: 70px;
+  resize: vertical;
+}
+
+@media (max-width: 640px) {
+  .receiver-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ===== Nút Đặt hàng ngay (riêng, không thêm vào giỏ) ===== */
+.bottom-order-btn {
+  width: 100%;
+  padding: 8px 0;
+  border: none;
+  border-radius: 8px;
+  background: #a25633;
+  color: #ffffff;
+  font: 600 12px 'Be Vietnam Pro', sans-serif;
+  cursor: pointer;
+}
+
+.bottom-order-btn:hover {
+  background: #874223;
+}
+
+/* ===== Modal Đặt hàng nhanh ===== */
+.quick-order-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(4px);
+}
+
+.quick-order-modal {
+  width: 100%;
+  max-width: 480px;
+  padding: 32px;
+  border-radius: 18px;
+  background: #ffffff;
+  text-align: center;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+  font-family: 'Be Vietnam Pro', system-ui, sans-serif;
+  position: relative;
+}
+
+.quick-order-close {
+  position: absolute;
+  top: 14px;
+  right: 16px;
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #7a847c;
+}
+
+.quick-order-close:hover {
+  color: #1e3a2a;
+}
+
+.quick-order-modal h2 {
+  margin: 0 0 8px;
+  font-family: 'Lora', Georgia, serif;
+  font-size: 24px;
+  color: #1e3a2a;
+}
+
+.quick-order-note {
+  margin: 0 0 20px;
+  font-size: 13px;
+  color: #555;
+}
+
+.quick-order-note strong {
+  color: #a25633;
+  font-weight: 700;
+}
+
+.quick-order-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  text-align: left;
+}
+
+.quick-form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.quick-order-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #3d4f43;
+  margin-bottom: 12px;
+}
+
+.quick-order-form input {
+  padding: 8px 10px;
+  border: 1px solid #d6ceb9;
+  border-radius: 8px;
+  background: #fff;
+  font: inherit;
+  font-size: 13px;
+  color: #2b2a22;
+}
+
+.quick-order-form input:focus {
+  border-color: #a25633;
+  outline: none;
+}
+
+.quick-form-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-top: 8px;
+  font-size: 12px;
+  color: #666;
+}
+
+.quick-form-note i {
+  color: #a25633;
+  margin-top: 2px;
+  flex: none;
+}
+
+.quick-order-submit {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 10px;
+  background: #a25633;
+  color: #ffffff;
+  font: 700 14px inherit;
+  cursor: pointer;
+  margin-top: 8px;
+}
+
+.quick-order-submit:hover {
+  background: #874223;
+}
+
+@media (max-width: 640px) {
+  .quick-form-row {
+    grid-template-columns: 1fr;
+  }
+  .quick-order-modal {
+    padding: 24px;
+    margin: 12px;
+  }
+}
+/* Address Selector in Cart */
+.address-selector {
+  margin-bottom: 16px;
+}
+
+.address-selector label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink, #3a3a33);
+}
+
+.address-options {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.address-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px;
+  border: 1px solid var(--mm-border-soft, #e8e0d0);
+  border-radius: 8px;
+  background: #fff;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.address-option:hover {
+  border-color: var(--moss, #435731);
+  box-shadow: 0 2px 8px rgba(67, 87, 49, 0.1);
+}
+
+.address-option.selected {
+  border-color: var(--moss, #435731);
+  background: var(--moss-soft, #f4f7f2);
+}
+
+.address-option.loading, .address-option.empty {
+  justify-content: center;
+  text-align: center;
+  color: var(--ink2, #6b6a5c);
+  font-size: 13px;
+}
+
+.address-option.empty a {
+  color: var(--moss, #435731);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.address-option-info {
+  flex: 1;
+}
+
+.address-option-name {
+  font-weight: 600;
+  color: var(--ink, #3a3a33);
+  font-size: 14px;
+}
+
+.address-option-phone {
+  color: var(--ink2, #6b6a5c);
+  font-size: 13px;
+}
+
+.address-option-detail {
+  font-size: 12px;
+  color: var(--ink2, #6b6a5c);
+  margin-top: 2px;
+}
+
+.address-option-badge {
+  font-size: 10px;
+  font-weight: 700;
+  background: var(--moss, #435731);
+  color: #fff;
+  padding: 2px 8px;
+  border-radius: 10px;
+  margin-left: auto;
+}
+
+.receiver-details {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--mm-border-soft, #e8e0d0);
+}
+
+.address-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-top: 12px;
+  font-size: 12px;
+  color: var(--ink2, #6b6a5c);
+}
+
+.address-note i {
+  color: var(--moss, #435731);
+  margin-top: 2px;
+  flex: none;
+}
+
+@media (max-width: 640px) {
+  .address-option {
+    padding: 10px;
+  }
+  .address-option-info {
+    min-width: 0;
+  }
+  .address-option-name {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+

@@ -1,4 +1,4 @@
-<ng-template #checks let-k="k" let-opts="opts">
+﻿<ng-template #checks let-k="k" let-opts="opts">
   @for (o of opts; track o.v) {
     <label class="chk">
       <input type="checkbox" [checked]="has(k, o.v)" (change)="toggle(k, o.v)" />
@@ -19,7 +19,7 @@
   <section class="discovery">
     <div class="discovery-head">
       <div>
-        <h2>✨ Tìm kiếm hôm nay</h2>
+        <h2><i class="fa-solid fa-compass" aria-hidden="true"></i> Tìm kiếm hôm nay</h2>
         <p>Khám phá nhanh những sản phẩm mang bản sắc Việt</p>
       </div>
     </div>
@@ -36,7 +36,7 @@
       <!-- GỢI Ý HÀNG ĐẦU: CAROUSEL TỰ CHẠY -->
       <section class="mini-section">
         <div class="mini-title">
-          <h3>🔥 Gợi ý hàng đầu</h3>
+          <h3><i class="fa-solid fa-fire-flame-curved" aria-hidden="true"></i> Gợi ý hàng đầu</h3>
           <button type="button" (click)="showMore('popular')">Xem thêm ›</button>
         </div>
 
@@ -84,7 +84,7 @@
                       }
                     </span>
                   }
-                  <strong>{{ fmt(p.price) }}</strong>
+                  <strong class="sale-price">@if (flashSaleLive()) { <small>{{ fmt(p.price) }}</small>{{ fmt(flashSalePrice(p)) }} } @else if (p.dealPrice) { <small>{{ fmt(p.price) }}</small>{{ fmt(p.dealPrice || p.price) }} } @else { {{ fmt(p.price) }} }</strong>
                 </div>
               </article>
             } @empty {
@@ -145,7 +145,7 @@
                       }
                     </span>
                   }
-                  <strong>{{ fmt(p.price) }}</strong>
+                  <strong class="sale-price">@if (flashSaleLive()) { <small>{{ fmt(p.price) }}</small>{{ fmt(flashSalePrice(p)) }} } @else if (p.dealPrice) { <small>{{ fmt(p.price) }}</small>{{ fmt(p.dealPrice || p.price) }} } @else { {{ fmt(p.price) }} }</strong>
                 </div>
               </article>
             } @empty {
@@ -160,7 +160,7 @@
     <div class="discovery-bottom">
       <section class="rank-section">
         <div class="rank-title">
-          <h3>🏆 Bán chạy nhất</h3>
+          <h3><i class="fa-solid fa-trophy" aria-hidden="true"></i> Bán chạy nhất</h3>
           <button type="button" (click)="showMore('popular')">Xem thêm ›</button>
         </div>
 
@@ -204,7 +204,7 @@
                     }
                   </small>
                 </div>
-                <strong>{{ fmt(p.price) }}</strong>
+                <strong class="sale-price">@if (flashSaleLive()) { <small>{{ fmt(p.price) }}</small>{{ fmt(flashSalePrice(p)) }} } @else if (p.dealPrice) { <small>{{ fmt(p.price) }}</small>{{ fmt(p.dealPrice || p.price) }} } @else { {{ fmt(p.price) }} }</strong>
               </div>
             } @empty {
               <p class="mini-empty">Đang cập nhật sản phẩm.</p>
@@ -215,7 +215,7 @@
 
       <section class="rank-section">
         <div class="rank-title">
-          <h3>🏷️ Giá tốt nhất hôm nay</h3>
+          <h3><i class="fa-solid fa-tags" aria-hidden="true"></i> Giá tốt nhất hôm nay</h3>
           <button type="button" (click)="showMore('price-asc')">Xem thêm ›</button>
         </div>
 
@@ -250,7 +250,7 @@
                   <b>{{ p.name }}</b>
                   <small>Giá dễ tiếp cận · {{ p.province }}</small>
                 </div>
-                <strong>{{ fmt(p.price) }}</strong>
+                <strong class="sale-price">@if (flashSaleLive()) { <small>{{ fmt(p.price) }}</small>{{ fmt(flashSalePrice(p)) }} } @else if (p.dealPrice) { <small>{{ fmt(p.price) }}</small>{{ fmt(p.dealPrice || p.price) }} } @else { {{ fmt(p.price) }} }</strong>
               </div>
             } @empty {
               <p class="mini-empty">Đang cập nhật sản phẩm.</p>
@@ -263,7 +263,7 @@
   <!-- KẾT THÚC KHU VỰC KHÁM PHÁ NHANH -->
 
   <button class="btn toggle-f" (click)="showFilters.set(!showFilters())">
-    ☰ Bộ lọc
+    <i class="fa-solid fa-sliders" aria-hidden="true"></i> Bộ lọc
     @if (activeCount) {
       <span class="bdg">{{ activeCount }}</span>
     }
@@ -272,7 +272,7 @@
   <div class="layout">
     <aside class="side" [class.open]="showFilters()">
       <div class="panel">
-        <h4>🔎 Tìm kiếm &amp; gợi ý</h4>
+        <h4><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i> Tìm kiếm &amp; gợi ý</h4>
         <form class="sbox" (submit)="$event.preventDefault(); search()">
           <input
             type="search"
@@ -280,10 +280,10 @@
             [value]="draft().q"
             (input)="setField('q', $any($event.target).value)"
           />
-          <button type="submit" aria-label="Tìm">🔍</button>
+          <button type="submit" aria-label="Tìm"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i></button>
         </form>
         <div class="ai">
-          <span class="bot">🤖</span>
+          <span class="bot"><i class="fa-solid fa-wand-magic-sparkles" aria-hidden="true"></i></span>
           <div>
             <b>AI Tìm quà phù hợp theo vùng miền</b><small>Nhập vào câu, dịp tặng...</small>
           </div>
@@ -300,9 +300,7 @@
           "
           (click)="toggleFavoritesFilter()"
         >
-          <span class="favorites-filter-icon" aria-hidden="true">{{
-            showFavorites() ? '♥' : '♡'
-          }}</span>
+          <span class="favorites-filter-icon" aria-hidden="true"><i [class]="showFavorites() ? 'fa-solid fa-heart' : 'fa-regular fa-heart'"></i></span>
           <span class="favorites-filter-copy">
             <strong>Sản phẩm yêu thích</strong>
             <small>{{
@@ -315,7 +313,7 @@
         <h4>Danh mục sản phẩm</h4>
         <ng-container *ngTemplateOutlet="checks; context: { k: 'cat', opts: catOpts() }" />
 
-        <h4>🌿 Vùng miền</h4>
+        <h4><i class="fa-solid fa-map-location-dot" aria-hidden="true"></i> Vùng miền</h4>
         <ng-container *ngTemplateOutlet="checks; context: { k: 'region', opts: regionOpts() }" />
 
         <h4>Tỉnh thành</h4>
@@ -384,7 +382,7 @@
     <main class="content">
       <div class="banner">
         <div>
-          <h1>🌿 SẢN PHẨM MỘC MẠC</h1>
+          <h1><i class="fa-solid fa-leaf" aria-hidden="true"></i> SẢN PHẨM MỘC MẠC</h1>
           <p>Khám phá sản phẩm từ khắp Việt Nam</p>
         </div>
         <q>Mỗi sản phẩm, một câu chuyện, một vùng đất Việt</q>
@@ -420,7 +418,7 @@
             (click)="setView('grid')"
             aria-label="Dạng lưới"
           >
-            ▦
+            <i class="fa-solid fa-table-cells" aria-hidden="true"></i>
           </button>
           <button
             class="vw"
@@ -428,7 +426,7 @@
             (click)="setView('list')"
             aria-label="Dạng danh sách"
           >
-            ☰
+            <i class="fa-solid fa-list" aria-hidden="true"></i>
           </button>
         </div>
       </div>
@@ -488,13 +486,14 @@
                 (click)="toggleFav(p.id, $event)"
                 aria-label="Yêu thích"
               >
-                {{ favs().has(p.id) ? '♥' : '♡' }}
+                <i [class]="favs().has(p.id) ? 'fa-solid fa-heart' : 'fa-regular fa-heart'" aria-hidden="true"></i>
               </button>
+                    @if (flashSaleLive()) { <span class="product-deal-chip">-{{ flashSalePercent() }}%</span> } @else if (p.deal?.discountType === 'percent') { <span class="product-deal-chip">-{{ p.deal?.discountValue }}%</span> }
             </div>
             <div class="pbody">
               <h3>{{ p.name }}</h3>
               <small class="loc"
-                >📍 {{ p.village || p.province }}{{ p.village ? ', ' + p.province : '' }} ·
+                ><i class="fa-solid fa-location-dot" aria-hidden="true"></i> {{ p.village || p.province }}{{ p.village ? ', ' + p.province : '' }} ·
                 {{ p.region }}</small
               >
               <div class="rt">
@@ -509,13 +508,13 @@
                 }
               </div>
               <div class="row">
-                <b>{{ fmt(p.price) }}</b>
+                <span class="catalog-price">@if (flashSaleLive()) { <del>{{ fmt(p.price) }}</del><b>{{ fmt(flashSalePrice(p)) }}</b> } @else if (p.dealPrice) { <del>{{ fmt(p.price) }}</del><b>{{ fmt(p.dealPrice || p.price) }}</b> } @else { <b>{{ fmt(p.price) }}</b> }</span>
                 <button
                   class="add"
                   (click)="addToCart($event, p.id, p.name)"
                   aria-label="Thêm vào giỏ"
                 >
-                  🛒
+                  <i class="fa-solid fa-bag-shopping" aria-hidden="true"></i>
                 </button>
               </div>
             </div>
@@ -523,7 +522,7 @@
         } @empty {
           <div class="empty">
             @if (showFavorites() && favoriteCount() === 0) {
-              <p>♡ Bạn chưa có sản phẩm yêu thích.</p>
+              <p><i class="fa-regular fa-heart" aria-hidden="true"></i> Bạn chưa có sản phẩm yêu thích.</p>
               <small>Nhấn biểu tượng trái tim trên sản phẩm để lưu lại tại đây.</small>
               <div class="empty-actions">
                 <button class="btn" type="button" (click)="toggleFavoritesFilter()">
@@ -531,7 +530,7 @@
                 </button>
               </div>
             } @else if (showFavorites()) {
-              <p>♡ Không có sản phẩm yêu thích khớp với bộ lọc hiện tại.</p>
+              <p><i class="fa-regular fa-heart" aria-hidden="true"></i> Không có sản phẩm yêu thích khớp với bộ lọc hiện tại.</p>
               <div class="empty-actions">
                 <button class="btn" type="button" (click)="clear()">Xóa bộ lọc khác</button>
                 <button class="btn ghost" type="button" (click)="toggleFavoritesFilter()">
@@ -539,7 +538,7 @@
                 </button>
               </div>
             } @else {
-              <p>😕 Không tìm thấy sản phẩm phù hợp.</p>
+              <p><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i> Không tìm thấy sản phẩm phù hợp.</p>
               <button class="btn" type="button" (click)="clear()">Xóa bộ lọc</button>
             }
           </div>
@@ -562,7 +561,7 @@
           <div class="related-heading">
             <div class="related-heading-copy">
               <span class="related-kicker">SẢN PHẨM</span>
-              <h2>🧺 Sản phẩm liên quan bạn có thể thích</h2>
+              <h2><i class="fa-solid fa-basket-shopping" aria-hidden="true"></i> Sản phẩm liên quan bạn có thể thích</h2>
               <p>Các lựa chọn gần với sản phẩm hoặc tiêu chí bạn vừa chọn.</p>
             </div>
             <div class="related-controls" aria-label="Điều khiển sản phẩm">
@@ -632,13 +631,14 @@
                       (click)="toggleFav(p.id, $event)"
                       aria-label="Yêu thích"
                     >
-                      {{ favs().has(p.id) ? '♥' : '♡' }}
+                      <i [class]="favs().has(p.id) ? 'fa-solid fa-heart' : 'fa-regular fa-heart'" aria-hidden="true"></i>
                     </button>
+              @if (flashSaleLive()) { <span class="product-deal-chip">-{{ flashSalePercent() }}%</span> } @else if (p.deal?.discountType === 'percent') { <span class="product-deal-chip">-{{ p.deal?.discountValue }}%</span> }
                   </div>
                   <div class="pbody">
                     <h3>{{ p.name }}</h3>
                     <small class="loc"
-                      >📍 {{ p.village || p.province }}{{ p.village ? ', ' + p.province : '' }} ·
+                      ><i class="fa-solid fa-location-dot" aria-hidden="true"></i> {{ p.village || p.province }}{{ p.village ? ', ' + p.province : '' }} ·
                       {{ p.region }}</small
                     >
                     <div class="rt">
@@ -653,14 +653,13 @@
                       }
                     </div>
                     <div class="row">
-                      <b>{{ fmt(p.price) }}</b
-                      ><button
+                      <span class="catalog-price">@if (flashSaleLive()) { <del>{{ fmt(p.price) }}</del><b>{{ fmt(flashSalePrice(p)) }}</b> } @else if (p.dealPrice) { <del>{{ fmt(p.price) }}</del><b>{{ fmt(p.dealPrice || p.price) }}</b> } @else { <b>{{ fmt(p.price) }}</b> }</span><button
                         type="button"
                         class="add"
                         (click)="addToCart($event, p.id, p.name)"
                         aria-label="Thêm vào giỏ"
                       >
-                        🛒
+                        <i class="fa-solid fa-bag-shopping" aria-hidden="true"></i>
                       </button>
                     </div>
                   </div>

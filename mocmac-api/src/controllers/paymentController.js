@@ -2,6 +2,8 @@ import crypto from 'crypto';
 import { Order } from '../models/Order.js';
 import { Payment } from '../models/Payment.js';
 import { Coupon } from '../models/Coupon.js';
+import { Product } from '../models/Product.js';
+import { FlashSale } from '../models/FlashSale.js';
 import { generateOrderId, initStatusHistory, appendStatusHistory } from '../utils/orderUtils.js';
 import { buildVnpayPaymentUrl, verifyVnpayReturn } from '../utils/vnpay.js';
 
@@ -9,15 +11,32 @@ const FRONTEND_URL = (process.env.FRONTEND_URL || 'http://localhost:4200').repla
 
 export const createPayment = async (req, res) => {
   try {
-    const { items, subtotal, discount = 0, shipping = 0, total, paymentMethod = 'cod', customerInfo, note = '', couponCode = '' } = req.body ?? {};
+    const { items, discount = 0, shipping = 0, paymentMethod = 'cod', customerInfo, note = '', couponCode = '' } = req.body ?? {};
 
     if (!Array.isArray(items) || items.length === 0) {
       return res.status(400).json({ success: false, message: 'Đơn hàng phải có ít nhất một sản phẩm.' });
     }
 
-     if (typeof total !== 'number' || total < 0) {
-      return res.status(400).json({ success: false, message: 'Tổng đơn hàng không hợp lệ.' });
-    }
+    const productIds = items.map((item) => Number(item.productId)).filter(Number.isFinite);
+    const [products, flashSale] = await Promise.all([Product.find({ id: { $in: productIds } }).populate('deal').lean(), FlashSale.findOne({ key: 'storewide' }).lean()]);
+    const productById = new Map(products.map((product) => [product.id, product]));
+    const now = new Date();
+    const trustedItems = items.map((item) => {
+      const product = productById.get(Number(item.productId));
+      if (!product) throw new Error('Một sản phẩm trong giỏ không còn tồn tại.');
+      const deal = product.deal;
+      const isDealActive = deal?.active && new Date(deal.startsAt) <= now && new Date(deal.endsAt) >= now;
+      const dealPrice = isDealActive
+        ? (deal.discountType === 'percent' ? Math.max(0, Math.round(product.price * (100 - Number(deal.discountValue)) / 100)) : Math.max(0, product.price - Number(deal.discountValue)))
+        : product.price;
+      const flashSaleLive = flashSale?.active && new Date(flashSale.startsAt) <= now && new Date(flashSale.endsAt) >= now;
+      const flashSalePrice = flashSaleLive ? Math.max(0, Math.round(product.price * (100 - Number(flashSale.discountPercent)) / 100)) : product.price;
+      const unitPrice = Math.min(dealPrice, flashSalePrice);
+      return { productId: product.id, name: product.name, price: unitPrice, quantity: Math.max(1, Number(item.quantity) || 1) };
+    });
+    const subtotal = trustedItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+    const safeDiscount = Math.max(0, Math.min(Number(discount) || 0, subtotal));
+    const total = Math.max(0, subtotal - safeDiscount + Math.max(0, Number(shipping) || 0));
 
     if (couponCode) {
       const couponDoc = await Coupon.findOne({ code: String(couponCode).toUpperCase() });
@@ -32,9 +51,9 @@ export const createPayment = async (req, res) => {
     const order = await Order.create({
       user: req.user ? req.user.id : null,
       orderId: generateOrderId(),
-      items,
+      items: trustedItems,
       subtotal,
-      discount,
+      discount: safeDiscount,
       shipping,
       total,
       paymentMethod,
@@ -51,7 +70,7 @@ export const createPayment = async (req, res) => {
         method: 'cod',
         status: 'pending',
         couponCode,
-        discountAmount: discount,
+        discountAmount: safeDiscount,
       });
       order.paymentId = payment._id;
       order.paymentStatus = 'pending';
@@ -85,7 +104,7 @@ export const createPayment = async (req, res) => {
         payUrl,
         note: isMock ? `${orderInfo} (VNPAY mock test)` : orderInfo,
         couponCode,
-        discountAmount: discount,
+        discountAmount: safeDiscount,
       });
 
       order.paymentId = payment._id;

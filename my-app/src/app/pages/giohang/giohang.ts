@@ -1,11 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal, effect } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { AuthService } from '../../auth.service';
 import { CartService } from '../../cart.service';
 import { PaymentService } from '../../payment.service';
 import { ProductItem, ProductsService } from '../../products.service';
+import { HttpClient } from '@angular/common/http';
 
 interface CartDisplayItem {
   id: number;
@@ -17,6 +18,18 @@ interface CartDisplayItem {
   imageUrl: string | null;
   badge: string;
   badgeTone: 'brown' | 'green';
+}
+
+interface SavedAddress {
+  _id: string;
+  fullName: string;
+  phone: string;
+  provinceCode: string | number;
+  provinceName: string;
+  wardCode: string | number;
+  wardName: string;
+  streetAddress: string;
+  isDefault: boolean;
 }
 
 const FREE_SHIPPING_THRESHOLD = 500000;
@@ -49,13 +62,90 @@ export class GiohangComponent {
   private readonly auth = inject(AuthService);
   private readonly paymentService = inject(PaymentService);
   private readonly route = inject(ActivatedRoute);
+  private readonly http = inject(HttpClient);
 
   readonly loginRequiredPopup = signal(false);
   readonly paymentStatus = signal<'success'|'fail'|'error'|null>(null);
   readonly paying = signal(false);
   readonly payError = signal('');
 
+  readonly quickOrderOpen = signal(false);
+  readonly quickOrderProduct = signal<string | null>(null);
+
+  readonly receiverInfo = signal<{
+    name: string;
+    phone: string;
+    email: string;
+    address: string;
+    note: string;
+  }>({
+    name: '',
+    phone: '',
+    email: '',
+    address: '',
+    note: '',
+  });
+
   readonly paymentMethod = signal<'cod' | 'vnpay'>('cod');
+
+  // Address management
+  readonly addresses = signal<SavedAddress[]>([]);
+  readonly addressesLoading = signal(false);
+  readonly selectedAddressId = signal<string | null>(null);
+
+  constructor() {
+    const st = this.route.snapshot.queryParamMap.get('status');
+    if (st === 'success' || st === 'fail' || st === 'error') {
+      this.paymentStatus.set(st);
+      if (st === 'success') this.cart.clear();
+    }
+
+    // Load saved addresses if user is logged in
+    effect(() => {
+      if (this.auth.isAuthenticated()) {
+        this.loadAddresses();
+      }
+    });
+  }
+
+  loadAddresses(): void {
+    this.addressesLoading.set(true);
+    this.http.get<{ addresses: SavedAddress[] }>('/api/addresses').subscribe({
+      next: (res) => {
+        const addrs = res.addresses || [];
+        this.addresses.set(addrs);
+        // Auto-select default address if none selected
+        if (!this.selectedAddressId() && addrs.length > 0) {
+          const def = addrs.find((a) => a.isDefault) || addrs[0];
+          this.selectedAddressId.set(def._id);
+          this.syncReceiverInfo(def);
+        }
+        this.addressesLoading.set(false);
+      },
+      error: () => {
+        this.addresses.set([]);
+        this.addressesLoading.set(false);
+      },
+    });
+  }
+
+  selectAddress(id: string): void {
+    this.selectedAddressId.set(id);
+    const addr = this.addresses().find((a) => a._id === id);
+    if (addr) {
+      this.syncReceiverInfo(addr);
+    }
+  }
+
+  private syncReceiverInfo(addr: SavedAddress): void {
+    this.receiverInfo.set({
+      name: addr.fullName,
+      phone: addr.phone,
+      email: '',
+      address: `${addr.streetAddress}, ${addr.wardName}, ${addr.provinceName}`,
+      note: '',
+    });
+  }
 
   readonly freeShippingThreshold = FREE_SHIPPING_THRESHOLD;
   couponInput = '';
@@ -94,14 +184,6 @@ export class GiohangComponent {
     Math.min((this.subtotal() / FREE_SHIPPING_THRESHOLD) * 100, 100)
   );
   readonly isEmpty = computed(() => this.items().length === 0);
-
-  constructor() {
-    const st = this.route.snapshot.queryParamMap.get('status');
-    if (st === 'success' || st === 'fail' || st === 'error') {
-      this.paymentStatus.set(st);
-      if (st === 'success') this.cart.clear();
-    }
-  }
 
   increase(id: number): void {
     this.cart.increase(id);
@@ -169,6 +251,12 @@ export class GiohangComponent {
       total: this.total(),
       paymentMethod: this.paymentMethod(),
       couponCode: this.couponApplied() ? this.couponInput.trim().toUpperCase() : '',
+      customerInfo: {
+        name: this.receiverInfo().name,
+        phone: this.receiverInfo().phone,
+        address: this.receiverInfo().address,
+      },
+      note: this.receiverInfo().note,
     }).subscribe({
       next: (response: any) => {
         if (response?.success && response?.payUrl) {
@@ -192,6 +280,21 @@ export class GiohangComponent {
 
   closeLoginPopup(): void {
     this.loginRequiredPopup.set(false);
+  }
+
+  quickOrder(productName: string): void {
+    this.quickOrderProduct.set(productName);
+    this.quickOrderOpen.set(true);
+  }
+
+  closeQuickOrder(): void {
+    this.quickOrderOpen.set(false);
+    this.quickOrderProduct.set(null);
+  }
+
+  submitQuickOrder(): void {
+    this.closeQuickOrder();
+    this.loginRequiredPopup.set(true);
   }
 
   vnd(value: number): string {

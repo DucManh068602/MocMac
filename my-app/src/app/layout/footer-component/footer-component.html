@@ -47,7 +47,8 @@
           <h4>{{ t('Về Mộc Mạc','About Moc Mac') }}</h4>
 
           <a routerLink="/gioi-thieu">{{ t('Giới thiệu','About') }}</a>
-          <a href="#">{{ t('Câu chuyện thương hiệu','Brand Story') }}</a>
+          <a routerLink="/dieu-khoan-dich-vu">{{ t('Điều khoản dịch vụ','Terms of Service') }}</a>
+          <a routerLink="/chinh-sach-bao-ve-du-lieu">{{ t('Chính sách bảo vệ dữ liệu','Privacy Policy') }}</a>
           <a href="#">{{ t('Cam kết chất lượng','Quality Commitment') }}</a>
           <a href="#">{{ t('Tin tức','News') }}</a>
           <a href="#">{{ t('Tuyển dụng','Careers') }}</a>
@@ -61,7 +62,7 @@
           <a href="#">{{ t('Phương thức thanh toán','Payment Methods') }}</a>
           <a href="#">{{ t('Chính sách vận chuyển','Shipping Policy') }}</a>
           <a href="#">{{ t('Chính sách đổi trả','Return Policy') }}</a>
-          <a href="#">{{ t('Câu hỏi thường gặp (FAQ)','Frequently Asked Questions (FAQ)') }}</a>
+          <a routerLink="/ho-tro">{{ t('Câu hỏi thường gặp (FAQ)','Frequently Asked Questions (FAQ)') }}</a>
           <a routerLink="/lien-he">{{ t('Liên hệ','Contact') }}</a>
         </div>
 
@@ -98,28 +99,24 @@
 
           <div class="partner-logos">
             <img
-              src="data/images/thanhtoan/visa.png"
+              src="https://commons.wikimedia.org/wiki/Special:Redirect/file/Visa_Inc._logo_(2005%E2%80%932014).png"
               alt="Visa"
-            >
-
+              loading="lazy"
+            />
             <img
-              src="data/images/thanhtoan/momo.png"
+              src="https://commons.wikimedia.org/wiki/Special:Redirect/file/MoMo_Logo_App.svg"
               alt="MoMo"
-            >
-
-            <img
-              src="data/images/thanhtoan/QRR.png"
-              alt="QR Payment"
-            >
-
-            <img
-              src="data/images/thanhtoan/bank.png"
-              alt="Bank Transfer">
-
-            <img
-              src="data/images/thanhtoan/COD.png"
-              alt="COD"
-            >
+              loading="lazy"
+            />
+            <span class="pay-badge pay-qr" aria-label="QR Payment"><i class="fa-solid fa-qrcode" aria-hidden="true"></i> QR</span>
+            <div class="bank-list" aria-label="Danh sách ngân hàng chuyển khoản">
+              <img src="https://commons.wikimedia.org/wiki/Special:Redirect/file/Vietcombank_logo_fixed.svg" alt="Vietcombank" loading="lazy" />
+              <img src="https://commons.wikimedia.org/wiki/Special:Redirect/file/Logo_BIDV.svg" alt="BIDV" loading="lazy" />
+              <img src="https://commons.wikimedia.org/wiki/Special:Redirect/file/Techcombank_logo.png" alt="Techcombank" loading="lazy" />
+              <img src="https://commons.wikimedia.org/wiki/Special:Redirect/file/Asia_Commercial_Bank_logo.svg" alt="ACB" loading="lazy" />
+              <img src="https://commons.wikimedia.org/wiki/Special:Redirect/file/Logo_MB_new.png" alt="MB Bank" loading="lazy" />
+            </div>
+            <span class="pay-badge pay-cod" aria-label="COD"><i class="fa-solid fa-truck-fast" aria-hidden="true"></i> COD</span>
           </div>
         </div>
 
@@ -128,18 +125,26 @@
 
           <div class="partner-logos">
             <img
-              src="data/images/shipping unit/ghn.png"
+              src="https://s3.amazonaws.com/tracxn-data-image/logo/company/nhanhvn24h.com_Logo_8ac2f193-077a-4ae1-8c95-5a9c437d17b0.jpg"
               alt="GHN"
-            >
-
+              loading="lazy"
+            />
             <img
-              src="data/images/shipping unit/J&T.png"
+              class="ship-jt-img"
+              src="https://cdn.brandfetch.io/domain/jtexpress.me/fallback/lettermark/theme/light/h/400/w/400/logo?c=1bfwsmEH20zzEfSNTed"
               alt="J&T Express"
-            >
+              loading="lazy"
+            />
             <img
-              src="data/images/shipping unit/VT.png"
+              src="https://commons.wikimedia.org/wiki/Special:Redirect/file/Viettel_Post_logo.svg"
               alt="Viettel Post"
-            >
+              loading="lazy"
+            />
+            <img
+              src="https://cdn.brandfetch.io/domain/vnpost.vn/fallback/lettermark/theme/light/h/400/w/400/logo?c=1bfwsmEH20zzEfSNTed"
+              alt="Bưu điện Việt Nam"
+              loading="lazy"
+            />
           </div>
         </div>
 

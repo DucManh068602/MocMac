@@ -35,6 +35,8 @@ import { DonHangComponent } from './pages/don-hang/don-hang';
 import { AboutComponent } from './pages/about/about';
 import { GiftBusinessComponent } from './pages/gift-business/gift-business';
 import { GiftNeedsComponent } from './pages/gift-needs/gift-needs';
+import { TermsOfServiceComponent } from './pages/terms-of-service/terms-of-service';
+import { PrivacyPolicyComponent } from './pages/privacy-policy/privacy-policy';
 import { SupportComponent } from './pages/support/support';
 import { AccountSettingsComponent } from './pages/account-settings/account-settings';
 import { MeomeoGuideComponent } from './components/meomeo-guide/meomeo-guide';
@@ -46,6 +48,7 @@ import { AdminOrdersComponent } from './admin/orders';
 import { AdminProductsComponent } from './admin/products';
 import { AdminRegionsComponent } from './admin/regions';
 import { AdminCouponsComponent } from './admin/coupons';
+import { AdminDealsComponent } from './admin/deals';
 import { AdminUsersComponent } from './admin/users';
 import { AdminContactsComponent } from './admin/contacts';
 import { AdminNotificationsComponent } from './admin/notifications';
@@ -53,8 +56,12 @@ import { AdminReviewsComponent } from './admin/reviews';
 import { AdminAuditComponent } from './admin/audit';
 import { AdminRoleRequestsComponent } from './admin/admin-role-requests';
 import { AdminRoutePermissionsComponent } from './admin/route-permissions';
+import { AdminFlashSaleComponent } from './admin/flash-sale';
+import { AdminQuotationRequestsComponent } from './admin/quotation-requests';
 import { PaginationComponent } from './admin/pagination';
 import { ToastComponent } from './admin/toast';
+import { AdminRegionStoriesComponent } from './admin/region-stories';
+import { AdminVillageStoriesComponent } from './admin/village-stories';
 import { NotificationPopupComponent } from './pages/notification-popup/notification-popup';
 import { ChatPopupComponent } from './chat-popup/chat-popup';
 import { TranslatePipe } from './translate.pipe';
@@ -78,6 +85,7 @@ import { TranslatePipe } from './translate.pipe';
     AdminProductsComponent,
     AdminRegionsComponent,
     AdminCouponsComponent,
+    AdminDealsComponent,
     AdminUsersComponent,
     AdminContactsComponent,
     AdminNotificationsComponent,
@@ -85,6 +93,10 @@ import { TranslatePipe } from './translate.pipe';
     AdminAuditComponent,
     AdminRoleRequestsComponent,
     AdminRoutePermissionsComponent,
+    AdminFlashSaleComponent,
+    AdminQuotationRequestsComponent,
+    AdminRegionStoriesComponent,
+    AdminVillageStoriesComponent,
     ToastComponent,
     NotificationPopupComponent,
     ChatPopupComponent,
@@ -92,6 +104,8 @@ import { TranslatePipe } from './translate.pipe';
     AboutComponent,
     GiftBusinessComponent,
     GiftNeedsComponent,
+    TermsOfServiceComponent,
+    PrivacyPolicyComponent,
     SupportComponent,
     AccountSettingsComponent,
     MeomeoGuideComponent,

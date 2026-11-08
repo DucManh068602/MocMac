@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, signal, computed } from '@angular/core';
 
 @Component({
   selector: 'app-support',
@@ -8,6 +8,7 @@ import { Component } from '@angular/core';
 })
 export class SupportComponent {
   openFaq: number | null = 0;
+  readonly searchTerm = signal('');
 
   faqs = [
     {
@@ -69,5 +70,20 @@ export class SupportComponent {
 
   toggleFaq(index: number): void {
     this.openFaq = this.openFaq === index ? null : index;
+  }
+
+  readonly filteredFaqs = computed(() => {
+    const term = this.searchTerm().toLowerCase().trim();
+    if (!term) return this.faqs;
+    return this.faqs.filter(
+      (f) =>
+        f.question.toLowerCase().includes(term) ||
+        f.answer.toLowerCase().includes(term)
+    );
+  });
+
+  onSearch(): void {
+    // reset open faq when searching
+    this.openFaq = null;
   }
 }

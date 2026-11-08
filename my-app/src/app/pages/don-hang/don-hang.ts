@@ -5,6 +5,8 @@ import { HttpClient } from '@angular/common/http';
 import { AuthService } from '../../auth.service';
 import { ToastService } from '../../admin/toast.service';
 import { PaginationComponent } from '../../admin/pagination';
+import { FormsModule } from '@angular/forms';
+import { ReviewsService } from '../../reviews-service';
 
 export interface OrderItem {
   productId: number;
@@ -48,7 +50,7 @@ const STATUS_STEPS: { key: string; label: string; desc: string }[] = [
 @Component({
   selector: 'app-don-hang',
   standalone: true,
-  imports: [CommonModule, RouterLink, PaginationComponent],
+  imports: [CommonModule, RouterLink, PaginationComponent, FormsModule],
   templateUrl: './don-hang.html',
   styleUrl: './don-hang.scss',
 })
@@ -58,6 +60,7 @@ export class DonHangComponent implements OnInit {
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private toast = inject(ToastService);
+  private reviews = inject(ReviewsService);
 
   readonly orders = signal<OrderData[]>([]);
   readonly selected = signal<OrderData | null>(null);
@@ -68,6 +71,10 @@ export class DonHangComponent implements OnInit {
 
   readonly statusSteps = STATUS_STEPS;
   readonly orderIdParam = signal<string | null>(null);
+  readonly reviewProductId = signal<number | null>(null);
+  readonly reviewRating = signal(0);
+  readonly reviewComment = signal('');
+  readonly reviewSubmitting = signal(false);
 
   ngOnInit(): void {
     if (!this.auth.isAuthenticated()) {
@@ -186,5 +193,31 @@ export class DonHangComponent implements OnInit {
       bank_transfer: 'Chuyển khoản',
     };
     return m[method] || method;
+  }
+
+  canReview(order: OrderData): boolean {
+    return order.status === 'delivered';
+  }
+
+  openReview(productId: number): void {
+    this.reviewProductId.set(productId);
+    this.reviewRating.set(0);
+    this.reviewComment.set('');
+  }
+
+  closeReview(): void { this.reviewProductId.set(null); }
+
+  submitReview(item: OrderItem): void {
+    const rating = this.reviewRating();
+    if (!rating) { this.toast.error('Hãy chọn số sao đánh giá.'); return; }
+    this.reviewSubmitting.set(true);
+    this.reviews.createForProduct(item.productId, {
+      rating,
+      content: this.reviewComment().trim(),
+      userName: this.auth.user()?.name || 'Khách hàng',
+    }).subscribe({
+      next: () => { this.reviewSubmitting.set(false); this.closeReview(); this.toast.success('Cảm ơn bạn đã gửi đánh giá.'); },
+      error: (e: any) => { this.reviewSubmitting.set(false); this.toast.error(e?.error?.message || 'Không thể gửi đánh giá.'); },
+    });
   }
 }

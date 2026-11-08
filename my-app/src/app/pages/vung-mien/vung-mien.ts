@@ -1,32 +1,15 @@
 import { Component, computed, inject, signal } from '@angular/core';
-import { ProductItem, ProductsService, RegionItem } from '../../products.service';
+import { HttpClient } from '@angular/common/http';
+import { ProductsService } from '../../products.service';
 
-interface VillageGroup {
-  name: string;
-  province: string;
-  region: string;
-  count: number;
-  products: ProductItem[];
-  icon: string;
+interface RegionStory {
+  _id?: string;
+  title: string;
+  region?: string;
+  excerpt?: string;
+  content?: string;
+  imageUrl?: string;
 }
-
-const VILLAGE_ICONS: Record<string, string> = {
-  'Bát Tràng': '🏺',
-  'Hạ Thái': '🎨',
-  'Phú Vinh': '🧺',
-  'Chu Đậu': '🔔',
-  'Vạn Phúc': '🧵',
-  'Đông Hồ': '🖼️',
-  'Đồng Kỵ': '🪵',
-  'Quất Động': '🧵',
-  'Xuân La': '🧣',
-  'Làng Chuồng': '👒',
-  'Đọi Tam': '🧵',
-  'Lái Thiêu': '🍃',
-  'Trảng Bàng': '🏺',
-  'Đồ Sơn': '🏮',
-  'Bàu Trúc': '🏺',
-};
 
 @Component({
   selector: 'app-vung-mien',
@@ -36,31 +19,18 @@ const VILLAGE_ICONS: Record<string, string> = {
 })
 export class VungmienComponent {
   private svc = inject(ProductsService);
+  private http = inject(HttpClient);
 
   readonly regions = this.svc.regions;
   readonly products = this.svc.products;
+  readonly regionStories = signal<RegionStory[]>([]);
 
-  readonly activeTab = signal<'regions' | 'villages'>('regions');
-
-  readonly villages = computed(() => {
-    const grouped = new Map<string, ProductItem[]>();
-    for (const p of this.products()) {
-      const v = p.village;
-      if (!v) continue;
-      if (!grouped.has(v)) grouped.set(v, []);
-      grouped.get(v)!.push(p);
-    }
-    return Array.from(grouped.entries())
-      .map(([name, products]) => ({
-        name,
-        province: products[0]?.province || '',
-        region: products[0]?.region || '',
-        count: products.length,
-        products,
-        icon: VILLAGE_ICONS[name] ?? '🛠️',
-      }))
-      .sort((a, b) => b.count - a.count);
-  });
+  constructor() {
+    this.http.get<{ stories: RegionStory[] }>('/api/region-stories?status=published').subscribe({
+      next: (r) => this.regionStories.set(Array.isArray(r?.stories) ? r.stories : []),
+      error: () => this.regionStories.set([]),
+    });
+  }
 
   readonly productsByRegion = computed(() => {
     const list = this.products();
@@ -72,8 +42,4 @@ export class VungmienComponent {
     }
     return Array.from(result.values()).sort((a, b) => b.count - a.count);
   });
-
-  fmt(n: number): string {
-    return n.toLocaleString('vi-VN') + 'đ';
-  }
 }

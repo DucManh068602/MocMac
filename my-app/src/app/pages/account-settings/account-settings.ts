@@ -18,6 +18,19 @@ interface ProfileData {
   role: string;
 }
 
+interface Address {
+  _id: string;
+  fullName: string;
+  phone: string;
+  provinceCode: number;
+  provinceName: string;
+  wardCode: number;
+  wardName: string;
+  streetAddress: string;
+  isDefault: boolean;
+  createdAt: string;
+}
+
 @Component({
   selector: 'app-account-settings',
   standalone: false,
@@ -33,6 +46,34 @@ export class AccountSettingsComponent {
   readonly requests = signal<RoleRequest[]>([]);
   readonly requestsLoading = signal(false);
   readonly message = signal('');
+  readonly addresses = signal<Address[]>([]);
+  readonly addressesLoading = signal(false);
+  readonly addressForm = signal<{
+    fullName: string;
+    phone: string;
+    provinceCode: number;
+    provinceName: string;
+    wardCode: number;
+    wardName: string;
+    streetAddress: string;
+    isDefault: boolean;
+  }>({
+    fullName: '',
+    phone: '',
+    provinceCode: 0,
+    provinceName: '',
+    wardCode: 0,
+    wardName: '',
+    streetAddress: '',
+    isDefault: false,
+  });
+  readonly showAddressForm = signal(false);
+  readonly editingAddressId = signal<string | null>(null);
+
+  readonly provinces = signal<any[]>([]);
+  readonly wards = signal<any[]>([]);
+  readonly provincesLoading = signal(false);
+  readonly wardsLoading = signal(false);
 
   readonly roleOptions = [
     { value: 'collaborator', label: 'Cộng tác viên', desc: 'Phân phát và bán hàng hướệu quả' },
@@ -45,6 +86,170 @@ export class AccountSettingsComponent {
   constructor() {
     this.loadProfile();
     this.loadRequests();
+    this.loadAddresses();
+    this.loadProvinces();
+  }
+
+  loadAddresses(): void {
+    this.addressesLoading.set(true);
+    this.http.get<{ addresses: Address[] }>('/api/addresses').subscribe({
+      next: (res) => {
+        this.addresses.set(res.addresses || []);
+        this.addressesLoading.set(false);
+      },
+      error: () => {
+        this.addresses.set([]);
+        this.addressesLoading.set(false);
+      },
+    });
+  }
+
+  loadProvinces(): void {
+    this.provincesLoading.set(true);
+    this.http.get<any[]>('/api/locations/provinces').subscribe({
+      next: (res) => {
+        this.provinces.set(res || []);
+        this.provincesLoading.set(false);
+      },
+      error: () => {
+        this.provinces.set([]);
+        this.provincesLoading.set(false);
+      },
+    });
+  }
+
+  onProvinceChange(code: string): void {
+    const codeNum = Number.parseInt(String(code ?? ''), 10);
+    if (!Number.isFinite(codeNum) || codeNum <= 0) {
+      this.addressForm.update((f) => ({ ...f, provinceCode: 0, provinceName: '', wardCode: 0, wardName: '' }));
+      this.wards.set([]);
+      return;
+    }
+    const p = this.provinces().find((x: any) => Number(x.code) === codeNum);
+    this.addressForm.update((f) => ({ ...f, provinceCode: codeNum, provinceName: p ? p.name : '', wardCode: 0, wardName: '' }));
+    this.wards.set([]);
+    this.loadWards(codeNum);
+  }
+
+  onWardChange(code: string): void {
+    const codeNum = Number.parseInt(String(code ?? ''), 10);
+    if (!Number.isFinite(codeNum) || codeNum <= 0) {
+      this.addressForm.update((f) => ({ ...f, wardCode: 0, wardName: '' }));
+      return;
+    }
+    const w = this.wards().find((x: any) => Number(x.code) === codeNum);
+    this.addressForm.update((f) => ({ ...f, wardCode: codeNum, wardName: w ? w.name : '' }));
+  }
+
+  loadWards(provinceCode: number): void {
+    this.wardsLoading.set(true);
+    this.addressForm.update((f) => ({ ...f, wardCode: 0, wardName: '' }));
+    this.http.get<any[]>(`/api/locations/districts/${provinceCode}/wards`).subscribe({
+      next: (res) => {
+        this.wards.set(res || []);
+        this.wardsLoading.set(false);
+      },
+      error: () => {
+        this.wards.set([]);
+        this.wardsLoading.set(false);
+      },
+    });
+  }
+
+  openAddAddressForm(): void {
+    this.addressForm.set({
+      fullName: '',
+      phone: '',
+      provinceCode: 0,
+      provinceName: '',
+      wardCode: 0,
+      wardName: '',
+      streetAddress: '',
+      isDefault: false,
+    });
+    this.editingAddressId.set(null);
+    this.showAddressForm.set(true);
+  }
+
+  editAddress(address: Address): void {
+    this.addressForm.set({
+      fullName: address.fullName,
+      phone: address.phone,
+      provinceCode: Number(address.provinceCode),
+      provinceName: address.provinceName,
+      wardCode: Number(address.wardCode),
+      wardName: address.wardName,
+      streetAddress: address.streetAddress,
+      isDefault: address.isDefault,
+    });
+    this.editingAddressId.set(address._id);
+    this.showAddressForm.set(true);
+    this.loadWards(Number(address.provinceCode));
+  }
+
+  closeAddressForm(): void {
+    this.showAddressForm.set(false);
+    this.editingAddressId.set(null);
+  }
+
+  saveAddress(): void {
+    const f = this.addressForm();
+    if (!f.fullName || !f.phone || !f.provinceCode || !f.wardCode || !f.streetAddress) {
+      this.message.set('Vui lòng điền đầy đủ thông tin địa chỉ.');
+      return;
+    }
+
+    this.loading.set(true);
+    const id = this.editingAddressId();
+
+    if (id) {
+      this.http.put(`/api/addresses/${id}`, f).subscribe({
+        next: () => {
+          this.message.set('Đã cập nhật địa chỉ.');
+          this.loading.set(false);
+          this.closeAddressForm();
+          this.loadAddresses();
+        },
+        error: () => {
+          this.message.set('Không thể cập nhật địa chỉ.');
+          this.loading.set(false);
+        },
+      });
+    } else {
+      this.http.post('/api/addresses', f).subscribe({
+        next: () => {
+          this.message.set('Đã thêm địa chỉ.');
+          this.loading.set(false);
+          this.closeAddressForm();
+          this.loadAddresses();
+        },
+        error: () => {
+          this.message.set('Không thể thêm địa chỉ.');
+          this.loading.set(false);
+        },
+      });
+    }
+  }
+
+  deleteAddress(id: string): void {
+    if (!confirm('Bạn chắc chắn muốn xóa địa chỉ này?')) return;
+    this.http.delete(`/api/addresses/${id}`).subscribe({
+      next: () => {
+        this.message.set('Đã xóa địa chỉ.');
+        this.loadAddresses();
+      },
+      error: () => this.message.set('Không thể xóa địa chỉ.'),
+    });
+  }
+
+  setDefaultAddress(id: string): void {
+    this.http.patch(`/api/addresses/${id}/default`, {}).subscribe({
+      next: () => {
+        this.message.set('Đã đặt địa chỉ mặc định.');
+        this.loadAddresses();
+      },
+      error: () => this.message.set('Không thể đặt địa chỉ mặc định.'),
+    });
   }
 
   loadProfile(): void {

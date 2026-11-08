@@ -318,3 +318,165 @@
 .remove-btn-sm {
   @apply absolute top-0 right-0 w-3 h-3 bg-red-500 text-white rounded-full text-center leading-none text-[8px] hover:bg-red-600;
 }
+
+/* ===== Phản hồi admin ===== */
+.reply-editor {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+
+.reply-input {
+  @apply w-full px-2 py-1.5 border border-[#d6ceb9] rounded text-sm focus:outline-none focus:border-moss;
+}
+
+.btn-reply {
+  @apply px-2.5 py-1.5 border border-[#d6ceb9] rounded bg-white cursor-pointer text-xs font-medium text-moss transition-colors;
+}
+
+.btn-reply:hover:not(:disabled) {
+  @apply bg-[#e4ebe3];
+}
+
+.btn-reply:disabled {
+  @apply opacity-60 cursor-not-allowed;
+}
+
+.admin-reply {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.reply-badge {
+  @apply inline-block px-1.5 py-0.5 rounded text-[10px] font-semibold uppercase bg-[rgba(162,86,51,0.1)] text-[#a25633] border border-[#a25633] border-opacity-30;
+}
+
+.reply-text {
+  @apply text-xs text-ink whitespace-pre-wrap max-w-[200px] break-words;
+}
+
+/* Review reply modal */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(18, 26, 20, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 1200;
+}
+
+.modal {
+  width: 100%;
+  max-width: 560px;
+  background: #fff;
+  border: 1px solid #e4dccb;
+  border-radius: 14px;
+  box-shadow: 0 22px 60px rgba(0, 0, 0, 0.18);
+  padding: 18px;
+}
+
+.modal-wide {
+  max-width: 760px;
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.modal-header h3 {
+  margin: 0;
+  color: #2f4538;
+  font-size: 18px;
+}
+
+.modal-close {
+  border: 0;
+  background: transparent;
+  font-size: 26px;
+  line-height: 1;
+  color: #6b7280;
+  cursor: pointer;
+}
+
+.review-reply-context {
+  background: #faf8f2;
+  border: 1px solid #ebe3d2;
+  border-radius: 10px;
+  padding: 12px;
+  margin-bottom: 14px;
+}
+
+.context-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px 12px;
+  font-size: 13px;
+  color: #374151;
+  margin-bottom: 10px;
+}
+
+.context-comment strong,
+.reply-form label strong {
+  color: #2f4538;
+  font-size: 13px;
+}
+
+.context-comment p {
+  margin: 6px 0 0;
+  color: #4b5563;
+  font-size: 13px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+}
+
+.reply-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.reply-textarea {
+  width: 100%;
+  min-height: 150px;
+  resize: vertical;
+  border: 1px solid #d6ceb9;
+  border-radius: 10px;
+  padding: 12px;
+  font: inherit;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #1f2937;
+  background: #fff;
+}
+
+.reply-textarea:focus {
+  outline: none;
+  border-color: #2f4538;
+  box-shadow: 0 0 0 3px rgba(47, 69, 56, 0.08);
+}
+
+.reply-hint {
+  margin: 0;
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+@media (max-width: 640px) {
+  .modal-overlay { padding: 10px; }
+  .modal, .modal-wide { max-width: 100%; padding: 14px; }
+  .context-grid { grid-template-columns: 1fr; }
+}

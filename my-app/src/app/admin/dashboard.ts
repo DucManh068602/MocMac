@@ -46,6 +46,17 @@ export class AdminDashboardComponent {
   readonly counts = signal({ products: 0, coupons: 0, contacts: 0, users: 0, notifications: 0 });
   readonly loading = signal(true);
   readonly failed = signal(false);
+  readonly flashSale = signal<any>(null);
+  saleForm: any = { active: false, discountPercent: 10, startsAt: '', endsAt: '' };
+
+  readonly greeting = computed(() => {
+    const h = new Date().getHours();
+    if (h < 12) return 'Chào buổi sáng';
+    if (h < 18) return 'Chào buổi chiều';
+    return 'Chào buổi tối';
+  });
+
+  readonly todayLabel = computed(() => new Date().toLocaleDateString('vi-VN', { weekday: 'long', day: 'numeric', month: 'long' }));
 
   readonly valid = computed(() => this.orders().filter((o) => o.status !== 'cancelled'));
 
@@ -170,6 +181,7 @@ export class AdminDashboardComponent {
       contacts: get('/api/contacts'),
       users: get('/api/users'),
       notifications: get('/api/notifications'),
+      flashSale: get('/api/flash-sale'),
     }).subscribe((r) => {
       const orders = pick(r.orders, 'orders');
       this.orders.set(orders);
@@ -181,7 +193,14 @@ export class AdminDashboardComponent {
         users: pick(r.users, 'users').length,
         notifications: pick(r.notifications, 'notifications').length,
       });
+      this.flashSale.set(r.flashSale?.sale || null);
+      const sale = r.flashSale?.sale;
+      if (sale) this.saleForm = { active: Boolean(sale.active), discountPercent: sale.discountPercent || 10, startsAt: this.toInputDate(sale.startsAt), endsAt: this.toInputDate(sale.endsAt) };
       this.loading.set(false);
     });
   }
+
+  saveFlashSale(): void { this.http.put<any>('/api/flash-sale', this.saleForm).subscribe({ next: r => { this.flashSale.set(r.sale); this.saleForm = { ...this.saleForm, active: r.sale.active }; }, error: () => this.failed.set(true) }); }
+  deleteFlashSale(): void { if (!confirm('Xóa chế độ săn sale này?')) return; this.http.delete<any>('/api/flash-sale').subscribe({ next: r => { this.flashSale.set(r.sale); this.saleForm = { active: false, discountPercent: 10, startsAt: '', endsAt: '' }; }, error: () => this.failed.set(true) }); }
+  private toInputDate(value: string | null): string { return value ? new Date(value).toISOString().slice(0, 16) : ''; }
 }

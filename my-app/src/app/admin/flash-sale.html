@@ -1,0 +1,34 @@
+<div class="list-page">
+  <header class="list-header">
+    <h2>Quản lý Săn sale</h2>
+    <button type="button" class="btn-refresh" (click)="load()" [disabled]="saving()"><i class="fa-solid fa-rotate-right ico"></i> Làm mới</button>
+  </header>
+
+  <section class="sale-card">
+    <div class="sale-head">
+      <span class="sale-mark"><i class="fa-solid fa-bolt"></i></span>
+      <div class="sale-copy"><h3>Săn sale toàn shop</h3><p>Giảm đồng loạt cho toàn bộ sản phẩm trong khoảng thời gian bạn chọn.</p></div>
+      <span class="sale-state" [class.live]="sale()?.live">{{ live() }}</span>
+    </div>
+
+    <div class="sale-form">
+      <label class="sale-switch">
+        <input type="checkbox" [(ngModel)]="form.active" />
+        <span>Bật chiến dịch</span>
+      </label>
+      <label>Giảm giá<div class="sale-number"><input type="number" min="1" max="90" [(ngModel)]="form.discountPercent" /><b>%</b></div></label>
+      <label>Bắt đầu<input type="datetime-local" [(ngModel)]="form.startsAt" /></label>
+      <label>Kết thúc<input type="datetime-local" [(ngModel)]="form.endsAt" /></label>
+
+      <div class="sale-actions">
+        <button type="button" class="btn-save" [disabled]="saving()" (click)="save()">{{ saving() ? 'Đang lưu...' : 'Lưu Săn sale' }}</button>
+        <button type="button" class="btn-delete" [disabled]="saving()" (click)="remove()"><i class="fa-solid fa-trash"></i> Xóa Săn sale</button>
+      </div>
+
+      <div class="sale-hint">
+        <i class="fa-solid fa-circle-info"></i>
+        <span>Khi bật, toàn bộ mặt hàng trên trang chủ sẽ dán nhãn giảm và tính giá mới theo mức {{ form.discountPercent }}%. Khi xóa/tắt, giao diện sẽ không còn hiển thị Săn sale.</span>
+      </div>
+    </div>
+  </section>
+</div>

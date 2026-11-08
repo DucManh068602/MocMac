@@ -55,7 +55,7 @@
           </div>
 
           <div class="trust-row">
-            <span class="trust-text">✓ Cam kết sản phẩm thật từ nghệ nhân làng nghề</span>
+            <span class="trust-text"><i class="fa-solid fa-circle-check" aria-hidden="true"></i> Cam kết sản phẩm thật từ nghệ nhân làng nghề</span>
             <button type="button" class="link-btn" (click)="clearAll()">Xóa toàn bộ giỏ hàng</button>
           </div>
 
@@ -160,7 +160,7 @@
                 <small class="error">{{ couponError() }}</small>
               }
               @if (couponApplied()) {
-                <small class="ok">✓ Đã áp dụng mã giảm giá -{{ vnd(discount()) }}</small>
+                <small class="ok"><i class="fa-solid fa-circle-check" aria-hidden="true"></i> Đã áp dụng mã giảm giá -{{ vnd(discount()) }}</small>
               }
             </div>
 
@@ -169,24 +169,90 @@
                <div class="payment-options">
                  <label class="payment-option">
                    <input type="radio" name="payment" value="cod"
-                          [checked]="paymentMethod() === 'cod'"
-                          (change)="paymentMethod.set('cod')" />
+                         [checked]="paymentMethod() === 'cod'"
+                         (change)="paymentMethod.set('cod')" />
                    <span class="payment-text">Thanh toán khi nhận hàng (COD)</span>
                  </label>
                  <label class="payment-option">
                    <input type="radio" name="payment" value="vnpay"
-                          [checked]="paymentMethod() === 'vnpay'"
-                          (change)="paymentMethod.set('vnpay')" />
-                    <span class="payment-text">
-                      <span class="momo-icon" style="background:#005baa">V</span> VNPAY (sandbox test)
-                    </span>
+                         [checked]="paymentMethod() === 'vnpay'"
+                         (change)="paymentMethod.set('vnpay')" />
+                  <span class="payment-text">
+                    <span class="momo-icon" style="background:#005baa">V</span> VNPAY (sandbox test)
+                  </span>
                  </label>
                </div>
              </div>
 
-            <button type="button" class="btn-primary block" (click)="checkout()" [disabled]="paying()">
-              @if (paying()) { Đang chuyển đến VNPAY... } @else { Tiến hành Thanh toán &nbsp;→ }
-            </button>
+             <!-- ===== Thông tin người nhận ===== -->
+             <section class="receiver-info">
+               <h3>Thông tin người nhận</h3>
+
+               @if (auth.isAuthenticated()) {
+                 <div class="address-selector">
+                   <label>Chọn địa chỉ giao hàng</label>
+                   <div class="address-options">
+                     @if (addressesLoading()) {
+                       <div class="address-option loading">Đang tải...</div>
+                     } @else if (addresses().length === 0) {
+                       <div class="address-option empty">
+                         <span>Chưa có địa chỉ lưu</span>
+                         <a routerLink="/tai-khoan">Thêm địa chỉ tại cài đặt tài khoản</a>
+                       </div>
+                     } @else {
+                       @for (addr of addresses(); track addr._id) {
+                         <label class="address-option" [class.selected]="selectedAddressId() === addr._id" (click)="selectAddress(addr._id)">
+                           <input type="radio" name="address" [checked]="selectedAddressId() === addr._id" />
+                           <div class="address-option-info">
+                             <div class="address-option-name">{{ addr.fullName }}</div>
+                             <div class="address-option-phone">{{ addr.phone }}</div>
+                              <div class="address-option-detail">{{ addr.streetAddress }}, {{ addr.wardName }}, {{ addr.provinceName }}</div>
+                             @if (addr.isDefault) {
+                               <span class="address-option-badge">Mặc định</span>
+                             }
+                           </div>
+                         </label>
+                       }
+                     }
+                   </div>
+                 </div>
+
+                  <div class="receiver-details">
+                    <div class="receiver-row">
+                      <label>Họ tên <input #cartNameInput type="text" [value]="receiverInfo().name" (input)="receiverInfo.update(v => ({ ...v, name: cartNameInput.value }))" placeholder="Nhập họ tên người nhận" required /></label>
+                      <label>Số điện thoại <input #cartPhoneInput type="tel" [value]="receiverInfo().phone" (input)="receiverInfo.update(v => ({ ...v, phone: cartPhoneInput.value }))" placeholder="09xxxxxxxx" required /></label>
+                    </div>
+                    <div class="receiver-row">
+                      <label>Email <input #cartEmailInput type="email" [value]="receiverInfo().email" (input)="receiverInfo.update(v => ({ ...v, email: cartEmailInput.value }))" placeholder="email@example.com" /></label>
+                      <label>Địa chỉ giao hàng <input #cartAddressInput type="text" [value]="receiverInfo().address" (input)="receiverInfo.update(v => ({ ...v, address: cartAddressInput.value }))" placeholder="Số nhà, đường, phường, thành phố" required /></label>
+                    </div>
+                  </div>
+
+                 <div class="address-note">
+                   <i class="fa-solid fa-circle-info"></i>
+                   <span>Đã chọn địa chỉ từ tài khoản. Bạn có thể chỉnh sửa trực tiếp ở trên nếu cần.</span>
+                 </div>
+               } @else {
+               <div class="receiver-row">
+                 <label>Họ tên <input #nameInput type="text" [value]="receiverInfo().name" (input)="receiverInfo.update(v => ({ ...v, name: nameInput.value }))" placeholder="Nhập họ tên người nhận" required /></label>
+                 <label>Số điện thoại <input #phoneInput type="tel" [value]="receiverInfo().phone" (input)="receiverInfo.update(v => ({ ...v, phone: phoneInput.value }))" placeholder="09xxxxxxxx" required /></label>
+               </div>
+               <div class="receiver-row">
+                 <label>Email <input #emailInput type="email" [value]="receiverInfo().email" (input)="receiverInfo.update(v => ({ ...v, email: emailInput.value }))" placeholder="email@example.com" /></label>
+                 <label>Địa chỉ giao hàng <input #addressInput type="text" [value]="receiverInfo().address" (input)="receiverInfo.update(v => ({ ...v, address: addressInput.value }))" placeholder="Số nhà, đường, phường, thành phố" required /></label>
+               </div>
+               }
+
+               <div class="receiver-note">
+                 <i class="fa-solid fa-sticky-note"></i>
+                 <span>Lưu ý cho đơn hàng (tùy chọn)</span>
+               </div>
+               <textarea #noteInput [value]="receiverInfo().note" (input)="receiverInfo.update(v => ({ ...v, note: noteInput.value }))" placeholder="Ghi chú thêm về đơn hàng..." rows="2"></textarea>
+             </section>
+
+             <button type="button" class="btn-primary block" (click)="checkout()" [disabled]="paying()">
+               @if (paying()) { Đang chuyển đến VNPAY... } @else { Tiến hành Thanh toán &nbsp;→ }
+             </button>
             @if (payError()) { <p class="coupon-msg err" style="margin-top:8px">{{ payError() }}</p> }
             @if (paymentStatus()==='success') { <p class="coupon-msg ok" style="margin-top:8px">Thanh toán thành công. Cảm ơn bạn!</p> }
             @if (paymentStatus()==='fail') { <p class="coupon-msg err" style="margin-top:8px">Thanh toán VNPAY chưa hoàn tất. Vui lòng thử lại.</p> }
@@ -195,9 +261,9 @@
             </a>
 
             <ul class="assurance">
-              <li>✓ 100% đặc sản chính gốc làng nghề truyền thống</li>
+              <li><i class="fa-solid fa-circle-check" aria-hidden="true"></i> 100% đặc sản chính gốc làng nghề truyền thống</li>
               <li>↻ Đổi trả an tâm trong vòng 7 ngày nếu lỗi thủ công</li>
-              <li>✓ Đóng gói xanh mộc mạc, phân hủy tự nhiên 100%</li>
+              <li><i class="fa-solid fa-circle-check" aria-hidden="true"></i> Đóng gói xanh mộc mạc, phân hủy tự nhiên 100%</li>
             </ul>
 
     <div class="refund-note">5% mỗi đơn được hoàn lại Quỹ gìn giữ Làng nghề Việt</div>
@@ -209,20 +275,82 @@
   
    <!-- ===== Popup yêu cầu đăng nhập ===== -->
    @if (loginRequiredPopup()) {
-     <div class="login-popup-overlay" (click)="closeLoginPopup()">
-       <div class="login-popup" (click)="$event.stopPropagation()">
-         <div class="login-popup-head">
-           <span class="login-popup-icon">🔒</span>
-         </div>
-         <h2>Đăng nhập để thanh toán</h2>
-         <p>Bạn cần đăng nhập tài khoản để tiến hành thanh toán và đặt hàng. Đăng nhập ngay để trải nghiệm dịch vụ đầy đủ!</p>
-         <div class="login-popup-actions">
-           <a class="btn-primary inline" routerLink="/dang-nhap" (click)="closeLoginPopup()">Đăng nhập</a>
-           <button type="button" class="btn-secondary block" (click)="closeLoginPopup()">Hủy bỏ</button>
-         </div>
-       </div>
-     </div>
-   }
+      <div class="login-popup-overlay" (click)="closeLoginPopup()">
+        <div class="login-popup" (click)="$event.stopPropagation()">
+          <div class="login-popup-head">
+            <span class="login-popup-icon"><i class="fa-solid fa-lock" aria-hidden="true"></i></span>
+          </div>
+          <h2>Đăng nhập để thanh toán</h2>
+          <p>Bạn cần đăng nhập tài khoản để tiến hành thanh toán và đặt hàng. Đăng nhập ngay để trải nghiệm dịch vụ đầy đủ!</p>
+          <div class="login-popup-actions">
+            <a class="btn-primary inline" routerLink="/dang-nhap" (click)="closeLoginPopup()">Đăng nhập</a>
+            <button type="button" class="btn-secondary block" (click)="closeLoginPopup()">Hủy bỏ</button>
+          </div>
+        </div>
+      </div>
+    }
+
+    <!-- ===== Hàng dưới giỏ hàng (đặt riêng, không thêm vào giỏ) ===== -->
+    <section class="cart-bottom-row">
+      <div class="container">
+        <div class="bottom-head">
+          <h3>Có thể bạn quan tâm</h3>
+          <a routerLink="/san-pham">Xem tất cả đặc sản →</a>
+        </div>
+        <div class="bottom-grid">
+          <article class="bottom-card">
+            <div class="bottom-img"><span class="icon">🎁</span></div>
+            <div class="bottom-info">
+              <h4>Gói quà tặng doanh nghiệp</h4>
+              <p>Tùy chọn theo nhu cầu, đóng gói chuyên nghiệp cho đối tác.</p>
+              <button type="button" class="bottom-order-btn" (click)="quickOrder('Gói quà tặng doanh nghiệp')">Đặt hàng ngay</button>
+            </div>
+          </article>
+          <article class="bottom-card">
+            <div class="bottom-img"><span class="icon">🍵</span></div>
+            <div class="bottom-info">
+              <h4>Trà Shan Tuyết Hà Giang</h4>
+              <p>Trà Shan tuyết nguyên chất từ vùng cao Hà Giang.</p>
+              <button type="button" class="bottom-order-btn" (click)="quickOrder('Trà Shan Tuyết Hà Giang')">Đặt hàng ngay</button>
+            </div>
+          </article>
+          <article class="bottom-card">
+            <div class="bottom-img"><span class="icon">☕</span></div>
+            <div class="bottom-info">
+              <h4>Cà phê chồn Đà Lạt</h4>
+              <p>Cà phê chồn nguyên hạt từ nông trang Đà Lạt.</p>
+              <button type="button" class="bottom-order-btn" (click)="quickOrder('Cà phê chồn Đà Lạt')">Đặt hàng ngay</button>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
 
   </div>
 </div>
+
+<!-- ===== Modal Đặt hàng nhanh (không chạm đến giỏ hàng) ===== -->
+@if (quickOrderOpen()) {
+  <div class="quick-order-overlay" (click)="closeQuickOrder()">
+    <div class="quick-order-modal" (click)="$event.stopPropagation()">
+      <button type="button" class="quick-order-close" (click)="closeQuickOrder()">✕</button>
+      <h2>Đặt hàng ngay</h2>
+      <p class="quick-order-note">Sản phẩm: <strong>{{ quickOrderProduct() }}</strong></p>
+      <form class="quick-order-form" (submit)="$event.preventDefault(); submitQuickOrder()">
+        <div class="quick-form-row">
+          <label>Họ tên <input type="text" placeholder="Nhập họ tên" required /></label>
+          <label>Số điện thoại <input type="tel" placeholder="09xxxxxxxx" required /></label>
+        </div>
+        <div class="quick-form-row">
+          <label>Email <input type="email" placeholder="email@example.com" /></label>
+          <label>Địa chỉ giao hàng <input type="text" placeholder="Số nhà, đường, phường, thành phố" required /></label>
+        </div>
+        <div class="quick-form-note">
+          <i class="fa-solid fa-circle-info"></i>
+          <span>Đơn hàng này sẽ được xử lý riêng, không ảnh hưởng đến giỏ hàng hiện tại.</span>
+        </div>
+        <button type="submit" class="quick-order-submit">Gửi đơn đặt hàng</button>
+      </form>
+    </div>
+  </div>
+}

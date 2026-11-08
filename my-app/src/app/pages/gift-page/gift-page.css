@@ -283,7 +283,7 @@
 }
 
 /* ============================================================
-   SOLUTIONS SECTION: BỐ CỤC CHIA 2 BÊN (SẢN PHẨM TRÁI - BỘ LỌC PHẢI)
+   SOLUTIONS SECTION: Bờ CỤC CHIA 2 BÊN (SẢN PHẨM TRÝI - BỘ LỌC PHẢI)
 ============================================================ */
 .solutions-section {
   padding: 60px 0 80px;
@@ -292,14 +292,14 @@
 
 .gift-catalog-layout {
   display: grid;
-  grid-template-columns: 490px 1fr; /* Đổi bộ lọc 490px ra phía trước (bên trái), sản phẩm 1fr ra sau (bên phải) */
+  grid-template-columns: 490px 1fr; /* ĝổi bộ lờc 490px ra phía trước (bên trái), sản phẩm 1fr ra sau (bên phải) */
   gap: 32px;
   align-items: start;
 }
 .catalog-filter-sidebar {
-  order: 1; /* Bộ lọc đứng trước -> nằm bên trái */
+  order: 1; /* Bộ lờc đứng trước -> nằm bên trái */
 }
-/* CỘT BÊN TRÁI */
+/* CỘT BÊN TRÝI */
 .catalog-main-content {
   order: 2;
 }
@@ -324,7 +324,7 @@
   margin: 0 0 24px;
 }
 
-/* LƯỚI SẢN PHẨM TRONG CỘT TRÁI (3 CỘT VỪA ĐẸP MẮT) */
+/* LƯỚI SẢN PHẨM TRONG CỘT TRÝI (3 CỘT VỪA ĝẸP MẮT) */
 .product-cards-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -518,7 +518,7 @@
   border-radius: 16px;
   padding: 18px 14px;
   display: grid;
-  grid-template-columns: 1fr 1fr; /* 2 cột lọc y hệt ảnh thiết kế */
+  grid-template-columns: 1fr 1fr; /* 2 cột lờc y hệt ảnh thiết kế */
   gap: 16px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
 }
@@ -614,7 +614,7 @@
   font-weight: bold;
 }
 
-/* TIÊU ĐỀ & MỤC CHỌN CHECKBOX */
+/* TIÊU ĝỀ & MỤC CHỌN CHECKBOX */
 .filter-section-title {
   font-size: 12px;
   font-weight: 700;
@@ -665,7 +665,7 @@
   border-color: #2F4538;
 }
 
-/* NÚT THAO TÁC BỘ LỌC */
+/* NÚT THAO TÝC BỘ LỌC */
 .filter-action-btns {
   display: flex;
   flex-direction: column;
@@ -789,7 +789,7 @@
 ============================================================ */
 @media (max-width: 1100px) {
   .gift-catalog-layout {
-    grid-template-columns: 1fr; /* Màn hình nhỏ thì bộ lọc xuống dưới hoặc xếp dọc */
+    grid-template-columns: 1fr; /* Màn hình nhờ thì bộ lờc xuống dưới hoặc xếp dờc */
   }
   .catalog-filter-sidebar {
     position: static;
@@ -813,3 +813,150 @@
     grid-template-columns: repeat(2, 1fr);
   }
 }
+/* ============================================================
+   Y�U C?U B�O GI� MODAL
+   ============================================================ */
+.quote-btn{position:relative}
+.quote-btn.in-quote{background:#1e3a2a;border-color:#1e3a2a}
+.quote-btn .cart-icon{font-size:13px}
+
+.quote-overlay{position:fixed;inset:0;z-index:3000;display:flex;align-items:center;justify-content:center;padding:24px;background:rgba(0,0,0,.5);backdrop-filter:blur(4px)}
+.quote-modal{width:100%;max-width:560px;max-height:92vh;overflow-y:auto;background:#fff;border-radius:16px;padding:26px;box-shadow:0 24px 70px rgba(0,0,0,.3);position:relative}
+.quote-close{position:absolute;top:12px;right:14px;background:none;border:none;font-size:22px;cursor:pointer;color:#8a8e87}
+.quote-modal h2{margin:0 0 6px;font-family:'Lora',Georgia,serif;font-size:24px;color:#1e3a2a}
+.quote-sub{margin:0 0 18px;font-size:13px;color:#555}
+.quote-items{margin-bottom:18px}
+.quote-items h3{margin:0 0 10px;font-size:15px;color:#1e3a2a}
+.quote-item-list{display:flex;flex-direction:column;gap:10px}
+.quote-item-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #f0f2ee}
+.quote-item-info strong{display:block;font-size:13px;color:#2b2a22}
+.quote-item-qty{display:flex;align-items:center;gap:6px}
+.quote-qty-btn{width:26px;height:26px;border:1px solid #d6ceb9;border-radius:6px;background:#fff;font-size:15px;cursor:pointer;color:#1e3a2a}
+.quote-qty-btn:hover{background:#f4f3ec}
+.quote-remove{background:none;border:none;color:#c0392b;font-size:11px;cursor:pointer;font-weight:600;margin-left:8px}
+.quote-remove:hover{text-decoration:underline}
+.quote-item-price{font-weight:700;color:#a25633;font-size:13px}
+.quote-total{display:flex;justify-content:space-between;padding-top:10px;border-top:1px solid #e3e6df;font-size:14px}
+.quote-total strong{color:#1e3a2a;font-size:16px}
+
+.quote-form{margin-bottom:16px}
+.quote-form label{display:flex;flex-direction:column;gap:5px;font-size:12px;font-weight:600;color:#3d4f43;margin-bottom:12px}
+.quote-form input,.quote-form select,.quote-form textarea{padding:8px 10px;border:1px solid #d6ceb9;border-radius:8px;background:#fff;font:inherit;font-size:13px;color:#2b2a22}
+.quote-form input:focus,.quote-form select:focus,.quote-form textarea:focus{border-color:#a25633;outline:none}
+.quote-form textarea{resize:vertical;min-height:80px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.form-full{grid-column:1/-1}
+.quote-submit{width:100%;padding:12px;border:0;border-radius:10px;background:#a25633;color:#fff;font:700 14px inherit;cursor:pointer}
+.quote-submit:hover:not(:disabled){background:#874223}
+.quote-submit:disabled{opacity:.65;cursor:default}
+
+@media (max-width: 640px){.form-row{grid-template-columns:1fr}.quote-modal{padding:18px;margin:12px}}
+
+/* ============================================================
+   G?I � QU� THEO V�NG MI�N & D?P (KH�NG AI)
+   ============================================================ */
+.recommend-section{margin:28px 0 40px}
+.rec-filters{display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin-bottom:16px}
+.rec-filters label{display:flex;flex-direction:column;gap:5px;font-size:12px;font-weight:700;color:#3d4f43}
+.rec-filters select{padding:8px 10px;border:1px solid #d6ceb9;border-radius:8px;background:#fff;font:inherit;font-size:13px;color:#2b2a22;min-width:150px}
+.rec-count{margin-left:auto;font-size:13px;color:#a25633;font-weight:700}
+.rec-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.rec-card{background:#fff;border:1px solid #eae3d2;border-radius:12px;padding:12px;position:relative;display:flex;flex-direction:column;min-width:0;transition:transform .2s,box-shadow .2s}
+.rec-card:hover{transform:translateY(-4px);box-shadow:0 6px 16px rgba(0,0,0,.05)}
+.rec-card .product-img-slot{height:150px}
+.rec-card .item-title{font-size:13px;font-weight:700;color:var(--ink,#1f2a37);margin:0 0 6px;line-height:1.35;height:36px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.rec-card .item-origin{font-size:11px;color:var(--clay,#a25633);margin-bottom:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rec-card .item-price{font-weight:700;font-size:14px;color:var(--clay,#a25633)}
+@media (max-width: 900px){.rec-grid{grid-template-columns:repeat(2,1fr)}}
+@media (max-width: 560px){.rec-grid{grid-template-columns:1fr}.rec-filters{flex-direction:column;align-items:stretch}.rec-count{margin-left:0;margin-top:8px}}
+
+.rec-card .product-icon{display:grid;place-items:center;width:100%;height:150px;background:#f3eadb;color:#a25633;font-size:48px;border-radius:8px}
+
+/* ============================================================
+   N�T TICK CH?N B�O GI�
+   ============================================================ */
+.quote-checkbox{display:inline-flex;align-items:center;gap:6px;cursor:pointer;font-size:13px;color:#2b2a22;font-weight:600;position:relative}
+.quote-checkbox input{appearance:none;width:18px;height:18px;border:2px solid #a25633;border-radius:4px;background:#fff;cursor:pointer;position:relative;margin:0}
+.quote-checkbox input:checked{background:#a25633;border-color:#a25633}
+.quote-checkbox input:checked::after{content:'?';position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);color:#fff;font-weight:800;font-size:12px}
+.quote-checkbox:hover{border-color:#a25633}
+.checkmark{display:none}
+
+/* Craft + gift stories */
+.craft-story-section .story-dual-block { margin-top: 28px; }
+
+.craft-story-dots {
+  display: flex;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.craft-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  border: 0;
+  padding: 0;
+  background: #d8ccb5;
+  cursor: pointer;
+}
+
+.craft-dot.active { background: var(--clay, #a25633); }
+
+.craft-story-grid {
+  margin-top: 22px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.craft-story-card {
+  border: 1px solid #e8dfce;
+  background: #fff;
+  border-radius: 12px;
+  padding: 0;
+  overflow: hidden;
+  text-align: left;
+  cursor: pointer;
+  transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease;
+}
+
+.craft-story-card:hover,
+.craft-story-card.active {
+  border-color: rgba(162, 86, 51, 0.45);
+  box-shadow: 0 10px 26px rgba(31, 42, 55, 0.08);
+  transform: translateY(-1px);
+}
+
+.craft-story-thumb {
+  width: 100%;
+  height: 150px;
+}
+
+.craft-story-meta {
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.craft-village {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .3px;
+  color: var(--clay, #a25633);
+  text-transform: uppercase;
+}
+
+.craft-story-meta strong {
+  font-size: 14px;
+  color: var(--moss-d, #304430);
+  line-height: 1.35;
+}
+
+@media (max-width: 900px) {
+  .craft-story-grid { grid-template-columns: 1fr; }
+  .craft-story-card { display: grid; grid-template-columns: 140px 1fr; align-items: stretch; }
+  .craft-story-thumb { height: 100%; min-height: 110px; }
+}
+

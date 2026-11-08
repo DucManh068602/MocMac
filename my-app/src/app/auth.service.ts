@@ -12,6 +12,7 @@ export interface AuthUser {
 export interface AuthResponse {
   token: string;
   user: AuthUser;
+  refreshToken?: string;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -54,8 +55,10 @@ export class AuthService {
     const otherStorage = remember ? sessionStorage : localStorage;
     otherStorage.removeItem('mocmac-auth-token');
     otherStorage.removeItem('mocmac-auth-user');
+    otherStorage.removeItem('mocmac-refresh-token');
     storage.setItem('mocmac-auth-token', response.token);
     storage.setItem('mocmac-auth-user', JSON.stringify(response.user));
+    if (response.refreshToken) storage.setItem('mocmac-refresh-token', response.refreshToken);
     this._token.set(response.token);
     this._user.set(response.user);
   }
@@ -65,8 +68,23 @@ export class AuthService {
     sessionStorage.removeItem('mocmac-auth-token');
     localStorage.removeItem('mocmac-auth-user');
     sessionStorage.removeItem('mocmac-auth-user');
+    localStorage.removeItem('mocmac-refresh-token');
+    sessionStorage.removeItem('mocmac-refresh-token');
     this._token.set(null);
     this._user.set(null);
+  }
+
+  refresh(): Observable<AuthResponse> {
+    const refreshToken = localStorage.getItem('mocmac-refresh-token') ?? sessionStorage.getItem('mocmac-refresh-token');
+    return this.http.post<AuthResponse>('/api/auth/refresh', { refreshToken });
+  }
+
+  replaceSession(response: AuthResponse): void {
+    const storage = localStorage.getItem('mocmac-auth-token') ? localStorage : sessionStorage;
+    storage.setItem('mocmac-auth-token', response.token);
+    if (response.refreshToken) storage.setItem('mocmac-refresh-token', response.refreshToken);
+    storage.setItem('mocmac-auth-user', JSON.stringify(response.user));
+    this._token.set(response.token); this._user.set(response.user);
   }
 
   private readToken(): string | null {

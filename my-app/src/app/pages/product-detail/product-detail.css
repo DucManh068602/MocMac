@@ -41,6 +41,13 @@
   -webkit-tap-highlight-color: transparent;
 }
 
+/* Product page refinement: clearer hierarchy, calmer elevation, still using the existing layout. */
+.product-main{border-radius:22px;overflow:hidden;box-shadow:0 20px 56px rgba(39,55,42,.08)}
+.price-card{border-radius:16px}
+.benefit{border-radius:14px}
+.detail-tabs{position:sticky;top:0;z-index:5;backdrop-filter:blur(12px)}
+:host-context([data-theme='dark']){--mm-green:#9dcc9d;--mm-green-dark:#d4efd3;--mm-green-soft:#263727;--mm-orange:#edb17f;--mm-orange-dark:#f2c39e;--mm-cream:#111813;--mm-paper:#182119;--mm-white:#182119;--mm-text:#edf4ed;--mm-muted:#b2c0b4;--mm-border:#2d3c30;--mm-border-soft:#28352a;--mm-shadow:0 18px 48px rgba(0,0,0,.35)}
+
 .product-page {
   min-height: 100vh;
   padding-bottom: 64px;
@@ -581,6 +588,7 @@
   border-radius: 14px;
   background: linear-gradient(115deg, #fff4e8 0%, #fffaf4 100%);
 }
+.deal-price{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}.deal-price del{color:#94897d;font-size:14px}.detail-deal-chip{background:#c0392b;color:#fff;border-radius:5px;padding:3px 8px;font-size:12px;font-weight:900}
 
 .price-label {
   color: #8a7d6d;
@@ -4130,4 +4138,37 @@
     justify-content: flex-start;
     gap: 10px;
   }
+}
+
+/* Admin reply shown under a customer review */
+:host .review-admin-reply {
+  margin-top: 10px;
+  margin-left: 10px;
+  padding: 10px 12px 10px 14px;
+  border-left: 3px solid #2f4538;
+  background: #f4f8f3;
+  border-radius: 0 10px 10px 0;
+}
+
+:host .review-admin-reply .reply-head {
+  margin-bottom: 4px;
+}
+
+:host .review-admin-reply .reply-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: rgba(47, 69, 56, 0.1);
+  color: #2f4538;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+:host .review-admin-reply p {
+  margin: 0;
+  color: #3f4a43;
+  font-size: 11px;
+  line-height: 1.7;
+  overflow-wrap: anywhere;
 }

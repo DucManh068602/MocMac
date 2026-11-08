@@ -22,6 +22,9 @@ export interface ProductItem {
   village: string;
 
   price: number;
+  dealPrice?: number;
+  deal?: { _id: string; title: string; discountType: 'percent' | 'fixed'; discountValue: number } | null;
+  flashSale?: { discountPercent: number; startsAt: string; endsAt: string } | null;
   rate: number;
   reviews: number;
   ocop: number;
@@ -35,6 +38,9 @@ export interface ProductItem {
 
   inStock: boolean;
   preorder: boolean;
+  stock?: number;
+  totalStock?: number;
+  sold?: number;
   icon: string;
   badges: string[];
 

@@ -51,11 +51,13 @@ select{width:100%;border:1px solid var(--line);border-radius:8px;padding:7px 8px
 .tag.ocop{background:var(--earth)}.tag.her{background:#B8892B}.tag.pre{background:var(--ink2)}
 .fav{position:absolute;top:4px;right:6px;z-index:1;border:0;background:#fffc;border-radius:50%;width:26px;height:26px;cursor:pointer;color:var(--ink2);font-size:15px}
 .fav.on{color:#d33}
+.product-deal-chip{position:absolute;bottom:8px;left:8px;background:#c0392b;color:#fff;font-size:11px;font-weight:900;padding:3px 7px;border-radius:6px;z-index:3;box-shadow:0 2px 6px rgba(0,0,0,.18);letter-spacing:-.5px}
 .pbody{padding:8px 2px 2px;display:flex;flex-direction:column;flex:1}
 .pbody h3{font:600 14px 'Be Vietnam Pro';margin:0 0 3px;line-height:1.35}
 .loc{color:var(--ink2);font-size:12px}.rt{font-size:12px;margin-top:2px}.rt small{color:var(--ink2)}
 .row{display:flex;justify-content:space-between;align-items:center;margin-top:auto;padding-top:8px}
 .row b{color:var(--earth);font-size:15px}
+.catalog-price{display:flex;flex-direction:column;gap:1px}.catalog-price del{color:var(--ink2);font-size:11px;line-height:1.2}.product-deal-chip{position:absolute;right:0;bottom:0;z-index:2;background:#c0392b;color:#fff;padding:4px 8px;border-radius:6px 0 0 0;font-size:11px;font-weight:900;letter-spacing:.01em}
 .add{background:var(--earth);border:0;border-radius:8px;width:34px;height:30px;cursor:pointer;color:#fff}.add:hover{background:var(--moss)}
 .plist.list{grid-template-columns:1fr}
 .plist.list .pcard{flex-direction:row;gap:12px}.plist.list .pimg{width:170px;height:auto;min-height:120px;flex-shrink:0}
@@ -70,7 +72,7 @@ select{width:100%;border:1px solid var(--line);border-radius:8px;padding:7px 8px
 }
 @media(max-width:700px){.side{grid-template-columns:1fr}.plist{grid-template-columns:repeat(2,1fr)}.banner q{display:none}}
 
-/* ===== KHU VỰC KHÁM PHÁ NHANH ===== */
+/* ===== KHU VỰC KHÝM PHÝ NHANH ===== */
 .discovery {
   margin: 4px 0 18px;
   padding: 14px 16px;
@@ -335,7 +337,7 @@ select{width:100%;border:1px solid var(--line);border-radius:8px;padding:7px 8px
 }
 
 
-/* Nhiều thẻ gợi ý trong khu vực Tìm kiếm hôm nay */
+/* Nhiờu thẻ gợi ý trong khu vực Tìm kiếm hôm nay */
 .mini-product + .mini-product {
   margin-top: 10px;
   padding-top: 10px;
@@ -387,7 +389,7 @@ select{width:100%;border:1px solid var(--line);border-radius:8px;padding:7px 8px
   }
 }
 
-/* FIX: danh sách Bán chạy nhất / Giá tốt nhất hiển thị ngang, ảnh nhỏ */
+/* FIX: danh sách Bán chạy nhất / Giá tốt nhất hiển thị ngang, ảnh nhờ */
 .discovery-bottom .rank-section .rank-product {
   display: flex !important;
   flex-direction: row !important;
@@ -471,7 +473,7 @@ select{width:100%;border:1px solid var(--line);border-radius:8px;padding:7px 8px
 }
 
 
-/* ===== ĐỒNG BỘ CẢ 4 KHUNG KHÁM PHÁ: DẠNG NGANG, ẢNH NHỎ ===== */
+/* ===== ĝỒNG BỘ CẢ 4 KHUNG KHÝM PHÝ: DẠNG NGANG, ẢNH NHỎ ===== */
 .discovery-grid .mini-section .mini-product {
   display: flex !important;
   flex-direction: row !important;
@@ -577,7 +579,7 @@ select{width:100%;border:1px solid var(--line);border-radius:8px;padding:7px 8px
   }
 }
 
-/* ===== COMPACT LAYOUT: 4 KHUNG GỌN, KHÔNG CHIẾM QUÁ NHIỀU CHỖ ===== */
+/* ===== COMPACT LAYOUT: 4 KHUNG GỌN, KHÔNG CHIẾM QUÝ NHIỀU CHỖ ===== */
 .discovery-grid,
 .discovery-bottom {
   display: grid !important;
@@ -748,7 +750,7 @@ select{width:100%;border:1px solid var(--line);border-radius:8px;padding:7px 8px
   white-space: nowrap !important;
 }
 
-/* Chỉ xếp thành 1 cột trên điện thoại nhỏ */
+/* Chỉ xếp thành 1 cột trên điện thoại nhờ */
 @media (max-width: 560px) {
   .discovery-grid,
   .discovery-bottom {
@@ -923,7 +925,7 @@ select{width:100%;border:1px solid var(--line);border-radius:8px;padding:7px 8px
 }
 
 
-/* ===== CAROUSEL TỰ CHẠY CHO 4 Ô KHÁM PHÁ ===== */
+/* ===== CAROUSEL TỰ CHẠY CHO 4 Ô KHÝM PHÝ ===== */
 .mini-section,
 .rank-section {
   min-width: 0;
@@ -1062,7 +1064,7 @@ select{width:100%;border:1px solid var(--line);border-radius:8px;padding:7px 8px
 
 
 /* ==========================================================
-   MỘC MẠC - VISUAL REFRESH CHO KHU VỰC KHÁM PHÁ NHANH
+   MỘC MẠC - VISUAL REFRESH CHO KHU VỰC KHÝM PHÝ NHANH
    Chỉ tác động đến 4 carousel phía trên trang Sản phẩm.
    ========================================================== */
 .discovery {
@@ -1449,7 +1451,7 @@ select{width:100%;border:1px solid var(--line);border-radius:8px;padding:7px 8px
 .no-review { color: var(--ink2); font-size: 11px; }
 .rank-rating { display: block; margin-top: 3px; }
 
-/* ===== BỘ LỌC SẢN PHẨM YÊU THÍCH ===== */
+/* ===== BỘ LỌC SẢN PHẨM YÊU THÝCH ===== */
 .favorites-filter {
   display: flex;
   width: 100%;
@@ -1558,3 +1560,6 @@ select{width:100%;border:1px solid var(--line);border-radius:8px;padding:7px 8px
     margin: 8px 0 12px;
   }
 }
+:host .sale-price{display:inline-flex;flex-direction:column;color:var(--earth)}
+:host .sale-price small{font-size:11px;color:var(--ink2);font-weight:400;text-decoration:line-through}
+
