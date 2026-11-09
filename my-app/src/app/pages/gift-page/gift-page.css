@@ -960,3 +960,14 @@
   .craft-story-thumb { height: 100%; min-height: 110px; }
 }
 
+
+/* Member benefit banner in quote modal */
+.member-benefit-banner{display:flex;align-items:flex-start;gap:10px;padding:12px 14px;border-radius:12px;border:1px solid #e7e1d6;margin:12px 0;background:#fafaf8}
+.member-benefit-banner div{flex:1}
+.member-benefit-banner strong{display:block;font:700 14px 'Be Vietnam Pro','Segoe UI',Arial,sans-serif;color:#1e3a2a;margin-bottom:4px}
+.member-benefit-banner p{margin:0;color:#5f6b63;font-size:13px;line-height:1.5}
+.member-benefit-banner.guest{--tier-color:#435731;background:#f4f7ee}
+/* Quote total discount rows */
+.quote-total-discount{display:flex;justify-content:space-between;font-size:13px;color:#166534;margin-top:4px}
+.quote-total-discount strong{color:#166534}
+.quote-total-final{display:flex;justify-content:space-between;font:700 15px 'Be Vietnam Pro','Segoe UI',Arial,sans-serif;color:#1e3a2a;margin-top:6px;padding-top:6px;border-top:1px solid #eadfcd}

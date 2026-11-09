@@ -1,15 +1,66 @@
-:host { display:block; font-family:'Be Vietnam Pro','Segoe UI',Arial,system-ui,sans-serif; }
-.header-actions { display:flex; gap:8px; flex-wrap:wrap; }
-.btn-ghost { padding:8px 14px; border:1px solid #d7dfd0; border-radius:9px; background:#fff; color:#2e5a3c; font:600 13px inherit; cursor:pointer; }
-.btn-ghost:hover { background:#e4ebe3; }
-.coupon-form-grid { grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap:12px; }
-.field { display:flex; flex-direction:column; gap:6px; font:600 12.5px 'Be Vietnam Pro','Segoe UI',Arial,sans-serif; color:#16231f; }
-.field .form-input { font-weight:500; }
-.field-check { flex-direction:row; align-items:center; gap:8px; margin-top:24px; }
-.field-check input { width:16px; height:16px; accent-color:#2e5a3c; }
-.field-wide { grid-column:1 / -1; }
-.coupon-preview { margin:12px 0 0; padding:10px 12px; border-radius:10px; background:#f8faf7; color:#2e5a3c; font-size:13px; }
-.subtext { margin-top:3px; color:#5c6b64; font-size:12px; line-height:1.35; }
-.actions { white-space:nowrap; }
-.actions .btn-small { margin-right:6px; margin-bottom:4px; }
-.admin-table th,.admin-table td,.form-input,.btn-small,.btn-add { font-family:'Be Vietnam Pro','Segoe UI',Arial,system-ui,sans-serif; }
+.coupon-form-card { margin-bottom: 14px; }
+.coupon-form-grid { grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); align-items: end; }
+.coupon-form-grid .field { display: grid; gap: 4px; font-size: .8rem; color: #5e554b; font-weight: 600; }
+.coupon-form-grid .field-wide { grid-column: 1 / -1; }
+.coupon-form-grid .field-check { display: flex; align-items: center; gap: 8px; padding-bottom: 10px; }
+.coupon-preview { margin: 10px 0 0; padding: 10px 12px; border-radius: 10px; background: #f8f3ea; color: #3f3a34; font-size: .86rem; }
+.actions { white-space: nowrap; }
+.actions .btn-small { margin-right: 4px; }
+.status-out { background: #fff4d9; color: #8a5a00; }
+.header-actions { display: inline-flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.btn-ghost { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 8px 14px; border: 1px solid #d6ceb9; border-radius: 10px; background: #fff; color: #5e554b; font: 600 13px/1.2 'Be Vietnam Pro','Segoe UI',Arial,system-ui,sans-serif; cursor: pointer; text-decoration: none; white-space: nowrap; transition: background .15s, border-color .15s, color .15s; }
+.btn-ghost:hover { background: #f8f3ea; border-color: #c9bda8; color: #3f3a34; }
+.btn-ghost.is-active { background: #efe7da; border-color: #c9bda8; }
+
+/* Holiday coupons page */
+.holiday-page { max-width: 1320px; }
+.holiday-page-header { align-items: flex-start; gap: 16px; }
+.holiday-subtitle { margin: 6px 0 0; color: var(--ink2, #6f685f); font-size: .9rem; line-height: 1.45; max-width: 720px; }
+.holiday-header-actions { display: inline-flex; gap: 8px; align-items: flex-end; flex-wrap: wrap; }
+.holiday-range { display: grid; gap: 4px; font-size: .78rem; color: #5e554b; font-weight: 600; }
+.holiday-range .filter-select { min-width: 150px; }
+
+.holiday-summary { display: flex; gap: 10px; flex-wrap: wrap; margin: 0 0 14px; }
+.holiday-summary-item { display: inline-flex; align-items: baseline; gap: 6px; padding: 10px 14px; background: #fff; border: 1px solid #e7dfd2; border-radius: 12px; color: #5e554b; font-size: .84rem; }
+.holiday-summary-item strong { color: #2f2a24; font-size: 1rem; }
+.holiday-summary-note { flex: 1; min-width: 260px; color: #6f685f; }
+
+.holiday-panel { background: #fff; border: 1px solid #e7dfd2; border-radius: 14px; overflow: hidden; box-shadow: 0 6px 20px rgba(63, 52, 38, .04); }
+.holiday-table-wrap { border: 0; border-radius: 0; box-shadow: none; }
+.holiday-table { min-width: 980px; }
+.holiday-table th { background: #faf7f2; font-size: .78rem; text-transform: uppercase; letter-spacing: .03em; color: #6f685f; white-space: nowrap; vertical-align: middle; }
+.holiday-table td { vertical-align: middle; padding: 8px 12px; border-top: 1px solid #f0ebe3; }
+.holiday-table tbody tr:hover { background: #fdfbf8; }
+.row-selected { background: #f7fbf6; }
+.row-disabled { background: #fafafa; }
+.row-disabled td { color: #8b857d; }
+
+.col-check { width: 52px; text-align: center; vertical-align: middle !important; }
+.holiday-check { width: 17px; height: 17px; accent-color: #6b7f52; cursor: pointer; }
+.col-name { min-width: 220px; }
+.col-dates { min-width: 320px; }
+.col-code { min-width: 170px; }
+.col-offer { min-width: 130px; white-space: nowrap; }
+.col-min { min-width: 130px; white-space: nowrap; }
+
+.holiday-name { font-weight: 700; color: #2f2a24; line-height: 1.3; }
+.holiday-meta { margin-top: 3px; font-size: .8rem; color: #7a7268; line-height: 1.35; }
+.holiday-badges { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+.holiday-badge { display: inline-flex; align-items: center; padding: 3px 8px; border-radius: 999px; font-size: .72rem; font-weight: 700; }
+.badge-seasonal { background: #fff4d9; color: #8a5a00; }
+.badge-exists { background: #eeeae2; color: #6f685f; }
+
+.date-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.holiday-date, .holiday-code { width: 100%; box-sizing: border-box; background: #fff; padding: 4px 8px; font-size: .82rem; border: 1px solid #d6ceb9; border-radius: 8px; height: 36px; }
+.holiday-date:disabled, .holiday-code:disabled { background: #f3f1ec; color: #8b857d; }
+
+.holiday-actions { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 14px 16px; border-top: 1px solid #ece6dd; background: #fcfaf7; }
+.holiday-actions-note { color: #6f685f; font-size: .88rem; }
+.holiday-create-btn { min-width: 190px; }
+.holiday-empty { padding: 22px 16px; text-align: center; color: #7a7268; }
+
+@media (max-width: 900px) {
+  .date-pair { grid-template-columns: 1fr; }
+  .holiday-actions { flex-direction: column; align-items: stretch; }
+  .holiday-create-btn { width: 100%; }
+}

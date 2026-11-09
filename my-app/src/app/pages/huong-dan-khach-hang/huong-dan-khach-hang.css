@@ -1,0 +1,31 @@
+.guide-page{padding:28px 0 60px;font-family:'Be Vietnam Pro','Segoe UI',Arial,sans-serif;color:#243127}
+.guide-hero{background:linear-gradient(135deg,#2e5a3c,#3d7a52);color:#fff;padding:48px 0 40px;border-radius:0 0 30px 30px}
+.guide-hero .guide-container{max-width:980px;margin:0 auto;padding:0 16px}
+.hero-badge{display:inline-block;font-size:12px;font-weight:800;padding:4px 12px;border-radius:999px;background:color-mix(in srgb,#fff 20%,transparent);color:#fff;margin-bottom:10px}
+.guide-hero h1{margin:0 0 10px;font:800 34px 'Be Vietnam Pro','Segoe UI',Arial,sans-serif;line-height:1.2}
+.guide-hero p{margin:0;color:color-mix(in srgb,#fff 85%);font-size:16px;line-height:1.6}
+.guide-container{max-width:1100px;margin:0 auto;padding:0 16px;display:grid;grid-template-columns:260px 1fr;gap:30px;margin-top:30px}
+.guide-nav h3{font:700 16px 'Be Vietnam Pro','Segoe UI',Arial,sans-serif;color:#1e3a2a;margin:0 0 12px}
+.guide-menu{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.guide-menu-item{width:100%;padding:10px 14px;border:1px solid #e7e1d6;border-radius:12px;background:#fff;color:#243127;text-align:left;cursor:pointer;font:600 14px 'Be Vietnam Pro','Segoe UI',Arial,sans-serif;transition:all .15s}
+.guide-menu-item:hover{border-color:#2e5a3c;color:#2e5a3c}
+.guide-menu-item.active{background:#2e5a3c;border-color:#2e5a3c;color:#fff}
+.guide-content{min-width:0}
+.guide-block{border:1px solid #e7e1d6;border-radius:14px;margin-bottom:16px;background:#fff;overflow:hidden}
+.guide-block-head{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;cursor:pointer;background:#fafaf8;border-bottom:1px solid #e7e1d6}
+.guide-block-head h2{margin:0;font:700 17px 'Be Vietnam Pro','Segoe UI',Arial,sans-serif;color:#1e3a2a}
+.guide-block-head b{font-size:20px;color:#6b7280}
+.guide-block-body{padding:0}
+.guide-block-body.hidden{display:none}
+.guide-steps{list-style:none;margin:0;padding:18px 22px;display:flex;flex-direction:column;gap:14px}
+.guide-step{display:flex;gap:14px;align-items:flex-start}
+.step-number{width:30px;height:30px;border-radius:50%;background:#2e5a3c;color:#fff;display:flex;align-items:center;justify-content:center;font:700 14px 'Be Vietnam Pro','Segoe UI',Arial,sans-serif;flex-shrink:0}
+.step-content h4{margin:0 0 4px;font:600 15px 'Be Vietnam Pro','Segoe UI',Arial,sans-serif;color:#1e3a2a}
+.step-content p{margin:0;color:#5f6b63;font-size:14px;line-height:1.6}
+.guide-footer{margin-top:40px;padding:30px 0;border-top:1px solid #e7e1d6}
+.guide-footer .guide-container{grid-template-columns:repeat(3,1fr);gap:20px}
+.guide-footer h4{margin:0 0 8px;font:700 16px 'Be Vietnam Pro','Segoe UI',Arial,sans-serif;color:#1e3a2a}
+.guide-footer p{margin:0 0 14px;color:#5f6b63;font-size:14px;line-height:1.5}
+.btn-guide{display:inline-block;padding:10px 16px;border:1px solid #2e5a3c;background:#2e5a3c;color:#fff;border-radius:10px;font:600 14px 'Be Vietnam Pro','Segoe UI',Arial,sans-serif;text-decoration:none}
+.btn-guide:hover{background:#244a2e}
+@media (max-width:760px){.guide-container{grid-template-columns:1fr}.guide-footer .guide-container{grid-template-columns:1fr}}

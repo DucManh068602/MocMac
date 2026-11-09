@@ -346,6 +346,22 @@
       <div class="quote-overlay" (click)="closeQuoteModal()">
         <div class="quote-modal" (click)="$event.stopPropagation()">
           <button type="button" class="quote-close" (click)="closeQuoteModal()">✕</button>
+          @if (memberTier(); as tier) {
+            <div class="member-benefit-banner" [style.--tier-color]="tier.color">
+              <div>
+                <strong>Ưu đãi hội viên {{ tier.name }}</strong>
+                <p>
+                  @if (memberDiscountPercent() > 0) { Giảm {{ memberDiscountPercent() }}% tự động trên tổng báo giá. }
+                  @if (memberFreeShipping()) { Miễn phí vận chuyển cho đơn hàng hội viên. }
+                  @if (tier.priorityQuotation) { Ưu tiên xử lý báo giá quà tặng. }
+                </p>
+              </div>
+            </div>
+          } @else if (auth.isAuthenticated()) {
+            <div class="member-benefit-banner guest">
+              <div><strong>Bạn chưa có hạng hội viên</strong><p>Tích lũy chi tiêu để nâng hạng Bạc/Vàng/Kim Cương và nhận giảm giá tự động, miễn phí ship, ưu tiên báo giá.</p></div>
+            </div>
+          }
           <h2>Yêu cầu báo giá quà tặng</h2>
           <p class="quote-sub">Chọn lại số lượng và để lại thông tin liên hệ. Chúng tôi sẽ gọi lại trong khung giờ bạn chọn.</p>
 
@@ -370,6 +386,16 @@
             <div class="quote-total">
               <span>Tổng ước tính:</span>
               <strong>{{ formatPrice(quoteTotal()) }}</strong>
+              @if (memberDiscountPercent() > 0) {
+                <div class="quote-total-discount">
+                  <span>Giảm hội viên {{ memberDiscountPercent() }}%</span>
+                  <strong>-{{ formatPrice(memberDiscount()) }}</strong>
+                </div>
+                <div class="quote-total-final">
+                  <span>Tổng sau ưu đãi:</span>
+                  <strong>{{ formatPrice(quoteTotalAfterMember()) }}</strong>
+                </div>
+              }
             </div>
           </div>
 

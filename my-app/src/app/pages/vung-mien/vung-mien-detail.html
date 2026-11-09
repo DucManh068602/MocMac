@@ -1,0 +1,77 @@
+<section class="region-detail-page">
+  <nav class="breadcrumb">
+    <a [routerLink]="'/vung-mien'">Vùng miền</a>
+    <span>/</span>
+    <span>{{ region()?.name }}</span>
+  </nav>
+
+  @if (loading()) {
+    <div class="detail-loading"><i class="fa-solid fa-spinner fa-spin"></i> Đang tải…</div>
+  } @else if (!region()) {
+    <div class="detail-empty">Không tìm thấy vùng miền.</div>
+  } @else {
+    <header class="detail-hero">
+      <div class="hero-media">
+        <img [src]="region()?.image || 'https://images.unsplash.com/photo-1518637319378-942972265bf8?w=1200'" [alt]="region()?.name" />
+      </div>
+      <div class="hero-body">
+        <h1>{{ region()?.name }}</h1>
+        <p class="detail-desc">{{ region()?.description }}</p>
+        <div class="detail-meta">
+          <span><i class="fa-solid fa-box"></i> {{ region()?.productCount || 0 }} sản phẩm</span>
+          <a [routerLink]="'/san-pham'" class="detail-link">Xem sản phẩm của vùng này →</a>
+        </div>
+      </div>
+    </header>
+
+    @if (regionStories().length > 0) {
+      <section class="detail-section">
+        <div class="section-head">
+          <h2><i class="fa-solid fa-book-open" aria-hidden="true"></i> Câu chuyện {{ region()?.name }}</h2>
+        </div>
+        <div class="story-grid">
+          @for (s of regionStories(); track s._id || s.title) {
+            <article class="story-card">
+              @if (s.imageUrl) {
+                <div class="story-image"><img [src]="s.imageUrl" [alt]="s.title" loading="lazy" /></div>
+              }
+              <div class="story-body">
+                <h3>{{ s.title }}</h3>
+                <p>{{ s.excerpt || s.content }}</p>
+                <a [routerLink]="'/vung-mien'" class="story-read">Đọc thêm →</a>
+              </div>
+            </article>
+          }
+        </div>
+      </section>
+    }
+
+    @if (hasVillageStories() && villageStories().length > 0) {
+      <section class="detail-section village-section">
+        <div class="section-head">
+          <h2><i class="fa-solid fa-hands" aria-hidden="true"></i> Làng nghề trong {{ region()?.name }}</h2>
+          <p>Các làng nghề truyền thống và câu chuyện gắn liền với vùng đất này.</p>
+        </div>
+        <div class="village-grid">
+          @for (s of villageStories(); track s._id || s.title) {
+            <article class="village-card">
+              <div class="village-header">
+                @if (s.imageUrl) {
+                  <img class="village-avatar" [src]="s.imageUrl" [alt]="s.title" loading="lazy" />
+                }
+                <div class="village-info">
+                  <span class="village-province">{{ s.province }}</span>
+                  <span class="village-craft">{{ s.craft }}</span>
+                </div>
+              </div>
+              <div class="village-body">
+                <h3>{{ s.title }}</h3>
+                <p>{{ s.excerpt || s.content }}</p>
+              </div>
+            </article>
+          }
+        </div>
+      </section>
+    }
+  }
+</section>

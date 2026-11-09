@@ -48,6 +48,11 @@ const userSchema = new mongoose.Schema(
       default: true
     },
 
+    lastNotifiedTier: {
+      type: String,
+      default: 'dong',
+    },
+
     isVerified: {
       type: Boolean,
       default: false

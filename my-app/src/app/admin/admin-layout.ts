@@ -27,6 +27,7 @@ export class AdminLayoutComponent {
     { label: 'Câu chuyện vùng miền', path: 'region-stories', icon: 'fa-solid fa-earth-asia' },
     { label: 'Câu chuyện làng nghề', path: 'village-stories', icon: 'fa-solid fa-hands' },
     { label: 'Mã giảm giá', path: 'coupons', icon: 'fa-solid fa-ticket' },
+    { label: 'Mã ngày lễ', path: 'holiday-coupons', icon: 'fa-solid fa-calendar-days' },
     { label: 'Quản lý Deal', path: 'deals', icon: 'fa-solid fa-tags' },
     { label: 'Tài khoản', path: 'users', icon: 'fa-solid fa-users' },
     { label: 'Yêu cầu vai trò', path: 'role-requests', icon: 'fa-solid fa-user-pen' },

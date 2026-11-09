@@ -5,6 +5,7 @@ const quotationRequestSchema = new mongoose.Schema(
     name: { type: String, required: true, trim: true },
     phone: { type: String, required: true, trim: true },
     email: { type: String, trim: true, lowercase: true, default: '' },
+    user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null, index: true },
     company: { type: String, trim: true, default: '' },
     address: { type: String, trim: true, default: '' },
     occasion: { type: String, trim: true, default: '' },

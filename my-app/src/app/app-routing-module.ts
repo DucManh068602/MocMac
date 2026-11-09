@@ -9,7 +9,9 @@ import { GiftPageComponent } from './pages/gift-page/gift-page';
 import { DangnhapComponent } from './pages/dangnhap/dangnhap';
 import { Lienhe } from './pages/lienhe/lienhe';
 import { VungmienComponent } from './pages/vung-mien/vung-mien';
+import { VungMienDetailComponent } from './pages/vung-mien/vung-mien-detail';
 import { CraftVillageComponent } from './pages/craft-village/craft-village';
+import { CraftStoryDetailComponent } from './pages/craft-story-detail/craft-story-detail';
 import { GiohangComponent } from './pages/giohang/giohang';
 import { ThongbaoComponent } from './pages/thong-bao/thong-bao';
 import { DonHangComponent } from './pages/don-hang/don-hang';
@@ -21,6 +23,7 @@ import { GiftNeedsComponent } from './pages/gift-needs/gift-needs';
 import { TermsOfServiceComponent } from './pages/terms-of-service/terms-of-service';
 import { PrivacyPolicyComponent } from './pages/privacy-policy/privacy-policy';
 import { SupportComponent } from './pages/support/support';
+import { HuongDanKhachHangComponent } from './pages/huong-dan-khach-hang/huong-dan-khach-hang';
 import { AccountSettingsComponent } from './pages/account-settings/account-settings';
 import { adminGuard } from './admin/auth.guard';
 import { AdminLayoutComponent } from './admin/admin-layout';
@@ -29,6 +32,7 @@ import { AdminOrdersComponent } from './admin/orders';
 import { AdminProductsComponent } from './admin/products';
 import { AdminRegionsComponent } from './admin/regions';
 import { AdminCouponsComponent } from './admin/coupons';
+import { AdminHolidayCouponsComponent } from './admin/holiday-coupons';
 import { AdminUsersComponent } from './admin/users';
 import { AdminContactsComponent } from './admin/contacts';
 import { AdminNotificationsComponent } from './admin/notifications';
@@ -46,28 +50,14 @@ import { NotFoundComponent } from './pages/not-found/not-found.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
-  {
-    path: 'san-pham',
-    component: ProductsComponent,
-    data: { title: 'Sản phẩm | Mộc Mạc' }
-  },
-  {
-    path: 'san-pham/:slug',
-    component: ProductDetailComponent,
-    data: { title: 'Chi tiết sản phẩm | Mộc Mạc' }
-  },
-  {
-    path: 'qua-tang',
-    component: GiftPageComponent,
-    data: { title: 'Quà tặng | Mộc Mạc' }
-  },
-  {
-    path: 'dang-nhap',
-    component: DangnhapComponent,
-    data: { title: 'Đăng nhập | Mộc Mạc' }
-  },
+  { path: 'san-pham', component: ProductsComponent, data: { title: 'Sản phẩm | Mộc Mạc' } },
+  { path: 'san-pham/:slug', component: ProductDetailComponent, data: { title: 'Chi tiết sản phẩm | Mộc Mạc' } },
+  { path: 'qua-tang', component: GiftPageComponent, data: { title: 'Quà tặng | Mộc Mạc' } },
+  { path: 'dang-nhap', component: DangnhapComponent, data: { title: 'Đăng nhập | Mộc Mạc' } },
   { path: 'vung-mien', component: VungmienComponent, data: { title: 'Vùng miền | Mộc Mạc' } },
+  { path: 'vung-mien/:slug', component: VungMienDetailComponent, data: { title: 'Vùng miền | Mộc Mạc' } },
   { path: 'lang-nghe', component: CraftVillageComponent, data: { title: 'Làng nghề | Mộc Mạc' } },
+  { path: 'lang-nghe/cau-chuyen/:id', component: CraftStoryDetailComponent, data: { title: 'Câu chuyện làng nghề | Mộc Mạc' } },
   { path: 'lang-nghe/:slug', component: CraftVillageComponent, data: { title: 'Làng nghề | Mộc Mạc' } },
   { path: 'lien-he', component: Lienhe, data: { title: 'Liên hệ' } },
   { path: 'gioi-thieu', component: AboutComponent, data: { title: 'Giới thiệu' } },
@@ -77,12 +67,9 @@ const routes: Routes = [
   { path: 'don-hang', component: DonHangComponent, data: { title: 'Đơn hàng của tôi | Mộc Mạc' } },
   { path: 'don-hang/:id', component: DonHangComponent, data: { title: 'Chi tiết đơn hàng | Mộc Mạc' } },
   { path: 'quà-tang-da-mua', component: MyQuotationsComponent, data: { title: 'Quà tặng đã mua | Mộc Mạc' } },
-  {
-    path: 'tra-cuu-don-hang/:id',
-    component: OrderTrackingComponent,
-    data: { title: 'Tra cứu đơn hàng | Mộc Mạc' }
-  },
+  { path: 'tra-cuu-don-hang/:id', component: OrderTrackingComponent, data: { title: 'Tra cứu đơn hàng | Mộc Mạc' } },
   { path: 'ho-tro', component: SupportComponent, data: { title: 'Hỗ trợ' } },
+  { path: 'huong-dan-khach-hang', component: HuongDanKhachHangComponent, data: { title: 'Hướng dẫn khách hàng | Mộc Mạc' } },
   { path: 'dieu-khoan-dich-vu', component: TermsOfServiceComponent, data: { title: 'Điều khoản dịch vụ | Mộc Mạc' } },
   { path: 'chinh-sach-bao-ve-du-lieu', component: PrivacyPolicyComponent, data: { title: 'Chính sách bảo vệ dữ liệu | Mộc Mạc' } },
   { path: 'tai-khoan', component: AccountSettingsComponent, data: { title: 'Cài đặt tài khoản' } },
@@ -100,8 +87,9 @@ const routes: Routes = [
       { path: 'region-stories', component: AdminRegionStoriesComponent },
       { path: 'village-stories', component: AdminVillageStoriesComponent },
       { path: 'coupons', component: AdminCouponsComponent },
+      { path: 'holiday-coupons', component: AdminHolidayCouponsComponent },
       { path: 'deals', component: AdminDealsComponent },
-       { path: 'users', component: AdminUsersComponent },
+      { path: 'users', component: AdminUsersComponent },
       { path: 'role-requests', component: AdminRoleRequestsComponent },
       { path: 'route-permissions', component: AdminRoutePermissionsComponent },
       { path: 'flash-sale', component: AdminFlashSaleComponent },

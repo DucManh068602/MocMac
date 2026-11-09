@@ -1,6 +1,7 @@
 import { Coupon } from '../models/Coupon.js';
 import { logAction, getRequestInfo } from '../utils/auditLog.js';
 import { membershipForUser } from '../utils/membership.js';
+import { getUpcomingHolidays, generateHolidayCoupons } from '../utils/holidayCoupons.js';
 
 const computeStatus = (c) => {
   if (!c.active) return 'vô hiệu';
@@ -115,5 +116,46 @@ export const deleteCoupon = async (req, res) => {
   } catch (error) {
     console.error('Lỗi xóa mã giảm giá:', error);
     return res.status(500).json({ success: false, message: 'Không thể xóa.', error: error.message });
+  }
+};
+
+export const previewHolidayCoupons = async (req, res) => {
+  try {
+    const months = Math.min(12, Math.max(1, Number(req.query.months) || 3));
+    const holidays = getUpcomingHolidays({ months });
+    const codes = holidays.map((h) => h.suggestedCode).filter(Boolean);
+    const existing = await Coupon.find({ code: { $in: codes } }).select('code').lean();
+    const existingSet = new Set(existing.map((c) => c.code));
+    return res.json({
+      success: true,
+      holidays: holidays.map((h) => ({ ...h, alreadyExists: existingSet.has(h.suggestedCode) })),
+    });
+  } catch (error) {
+    console.error('Lỗi xem trước mã ngày lễ:', error);
+    return res.status(500).json({ success: false, message: 'Không thể lấy gợi ý mã ngày lễ.', error: error.message });
+  }
+};
+
+export const createHolidayCoupons = async (req, res) => {
+  try {
+    const items = Array.isArray(req.body?.items) ? req.body.items : [];
+    if (!items.length) return res.status(400).json({ success: false, message: 'Chưa chọn ngày lễ để tạo mã.' });
+    const result = await generateHolidayCoupons(items);
+    const { user, ip } = getRequestInfo(req);
+    await logAction({
+      action: 'coupon.create_holiday',
+      resourceType: 'Coupon',
+      user,
+      ip,
+      details: { created: result.created.map((c) => c.code), skipped: result.skipped },
+    });
+    return res.json({
+      success: true,
+      message: `Đã tạo ${result.created.length} mã ngày lễ${result.skipped.length ? `, bỏ qua ${result.skipped.length} mã` : ''}.`,
+      ...result,
+    });
+  } catch (error) {
+    console.error('Lỗi tạo mã ngày lễ:', error);
+    return res.status(500).json({ success: false, message: 'Không thể tạo mã ngày lễ.', error: error.message });
   }
 };

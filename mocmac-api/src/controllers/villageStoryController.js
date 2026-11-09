@@ -1,9 +1,16 @@
 import { VillageStory } from '../models/VillageStory.js';
 
+export const getVillageStoryById = async (req, res) => {
+  const story = await VillageStory.findById(req.params.id).lean();
+  if (!story) return res.status(404).json({ message: 'Không tìm thấy câu chuyện.' });
+  res.json({ story });
+};
+
 export const listVillageStories = async (req, res) => {
   const filter = {};
   if (req.query.status) filter.status = String(req.query.status);
   if (req.query.village) filter.village = String(req.query.village);
+  if (req.query.province) filter.province = String(req.query.province);
   const stories = await VillageStory.find(filter).sort({ order: -1, createdAt: -1 }).lean();
   res.json({ stories });
 };

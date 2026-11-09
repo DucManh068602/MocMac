@@ -1,0 +1,55 @@
+.region-detail-page { max-width: 1100px; margin: 0 auto; padding: 0 16px 40px; font-family: 'Be Vietnam Pro','Segoe UI',Arial,sans-serif; color: #1f2937; }
+
+.breadcrumb { display: flex; align-items: center; gap: 6px; margin: 16px 0 8px; font-size: .85rem; color: #6f685f; }
+.breadcrumb a { color: #6b7f52; text-decoration: none; font-weight: 600; }
+.breadcrumb a:hover { text-decoration: underline; }
+.breadcrumb span { color: #9a9388; }
+
+.detail-loading, .detail-empty { grid-column: 1 / -1; text-align: center; padding: 60px 20px; color: #6f685f; font-size: 1.1rem; }
+.detail-loading i { margin-right: 8px; color: #6b7f52; }
+
+.detail-hero { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; align-items: center; margin-bottom: 40px; background: #fcfaf7; border-radius: 24px; overflow: hidden; border: 1px solid #e7dfd2; }
+.hero-media { position: relative; aspect-ratio: 16 / 9; overflow: hidden; background: #f3f1ec; }
+.hero-media img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.hero-body { padding: 40px; }
+.detail-hero h1 { margin: 0 0 14px; font-size: 2.5rem; font-weight: 800; color: #2f2a24; line-height: 1.15; letter-spacing: -.02em; }
+.detail-desc { margin: 0 0 18px; font-size: 1.1rem; color: #5e554b; line-height: 1.7; }
+.detail-meta { display: flex; gap: 14px; align-items: center; flex-wrap: wrap; }
+.detail-meta span { font-size: .95rem; color: #6f685f; font-weight: 600; }
+.detail-link { font: 700 .9rem inherit; color: #6b7f52; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; }
+.detail-link:hover { text-decoration: underline; }
+
+.detail-section { margin-bottom: 48px; }
+.section-head { display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; }
+.section-head h2 { margin: 0; font-size: 1.75rem; font-weight: 800; color: #2f2a24; display: flex; align-items: center; gap: 10px; }
+.section-head h2 i { color: #6b7f52; }
+.section-head p { margin: 0; color: #6f685f; font-size: .95rem; }
+
+.story-grid, .village-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; }
+
+.story-card, .village-card { background: #fff; border: 1px solid #e7dfd2; border-radius: 16px; overflow: hidden; transition: transform .2s, box-shadow .2s; height: 100%; display: flex; flex-direction: column; }
+.story-card:hover, .village-card:hover { transform: translateY(-3px); box-shadow: 0 12px 30px rgba(63,52,38,.08); border-color: #c9bda8; }
+
+.story-image { aspect-ratio: 16 / 9; overflow: hidden; background: #f3f1ec; }
+.story-image img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.story-body { padding: 20px; flex: 1; display: flex; flex-direction: column; }
+.story-body h3 { margin: 0 0 10px; font-size: 1.2rem; font-weight: 800; color: #2f2a24; line-height: 1.35; }
+.story-body p { margin: 0 0 14px; color: #5e554b; font-size: .95rem; line-height: 1.7; display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; }
+.story-read { font: 700 .85rem inherit; color: #6b7f52; text-decoration: none; }
+.story-read:hover { text-decoration: underline; }
+
+.village-header { display: flex; gap: 12px; padding: 16px; border-bottom: 1px solid #f0ebe3; align-items: center; }
+.village-avatar { width: 56px; height: 56px; border-radius: 12px; object-fit: cover; background: #f3f1ec; flex-shrink: 0; }
+.village-info { flex: 1; min-width: 0; }
+.village-province { display: block; font: 700 .8rem inherit; color: #6b7f52; text-transform: uppercase; letter-spacing: .05em; margin-bottom: 2px; }
+.village-craft { display: block; font-size: .85rem; color: #5e554b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.village-body { padding: 16px 16px 20px; flex: 1; display: flex; flex-direction: column; }
+.village-body h3 { margin: 0 0 8px; font-size: 1.15rem; font-weight: 800; color: #2f2a24; line-height: 1.35; }
+.village-body p { margin: 0; color: #5e554b; font-size: .92rem; line-height: 1.7; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+
+@media (max-width: 768px) {
+  .detail-hero { grid-template-columns: 1fr; }
+  .hero-body { padding: 24px; }
+  .detail-hero h1 { font-size: 1.9rem; }
+  .story-grid, .village-grid { grid-template-columns: 1fr; }
+}

@@ -41,6 +41,10 @@ export const getAllProvinces = async (req, res) => {
   try {
     let provinces = await Province.find().sort({ name: 1 }).lean();
 
+    if (req.query.region) {
+      provinces = provinces.filter((p) => String(p.region || '').toLowerCase().includes(String(req.query.region).toLowerCase()));
+    }
+
     if (provinces.length === 0) {
       provinces = provinceData.map((p) => ({
         code: p.id,

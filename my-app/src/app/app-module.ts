@@ -48,6 +48,7 @@ import { AdminOrdersComponent } from './admin/orders';
 import { AdminProductsComponent } from './admin/products';
 import { AdminRegionsComponent } from './admin/regions';
 import { AdminCouponsComponent } from './admin/coupons';
+import { AdminHolidayCouponsComponent } from './admin/holiday-coupons';
 import { AdminDealsComponent } from './admin/deals';
 import { AdminUsersComponent } from './admin/users';
 import { AdminContactsComponent } from './admin/contacts';
@@ -61,8 +62,6 @@ import { AdminQuotationRequestsComponent } from './admin/quotation-requests';
 import { PaginationComponent } from './admin/pagination';
 import { ToastComponent } from './admin/toast';
 import { ConfirmDialogComponent } from './admin/confirm-dialog';
-import { AdminRegionStoriesComponent } from './admin/region-stories';
-import { AdminVillageStoriesComponent } from './admin/village-stories';
 import { NotificationPopupComponent } from './pages/notification-popup/notification-popup';
 import { ChatPopupComponent } from './chat-popup/chat-popup';
 import { TranslatePipe } from './translate.pipe';
@@ -86,6 +85,7 @@ import { TranslatePipe } from './translate.pipe';
     AdminProductsComponent,
     AdminRegionsComponent,
     AdminCouponsComponent,
+    AdminHolidayCouponsComponent,
     AdminDealsComponent,
     AdminUsersComponent,
     AdminContactsComponent,
@@ -96,8 +96,6 @@ import { TranslatePipe } from './translate.pipe';
     AdminRoutePermissionsComponent,
     AdminFlashSaleComponent,
     AdminQuotationRequestsComponent,
-    AdminRegionStoriesComponent,
-    AdminVillageStoriesComponent,
     ToastComponent,
     ConfirmDialogComponent,
     NotificationPopupComponent,

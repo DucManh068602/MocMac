@@ -1,8 +1,15 @@
 import { RegionStory } from '../models/RegionStory.js';
 
+export const getRegionStoryById = async (req, res) => {
+  const story = await RegionStory.findById(req.params.id).lean();
+  if (!story) return res.status(404).json({ message: 'Không tìm thấy câu chuyện.' });
+  res.json({ story });
+};
+
 export const listRegionStories = async (req, res) => {
   const filter = {};
   if (req.query.status) filter.status = String(req.query.status);
+  if (req.query.region) filter.region = new RegExp(String(req.query.region), 'i');
   const stories = await RegionStory.find(filter).sort({ order: -1, createdAt: -1 }).lean();
   res.json({ stories });
 };

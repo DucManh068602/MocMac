@@ -1,6 +1,7 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { User } from '../models/User.js';
+import { Notification } from '../models/Notification.js';
 import { logAction, getRequestInfo } from '../utils/auditLog.js';
 import { sendMail, otpEmailTemplate } from '../utils/mailer.js';
 
@@ -157,6 +158,20 @@ export const verifyRegisterOtp = async (req, res) => {
   user.verifyOTP = null;
   user.verifyOTPExpires = null;
   await user.save();
+
+  try {
+    await Notification.create({
+      title: 'Chào mừng bạn đến với Mộc Mạc',
+      content: 'Tài khoản của bạn đã được kích hoạt. Hãy khám phá đặc sản, làng nghề và tạo yêu cầu báo giá quà tặng đầu tiên ngay hôm nay.',
+      type: 'system',
+      recipient: user._id,
+      link: '/san-pham',
+      sent: true,
+      sentAt: new Date(),
+    });
+  } catch (e) {
+    console.error('Welcome notification error:', e.message || e);
+  }
 
   await logAction({
     action: 'auth.register_otp_verified',

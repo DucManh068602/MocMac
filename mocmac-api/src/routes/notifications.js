@@ -12,8 +12,13 @@ import {
   markAsRead,
   deleteNotification,
 } from '../controllers/notificationController.js';
+import { NOTIFICATION_TEMPLATES } from '../utils/notificationTemplates.js';
 
 const router = Router();
+
+router.get('/templates', (_req, res) => {
+  res.json({ success: true, templates: NOTIFICATION_TEMPLATES.map((t) => ({ key: t.key, type: t.type, title: t.title, description: t.description })) });
+});
 
 router.get('/', requireAuth, requireRole('admin', 'staff'), requirePermission('notifications.view'), getAllNotifications);
 router.get('/mine', requireAuth, getUserNotifications);

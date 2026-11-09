@@ -45,7 +45,16 @@
 .promo-title { margin:0 0 6px; font:800 15px/1.4 'Be Vietnam Pro','Segoe UI',Arial,sans-serif; color:#16231f; }
 .promo-content { white-space:pre-wrap; word-break:break-word; color:#3d4f43; font-size:13.5px; line-height:1.6; }
 .empty-state { padding:18px; border:1px dashed #d7dfd0; border-radius:12px; color:#5c6b64; text-align:center; background:#fbfdfb; }
-.notif-content-cell { max-width:420px; white-space:normal; word-break:break-word; line-height:1.45; color:#2b2a22; }
+.notif-content-cell { max-width:420px; min-width:180px; white-space:pre-wrap; word-break:break-word; overflow-wrap:anywhere; line-height:1.45; color:#2b2a22; }
+.admin-table td:nth-child(2), .admin-table td:nth-child(3) { white-space:normal; word-break:break-word; overflow-wrap:anywhere; vertical-align:top; }
+.admin-table td:nth-child(3) { min-width:140px; }
 .admin-table th,.admin-table td,.form-input,.btn-save,.btn-cancel,.notify-tab { font-family:'Be Vietnam Pro','Segoe UI',Arial,system-ui,sans-serif; }
-@media (max-width: 720px) { .notify-tabs { width:100%; } .notify-tab { flex:1; justify-content:center; } }.badge-system { background:#eef2ff; color:#3730a3; }
+@media (max-width: 720px) { .notify-tabs { width:100%; } .notify-tab { flex:1; justify-content:center; } }
+.badge-system { background:#eef2ff; color:#3730a3; }
+.template-picker { margin-bottom:14px; padding:12px; border:1px solid #d7dfd0; border-radius:12px; background:#fbfdfb; }
+.template-picker-label { font:700 12.5px 'Be Vietnam Pro','Segoe UI',Arial,sans-serif; color:#16231f; margin-bottom:10px; }
+.template-chips { display:flex; flex-wrap:wrap; gap:8px; }
+.template-chip { display:inline-flex; align-items:center; gap:6px; padding:8px 12px; border:1px solid #c8d5c6; border-radius:999px; background:#fff; color:#35513f; font:600 12.5px 'Be Vietnam Pro','Segoe UI',Arial,sans-serif; cursor:pointer; transition:all .15s; }
+.template-chip:hover { border-color:#2e5a3c; background:#eef5ef; color:#1e3a2a; }
+.template-chip-type { font-size:10px; font-weight:800; text-transform:uppercase; padding:2px 6px; border-radius:4px; background:#e8efe6; color:#2e5a3c; }
 

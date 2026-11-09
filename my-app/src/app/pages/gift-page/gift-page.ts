@@ -1,5 +1,6 @@
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { AuthService } from '../../auth.service';
 import { ToastService } from '../../admin/toast.service';
 
 export interface OccasionTab {
@@ -48,6 +49,7 @@ export interface ProductItem {
 })
 export class GiftPageComponent implements OnInit {
   private http = inject(HttpClient);
+  private auth = inject(AuthService);
   private toast = inject(ToastService);
   heroData = {
     badge: 'Hơn 55 năm kiến tạo',
@@ -110,6 +112,9 @@ export class GiftPageComponent implements OnInit {
   readonly selectedItems = signal<{ productId: number; name: string; price: number; quantity: number }[]>([]);
   readonly showQuoteModal = signal(false);
   readonly quoteSending = signal(false);
+  readonly membership = signal<any | null>(null);
+  readonly membershipLoading = signal(false);
+
   quoteForm: any = {
     name: '',
     phone: '',
@@ -338,7 +343,17 @@ export class GiftPageComponent implements OnInit {
     imageUrl: ''
   };
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    if (this.auth.isAuthenticated()) this.loadMembership();
+  }
+
+  loadMembership(): void {
+    this.membershipLoading.set(true);
+    this.http.get<any>('/api/users/me/membership').subscribe({
+      next: (r) => { this.membership.set(r?.membership || null); this.membershipLoading.set(false); },
+      error: () => { this.membership.set(null); this.membershipLoading.set(false); },
+    });
+  }
 
   // Bật / tắt khung bộ lọc
   toggleFilter(): void {
@@ -400,6 +415,12 @@ export class GiftPageComponent implements OnInit {
   readonly quoteTotal = computed(() =>
     this.selectedItems().reduce((s, it) => s + it.price * it.quantity, 0),
   );
+
+  readonly memberTier = computed(() => this.membership()?.currentTier || null);
+  readonly memberDiscountPercent = computed(() => Number(this.memberTier()?.discountPercent || 0));
+  readonly memberDiscount = computed(() => Math.round(this.quoteTotal() * this.memberDiscountPercent() / 100));
+  readonly quoteTotalAfterMember = computed(() => Math.max(0, this.quoteTotal() - this.memberDiscount()));
+  readonly memberFreeShipping = computed(() => Boolean(this.memberTier()?.freeShipping));
 
   inQuote(p: ProductItem): boolean {
     return this.selectedItems().some((it) => it.productId === p.id);

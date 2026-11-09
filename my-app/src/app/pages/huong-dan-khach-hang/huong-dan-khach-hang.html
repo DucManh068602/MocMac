@@ -1,0 +1,70 @@
+<section class="guide-page">
+  <header class="guide-hero">
+    <div class="guide-container">
+      <span class="hero-badge">Hướng dẫn khách hàng</span>
+      <h1>Hướng dẫn sử dụng Mộc Mạc</h1>
+      <p>Tất cả những gì bạn cần biết để đăng ký, đặt hàng, theo dõi đơn và tận dụng ưu đãi hội viên tại Mộc Mạc.</p>
+    </div>
+  </header>
+
+  <div class="guide-container">
+    <aside class="guide-nav">
+      <h3>Chọn chủ đề</h3>
+      <ul class="guide-menu">
+        @for (section of sections; track section.id) {
+          <li>
+            <button type="button" class="guide-menu-item" [class.active]="isOpen(section.id)" (click)="toggleSection(section.id)">
+              <span>{{ section.label }}</span>
+            </button>
+          </li>
+        }
+      </ul>
+    </aside>
+
+    <main class="guide-content">
+      @for (section of sections; track section.id) {
+        <section class="guide-block" [class.open]="isOpen(section.id)">
+          <div class="guide-block-head" (click)="toggleSection(section.id)">
+            <h2>{{ section.title }}</h2>
+            <b>{{ isOpen(section.id) ? '−' : '+' }}</b>
+          </div>
+          <div class="guide-block-body" [class.hidden]="!isOpen(section.id)">
+            <ol class="guide-steps">
+              @for (step of section.steps; track step.title; let i = $index) {
+                <li class="guide-step">
+                  <div class="step-number">{{ i + 1 }}</div>
+                  <div class="step-content">
+                    <h4>{{ step.title }}</h4>
+                    <p>{{ step.content }}</p>
+                  </div>
+                </li>
+              }
+            </ol>
+          </div>
+        </section>
+      }
+    </main>
+  </div>
+
+  <footer class="guide-footer">
+    <div class="guide-container">
+      <div class="footer-grid">
+        <div>
+          <h4>Cần hỗ trợ thêm?</h4>
+          <p>Liên hệ trực tiếp với đội ngũ Mộc Mạc qua trang Liên hệ hoặc tab Hỗ trợ trong khung chat.</p>
+          <a routerLink="/lien-he" class="btn-guide">Liên hệ hỗ trợ</a>
+        </div>
+        <div>
+          <h4>Xem thông báo của bạn</h4>
+          <p>Kiểm tra thông báo hệ thống, đơn hàng và khuyến mãi đã gửi đến tài khoản.</p>
+          <a routerLink="/thong-bao" class="btn-guide">Xem thông báo</a>
+        </div>
+        <div>
+          <h4>Quà tặng đã mua</h4>
+          <p>Xem danh sách yêu cầu báo giá và trạng thái thanh toán của quà tặng.</p>
+          <a routerLink="/quà-tang-đã-mua" class="btn-guide">Xem quà tặng đã mua</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+</section>

@@ -172,6 +172,7 @@ export const createQuotationRequest = async (req, res) => {
     const total = Number(totalEstimate) || 0;
     const doc = await QuotationRequest.create({
       name, phone, email: email || '', company: company || '', address: address || '', occasion: occasion || '',
+      user: req.user?.id || null,
       items: items.map((it) => ({ productId: it.productId || null, name: it.name, quantity: Number(it.quantity) || 1, price: Number(it.price) || 0 })),
       totalEstimate: total, quotedTotal: total, preferredSlot: preferredSlot || '', message: message || '', status: 'new', paymentStatus: 'pending',
     });
@@ -361,9 +362,10 @@ export const acceptQuotationRequest = async (req, res) => {
 
 export const listMyQuotationRequests = async (req, res) => {
   try {
+    const userId = req.user?._id || req.user?.id;
     const email = String(req.user?.email || '').toLowerCase().trim();
-    if (!email) return res.json({ success: true, requests: [] });
-    const requests = await QuotationRequest.find({ email }).sort({ createdAt: -1 }).limit(50).lean();
+    const filter = userId ? { user: userId } : (email ? { email } : {});
+    const requests = await QuotationRequest.find(filter).sort({ createdAt: -1 }).limit(50).lean();
     return res.json({ success: true, requests });
   } catch (e) {
     console.error('List my quotation requests error:', e);

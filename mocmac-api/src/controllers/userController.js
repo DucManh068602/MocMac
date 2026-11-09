@@ -2,8 +2,10 @@ import bcrypt from 'bcryptjs';
 import { User } from '../models/User.js';
 import { Order } from '../models/Order.js';
 import { QuotationRequest } from '../models/QuotationRequest.js';
+import { Notification } from '../models/Notification.js';
 import { resolveTier } from '../utils/membership.js';
 import { logAction, getRequestInfo } from '../utils/auditLog.js';
+import { io, userSocketMap } from '../index.js';
 
 async function attachMembership(users) {
   const list = Array.isArray(users) ? users : [users];
@@ -219,14 +221,39 @@ export const getMyMembership = async (req, res) => {
   try {
     const userId = req.user?._id || req.user?.id;
     const email = String(req.user?.email || '').toLowerCase().trim();
+    const quoteFilter = userId ? { user: userId } : (email ? { email } : {});
     const [orders, paidQuotations, pendingQuotations] = await Promise.all([
       Order.find({ user: userId, status: { $ne: 'cancelled' }, paymentStatus: { $ne: 'failed' } }).select('total createdAt status paymentStatus').lean(),
-      email ? QuotationRequest.find({ email, paymentStatus: 'paid', status: { $in: ['accepted', 'done'] } }).select('quotedTotal totalEstimate').lean() : Promise.resolve([]),
-      email ? QuotationRequest.find({ email, status: { $in: ['accepted', 'quoted'] }, paymentStatus: { $ne: 'paid' } }).select('_id').lean() : Promise.resolve([]),
+      QuotationRequest.find({ ...quoteFilter, paymentStatus: 'paid', status: { $in: ['accepted', 'done'] } }).select('quotedTotal totalEstimate').lean(),
+      QuotationRequest.find({ ...quoteFilter, status: { $in: ['accepted', 'quoted'] }, paymentStatus: { $ne: 'paid' } }).select('_id').lean(),
     ]);
     const orderSpend = orders.reduce((s, o) => s + Math.max(0, Number(o.total) || 0), 0);
     const giftSpend = paidQuotations.reduce((s, q) => s + Math.max(0, Number(q.quotedTotal || q.totalEstimate) || 0), 0);
     const membership = resolveTier(orderSpend + giftSpend);
+
+    // Auto-notify tier upgrade
+    try {
+      const tierOrder = { dong: 0, bac: 1, vang: 2, kimcuong: 3 };
+      const user = await User.findById(userId).select('lastNotifiedTier').lean();
+      const lastTier = user?.lastNotifiedTier || 'dong';
+      if ((tierOrder[membership.currentTier.key] ?? 0) > (tierOrder[lastTier] ?? 0)) {
+        await User.findByIdAndUpdate(userId, { $set: { lastNotifiedTier: membership.currentTier.key } });
+        await Notification.create({
+          title: `Chúc mừng bạn đã đạt hạng ${membership.currentTier.name}`,
+          content: `Bạn đã được nâng lên hạng ${membership.currentTier.name} tại Mộc Mạc. ${membership.currentTier.benefit || ''} Cảm ơn bạn đã đồng hành!`,
+          type: 'system',
+          recipient: userId,
+          link: '/tai-khoan',
+          sent: true,
+          sentAt: new Date(),
+        });
+        const socketId = userSocketMap.get(String(userId));
+        if (socketId) io.to(socketId).emit('notification', { title: `Chúc mừng bạn đã đạt hạng ${membership.currentTier.name}`, type: 'system', link: '/tai-khoan', createdAt: new Date() });
+      }
+    } catch (e) {
+      console.error('Tier upgrade notification error:', e.message || e);
+    }
+
     return res.json({
       success: true,
       membership: {

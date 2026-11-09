@@ -1,12 +1,16 @@
 import { Component, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { ToastService } from './toast.service';
 import { ConfirmService } from './confirm.service';
+import { RichTextEditorComponent } from '../shared/rich-text-editor';
 
 @Component({
   selector: 'app-admin-village-stories',
-  standalone: false,
+  standalone: true,
   styleUrls: ['./admin-list.css'],
+  imports: [CommonModule, FormsModule, RichTextEditorComponent],
   template: `
     <div class="list-page">
       <header class="list-header">
@@ -29,7 +33,7 @@ import { ConfirmService } from './confirm.service';
               <option value="draft">Nháp</option>
             </select>
             <input class="form-input" [(ngModel)]="form.excerpt" placeholder="Mô tả ngắn" style="grid-column:1/-1" />
-            <textarea class="form-input" [(ngModel)]="form.content" placeholder="Nội dung câu chuyện" rows="5" style="grid-column:1/-1;resize:vertical"></textarea>
+            <app-rich-text-editor [value]="form.content" (valueChange)="form.content = $event" placeholder="Nội dung câu chuyện" style="grid-column:1/-1"></app-rich-text-editor>
           </div>
           <div class="form-actions">
             <button type="button" class="btn-save" (click)="save()" [disabled]="saving()">{{ saving() ? 'Đang lưu...' : 'Lưu' }}</button>

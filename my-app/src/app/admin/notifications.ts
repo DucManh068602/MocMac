@@ -107,7 +107,20 @@ type NotifyTab = 'promo' | 'order' | 'contact' | 'system';
 
       @if (tab() === 'system') {
         <section class="section-card">
-          <div class="section-head"><h3>Gửi thông báo hệ thống</h3><p>Thông báo chung/hệ thống gửi vào mục thông báo của tất cả tài khoản đang hoạt động.</p></div>
+          <div class="section-head"><h3>Gửi thông báo hệ thống</h3><p>Thông báo chung/hệ thống gửi vào mục thông báo của tất cả tài khoản đang hoạt động. Chọn mẫu bên dưới để điền nhanh.</p></div>
+          @if (templates().length) {
+            <div class="template-picker">
+              <div class="template-picker-label">Mẫu thông báo ({{ templates().length }})</div>
+              <div class="template-chips">
+                @for (t of templates(); track t.key) {
+                  <button type="button" class="template-chip" (click)="applyTemplate(t)" [title]="t.description">
+                    <span class="template-chip-type">{{ t.type }}</span>
+                    <span>{{ t.title }}</span>
+                  </button>
+                }
+              </div>
+            </div>
+          }
           <div class="form-grid notif-form-grid">
             <label class="field field-wide">Tiêu đề <input class="form-input" [(ngModel)]="systemTitle" placeholder="Thông báo từ Mộc Mạc..." /></label>
             <label class="field field-wide">Nội dung <textarea class="form-input notif-content" rows="5" [(ngModel)]="systemContent"></textarea></label>
@@ -169,6 +182,7 @@ export class AdminNotificationsComponent {
   private http = inject(HttpClient);
   private toast = inject(ToastService);
 
+  readonly templates = signal<any[]>([]);
   readonly tab = signal<NotifyTab>('promo');
   readonly notifications = signal<any[]>([]);
   readonly coupons = signal<any[]>([]);
@@ -205,6 +219,7 @@ export class AdminNotificationsComponent {
     if (t === 'order' || t === 'contact' || t === 'promo' || t === 'system') this.tab.set(t);
     this.loadCoupons();
     this.loadNotifications();
+    this.loadTemplates();
     setTimeout(() => this.consumeCouponPrefill(), 0);
   }
 
@@ -216,6 +231,21 @@ export class AdminNotificationsComponent {
   formatDate(d: any): string { return d ? new Date(d).toLocaleDateString('vi-VN') : '—'; }
   couponSummary(c: any): string { const v = c?.discountType === 'percent' ? `giảm ${c.discountValue}%` : `giảm ${this.formatMoney(c.discountValue)}`; return c?.maxDiscount ? `${v}, tối đa ${this.formatMoney(c.maxDiscount)}` : v; }
   targetLabel(n: any): string { if (n.recipient) return n.recipient.name || n.recipient.email || '1 thành viên'; return 'Chung (tất cả)'; }
+
+  loadTemplates(): void {
+    this.http.get<any>('/api/notifications/templates').subscribe({
+      next: (r) => this.templates.set(r?.templates || []),
+      error: () => this.templates.set([]),
+    });
+  }
+
+  applyTemplate(t: any): void {
+    this.systemTitle = t?.title || '';
+    this.systemContent = t?.content || '';
+    this.systemLink = t?.link || '';
+    if (t?.type === 'promo') { this.tab.set('promo'); this.formType = 'promo'; this.formTitle = t.title || ''; this.formContent = t.content || ''; this.formLink = t.link || ''; }
+    else if (t?.type === 'system') { this.systemTitle = t.title || ''; this.systemContent = t.content || ''; this.systemLink = t.link || ''; }
+  }
 
   loadCoupons(): void {
     this.http.get<any>('/api/coupons?limit=200').subscribe({ next: (r) => this.coupons.set(r?.coupons || r || []), error: () => this.coupons.set([]) });

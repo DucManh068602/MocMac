@@ -22,6 +22,7 @@ import { ConfirmService } from './confirm.service';
           <button type="button" class="filter-reset" (click)="resetFilters()" [disabled]="!searchTerm && !activeFilter">Xóa bộ lọc</button>
         </div>
         <div class="header-actions">
+          <button type="button" class="btn-ghost" (click)="openHolidays()">Mã ngày lễ</button>
           <button type="button" class="btn-ghost" (click)="goNotify()">Gửi thông báo mã</button>
           <button type="button" class="btn-add" (click)="startCreate()">Thêm mã</button>
         </div>
@@ -125,6 +126,8 @@ export class AdminCouponsComponent {
       error: () => this.toast.error('Không tải được danh sách mã giảm giá.'),
     });
   }
+
+  openHolidays(): void { window.location.assign('/admin/holiday-coupons'); }
 
   startCreate(): void {
     this.editing.set(null);

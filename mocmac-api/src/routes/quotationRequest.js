@@ -2,7 +2,7 @@
 import { requireAuth } from '../middleware/auth.js';
 import { createQuotationRequest, listQuotationRequests, listMyQuotationRequests, updateQuotationRequest, acceptQuotationRequest } from '../controllers/quotationRequestController.js';
 const router = Router();
-router.post('/', createQuotationRequest);
+router.post('/', requireAuth, createQuotationRequest);
 router.get('/mine', requireAuth, listMyQuotationRequests);
 router.get('/', listQuotationRequests);
 router.get('/:id/accept', acceptQuotationRequest);

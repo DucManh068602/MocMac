@@ -74,13 +74,15 @@
       <div class="section-heading">
         <span>LÀNG NGHỆ NỔI BẬT</span>
         <h2>Những nơi lưu giữ tinh hoa nghề Việt</h2>
+        @if (activeVillage()) {
+          <a [routerLink]="'/lang-nghe'" class="view-all">Xem tất cả làng nghề</a>
+        }
       </div>
 
       <div class="village-grid">
 
-        @for (v of villages; track v.slug) {
-
-          <article class="village-card">
+        @for (v of villages(); track v.slug) {
+          <article class="village-card" [class.active]="activeVillage()?.slug === v.slug" (click)="selectVillage(v.slug)" [routerLink]="['/lang-nghe', v.slug]" style="cursor:pointer">
 
             <div class="village-image">
               <img
@@ -92,6 +94,9 @@
               <span class="craft-label">
                 {{ v.craft }}
               </span>
+              @if (activeVillage()?.slug === v.slug) {
+                <span class="village-active-badge">Đang xem</span>
+              }
             </div>
 
             <div class="village-body">
@@ -112,14 +117,11 @@
                 <span>{{ v.products }}</span>
               </div>
 
-              <a [routerLink]="['/lang-nghe', v.slug]">
-                Khám phá câu chuyện →
-              </a>
+              <span class="village-read-more">Xem câu chuyện của {{ v.name }} →</span>
 
             </div>
 
           </article>
-
         }
 
       </div>
@@ -134,23 +136,20 @@
 
       <div class="section-heading">
         <span>CHUYỆN TỪ LÀNG NGHỆ</span>
-        <h2>Những câu chuyện phía sau sản phẩm</h2>
+        <h2>{{ activeVillage() ? ('Câu chuyện ' + activeVillage()!.name) : 'Những câu chuyện phía sau sản phẩm' }}</h2>
 
         <p>
-          Không chỉ là nơi sản xuất,
-          mỗi làng nghề còn mang theo những câu chuyện về con người,
-          kỹ thuật và đời sống văn hoá địa phương.
+          {{ activeVillage() ? ('Những câu chuyện về con người, kỹ thuật và đời sống tại ' + activeVillage()!.name) : 'Không chỉ là nơi sản xuất, mỗi làng nghề còn mang theo những câu chuyện về con người, kỹ thuật và đời sống văn hoá địa phương.' }}
         </p>
       </div>
 
       <div class="article-grid">
 
-        @for (article of articles; track article.title) {
-
+        @for (article of articles(); track article._id || article.title) {
           <article class="article-card">
 
             <span class="article-category">
-              {{ article.category }}
+              {{ article.craft || 'Câu chuyện làng nghề' }}
             </span>
 
             <h3>
@@ -158,15 +157,22 @@
             </h3>
 
             <p>
-              {{ article.text }}
+              {{ article.excerpt || article.content }}
             </p>
 
-            <a [routerLink]="['/lang-nghe', article.slug]">
+            @if (article.imageUrl) {
+              <div class="article-image">
+                <img [src]="article.imageUrl" [alt]="article.title" loading="lazy" />
+              </div>
+            }
+
+            <a [routerLink]="['/lang-nghe/cau-chuyen', article._id]">
               Đọc câu chuyện →
             </a>
 
           </article>
-
+        } @empty {
+          <div class="empty-articles">Chưa có câu chuyện làng nghề nào. Quản trị viên có thể soạn thảo trong admin.</div>
         }
 
       </div>

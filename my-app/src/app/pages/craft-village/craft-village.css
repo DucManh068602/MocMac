@@ -64,6 +64,18 @@
   letter-spacing: 2px;
 }
 
+.view-all {
+  margin-left: auto;
+  font-size: .85rem;
+  font-weight: 700;
+  color: #6b7f52;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.view-all:hover { text-decoration: underline; }
+
 .section-heading h2 {
   margin: 7px 0;
 
@@ -230,6 +242,36 @@
   box-shadow: 0 10px 25px rgba(53,84,58,.08);
 }
 
+.village-card.active {
+  border-color: #6b7f52;
+  box-shadow: 0 10px 25px rgba(53,84,58,.12);
+  background: #f7fbf6;
+}
+
+.village-active-badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: #6b7f52;
+  color: #fff;
+  font: 600 .72rem inherit;
+  padding: 3px 8px;
+  border-radius: 999px;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+}
+
+.village-read-more {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 14px;
+  font: 600 .85rem inherit;
+  color: #6b7f52;
+  text-decoration: none;
+}
+.village-read-more:hover { text-decoration: underline; }
+
 .village-image {
   height: 270px;
 
@@ -375,14 +417,35 @@
   font-size: 13px;
   line-height: 1.7;
 }
-
 .article-card a {
   color: var(--earth);
 
   font-size: 12px;
+
   font-weight: 600;
 
   text-decoration: none;
+}
+
+.article-image {
+  margin-top: 12px;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #f3f1ec;
+  height: 140px;
+}
+.article-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.empty-articles {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 40px;
+  color: #6f685f;
 }
 
 /* CRAFT */

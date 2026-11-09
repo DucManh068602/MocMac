@@ -1,21 +1,50 @@
-<section class="wrap page">
-  <div class="region-banner">
-    <span class="small-title"><i class="fa-solid fa-earth-asia" aria-hidden="true"></i> MỘC MẠC</span>
-    <h1>Vùng miền</h1>
-    <p>Hành trình khám phá đặc sản và bản sắc từ các vùng miền Việt Nam — mỗi vùng đất mang một hương vị, một câu chuyện riêng.</p>
-  </div>
+<section class="region-page">
+  <header class="region-hero">
+    <div class="hero-content">
+      <span class="hero-kicker"><i class="fa-solid fa-earth-asia" aria-hidden="true"></i> MỘC MẠC</span>
+      <h1>Vùng miền Việt Nam</h1>
+      <p>Hành trình khám phá đặc sản và bản sắc từ 8 vùng miền — mỗi vùng đất mang một hương vị, một câu chuyện riêng.</p>
+    </div>
+  </header>
 
-  @if (regionStories().length > 0) {
-    <section class="region-stories" aria-label="Câu chuyện vùng miền">
-      <h2><i class="fa-solid fa-book-open" aria-hidden="true"></i> Câu chuyện vùng miền</h2>
-      <div class="region-story-grid">
-        @for (s of regionStories(); track s._id || s.title) {
-          <article class="region-story-card">
+  <section class="region-grid-section">
+    <div class="section-head">
+      <h2>8 Vùng miền</h2>
+      <p>Chọn một vùng để xem câu chuyện và làng nghề thuộc vùng đó.</p>
+    </div>
+    <div class="region-grid">
+      @for (r of regions(); track r.slug) {
+        <a [routerLink]="['/vung-mien', r.slug]" class="region-card">
+          <div class="region-media">
+            <img [src]="r.image || 'https://images.unsplash.com/photo-1518637319378-942972265bf8?w=800'" [alt]="r.name" loading="lazy" />
+            <span class="region-tag">{{ r.productCount || 0 }} sản phẩm</span>
+          </div>
+          <div class="region-body">
+            <h3>{{ r.name }}</h3>
+            <p class="region-desc">{{ r.description || 'Khám phá đặc sản và văn hóa vùng miền.' }}</p>
+            <span class="region-arrow">Xem chi tiết →</span>
+          </div>
+        </a>
+      } @empty {
+        <div class="empty-region">Đang tải danh sách vùng miền…</div>
+      }
+    </div>
+  </section>
+
+  @if (featuredStories().length > 0) {
+    <section class="region-stories-section">
+      <div class="section-head">
+        <h2><i class="fa-solid fa-book-open" aria-hidden="true"></i> Câu chuyện vùng miền</h2>
+        <a [routerLink]="'/vung-mien'" class="view-all">Xem tất cả câu chuyện</a>
+      </div>
+      <div class="story-grid">
+        @for (s of featuredStories(); track s._id || s.title) {
+          <article class="story-card" [routerLink]="'/vung-mien'">
             @if (s.imageUrl) {
               <div class="story-image"><img [src]="s.imageUrl" [alt]="s.title" loading="lazy" /></div>
             }
             <div class="story-body">
-              @if (s.region) { <span class="story-region"><i class="fa-solid fa-location-dot" aria-hidden="true"></i> {{ s.region }}</span> }
+              @if (s.region) { <span class="story-region">{{ s.region }}</span> }
               <h3>{{ s.title }}</h3>
               <p>{{ s.excerpt || s.content }}</p>
             </div>
@@ -23,40 +52,5 @@
         }
       </div>
     </section>
-  }
-
-  @if (regions().length > 0) {
-    <div class="region-grid">
-      @for (r of regions(); track r.slug) {
-        <section class="region-card" [routerLink]="['/san-pham']">
-          <div class="region-img">
-            <img [src]="r.image" [alt]="r.name" loading="lazy" />
-          </div>
-          <div class="region-body">
-            <h2>{{ r.name }}</h2>
-            <p class="region-desc">{{ r.description }}</p>
-            <div class="region-count"><i class="fa-solid fa-box" aria-hidden="true"></i> {{ r.productCount }} sản phẩm</div>
-          </div>
-        </section>
-      }
-    </div>
-  } @else {
-    <div class="loading">
-      <p><i class="fa-solid fa-spinner fa-spin" aria-hidden="true"></i> Đang tải dữ liệu vùng miền…</p>
-    </div>
-  }
-
-  @if (productsByRegion().length > 0) {
-    <div class="region-products-section">
-      <h3><i class="fa-solid fa-chart-simple" aria-hidden="true"></i> Sản phẩm theo vùng miền</h3>
-      <div class="region-list">
-        @for (r of productsByRegion(); track r.name) {
-          <div class="region-row">
-            <strong><i class="fa-solid fa-map-pin" aria-hidden="true"></i> {{ r.name }}</strong>
-            <span>{{ r.count }} sản phẩm</span>
-          </div>
-        }
-      </div>
-    </div>
   }
 </section>
