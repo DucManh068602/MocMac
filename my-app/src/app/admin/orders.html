@@ -6,10 +6,10 @@
     </div>
     <div class="admin-filters">
       <div class="filter-group">
-        <input class="filter-input" placeholder="Tìm mã đơn/MST/khách hàng..." [(ngModel)]="searchTerm" (input)="onFilterChange()" style="width: 220px" />
+        <input class="filter-input" placeholder="Tìm mã đơn/khách hàng/SĐT..." [(ngModel)]="searchTerm" (input)="onFilterChange()" style="width: 220px" />
       </div>
       <div class="filter-group">
-        <select class="filter-select" [(ngModel)]="statusFilter" (change)="onFilterChange()" style="width: 140px">
+        <select class="filter-select" [(ngModel)]="statusFilter" (change)="onFilterChange()" style="width: 150px">
           <option value="">Tất cả trạng thái</option>
           <option value="pending">Chờ xử lý</option>
           <option value="processing">Đang xử lý</option>
@@ -19,7 +19,7 @@
         </select>
       </div>
       <div class="filter-group">
-        <select class="filter-select" [(ngModel)]="paymentFilter" (change)="onFilterChange()" style="width: 140px">
+        <select class="filter-select" [(ngModel)]="paymentFilter" (change)="onFilterChange()" style="width: 150px">
           <option value="">Tất cả thanh toán</option>
           <option value="pending">Chưa thanh toán</option>
           <option value="paid">Đã thanh toán</option>
@@ -27,37 +27,17 @@
           <option value="refunded">Hoàn tiền</option>
         </select>
       </div>
-      <button type="button" class="filter-reset" (click)="resetFilters()" [disabled]="!searchTerm && !statusFilter && !paymentFilter">
-        Xóa bộ lọc
-      </button>
+      <button type="button" class="filter-reset" (click)="resetFilters()" [disabled]="!searchTerm && !statusFilter && !paymentFilter">Xóa bộ lọc</button>
     </div>
   </header>
 
   <div class="stats-grid" [class.is-loading]="loading()">
-    <div class="stat-card stat--moss">
-      <span class="stat-value">{{ stats().total }}</span>
-      <span class="stat-label">Tổng đơn</span>
-    </div>
-    <div class="stat-card stat--clay">
-      <span class="stat-value">{{ stats().pending }}</span>
-      <span class="stat-label">Chờ xử lý</span>
-    </div>
-    <div class="stat-card stat--earth">
-      <span class="stat-value">{{ stats().processing }}</span>
-      <span class="stat-label">Đang xử lý</span>
-    </div>
-    <div class="stat-card stat--sage">
-      <span class="stat-value">{{ stats().delivered }}</span>
-      <span class="stat-label">Đã nhận</span>
-    </div>
-    <div class="stat-card stat--ink">
-      <span class="stat-value">{{ stats().cancelled }}</span>
-      <span class="stat-label">Đã hủy</span>
-    </div>
-    <div class="stat-card stat--primary">
-      <span class="stat-value">{{ formatCurrency(stats().revenue) }}</span>
-      <span class="stat-label">Doanh thu</span>
-    </div>
+    <div class="stat-card stat--moss"><span class="stat-value">{{ stats().total }}</span><span class="stat-label">Tổng đơn</span></div>
+    <div class="stat-card stat--clay"><span class="stat-value">{{ stats().pending }}</span><span class="stat-label">Chờ xử lý</span></div>
+    <div class="stat-card stat--earth"><span class="stat-value">{{ stats().processing }}</span><span class="stat-label">Đang xử lý</span></div>
+    <div class="stat-card stat--sage"><span class="stat-value">{{ stats().delivered }}</span><span class="stat-label">Đã nhận</span></div>
+    <div class="stat-card stat--ink"><span class="stat-value">{{ stats().cancelled }}</span><span class="stat-label">Đã hủy</span></div>
+    <div class="stat-card stat--primary"><span class="stat-value">{{ formatCurrency(stats().revenue) }}</span><span class="stat-label">Doanh thu đã thanh toán</span></div>
   </div>
 
   <div class="table-wrap">
@@ -77,27 +57,19 @@
       <tbody>
         @for (order of orders(); track order._id) {
           <tr>
-            <td>
-              <span class="order-code">{{ order.orderId || order._id?.toString().slice(-8) || '—' }}</span>
-            </td>
-            <td>
-              <div class="customer-info">
-                <span class="customer-name">{{ order.customerInfo?.name || order.user?.name || '—' }}</span>
-              </div>
-            </td>
+            <td><span class="order-code">{{ order.orderId || order._id?.toString().slice(-8) || '—' }}</span></td>
+            <td><div class="customer-info"><span class="customer-name">{{ order.customerInfo?.name || order.user?.name || '—' }}</span></div></td>
             <td>
               <div class="customer-contact">
                 @if (order.customerInfo?.phone) { <div>{{ order.customerInfo.phone }}</div> }
-                @if (order.customerInfo?.email) { <div class="email">{{ order.customerInfo.email }}</div> }
-                @if (!order.customerInfo?.phone && !order.customerInfo?.email) { <span class="muted">—</span> }
+                @if (order.customerInfo?.email || order.user?.email) { <div class="email">{{ order.customerInfo?.email || order.user?.email }}</div> }
+                @if (!order.customerInfo?.phone && !order.customerInfo?.email && !order.user?.email) { <span class="muted">—</span> }
               </div>
             </td>
             <td class="order-total">{{ formatCurrency(order.total) }}</td>
             <td>
-              <span class="status-badge" [style.--c]="statusColor(order.status)">
-                {{ statusLabel(order.status) }}
-              </span>
-              <select class="status-select" [value]="order.status" (change)="updateStatus(order._id, $any($event.target).value)">
+              <span class="status-badge" [style.--c]="statusColor(order.status)">{{ statusLabel(order.status) }}</span>
+              <select class="status-select" [value]="order.status" (change)="updateStatus(order._id, $any($event.target).value)" title="Cập nhật trạng thái và gửi thông báo cho khách">
                 <option value="pending">Chờ xử lý</option>
                 <option value="processing">Đang xử lý</option>
                 <option value="shipped">Đã giao</option>
@@ -106,10 +78,8 @@
               </select>
             </td>
             <td>
-              <span class="status-badge payment-badge" [style.--c]="paymentColor(order.paymentStatus || 'pending')">
-                {{ paymentLabel(order.paymentStatus) }}
-              </span>
-              <select class="payment-select" [value]="order.paymentStatus || 'pending'" (change)="updatePayment(order._id, $any($event.target).value)">
+              <span class="status-badge payment-badge" [style.--c]="paymentColor(order.paymentStatus || 'pending')">{{ paymentLabel(order.paymentStatus) }}</span>
+              <select class="payment-select" [value]="order.paymentStatus || 'pending'" (change)="updatePayment(order._id, $any($event.target).value)" title="Cập nhật thanh toán và gửi thông báo cho khách">
                 <option value="pending">Chưa thanh toán</option>
                 <option value="paid">Đã thanh toán</option>
                 <option value="failed">Thất bại</option>
@@ -117,11 +87,7 @@
               </select>
             </td>
             <td>{{ order.createdAt | date:'dd/MM/yyyy HH:mm' }}</td>
-            <td>
-              <div class="action-group">
-                <a [routerLink]="['/admin/orders', order._id]" class="btn-action view" title="Xem chi tiết"><i class="fa-solid fa-eye ico"></i></a>
-              </div>
-            </td>
+            <td><div class="action-group"><button type="button" class="btn-action view" title="Xem chi tiết" (click)="viewOrder(order)">Xem</button></div></td>
           </tr>
         } @empty {
           <tr><td colspan="8" class="empty">{{ loading() ? 'Đang tải...' : 'Chưa có đơn hàng nào.' }}</td></tr>
@@ -130,9 +96,49 @@
     </table>
   </div>
 
-  <app-pagination
-    [currentPage]="page()"
-    [totalPages]="totalPages()"
-    (pageChange)="page.set($event); loadOrders()"
-  ></app-pagination>
+  <app-pagination [currentPage]="page()" [totalPages]="totalPages()" (pageChange)="page.set($event); loadOrders()"></app-pagination>
+
+  @if (detailOpen()) {
+    <div class="modal-overlay" (click)="closeDetail()">
+      <div class="modal modal-wide order-detail-modal" (click)="$event.stopPropagation()">
+        <header class="modal-header">
+          <h3>Chi tiết đơn hàng {{ detail()?.orderId || detail()?._id?.slice(-8) || '' }}</h3>
+          <button type="button" class="modal-close" (click)="closeDetail()">×</button>
+        </header>
+        @if (detailLoading()) {
+          <div class="detail-empty">Đang tải chi tiết...</div>
+        } @else if (detail(); as o) {
+          <div class="order-detail-grid">
+            <div><strong>Khách hàng:</strong> {{ o.customerInfo?.name || o.user?.name || '—' }}</div>
+            <div><strong>SĐT:</strong> {{ o.customerInfo?.phone || '—' }}</div>
+            <div><strong>Email:</strong> {{ o.customerInfo?.email || o.user?.email || '—' }}</div>
+            <div><strong>Địa chỉ:</strong> {{ o.customerInfo?.address || '—' }}</div>
+            <div><strong>Trạng thái:</strong> {{ statusLabel(o.status) }}</div>
+            <div><strong>Thanh toán:</strong> {{ paymentLabel(o.paymentStatus) }} ({{ o.paymentMethod || 'cod' }})</div>
+            <div><strong>Ngày tạo:</strong> {{ o.createdAt | date:'dd/MM/yyyy HH:mm' }}</div>
+            <div><strong>Ghi chú:</strong> {{ o.note || '—' }}</div>
+          </div>
+          <table class="order-detail-items">
+            <thead><tr><th>Sản phẩm</th><th>SL</th><th>Đơn giá</th><th>Thành tiền</th></tr></thead>
+            <tbody>
+              @for (it of (o.items || []); track $index) {
+                <tr>
+                  <td>{{ it.name || it.productId }}</td>
+                  <td>{{ it.quantity }}</td>
+                  <td>{{ formatCurrency(it.price) }}</td>
+                  <td><b>{{ formatCurrency((it.price || 0) * (it.quantity || 0)) }}</b></td>
+                </tr>
+              }
+            </tbody>
+          </table>
+          <div class="order-detail-grid" style="margin-top:12px">
+            <div><strong>Tạm tính:</strong> {{ formatCurrency(o.subtotal) }}</div>
+            <div><strong>Giảm giá:</strong> {{ formatCurrency(o.discount) }}</div>
+            <div><strong>Vận chuyển:</strong> {{ formatCurrency(o.shipping) }}</div>
+            <div><strong>Tổng cộng:</strong> <b style="color:var(--moss-d)">{{ formatCurrency(o.total) }}</b></div>
+          </div>
+        }
+      </div>
+    </div>
+  }
 </div>

@@ -19,6 +19,7 @@
           @if (accountDropdown()) {
             <div class="account-dropdown" (click)="$event.stopPropagation()">
               <a routerLink="/don-hang" (click)="accountDropdown.set(false)">{{ 'account.myOrders' | t }}</a>
+              <a routerLink="/quà-tang-da-mua" (click)="accountDropdown.set(false)">{{ 'account.myGifts' | t }}</a>
               @if (auth.user()?.role !== 'customer' && auth.isAuthenticated()) {
                 <a routerLink="/admin" (click)="accountDropdown.set(false)">{{ 'account.admin' | t }}</a>
               }

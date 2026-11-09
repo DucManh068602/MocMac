@@ -1,7 +1,10 @@
-import { Router } from 'express';
-import { createQuotationRequest, listQuotationRequests, updateQuotationRequest } from '../controllers/quotationRequestController.js';
+﻿import { Router } from 'express';
+import { requireAuth } from '../middleware/auth.js';
+import { createQuotationRequest, listQuotationRequests, listMyQuotationRequests, updateQuotationRequest, acceptQuotationRequest } from '../controllers/quotationRequestController.js';
 const router = Router();
 router.post('/', createQuotationRequest);
+router.get('/mine', requireAuth, listMyQuotationRequests);
 router.get('/', listQuotationRequests);
+router.get('/:id/accept', acceptQuotationRequest);
 router.patch('/:id', updateQuotationRequest);
 export default router;

@@ -1,46 +1,45 @@
 <div class="notif-page">
   <header class="notif-header">
-    <h1>Thông báo</h1>
+    <div>
+      <h1>Thông báo</h1>
+      @if (!loading() && unread() > 0) { <p class="notif-sub">{{ unread() }} thông báo chưa đọc</p> }
+    </div>
     <div class="notif-actions">
-      @if (loading()) {
-        <span class="notif-loading">Đang tải…</span>
-      } @else if (notifications().length > 0) {
+      @if (!loading() && notifications().length > 0 && unread() > 0) {
         <button type="button" class="btn btn-ghost" (click)="markAllRead()" [disabled]="markingAll()">
-          {{ markingAll() ? 'Đang cập nhật…' : 'Đánh dấu tất cả đã đọc' }}
+          {{ markingAll() ? 'Đang cập nhật...' : 'Đánh dấu tất cả đã đọc' }}
         </button>
       }
     </div>
   </header>
 
+  <div class="notif-filters">
+    <button type="button" class="notif-filter" [class.active]="typeFilter()===''" (click)="setFilter('')">Tất cả</button>
+    <button type="button" class="notif-filter" [class.active]="typeFilter()==='promo'" (click)="setFilter('promo')">Mã giảm giá</button>
+    <button type="button" class="notif-filter" [class.active]="typeFilter()==='system'" (click)="setFilter('system')">Hệ thống</button>
+    <button type="button" class="notif-filter" [class.active]="typeFilter()==='order'" (click)="setFilter('order')">Đơn hàng</button>
+  </div>
+
   @if (loading()) {
-    <div class="notif-empty">
-      <p>Đang tải thông báo…</p>
-    </div>
-  } @else if (notifications().length === 0) {
+    <div class="notif-empty"><p>Đang tải thông báo...</p></div>
+  } @else if (filtered().length === 0) {
     <div class="notif-empty">
       <p>Chưa có thông báo nào.</p>
+      <p class="notif-empty-sub">Thông báo mã giảm giá, ưu đãi theo hạng hội viên, hệ thống và đơn hàng sẽ hiển thị tại đây.</p>
     </div>
   } @else {
     <ul class="notif-list">
-      @for (n of notifications(); track n._id ?? $index) {
-        <li class="notif-item" [class.unread]="!n.isRead">
+      @for (n of filtered(); track n._id ?? $index) {
+        <li class="notif-item" [class.unread]="!n.isRead" [class.promo]="n.type === 'promo'" [class.system]="n.type === 'system'">
           <div class="notif-item__dot" [class.read]="n.isRead"></div>
           <div class="notif-item__body">
+            <div class="notif-item__meta-top"><span class="notif-type">{{ typeLabel(n.type) }}</span></div>
             <div class="notif-item__title">{{ n.title }}</div>
-            @if (n.content) {
-              <div class="notif-item__content">{{ n.content }}</div>
-            }
-            <div class="notif-item__meta">
-              <span>{{ n.createdAt | date:'short' }}</span>
-              @if (n.recipient) {
-                <span class="notif-recipient">→ {{ n.recipient.name || n.recipient }}</span>
-              }
-            </div>
+            @if (n.content) { <div class="notif-item__content">{{ n.content }}</div> }
+            <div class="notif-item__meta"><span>{{ n.createdAt | date:'dd/MM/yyyy HH:mm' }}</span></div>
           </div>
           @if (!n.isRead) {
-            <button type="button" class="btn btn-small" (click)="markRead(n._id)">
-              Đánh dấu đã đọc
-            </button>
+            <button type="button" class="btn btn-small" (click)="markRead(n._id)">Đã đọc</button>
           }
         </li>
       }

@@ -1,115 +1,117 @@
 <section class="settings-page">
   <div class="wrap settings-container">
     <h1>Cài đặt tài khoản</h1>
-    <p class="subtitle">Quản lý thông tin cá nhân và yêu cầu nâng cấp vai trò</p>
+    <p class="subtitle">Quản lý thông tin cá nhân, hạng hội viên và đặc quyền mua hàng</p>
 
-    <!-- PROFILE -->
     <section class="profile-section">
       <h2>Thông tin cá nhân</h2>
       @if (profile(); as p) {
         <div class="profile-grid">
-          <div class="profile-item">
-            <label>Tên</label>
-            <span>{{ p.name }}</span>
-          </div>
-          <div class="profile-item">
-            <label>Email</label>
-            <span>{{ p.email }}</span>
-          </div>
+          <div class="profile-item"><label>Tên</label><span>{{ p.name }}</span></div>
+          <div class="profile-item"><label>Email</label><span>{{ p.email }}</span></div>
           <div class="profile-item">
             <label>Số điện thoại</label>
-            <span>{{ p.phone || 'Chưa cập nhật' }}</span>
+            <input type="tel" [(ngModel)]="profilePhone" name="profilePhone" />
+            <button type="button" class="btn-save" [disabled]="savingProfile()" (click)="updateProfile()">{{ savingProfile() ? 'Đang lưu...' : 'Lưu' }}</button>
           </div>
-          <div class="profile-item">
-            <label>Vai trò</label>
-            <span class="role-badge">{{ p.role === 'customer' ? 'Khách hàng' : p.role }}</span>
-          </div>
+          <div class="profile-item"><label>Vai trò</label><span class="role-badge">{{ roleLabel(p.role) }}</span></div>
         </div>
       }
     </section>
 
-    <!-- ROLE UPGRADE REQUEST -->
+    <section class="membership-section">
+      <h2>Hạng hội viên &amp; đặc quyền mua hàng</h2>
+      @if (membershipLoading()) {
+        <p class="loading">Đang tải hạng hội viên...</p>
+      } @else if (membership(); as m) {
+        <div class="tier-hero" [style.--tier-color]="m.currentTier.color">
+          <div class="tier-badge-lg">{{ m.currentTier.name }}</div>
+          <div class="tier-hero-text">
+            <p class="tier-spend">Tổng chi tiêu tích lũy: <strong>{{ formatMoney(m.totalSpend) }}</strong></p>
+            <p class="tier-benefit">{{ m.currentTier.benefit }}</p>
+            <p class="tier-meta">Đơn hàng: {{ formatMoney(m.orderSpend) }} · Báo giá quà tặng đã thanh toán: {{ formatMoney(m.giftSpend) }}</p>
+          </div>
+        </div>
+
+        <div class="tier-benefits-current">
+          <h3>Quyền lợi đang áp dụng</h3>
+          <ul>
+            @for (b of m.currentTier.benefits || []; track b) { <li>{{ b }}</li> }
+          </ul>
+          <p class="tier-note">Chi tiêu tích lũy chỉ tính đơn hàng hợp lệ và báo giá quà tặng <strong>đã thanh toán</strong>. Ưu đãi % hội viên tự động hiển thị tại giỏ hàng khi bạn đăng nhập.</p>
+        </div>
+
+        @if (m.nextTier) {
+          <div class="tier-progress-wrap">
+            <div class="tier-progress-head"><span>Tiến độ lên hạng {{ m.nextTier.name }}</span><strong>Còn {{ formatMoney(m.amountToNext) }}</strong></div>
+            <div class="tier-progress"><span [style.width.%]="m.progress"></span></div>
+          </div>
+        } @else {
+          <p class="tier-max">Bạn đang ở hạng cao nhất. Cảm ơn bạn đã đồng hành cùng Mộc Mạc.</p>
+        }
+
+        <div class="tier-list">
+          @for (t of m.tiers; track t.key) {
+            <article class="tier-item" [class.current]="t.key === m.currentTier.key" [class.reached]="m.totalSpend >= t.minSpend" [style.--tier-color]="t.color">
+              <div class="tier-item-head">
+                <div class="tier-item-name">{{ t.name }}</div>
+                <div class="tier-item-min">Từ {{ formatMoney(t.minSpend) }}</div>
+                @if (t.key === m.currentTier.key) { <span class="tier-current-tag">Hiện tại</span> }
+              </div>
+              <div class="tier-item-quick">
+                @if (t.discountPercent > 0) { <span>Giảm {{ t.discountPercent }}%</span> }
+                @if (t.freeShipping) { <span>Miễn phí ship</span> }
+                @if (t.priorityQuotation) { <span>Ưu tiên báo giá</span> }
+              </div>
+              <ul class="tier-item-benefits">
+                @for (b of t.benefits || []; track b) { <li>{{ b }}</li> }
+              </ul>
+            </article>
+          }
+        </div>
+      } @else {
+        <p class="empty">Chưa tải được thông tin hạng hội viên.</p>
+      }
+    </section>
+
     <section class="role-upgrade-section">
       <h2>Yêu cầu nâng cấp vai trò</h2>
-
       @if (profile()?.role === 'customer') {
-        <p class="hint">
-          Nâu bộc nhu cầu nâng cấp vai trò để trở thành cộng tác viên hoặc hợp tác xã tại Mộc Mạc.
-        </p>
-
+        <p class="hint">Gửi yêu cầu nâng cấp vai trò để trở thành cộng tác viên hoặc hợp tác xã tại Mộc Mạc.</p>
         <div class="form-group">
           <label>Chọn vai trò</label>
           <select [(ngModel)]="selectedRole" name="selectedRole">
             <option value="">Chọn vai trò...</option>
-            @for (opt of roleOptions; track opt.value) {
-              <option [ngValue]="opt.value" [disabled]="loading()">
-                {{ opt.label }}
-              </option>
-            }
+            @for (opt of roleOptions; track opt.value) { <option [ngValue]="opt.value" [disabled]="loading()">{{ opt.label }}</option> }
           </select>
         </div>
-
         @if (selectedRole) {
           <div class="form-group">
             <label>Lý do</label>
-            <textarea
-              [(ngModel)]="reasonText"
-              name="reasonText"
-              placeholder="Mô tả lý do bạn cần nâng cấp vai trò..."
-              maxlength="500"
-              rows="4"
-              [disabled]="loading()"
-            ></textarea>
+            <textarea [(ngModel)]="reasonText" name="reasonText" placeholder="Mô tả lý do bạn cần nâng cấp vai trò..." maxlength="500" rows="4" [disabled]="loading()"></textarea>
           </div>
         }
-
-        @if (message()) {
-          <p class="message">{{ message() }}</p>
-        }
-
-        <button
-          type="button"
-          class="btn-submit"
-          [disabled]="loading() || !selectedRole"
-          (click)="submitRequest()"
-        >
-          {{ loading() ? 'Đang gửi...' : 'Gửi yêu cầu' }}
-        </button>
+        @if (message()) { <p class="message">{{ message() }}</p> }
+        <button type="button" class="btn-submit" [disabled]="loading() || !selectedRole" (click)="submitRequest()">{{ loading() ? 'Đang gửi...' : 'Gửi yêu cầu' }}</button>
       } @else {
-        <p class="hint">
-          Tài khoản của bạn đã có vai trò <strong>{{ profile()?.role }}</strong>.
-        </p>
+        <p class="hint">Tài khoản của bạn đã có vai trò <strong>{{ roleLabel(profile()?.role || '') }}</strong>.</p>
       }
     </section>
 
-    <!-- REQUEST HISTORY -->
     <section class="request-history-section">
       <h2>Lịch sử yêu cầu</h2>
-
       @if (requestsLoading()) {
         <p class="loading">Đang tải...</p>
       } @else if (requests().length === 0) {
         <p class="empty">Bạn chưa có yêu cầu nào.</p>
       } @else {
         <table class="requests-table">
-          <thead>
-            <tr>
-              <th>Vai trò</th>
-              <th>Trạng thái</th>
-              <th>Ngày gửi</th>
-            </tr>
-          </thead>
+          <thead><tr><th>Vai trò</th><th>Trạng thái</th><th>Ngày gửi</th></tr></thead>
           <tbody>
             @for (req of requests(); track req._id) {
               <tr>
-                <td>{{ roleOptions.find(r => r.value === req.requestedRole)?.label || req.requestedRole }}</td>
-                <td>
-                  <span class="status" [ngClass]="'status-' + req.status">
-                    @if (req.status === 'pending') { ⏳ Đang chờ }
-                    @else if (req.status === 'approved') { ✓ Đã duyệt }
-                    @else { ✗ Từ chối }
-                  </span>
-                </td>
+                <td>{{ roleLabel(req.requestedRole) }}</td>
+                <td><span class="status" [ngClass]="'status-' + req.status">{{ req.status === 'pending' ? 'Đang chờ' : (req.status === 'approved' ? 'Đã duyệt' : 'Từ chối') }}</span></td>
                 <td>{{ req.createdAt | date: 'dd/MM/yyyy HH:mm' }}</td>
               </tr>
             }
@@ -118,109 +120,42 @@
       }
     </section>
 
-    <!-- ADDRESS MANAGEMENT -->
     <section class="address-section">
       <h2>Quản lý địa chỉ giao hàng</h2>
       <p class="hint">Lưu nhiều địa chỉ để chọn khi đặt hàng. Địa chỉ mặc định sẽ được chọn trước.</p>
-
-      <div class="address-actions">
-        <button type="button" class="btn-add-address" (click)="openAddAddressForm()">
-          <span>+</span> Thêm địa chỉ mới
-        </button>
-      </div>
-
-      @if (addressesLoading()) {
-        <p class="loading">Đang tải địa chỉ...</p>
-      } @else if (addresses().length === 0) {
-        <p class="empty">Bạn chưa có địa chỉ nào. Hãy thêm địa chỉ đầu tiên.</p>
-      } @else {
+      <div class="address-actions"><button type="button" class="btn-add-address" (click)="openAddAddressForm()"><span>+</span> Thêm địa chỉ mới</button></div>
+      @if (addressesLoading()) { <p class="loading">Đang tải địa chỉ...</p> }
+      @else if (addresses().length === 0) { <p class="empty">Bạn chưa có địa chỉ nào.</p> }
+      @else {
         <div class="address-list">
           @for (addr of addresses(); track addr._id) {
             <div class="address-card" [class.default]="addr.isDefault">
-              <div class="address-header">
-                <span class="address-label">{{ addr.isDefault ? 'Mặc định' : 'Thứ hai' }}</span>
-                <span class="address-fullname">{{ addr.fullName }}</span>
-                <span class="address-phone">{{ addr.phone }}</span>
-              </div>
-              <div class="address-detail">
-                {{ addr.streetAddress }}, {{ addr.wardName }}, {{ addr.provinceName }}
-              </div>
+              <div class="address-header"><span class="address-label">{{ addr.isDefault ? 'Mặc định' : 'Địa chỉ' }}</span><span class="address-fullname">{{ addr.fullName }}</span><span class="address-phone">{{ addr.phone }}</span></div>
+              <div class="address-detail">{{ addr.streetAddress }}, {{ addr.wardName }}, {{ addr.provinceName }}</div>
               <div class="address-actions">
                 <button type="button" class="btn-edit" (click)="editAddress(addr)">Sửa</button>
-                <button type="button" class="btn-default" [disabled]="addr.isDefault" (click)="setDefaultAddress(addr._id)">
-                  {{ addr.isDefault ? 'Đã là mặc định' : 'Đặt làm mặc định' }}
-                </button>
+                <button type="button" class="btn-default" [disabled]="addr.isDefault" (click)="setDefaultAddress(addr._id)">{{ addr.isDefault ? 'Đã là mặc định' : 'Đặt làm mặc định' }}</button>
                 <button type="button" class="btn-delete" (click)="deleteAddress(addr._id)">Xóa</button>
               </div>
             </div>
           }
         </div>
       }
-
-      <!-- ADDRESS FORM -->
       @if (showAddressForm()) {
         <div class="address-form-card">
           <h3>{{ editingAddressId() ? 'Cập nhật địa chỉ' : 'Thêm địa chỉ mới' }}</h3>
           <div class="form-row">
-            <div class="form-group">
-              <label>Họ và tên <span class="required">*</span></label>
-              <input type="text" [(ngModel)]="addressForm().fullName" name="addrFullName" placeholder="Nguyễn Văn A" />
-            </div>
-            <div class="form-group">
-              <label>Số điện thoại <span class="required">*</span></label>
-              <input type="tel" [(ngModel)]="addressForm().phone" name="addrPhone" placeholder="09xxxxxxxx" />
-            </div>
+            <div class="form-group"><label>Họ và tên <span class="required">*</span></label><input type="text" [(ngModel)]="addressForm().fullName" name="addrFullName" /></div>
+            <div class="form-group"><label>Số điện thoại <span class="required">*</span></label><input type="tel" [(ngModel)]="addressForm().phone" name="addrPhone" /></div>
           </div>
-          <div class="form-row">
-            <div class="form-group">
-              <label>Tỉnh/Thành phố <span class="required">*</span></label>
-              <select
-                name="addrProvince"
-                [value]="addressForm().provinceCode || ''"
-                (change)="onProvinceChange($any($event.target).value)"
-              >
-                <option value="">Chọn tỉnh...</option>
-                @for (p of provinces(); track p.code) {
-                  <option [value]="p.code">{{ p.name }}</option>
-                }
-              </select>
-            </div>
-          </div>
-          <div class="form-row">
-            <div class="form-group">
-              <label>Phường/Xã <span class="required">*</span></label>
-              <select
-                name="addrWard"
-                [value]="addressForm().wardCode || ''"
-                (change)="onWardChange($any($event.target).value)"
-                [disabled]="wardsLoading() || !addressForm().provinceCode"
-              >
-                <option value="">{{ wardsLoading() ? 'Đang tải...' : 'Chọn phường/xã...' }}</option>
-                @for (w of wards(); track w.code) {
-                  <option [value]="w.code">{{ w.name }}</option>
-                }
-              </select>
-            </div>
-          </div>
-          <div class="form-group">
-            <label>Địa chỉ chi tiết <span class="required">*</span></label>
-            <textarea [(ngModel)]="addressForm().streetAddress" name="addrStreet" placeholder="Số nhà, tên đường..." rows="3"></textarea>
-          </div>
-          <div class="form-group default-checkbox">
-            <label>
-              <input type="checkbox" [(ngModel)]="addressForm().isDefault" name="addrIsDefault" />
-              Đặt làm địa chỉ mặc định
-            </label>
-          </div>
-          <div class="form-actions">
-            <button type="button" class="btn-cancel" (click)="closeAddressForm()">Hủy</button>
-            <button type="button" class="btn-save" [disabled]="loading()" (click)="saveAddress()">
-              {{ loading() ? 'Đang lưu...' : (editingAddressId() ? 'Cập nhật' : 'Thêm địa chỉ') }}
-            </button>
-          </div>
-          @if (message()) {
-            <p class="message">{{ message() }}</p>
-          }
+          <div class="form-row"><div class="form-group"><label>Tỉnh/Thành phố <span class="required">*</span></label><select name="addrProvince" [value]="addressForm().provinceCode || ''" (change)="onProvinceChange($any($event.target).value)"><option value="">Chọn tỉnh...</option>@for (p of provinces(); track p.code) { <option [value]="p.code">{{ p.name }}</option> }</select></div></div>
+          <div class="form-row"><div class="form-group"><label>Phường/Xã <span class="required">*</span></label><select name="addrWard" [value]="addressForm().wardCode || ''" (change)="onWardChange($any($event.target).value)" [disabled]="wardsLoading() || !addressForm().provinceCode"><option value="">{{ wardsLoading() ? 'Đang tải...' : 'Chọn phường/xã...' }}</option>@for (w of wards(); track w.code) { <option [value]="w.code">{{ w.name }}</option> }</select></div></div>
+          <div class="form-group"><label>Địa chỉ chi tiết <span class="required">*</span></label><textarea [(ngModel)]="addressForm().streetAddress" name="addrStreet" rows="3"></textarea></div>
+          <div class="form-group default-checkbox"><label><input type="checkbox" [(ngModel)]="addressForm().isDefault" name="addrIsDefault" /> Đặt làm địa chỉ mặc định</label></div>
+          <div class="form-actions"><button type="button" class="btn-cancel" (click)="closeAddressForm()">Hủy</button><button type="button" class="btn-save" [disabled]="loading()" (click)="saveAddress()">{{ loading() ? 'Đang lưu...' : (editingAddressId() ? 'Cập nhật' : 'Thêm địa chỉ') }}</button></div>
+          @if (message()) { <p class="message">{{ message() }}</p> }
         </div>
       }
     </section>
+  </div>
+</section>

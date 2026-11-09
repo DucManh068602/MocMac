@@ -13,6 +13,7 @@ import { CraftVillageComponent } from './pages/craft-village/craft-village';
 import { GiohangComponent } from './pages/giohang/giohang';
 import { ThongbaoComponent } from './pages/thong-bao/thong-bao';
 import { DonHangComponent } from './pages/don-hang/don-hang';
+import { MyQuotationsComponent } from './pages/my-quotations/my-quotations';
 import { OrderTrackingComponent } from './pages/order-tracking/order-tracking';
 import { AboutComponent } from './pages/about/about';
 import { GiftBusinessComponent } from './pages/gift-business/gift-business';
@@ -75,6 +76,7 @@ const routes: Routes = [
   { path: 'thong-bao', component: ThongbaoComponent, data: { title: 'Thông báo' } },
   { path: 'don-hang', component: DonHangComponent, data: { title: 'Đơn hàng của tôi | Mộc Mạc' } },
   { path: 'don-hang/:id', component: DonHangComponent, data: { title: 'Chi tiết đơn hàng | Mộc Mạc' } },
+  { path: 'quà-tang-da-mua', component: MyQuotationsComponent, data: { title: 'Quà tặng đã mua | Mộc Mạc' } },
   {
     path: 'tra-cuu-don-hang/:id',
     component: OrderTrackingComponent,

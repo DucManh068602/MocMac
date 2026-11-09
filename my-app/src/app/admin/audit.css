@@ -1,0 +1,31 @@
+:host { display:block; font-family:'Be Vietnam Pro','Segoe UI','Arial',system-ui,sans-serif; font-size:14px; color:#16231f; }
+.list-header h2 { font-size:24px; font-weight:800; letter-spacing:-.01em; }
+.header-sub { margin:4px 0 0; color:#5c6b64; font-size:13.5px; line-height:1.45; }
+.header-actions { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+.btn-refresh,.btn-danger { padding:9px 14px; border-radius:9px; font:600 13px 'Be Vietnam Pro','Segoe UI',Arial,sans-serif; cursor:pointer; }
+.btn-refresh { border:1px solid #d7dfd0; background:#fff; color:#2e5a3c; }
+.btn-refresh:hover:not(:disabled) { background:#e4ebe3; }
+.btn-danger { border:1px solid #e7c7c2; background:#fff5f4; color:#b42318; }
+.btn-danger:hover { background:#feeceb; }
+.stat-card .stat-value { font-family:'Be Vietnam Pro','Segoe UI',Arial,sans-serif; }
+.stat-card .stat-label { font-family:'Be Vietnam Pro','Segoe UI',Arial,sans-serif; font-size:12px; }
+.audit-table { min-width:980px; font:500 13.5px/1.5 'Be Vietnam Pro','Segoe UI',Arial,sans-serif; }
+.audit-table th { font:700 12px 'Be Vietnam Pro','Segoe UI',Arial,sans-serif; white-space:nowrap; }
+.audit-table td { vertical-align:top; white-space:normal; word-break:break-word; color:#16231f; }
+.time-cell { min-width:120px; white-space:nowrap; }
+.time-cell strong,.time-cell span { display:block; }
+.time-cell span { color:#5c6b64; font-size:12.5px; margin-top:2px; }
+.action-title,.actor-name { font-weight:700; color:#16231f; font-size:13.5px; }
+.action-code,.actor-meta,.resource-id { color:#5c6b64; font-size:12px; margin-top:3px; font-family:ui-monospace,'Cascadia Code',Consolas,monospace; }
+.resource-badge { display:inline-flex; align-items:center; padding:4px 10px; border-radius:999px; background:#eef3ec; color:#2e5a3c; font:700 12px 'Be Vietnam Pro','Segoe UI',Arial,sans-serif; }
+.status-badge { display:inline-flex; padding:4px 10px; border-radius:999px; font:700 12px 'Be Vietnam Pro','Segoe UI',Arial,sans-serif; white-space:nowrap; }
+.status-ok { background:#edf7ee; color:#2e7d32; }
+.status-fail { background:#fdecec; color:#b42318; }
+.failed-row { background:#fffaf9; }
+.details-cell { min-width:240px; }
+.detail-summary { color:#16231f; font-size:13px; margin-bottom:6px; line-height:1.45; }
+.detail-more summary { cursor:pointer; color:#2e5a3c; font:600 12.5px 'Be Vietnam Pro','Segoe UI',Arial,sans-serif; user-select:none; }
+.detail-more pre { margin:8px 0 0; padding:10px 12px; border:1px solid #e8eef0; border-radius:10px; background:#fbfdfb; color:#16231f; font:500 12px/1.55 'Cascadia Code','Consolas','Courier New',monospace; white-space:pre-wrap; word-break:break-word; max-height:220px; overflow:auto; }
+.empty-cell,.muted { color:#5c6b64; text-align:center; padding:24px 14px; }
+.muted { padding:0; text-align:left; }
+@media (max-width: 900px) { .details-cell { min-width:180px; } }

@@ -9,27 +9,17 @@ const STATUS_LABELS: Record<string, string> = {
   delivered: 'Đã nhận',
   cancelled: 'Đã hủy',
 };
-
 const PAYMENT_LABELS: Record<string, string> = {
   pending: 'Chưa thanh toán',
   paid: 'Đã thanh toán',
   failed: 'Thất bại',
   refunded: 'Hoàn tiền',
 };
-
 const STATUS_COLORS: Record<string, string> = {
-  pending: '#e0a43a',
-  processing: '#4a7c59',
-  shipped: '#2e5a3c',
-  delivered: '#1e3a2a',
-  cancelled: '#c0392b',
+  pending: '#e0a43a', processing: '#4a7c59', shipped: '#2e5a3c', delivered: '#1e3a2a', cancelled: '#c0392b',
 };
-
 const PAYMENT_COLORS: Record<string, string> = {
-  pending: '#e0a43a',
-  paid: '#2e5a3c',
-  failed: '#c0392b',
-  refunded: '#6b7280',
+  pending: '#e0a43a', paid: '#2e5a3c', failed: '#c0392b', refunded: '#6b7280',
 };
 
 @Component({
@@ -46,10 +36,12 @@ export class AdminOrdersComponent {
   readonly page = signal(1);
   readonly totalPages = signal(1);
   readonly loading = signal(false);
-
   searchTerm = '';
   statusFilter = '';
   paymentFilter = '';
+  readonly detailOpen = signal(false);
+  readonly detailLoading = signal(false);
+  readonly detail = signal<any>(null);
 
   readonly stats = computed(() => {
     const o = this.orders();
@@ -63,33 +55,17 @@ export class AdminOrdersComponent {
     };
   });
 
-  constructor() {
-    this.loadOrders();
-  }
+  constructor() { this.loadOrders(); }
 
-  onFilterChange(): void {
-    this.page.set(1);
-    this.loadOrders();
-  }
-
-  resetFilters(): void {
-    this.searchTerm = '';
-    this.statusFilter = '';
-    this.paymentFilter = '';
-    this.page.set(1);
-    this.loadOrders();
-  }
+  onFilterChange(): void { this.page.set(1); this.loadOrders(); }
+  resetFilters(): void { this.searchTerm = ''; this.statusFilter = ''; this.paymentFilter = ''; this.page.set(1); this.loadOrders(); }
 
   loadOrders(): void {
     this.loading.set(true);
-    const params = new URLSearchParams({
-      page: String(this.page()),
-      limit: '20',
-    });
+    const params = new URLSearchParams({ page: String(this.page()), limit: '20' });
     if (this.searchTerm) params.set('q', this.searchTerm);
     if (this.statusFilter) params.set('status', this.statusFilter);
     if (this.paymentFilter) params.set('paymentStatus', this.paymentFilter);
-
     this.http.get('/api/orders?' + params.toString()).subscribe({
       next: (r: any) => {
         const items = Array.isArray(r.orders) ? r.orders : (r.orders?.orders || []);
@@ -108,17 +84,27 @@ export class AdminOrdersComponent {
 
   updateStatus(id: string, status: string): void {
     this.http.patch('/api/orders/' + id + '/status', { status }).subscribe({
-      next: () => { this.toast.success('Cập nhật trạng thái đơn hàng thành công'); this.loadOrders(); },
+      next: () => { this.toast.success('Đã cập nhật trạng thái đơn hàng và gửi thông báo cho khách.'); this.loadOrders(); },
       error: () => this.toast.error('Không thể cập nhật trạng thái'),
     });
   }
 
   updatePayment(id: string, paymentStatus: string): void {
     this.http.patch('/api/orders/' + id + '/payment', { paymentStatus }).subscribe({
-      next: () => { this.toast.success('Cập nhật trạng thái thanh toán'); this.loadOrders(); },
+      next: () => { this.toast.success('Đã cập nhật thanh toán và gửi thông báo cho khách.'); this.loadOrders(); },
       error: () => this.toast.error('Không thể cập nhật thanh toán'),
     });
   }
 
   formatCurrency(n: number): string { return (n || 0).toLocaleString('vi-VN') + 'đ'; }
+
+  viewOrder(order: any): void {
+    if (!order?._id) return;
+    this.detailOpen.set(true); this.detailLoading.set(true); this.detail.set(order);
+    this.http.get<any>('/api/orders/' + order._id).subscribe({
+      next: (r) => { this.detail.set(r?.order || order); this.detailLoading.set(false); },
+      error: () => { this.detail.set(order); this.detailLoading.set(false); this.toast.error('Không thể tải chi tiết đơn hàng'); },
+    });
+  }
+  closeDetail(): void { this.detailOpen.set(false); this.detail.set(null); }
 }

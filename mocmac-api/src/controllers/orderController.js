@@ -1,8 +1,45 @@
 import { Order } from '../models/Order.js';
 import { Product } from '../models/Product.js';
 import { FlashSale } from '../models/FlashSale.js';
+import { Notification } from '../models/Notification.js';
+import { io, userSocketMap } from '../index.js';
 import { logAction, getRequestInfo } from '../utils/auditLog.js';
 import { generateOrderId, initStatusHistory, appendStatusHistory } from '../utils/orderUtils.js';
+
+const ORDER_STATUS_LABEL = {
+  pending: 'Chờ xử lý',
+  processing: 'Đang xử lý',
+  shipped: 'Đã giao',
+  delivered: 'Đã nhận',
+  cancelled: 'Đã hủy',
+};
+const PAYMENT_STATUS_LABEL = {
+  pending: 'Chưa thanh toán',
+  paid: 'Đã thanh toán',
+  failed: 'Thanh toán thất bại',
+  refunded: 'Đã hoàn tiền',
+};
+
+async function notifyOrderUser(order, title, content) {
+  if (!order?.user) return;
+  const userId = String(order.user);
+  try {
+    await Notification.create({
+      title,
+      content,
+      type: 'order',
+      recipient: order.user,
+      orderId: order._id,
+      link: `/tai-khoan/don-hang`,
+      sent: true,
+      sentAt: new Date(),
+    });
+    const socketId = userSocketMap.get(userId);
+    if (socketId) io.to(socketId).emit('notification', { title, content, type: 'order', orderId: String(order._id), link: '/tai-khoan/don-hang', createdAt: new Date() });
+  } catch (e) {
+    console.error('Order notification error:', e?.message || e);
+  }
+}
 
 export const createOrder = async (req, res) => {
   try {
@@ -18,70 +55,30 @@ export const createOrder = async (req, res) => {
     } = req.body ?? {};
 
     if (!Array.isArray(items) || items.length === 0) {
-      return res.status(400).json({
-        success: false,
-        message: 'Đơn hàng phải có ít nhất một sản phẩm.',
-      });
+      return res.status(400).json({ success: false, message: 'Đơn hàng phải có ít nhất một sản phẩm.' });
     }
-
     if (typeof total !== 'number' || total < 0) {
-      return res.status(400).json({
-        success: false,
-        message: 'Tổng đơn hàng không hợp lệ.',
-      });
+      return res.status(400).json({ success: false, message: 'Tổng đơn hàng không hợp lệ.' });
     }
 
-    // Validate each item price against current product price in DB.
     const now = new Date();
     const flashSale = await FlashSale.findOne({ key: 'storewide' }).lean();
-    const saleActive = Boolean(
-      flashSale?.active && flashSale?.startsAt && flashSale?.endsAt &&
-      new Date(flashSale.startsAt) <= now && new Date(flashSale.endsAt) >= now
-    );
+    const saleActive = Boolean(flashSale?.active && flashSale?.startsAt && flashSale?.endsAt && new Date(flashSale.startsAt) <= now && new Date(flashSale.endsAt) >= now);
     const salePercent = saleActive ? Number(flashSale?.discountPercent || 0) : 0;
 
     const validatedItems = [];
     let computedSubtotal = 0;
-
     for (const it of items) {
-      if (it.productId == null) {
-        return res.status(400).json({
-          success: false,
-          message: 'Mỗi sản phẩm phải có productId.',
-        });
-      }
+      if (it.productId == null) return res.status(400).json({ success: false, message: 'Mỗi sản phẩm phải có productId.' });
       const product = await Product.findOne({ id: Number(it.productId) }).lean();
-      if (!product) {
-        return res.status(400).json({
-          success: false,
-          message: `Không tìm thấy sản phẩm ID ${it.productId}.`,
-        });
-      }
+      if (!product) return res.status(400).json({ success: false, message: `Không tìm thấy sản phẩm ID ${it.productId}.` });
       const quantity = Number(it.quantity) || 1;
       const basePrice = Number(product.price);
-      // Khi sale đang diễn ra, giá hợp lệ là giá đã giảm; ngược lại là giá gốc.
-      const expectedPrice = saleActive
-        ? Math.max(0, Math.round(basePrice * (100 - salePercent) / 100))
-        : basePrice;
+      const expectedPrice = saleActive ? Math.max(0, Math.round(basePrice * (100 - salePercent) / 100)) : basePrice;
       const submittedPrice = Number(it.price);
-      if (!Number.isFinite(submittedPrice) || submittedPrice < 0) {
-        return res.status(400).json({
-          success: false,
-          message: `Giá sản phẩm ${product.name} không hợp lệ.`,
-        });
-      }
-      if (Math.abs(submittedPrice - expectedPrice) > 0.01) {
-        return res.status(400).json({
-          success: false,
-          message: `Giá sản phẩm "${product.name}" đã thay đổi. Vui lòng làm mới giỏ hàng và thử lại.`,
-        });
-      }
-      validatedItems.push({
-        productId: Number(it.productId),
-        name: String(it.name || product.name),
-        price: expectedPrice,
-        quantity,
-      });
+      if (!Number.isFinite(submittedPrice) || submittedPrice < 0) return res.status(400).json({ success: false, message: `Giá sản phẩm ${product.name} không hợp lệ.` });
+      if (Math.abs(submittedPrice - expectedPrice) > 0.01) return res.status(400).json({ success: false, message: `Giá sản phẩm "${product.name}" đã thay đổi. Vui lòng làm mới giỏ hàng và thử lại.` });
+      validatedItems.push({ productId: Number(it.productId), name: String(it.name || product.name), price: expectedPrice, quantity });
       computedSubtotal += expectedPrice * quantity;
     }
 
@@ -100,27 +97,12 @@ export const createOrder = async (req, res) => {
     });
 
     const { user, ip } = getRequestInfo(req);
-    await logAction({
-      action: 'order.create',
-      resourceType: 'Order',
-      resourceId: order._id,
-      user,
-      ip,
-      details: { total, paymentMethod, itemCount: validatedItems.length },
-    });
-
-    return res.status(201).json({
-      success: true,
-      message: 'Đặt hàng thành công.',
-      order,
-    });
+    await logAction({ action: 'order.create', resourceType: 'Order', resourceId: order._id, user, ip, details: { total, paymentMethod, itemCount: validatedItems.length } });
+    await notifyOrderUser(order, `Đặt hàng thành công ${order.orderId || ''}`, `Đơn hàng của bạn đã được tạo với trạng thái "${ORDER_STATUS_LABEL.pending}". Mộc Mạc sẽ cập nhật khi có thay đổi.`);
+    return res.status(201).json({ success: true, message: 'Đặt hàng thành công.', order });
   } catch (error) {
-    console.error('❌ Lỗi tạo đơn hàng:', error);
-    return res.status(500).json({
-      success: false,
-      message: 'Không thể đặt hàng. Vui lòng thử lại.',
-      error: error.message,
-    });
+    console.error('Lỗi tạo đơn hàng:', error);
+    return res.status(500).json({ success: false, message: 'Không thể đặt hàng. Vui lòng thử lại.', error: error.message });
   }
 };
 
@@ -129,31 +111,14 @@ export const getMyOrders = async (req, res) => {
     const page = Math.max(1, Number(req.query.page) || 1);
     const limit = Math.max(1, Math.min(100, Number(req.query.limit) || 20));
     const skip = (page - 1) * limit;
-
     const [orders, total] = await Promise.all([
-      Order.find({ user: req.user.id })
-        .sort({ createdAt: -1 })
-        .skip(skip)
-        .limit(limit)
-        .lean(),
+      Order.find({ user: req.user.id }).sort({ createdAt: -1 }).skip(skip).limit(limit).lean(),
       Order.countDocuments({ user: req.user.id }),
     ]);
-
-    return res.json({
-      success: true,
-      total,
-      page,
-      limit,
-      totalPages: Math.ceil(total / limit),
-      orders,
-    });
+    return res.json({ success: true, total, page, limit, totalPages: Math.ceil(total / limit), orders });
   } catch (error) {
-    console.error('❌ Lỗi lấy đơn hàng:', error);
-    return res.status(500).json({
-      success: false,
-      message: 'Không thể lấy danh sách đơn hàng.',
-      error: error.message,
-    });
+    console.error('Lỗi lấy đơn hàng:', error);
+    return res.status(500).json({ success: false, message: 'Không thể lấy danh sách đơn hàng.', error: error.message });
   }
 };
 
@@ -162,262 +127,129 @@ export const getAllOrders = async (req, res) => {
     const page = Math.max(1, Number(req.query.page) || 1);
     const limit = Math.max(1, Number(req.query.limit) || 20);
     const skip = (page - 1) * limit;
-
     const filter = {};
-
     if (req.query.q) {
       const search = String(req.query.q);
-      filter.$or = [
-        { orderId: new RegExp(search, 'i') },
-        { 'customerInfo.name': new RegExp(search, 'i') },
-        { 'customerInfo.phone': new RegExp(search, 'i') },
-      ];
+      filter.$or = [{ orderId: new RegExp(search, 'i') }, { 'customerInfo.name': new RegExp(search, 'i') }, { 'customerInfo.phone': new RegExp(search, 'i') }];
     }
-
-    if (req.query.status) {
-      filter.status = String(req.query.status);
-    }
-
-    if (req.query.paymentStatus) {
-      filter.paymentStatus = String(req.query.paymentStatus);
-    }
-
-    if (req.query.paymentMethod) {
-      filter.paymentMethod = String(req.query.paymentMethod);
-    }
-
+    if (req.query.status) filter.status = String(req.query.status);
+    if (req.query.paymentStatus) filter.paymentStatus = String(req.query.paymentStatus);
+    if (req.query.paymentMethod) filter.paymentMethod = String(req.query.paymentMethod);
     const sort = {};
-    const sortBy = String(req.query.sortBy || 'createdAt');
-    const sortDir = req.query.sortDir === 'asc' ? 1 : -1;
-    sort[sortBy] = sortDir;
-
+    sort[String(req.query.sortBy || 'createdAt')] = req.query.sortDir === 'asc' ? 1 : -1;
     const [orders, total] = await Promise.all([
-      Order.find(filter)
-        .populate('user', 'name email phone')
-        .sort(sort)
-        .skip(skip)
-        .limit(limit)
-        .lean(),
+      Order.find(filter).populate('user', 'name email phone').sort(sort).skip(skip).limit(limit).lean(),
       Order.countDocuments(filter),
     ]);
-
-    return res.json({
-      success: true,
-      page,
-      limit,
-      total,
-      totalPages: Math.ceil(total / limit),
-      orders,
-    });
+    return res.json({ success: true, page, limit, total, totalPages: Math.ceil(total / limit), orders });
   } catch (error) {
-    console.error('❌ Lỗi lấy toàn bộ đơn hàng:', error);
-    return res.status(500).json({
-      success: false,
-      message: 'Không thể lấy danh sách đơn hàng.',
-      error: error.message,
-    });
+    console.error('Lỗi lấy toàn bộ đơn hàng:', error);
+    return res.status(500).json({ success: false, message: 'Không thể lấy danh sách đơn hàng.', error: error.message });
   }
 };
 
 export const updateOrderStatus = async (req, res) => {
   try {
     const { status } = req.body;
-
-    const allowedStatus = [
-      'pending',
-      'processing',
-      'shipped',
-      'delivered',
-      'cancelled',
-    ];
-
-    if (!allowedStatus.includes(status)) {
-      return res.status(400).json({
-        success: false,
-        message: 'Trạng thái không hợp lệ.',
-      });
-    }
-
+    const allowedStatus = ['pending', 'processing', 'shipped', 'delivered', 'cancelled'];
+    if (!allowedStatus.includes(status)) return res.status(400).json({ success: false, message: 'Trạng thái không hợp lệ.' });
     const order = await Order.findById(req.params.id);
-
-    if (!order) {
-      return res.status(404).json({
-        success: false,
-        message: 'Không tìm thấy đơn hàng.',
-      });
-    }
-
+    if (!order) return res.status(404).json({ success: false, message: 'Không tìm thấy đơn hàng.' });
     const prevStatus = order.status;
     order.status = status;
     appendStatusHistory(order, { status, note: `Cập nhật trạng thái: ${status}` });
     await order.save();
-
-    // Khi đơn hàng chuyển thành đã giao (delivered), trừ số lượng tồn kho và tăng sold.
     if (prevStatus !== 'delivered' && status === 'delivered') {
       for (const it of order.items) {
-        await Product.findOneAndUpdate(
-          { id: it.productId },
-          { $inc: { stock: -it.quantity, sold: it.quantity } },
-        );
+        await Product.findOneAndUpdate({ id: it.productId }, { $inc: { stock: -it.quantity, sold: it.quantity } });
       }
     }
-
     const { user: reqUser, ip } = getRequestInfo(req);
-    await logAction({
-      action: 'order.status_update',
-      resourceType: 'Order',
-      resourceId: order._id,
-      user: reqUser,
-      ip,
-      details: { newStatus: status },
-    });
-
-    return res.json({
-      success: true,
-      message: 'Cập nhật trạng thái thành công.',
-      order,
-    });
+    await logAction({ action: 'order.status_update', resourceType: 'Order', resourceId: order._id, user: reqUser, ip, details: { orderId: order.orderId, newStatus: status, prevStatus } });
+    if (prevStatus !== status) {
+      await notifyOrderUser(order, `Đơn hàng ${order.orderId || ''}: ${ORDER_STATUS_LABEL[status] || status}`, `Trạng thái đơn hàng của bạn đã được cập nhật từ "${ORDER_STATUS_LABEL[prevStatus] || prevStatus}" sang "${ORDER_STATUS_LABEL[status] || status}".`);
+    }
+    return res.json({ success: true, message: 'Cập nhật trạng thái thành công.', order });
   } catch (error) {
-    console.error('❌ Lỗi cập nhật đơn hàng:', error);
-    return res.status(500).json({
-      success: false,
-      message: 'Không thể cập nhật đơn hàng.',
-      error: error.message,
-    });
+    console.error('Lỗi cập nhật đơn hàng:', error);
+    return res.status(500).json({ success: false, message: 'Không thể cập nhật đơn hàng.', error: error.message });
   }
 };
 
 export const updatePaymentStatus = async (req, res) => {
   try {
     const { paymentStatus } = req.body;
-
     const allowedPayment = ['pending', 'paid', 'failed', 'refunded'];
-    if (!allowedPayment.includes(paymentStatus)) {
-      return res.status(400).json({
-        success: false,
-        message: 'Trạng thái thanh toán không hợp lệ.',
-      });
-    }
-
+    if (!allowedPayment.includes(paymentStatus)) return res.status(400).json({ success: false, message: 'Trạng thái thanh toán không hợp lệ.' });
     const order = await Order.findById(req.params.id);
-
-    if (!order) {
-      return res.status(404).json({
-        success: false,
-        message: 'Không tìm thấy đơn hàng.',
-      });
-    }
-
+    if (!order) return res.status(404).json({ success: false, message: 'Không tìm thấy đơn hàng.' });
+    const prevPayment = order.paymentStatus;
     order.paymentStatus = paymentStatus;
     appendStatusHistory(order, { paymentStatus, note: `Cập nhật thanh toán: ${paymentStatus}` });
     await order.save();
-
     const { user: reqUser, ip } = getRequestInfo(req);
-    await logAction({
-      action: 'order.payment_update',
-      resourceType: 'Order',
-      resourceId: order._id,
-      user: reqUser,
-      ip,
-      details: { newPaymentStatus: paymentStatus },
-    });
-
-return res.json({
-    success: true,
-    message: 'Cập nhật trạng thái thanh toán thành công.',
-    order,
-  });
-} catch (error) {
-  console.error('❌ Lỗi cập nhật thanh toán:', error);
-  return res.status(500).json({
-    success: false,
-    message: 'Không thể cập nhật thanh toán.',
-    error: error.message,
-  });
-}
+    await logAction({ action: 'order.payment_update', resourceType: 'Order', resourceId: order._id, user: reqUser, ip, details: { orderId: order.orderId, newPaymentStatus: paymentStatus, prevPayment } });
+    if (prevPayment !== paymentStatus) {
+      await notifyOrderUser(order, `Thanh toán đơn hàng ${order.orderId || ''}: ${PAYMENT_STATUS_LABEL[paymentStatus] || paymentStatus}`, `Trạng thái thanh toán đơn hàng của bạn đã được cập nhật từ "${PAYMENT_STATUS_LABEL[prevPayment] || prevPayment}" sang "${PAYMENT_STATUS_LABEL[paymentStatus] || paymentStatus}".`);
+    }
+    return res.json({ success: true, message: 'Cập nhật trạng thái thanh toán thành công.', order });
+  } catch (error) {
+    console.error('Lỗi cập nhật thanh toán:', error);
+    return res.status(500).json({ success: false, message: 'Không thể cập nhật thanh toán.', error: error.message });
+  }
 };
 
 export const trackOrder = async (req, res) => {
   try {
     const { orderId } = req.params;
     const order = await Order.findOne({ orderId: orderId.toUpperCase() }).lean();
-    if (!order) {
-      return res.status(404).json({ success: false, message: 'Không tìm thấy đơn hàng.' });
-    }
-    // Return only public tracking info (hide sensitive data)
+    if (!order) return res.status(404).json({ success: false, message: 'Không tìm thấy đơn hàng.' });
     return res.json({
       success: true,
       order: {
-        orderId: order.orderId,
-        status: order.status,
-        paymentStatus: order.paymentStatus,
-        paymentMethod: order.paymentMethod,
-        total: order.total,
-        statusHistory: order.statusHistory || [],
-        createdAt: order.createdAt,
-        updatedAt: order.updatedAt,
-        customerInfo: {
-          name: order.customerInfo?.name,
-          phone: order.customerInfo?.phone,
-          address: order.customerInfo?.address,
-        },
-        items: order.items.map(item => ({
-          name: item.name,
-          quantity: item.quantity,
-          price: item.price,
-        })),
-        subtotal: order.subtotal,
-        discount: order.discount,
-        shipping: order.shipping,
+        orderId: order.orderId, status: order.status, paymentStatus: order.paymentStatus, paymentMethod: order.paymentMethod,
+        total: order.total, statusHistory: order.statusHistory || [], createdAt: order.createdAt, updatedAt: order.updatedAt,
+        customerInfo: { name: order.customerInfo?.name, phone: order.customerInfo?.phone, address: order.customerInfo?.address },
+        items: (order.items || []).map((item) => ({ name: item.name, quantity: item.quantity, price: item.price })),
+        subtotal: order.subtotal, discount: order.discount, shipping: order.shipping,
       },
     });
   } catch (error) {
-    console.error('❌ Lỗi tra cứu đơn hàng:', error);
-    return res.status(500).json({
-      success: false,
-      message: 'Không thể tra cứu đơn hàng.',
-      error: error.message,
-    });
+    console.error('Lỗi tra cứu đơn hàng:', error);
+    return res.status(500).json({ success: false, message: 'Không thể tra cứu đơn hàng.', error: error.message });
+  }
+};
+
+export const getOrderById = async (req, res) => {
+  try {
+    const order = await Order.findById(req.params.id).populate('user', 'name email phone').lean();
+    if (!order) return res.status(404).json({ success: false, message: 'Không tìm thấy đơn hàng.' });
+    return res.json({ success: true, order });
+  } catch (error) {
+    console.error('Lỗi lấy chi tiết đơn hàng:', error);
+    return res.status(500).json({ success: false, message: 'Không thể lấy chi tiết đơn hàng.', error: error.message });
   }
 };
 
 export const getMyOrderById = async (req, res) => {
   try {
     const order = await Order.findOne({ _id: req.params.id, user: req.user.id }).lean();
-    if (!order) {
-      return res.status(404).json({ success: false, message: 'Không tìm thấy đơn hàng.' });
-    }
+    if (!order) return res.status(404).json({ success: false, message: 'Không tìm thấy đơn hàng.' });
     return res.json({ success: true, order });
   } catch (error) {
-    console.error('❌ Lỗi lấy chi tiết đơn hàng:', error);
-    return res.status(500).json({
-      success: false,
-      message: 'Không thể lấy đơn hàng.',
-      error: error.message,
-    });
+    console.error('Lỗi lấy chi tiết đơn hàng:', error);
+    return res.status(500).json({ success: false, message: 'Không thể lấy đơn hàng.', error: error.message });
   }
 };
 
 export const checkCanReview = async (req, res) => {
   try {
     const productId = Number(req.params.productId);
-    if (!Number.isSafeInteger(productId) || productId <= 0) {
-      return res.status(400).json({ success: false, message: 'ProductId không hợp lệ.' });
-    }
-
-    const delivered = await Order.exists({
-      user: req.user.id,
-      status: 'delivered',
-      'items.productId': productId,
-    });
-
+    if (!Number.isSafeInteger(productId) || productId <= 0) return res.status(400).json({ success: false, message: 'ProductId không hợp lệ.' });
+    const delivered = await Order.exists({ user: req.user.id, status: 'delivered', 'items.productId': productId });
     return res.json({ success: true, delivered: !!delivered });
   } catch (error) {
-    console.error('❌ Lỗi kiểm tra quyền đánh giá:', error);
-    return res.status(500).json({
-      success: false,
-      message: 'Không thể kiểm tra quyền đánh giá.',
-      error: error.message,
-    });
+    console.error('Lỗi kiểm tra quyền đánh giá:', error);
+    return res.status(500).json({ success: false, message: 'Không thể kiểm tra quyền đánh giá.', error: error.message });
   }
 };

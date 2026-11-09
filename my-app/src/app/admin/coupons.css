@@ -1,0 +1,15 @@
+:host { display:block; font-family:'Be Vietnam Pro','Segoe UI',Arial,system-ui,sans-serif; }
+.header-actions { display:flex; gap:8px; flex-wrap:wrap; }
+.btn-ghost { padding:8px 14px; border:1px solid #d7dfd0; border-radius:9px; background:#fff; color:#2e5a3c; font:600 13px inherit; cursor:pointer; }
+.btn-ghost:hover { background:#e4ebe3; }
+.coupon-form-grid { grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap:12px; }
+.field { display:flex; flex-direction:column; gap:6px; font:600 12.5px 'Be Vietnam Pro','Segoe UI',Arial,sans-serif; color:#16231f; }
+.field .form-input { font-weight:500; }
+.field-check { flex-direction:row; align-items:center; gap:8px; margin-top:24px; }
+.field-check input { width:16px; height:16px; accent-color:#2e5a3c; }
+.field-wide { grid-column:1 / -1; }
+.coupon-preview { margin:12px 0 0; padding:10px 12px; border-radius:10px; background:#f8faf7; color:#2e5a3c; font-size:13px; }
+.subtext { margin-top:3px; color:#5c6b64; font-size:12px; line-height:1.35; }
+.actions { white-space:nowrap; }
+.actions .btn-small { margin-right:6px; margin-bottom:4px; }
+.admin-table th,.admin-table td,.form-input,.btn-small,.btn-add { font-family:'Be Vietnam Pro','Segoe UI',Arial,system-ui,sans-serif; }

@@ -175,13 +175,26 @@ export const getAllReviews = async (req, res) => {
       Review.countDocuments(filter),
     ]);
 
+    const reviewsWithProductName = reviews.map((r) => {
+      const p = r.product;
+      const name =
+        p && typeof p === 'object' && p.name
+          ? p.name
+          : null;
+      const ref = !name && p ? String(p._id || p) : '';
+      return {
+        ...r,
+        productName: name || (ref ? `Sản phẩm không còn tồn tại (${ref.slice(-6)})` : '—'),
+      };
+    });
+
     return res.json({
       success: true,
       total,
       page,
       limit,
       totalPages: Math.ceil(total / limit),
-      reviews,
+      reviews: reviewsWithProductName,
     });
   } catch (error) {
     console.error('❌ Lỗi lấy tất cả đánh giá:', error);

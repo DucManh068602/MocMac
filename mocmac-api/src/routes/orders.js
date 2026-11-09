@@ -6,6 +6,7 @@ import {
   getMyOrderById,
   getAllOrders,
   updateOrderStatus,
+  getOrderById,
   updatePaymentStatus,
   trackOrder,
   checkCanReview,
@@ -19,6 +20,7 @@ router.get('/mine', requireAuth, getMyOrders);
 router.get('/mine/:id', requireAuth, getMyOrderById);
 router.get('/can-review/:productId', requireAuth, checkCanReview);
 router.get('/', requireAuth, requireRole('admin', 'staff'), requirePermission('orders.view'), getAllOrders);
+router.get('/:id', requireAuth, requireRole('admin', 'staff'), requirePermission('orders.view'), getOrderById);
 router.patch('/:id/status', requireAuth, requireRole('admin', 'staff'), requirePermission('orders.update'), updateOrderStatus);
 router.patch('/:id/payment', requireAuth, requireRole('admin', 'staff'), requirePermission('orders.update'), updatePaymentStatus);
 

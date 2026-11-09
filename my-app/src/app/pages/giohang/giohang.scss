@@ -1229,3 +1229,29 @@ $error: #b3401f;
   }
 }
 
+
+/* Membership benefit banner */
+.member-benefit-banner {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px 16px;
+  margin-bottom: 14px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, color-mix(in srgb, var(--tier-color, #435731) 14%, #fff), #fff);
+  border: 1px solid color-mix(in srgb, var(--tier-color, #435731) 28%, #eceee6);
+  font-family: 'Be Vietnam Pro', system-ui, sans-serif;
+}
+.member-benefit-banner.guest { --tier-color: #435731; }
+.member-benefit-banner strong { display:block; color:#1c2a20; font-size:14px; }
+.member-benefit-banner p { margin:4px 0 0; color:#5d6b61; font-size:12.5px; line-height:1.55; }
+.member-benefit-link {
+  flex-shrink:0;
+  color: color-mix(in srgb, var(--tier-color, #435731) 80%, #1c2a20);
+  font-size:12px;
+  font-weight:700;
+  text-decoration:none;
+  white-space:nowrap;
+}
+.member-benefit-link:hover { text-decoration:underline; }

@@ -1,7 +1,10 @@
 <div class="list-page">
   <header class="list-header">
-    <h2>Yêu cầu báo giá quà tặng</h2>
-    <button type="button" class="btn-refresh" (click)="load()" [disabled]="loading()"><i class="fa-solid fa-rotate-right ico"></i> Làm mới</button>
+    <div>
+      <h2>Yêu cầu báo giá quà tặng</h2>
+      <p class="page-sub">Khách đồng ý báo giá → nhân viên gói quà và giao tới. Thanh toán: COD hoặc chuyển khoản ngân hàng.</p>
+    </div>
+    <button type="button" class="btn-refresh" (click)="load()" [disabled]="loading()">Làm mới</button>
   </header>
 
   <div class="table-wrap">
@@ -9,13 +12,13 @@
       <thead>
         <tr>
           <th>Khách hàng</th>
-          <th>SĐT</th>
-          <th>Địa chỉ</th>
-          <th>Dịp tặng</th>
+          <th>Liên hệ</th>
           <th>Sản phẩm</th>
-          <th>Tổng ước tính</th>
-          <th>Khung giờ</th>
+          <th>Tạm tính</th>
+          <th>Mã giảm giá</th>
+          <th>Giá báo</th>
           <th>Trạng thái</th>
+          <th>Thanh toán</th>
           <th>Ngày</th>
           <th>Thao tác</th>
         </tr>
@@ -24,26 +27,33 @@
         @for (r of requests(); track r._id) {
           <tr>
             <td><strong>{{ r.name }}</strong><br /><small>{{ r.company || '—' }}</small></td>
-            <td>{{ r.phone }}</td>
-            <td>{{ r.address || '—' }}</td>
-            <td>{{ r.occasion || '—' }}</td>
+            <td>{{ r.phone }}<br /><small>{{ r.email || '—' }}</small></td>
             <td>
-              @for (it of r.items; track it.name) {
-                <div class="item-chip">{{ it.name }} ×{{ it.quantity }}</div>
-              } @empty { <span class="muted">—</span> }
+              @for (it of r.items; track it.name) { <div class="item-chip">{{ it.name }} ×{{ it.quantity }}</div> }
+              @empty { <span class="muted">—</span> }
             </td>
             <td><strong>{{ formatMoney(r.totalEstimate) }}</strong></td>
-            <td>{{ r.preferredSlot || '—' }}</td>
+            <td>
+              @if (r.appliedCoupon?.code) {
+                <span class="coupon-chip">{{ r.appliedCoupon.code }}</span><br /><small class="discount-text">-{{ formatMoney(r.discountAmount) }}</small>
+              } @else { <span class="muted">Chưa áp</span> }
+            </td>
+            <td><strong class="quoted-price">{{ formatMoney(r.quotedTotal || r.totalEstimate) }}</strong></td>
             <td>
               <select [(ngModel)]="r.status" (change)="updateStatus(r._id, r.status)" class="status-select">
                 <option value="new">Mới</option>
                 <option value="processing">Đang xử lý</option>
                 <option value="quoted">Đã báo giá</option>
+                <option value="accepted">Khách đã đồng ý</option>
                 <option value="done">Hoàn tất</option>
               </select>
             </td>
-            <td>{{ r.createdAt | date:'dd/MM HH:mm' }}</td>
-            <td><button type="button" class="btn-view" (click)="open(r)">Xem chi tiết</button></td>
+            <td>
+              <span class="pay-badge" [class.paid]="r.paymentStatus==='paid'" [class.pending]="r.paymentStatus!=='paid'">{{ paymentLabel(r.paymentStatus) }}</span>
+              @if (r.paymentMethod) { <br /><small>{{ paymentMethodLabel(r.paymentMethod) }}</small> }
+            </td>
+            <td>{{ r.createdAt | date:'dd/MM HH:mm' }}@if (r.acceptedAt) {<br /><small class="discount-text">Đồng ý: {{ r.acceptedAt | date:'dd/MM HH:mm' }}</small>}</td>
+            <td><button type="button" class="btn-view" (click)="open(r)">Chi tiết</button></td>
           </tr>
         } @empty {
           <tr><td colspan="10" class="empty">Chưa có yêu cầu báo giá nào.</td></tr>
@@ -53,45 +63,80 @@
   </div>
 </div>
 
-<!-- Chi tiết yêu cầu -->
 @if (viewing()) {
   <div class="detail-overlay" (click)="close()">
     <div class="detail-card" (click)="$event.stopPropagation()">
-      <button type="button" class="detail-close" (click)="close()">✕</button>
-      <h3>Chi tiết yêu cầu báo giá</h3>
+      <button type="button" class="detail-close" (click)="close()">×</button>
+      <h3>Báo giá quà tặng · {{ viewing()._id?.slice(-6)?.toUpperCase() }}</h3>
+      <p class="detail-hint">Sau khi khách đồng ý báo giá, nhân viên có quyền chuẩn bị gói quà và giao tới. Thanh toán COD hoặc chuyển khoản ngân hàng.</p>
+
       <div class="detail-grid">
         <div><strong>Khách hàng:</strong> {{ viewing().name }}</div>
         <div><strong>SĐT:</strong> {{ viewing().phone }}</div>
-        <div><strong>Email:</strong> {{ viewing().email || '—' }}</div>
+        <div><strong>Email:</strong> {{ viewing().email || 'Chưa có email' }}</div>
         <div><strong>Công ty:</strong> {{ viewing().company || '—' }}</div>
         <div><strong>Dịp tặng:</strong> {{ viewing().occasion || '—' }}</div>
         <div><strong>Khung giờ:</strong> {{ viewing().preferredSlot || '—' }}</div>
-        <div><strong>Tổng ước tính:</strong> <b>{{ formatMoney(viewing().totalEstimate) }}</b></div>
-        <div><strong>Trạng thái:</strong>
-          <select [(ngModel)]="viewing().status" (change)="updateStatus(viewing()._id, viewing().status)" class="status-select">
-            <option value="new">Mới</option>
-            <option value="processing">Đang xử lý</option>
-            <option value="quoted">Đã báo giá</option>
-            <option value="done">Hoàn tất</option>
-          </select>
-        </div>
+        <div><strong>Trạng thái:</strong> {{ statusLabel(viewing().status) }}</div>
+        <div><strong>Đồng ý lúc:</strong> {{ viewing().acceptedAt ? (viewing().acceptedAt | date:'dd/MM/yyyy HH:mm') : '—' }}</div>
         <div style="grid-column:1/-1"><strong>Lời nhắn:</strong> <p class="msg">{{ viewing().message || '—' }}</p></div>
-        <div style="grid-column:1/-1"><strong>Sản phẩm:</strong></div>
-        <div style="grid-column:1/-1">
-          <table class="detail-items">
-            <thead><tr><th>Sản phẩm</th><th>Số lượng</th><th>Đơn giá</th><th>Thành tiền</th></tr></thead>
-            <tbody>
-              @for (it of viewing().items; track it.name) {
-                <tr>
-                  <td>{{ it.name }}</td><td>{{ it.quantity }}</td><td>{{ formatMoney(it.price) }}</td><td>{{ formatMoney((it.price || 0) * it.quantity) }}</td>
-                </tr>
-              }
-            </tbody>
-          </table>
-        </div>
       </div>
-      <div class="detail-actions">
-        <button type="button" class="btn-close" (click)="close()">Đóng</button>
+
+      <table class="detail-items">
+        <thead><tr><th>Sản phẩm</th><th>SL</th><th>Đơn giá</th><th>Thành tiền</th></tr></thead>
+        <tbody>
+          @for (it of viewing().items; track it.name) {
+            <tr><td>{{ it.name }}</td><td>{{ it.quantity }}</td><td>{{ formatMoney(it.price) }}</td><td>{{ formatMoney((it.price || 0) * it.quantity) }}</td></tr>
+          }
+        </tbody>
+      </table>
+
+      <div class="quote-panel">
+        <h4>Mã giảm giá & giá báo mới</h4>
+        <div class="quote-row"><span>Tạm tính</span><strong>{{ formatMoney(viewing().totalEstimate) }}</strong></div>
+        <label class="field-label" for="couponPick">Mã giảm giá của shop</label>
+        <div class="coupon-row">
+          <select id="couponPick" [(ngModel)]="selectedCouponCode" class="coupon-select" [disabled]="saving()">
+            <option value="">-- Không áp mã --</option>
+            @for (c of activeCoupons(); track c.code) {
+              <option [value]="c.code">{{ c.code }} · {{ couponLabel(c) }}{{ c.minOrderValue ? ' · tối thiểu ' + formatMoney(c.minOrderValue) : '' }}</option>
+            }
+          </select>
+          @if (viewing().appliedCoupon?.code) { <button type="button" class="btn-ghost" (click)="clearCoupon()" [disabled]="saving()">Gỡ mã</button> }
+        </div>
+        @if (couponError()) { <p class="form-error">{{ couponError() }}</p> }
+        @if (previewDiscount() > 0) { <div class="quote-row discount"><span>Ưu đãi ({{ selectedCouponCode }})</span><strong>-{{ formatMoney(previewDiscount()) }}</strong></div> }
+        @else if (viewing().appliedCoupon?.code) { <div class="quote-row discount"><span>Đang áp {{ viewing().appliedCoupon.code }}</span><strong>-{{ formatMoney(viewing().discountAmount) }}</strong></div> }
+        <div class="quote-row total"><span>Giá báo mới</span><strong>{{ formatMoney(previewQuotedTotal()) }}</strong></div>
+        @if (!viewing().email) { <p class="form-hint warn">Khách chưa có email — hệ thống không gửi mail tự động.</p> }
+        <div class="detail-actions"><button type="button" class="btn-primary" (click)="applyAndSend()" [disabled]="saving()">{{ saving() ? 'Đang xử lý...' : 'Áp mã & gửi báo giá mới' }}</button></div>
+      </div>
+
+      <div class="quote-panel">
+        <h4>Thanh toán báo giá quà tặng</h4>
+        <p class="detail-hint">Khách đồng ý báo giá là có thể gói quà và giao. Chọn phương thức và cập nhật trạng thái thanh toán (COD hoặc chuyển khoản).</p>
+        <div class="payment-grid">
+          <label class="field-label">Trạng thái thanh toán
+            <select [(ngModel)]="paymentStatus" class="coupon-select">
+              <option value="pending">Chưa thanh toán</option>
+              <option value="paid">Đã thanh toán</option>
+              <option value="failed">Thanh toán thất bại</option>
+              <option value="refunded">Đã hoàn tiền</option>
+            </select>
+          </label>
+          <label class="field-label">Phương thức
+            <select [(ngModel)]="paymentMethod" class="coupon-select">
+              <option value="">Chưa chọn</option>
+              <option value="cod">COD (thu hộ khi giao)</option>
+              <option value="bank_transfer">Chuyển khoản ngân hàng</option>
+            </select>
+          </label>
+          <label class="field-label" style="grid-column:1/-1">Ghi chú thanh toán
+            <input class="coupon-select" [(ngModel)]="paymentNote" placeholder="Mã giao dịch, ghi chú COD/chuyển khoản..." />
+          </label>
+        </div>
+        @if (viewing().paidAt) { <p class="detail-hint">Đã thanh toán lúc: {{ viewing().paidAt | date:'dd/MM/yyyy HH:mm' }}</p> }
+        <div class="detail-actions"><button type="button" class="btn-primary" (click)="savePayment()" [disabled]="saving()">{{ saving() ? 'Đang lưu...' : 'Cập nhật thanh toán & gửi thông báo' }}</button></div>
       </div>
     </div>
   </div>

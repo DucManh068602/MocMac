@@ -1,502 +1,81 @@
-.settings-page {
-  background: var(--page-bg, #faf8f2);
-  color: var(--ink, #3a3a33);
-  font-family: Arial, Helvetica, sans-serif;
-  min-height: calc(100vh - 160px);
-  padding: 48px 0;
-}
-
-.settings-container {
-  max-width: 760px;
-  margin: 0 auto;
-}
-
-.settings-page h1 {
-  font-family: 'Lora', serif;
-  font-size: 32px;
-  color: var(--moss, #435731);
-  margin-bottom: 6px;
-}
-
-.settings-page .subtitle {
-  font-size: 14px;
-  color: var(--ink2, #6b6a5c);
-  margin-bottom: 32px;
-}
-
-/* Section */
-.settings-page section {
-  background: #fff;
-  border: 1px solid var(--mm-border-soft, #e8e0d0);
-  border-radius: 14px;
-  padding: 28px;
-  margin-bottom: 24px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
-}
-
-.settings-page h2 {
-  font-family: 'Lora', serif;
-  font-size: 22px;
-  color: var(--moss, #435731);
-  margin-bottom: 20px;
-  padding-bottom: 12px;
-  border-bottom: 1px solid var(--mm-border-soft, #e8e0d0);
-}
-
-/* Profile */
-.profile-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
-}
-
-.profile-item label {
-  display: block;
-  font-size: 12px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  color: var(--ink2, #6b6a5c);
-  margin-bottom: 4px;
-}
-
-.profile-item span {
-  font-size: 14px;
-  color: var(--ink, #3a3a33);
-  font-weight: 500;
-}
-
-.role-badge {
-  display: inline-block;
-  padding: 3px 10px;
-  background: var(--moss, #435731);
-  color: #fff;
-  border-radius: 12px;
-  font-size: 12px;
-}
-
-/* Role upgrade */
-.hint {
-  font-size: 14px;
-  color: var(--ink2, #6b6a5c);
-  line-height: 1.6;
-  margin-bottom: 20px;
-}
-
-.form-group {
-  margin-bottom: 18px;
-}
-
-.form-group label {
-  display: block;
-  margin-bottom: 6px;
-  font-size: 13px;
-  color: var(--ink, #3a3a33);
-}
-
-.form-group select,
-.form-group textarea {
-  width: 100%;
-  padding: 10px 14px;
-  border: 1px solid var(--mm-border-soft, #e8e0d0);
-  border-radius: 8px;
-  font: inherit;
-  font-size: 14px;
-  outline: none;
-  background: #fff;
-}
-
-.form-group textarea {
-  resize: vertical;
-  min-height: 100px;
-}
-
-.form-group select:focus,
-.form-group textarea:focus {
-  border-color: var(--moss, #435731);
-  box-shadow: 0 0 0 3px rgba(67, 87, 49, 0.08);
-}
-
-.btn-submit {
-  width: 100%;
-  padding: 12px;
-  background: var(--moss, #435731);
-  color: #fff;
-  border: none;
-  border-radius: 8px;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-
-.btn-submit:hover:not(:disabled) {
-  background: var(--mm-green-dark, #2a4d2e);
-}
-
-.btn-submit:disabled {
-  opacity: 0.6;
-  cursor: wait;
-}
-
-.message {
-  margin: 12px 0;
-  font-size: 13px;
-  color: var(--mm-orange-dark, #c05621);
-}
-
-/* Request history table */
-.requests-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 13px;
-}
-
-.requests-table th,
-.requests-table td {
-  padding: 12px 14px;
-  text-align: left;
-  border-bottom: 1px solid var(--mm-border-soft, #e8e0d0);
-}
-
-.requests-table th {
-  font-weight: 700;
-  color: var(--ink2, #6b6a5c);
-  font-size: 12px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.status {
-  display: inline-block;
-  padding: 3px 10px;
-  border-radius: 12px;
-  font-size: 12px;
-  font-weight: 600;
-}
-
-.status-pending {
-  background: #fff7e6;
-  color: #b35e00;
-}
-
-.status-approved {
-  background: #edf4ea;
-  color: #2e7d32;
-}
-
-.status-rejected {
-  background: #ffebee;
-  color: #c62828;
-}
-
-.loading, .empty {
-  text-align: center;
-  padding: 40px;
-  color: var(--ink2, #6b6a5c);
-}
-
-/* Address Management */
-.address-section {
-  margin-top: 0;
-}
-
-.address-actions {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 20px;
-}
-
-.btn-add-address {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 10px 18px;
-  background: #fff;
-  border: 1px solid var(--moss, #435731);
-  color: var(--moss, #435731);
-  border-radius: 8px;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.btn-add-address:hover {
-  background: var(--moss, #435731);
-  color: #fff;
-}
-
-.address-list {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.address-card {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  padding: 16px;
-  border: 1px solid var(--mm-border-soft, #e8e0d0);
-  border-radius: 12px;
-  background: #fff;
-  transition: box-shadow 0.2s;
-}
-
-.address-card:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
-}
-
-.address-card.default {
-  border-color: var(--moss, #435731);
-  background: var(--moss-soft, #f4f7f2);
-}
-
-.address-header {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-
-.address-label {
-  display: inline-block;
-  padding: 3px 8px;
-  border-radius: 6px;
-  font-size: 11px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.address-card.default .address-label {
-  background: var(--moss, #435731);
-  color: #fff;
-}
-
-.address-card:not(.default) .address-label {
-  background: #f4f3ec;
-  color: var(--ink2, #6b6a5c);
-}
-
-.address-fullname {
-  font-weight: 600;
-  color: var(--ink, #3a3a33);
-  font-size: 15px;
-}
-
-.address-phone {
-  color: var(--ink2, #6b6a5c);
-  font-size: 13px;
-}
-
-.address-detail {
-  color: var(--ink, #3a3a33);
-  font-size: 14px;
-  line-height: 1.5;
-  margin-bottom: 4px;
-}
-
-.address-actions {
-  display: flex;
-  gap: 8px;
-}
-
-.address-actions .btn-edit {
-  flex: 1;
-  padding: 6px 12px;
-  border: 1px solid var(--mm-border-soft, #e8e0d0);
-  border-radius: 6px;
-  background: #fff;
-  color: var(--ink, #3a3a33);
-  font-size: 12px;
-  cursor: pointer;
-}
-
-.address-actions .btn-edit:hover {
-  background: #f4f3ec;
-}
-
-.address-actions .btn-default {
-  flex: 1;
-  padding: 6px 12px;
-  border: 1px solid var(--moss, #435731);
-  border-radius: 6px;
-  background: #fff;
-  color: var(--moss, #435731);
-  font-size: 12px;
-  cursor: pointer;
-}
-
-.address-actions .btn-default:hover:not(:disabled) {
-  background: var(--moss, #435731);
-  color: #fff;
-}
-
-.address-actions .btn-default:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.address-actions .btn-delete {
-  padding: 6px 12px;
-  border: 1px solid #c0392b;
-  border-radius: 6px;
-  background: #fff;
-  color: #c0392b;
-  font-size: 12px;
-  cursor: pointer;
-}
-
-.address-actions .btn-delete:hover {
-  background: #c0392b;
-  color: #fff;
-}
-
-/* Address Form */
-.address-form-card {
-  background: #fff;
-  border: 1px solid var(--mm-border-soft, #e8e0d0);
-  border-radius: 12px;
-  padding: 24px;
-  margin-top: 20px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
-}
-
-.address-form-card h3 {
-  margin: 0 0 20px;
-  font-family: Lora, serif;
-  font-size: 20px;
-  color: var(--moss, #435731);
-}
-
-.address-form-card .form-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
-  margin-bottom: 16px;
-}
-
-.address-form-card .form-group {
-  margin-bottom: 16px;
-}
-
-.address-form-card .form-group label {
-  display: block;
-  margin-bottom: 6px;
-  font-size: 13px;
-  color: var(--ink, #3a3a33);
-  font-weight: 600;
-}
-
-.address-form-card .form-group label .required {
-  color: #c0392b;
-}
-
-.address-form-card .form-group input,
-.address-form-card .form-group select,
-.address-form-card .form-group textarea {
-  width: 100%;
-  padding: 10px 14px;
-  border: 1px solid var(--mm-border-soft, #e8e0d0);
-  border-radius: 8px;
-  font: inherit;
-  font-size: 14px;
-  outline: none;
-  background: #fff;
-}
-
-.address-form-card .form-group input:focus,
-.address-form-card .form-group select:focus,
-.address-form-card .form-group textarea:focus {
-  border-color: var(--moss, #435731);
-  box-shadow: 0 0 0 3px rgba(67, 87, 49, 0.08);
-}
-
-.address-form-card .form-group textarea {
-  resize: vertical;
-  min-height: 90px;
-}
-
-.default-checkbox {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 16px;
-}
-
-.default-checkbox input {
-  margin: 0;
-  width: auto;
-}
-
-.default-checkbox label {
-  margin: 0;
-  font-size: 14px;
-  font-weight: 500;
-}
-
-.address-form-card .form-actions {
-  display: flex;
-  gap: 10px;
-  justify-content: flex-end;
-  margin-top: 4px;
-}
-
-.address-form-card .btn-cancel {
-  padding: 10px 18px;
-  border: 1px solid var(--mm-border-soft, #e8e0d0);
-  border-radius: 8px;
-  background: #fff;
-  color: var(--ink2, #6b6a5c);
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-.address-form-card .btn-cancel:hover {
-  background: #f4f3ec;
-}
-
-.address-form-card .btn-save {
-  padding: 10px 18px;
-  border: none;
-  border-radius: 8px;
-  background: var(--moss, #435731);
-  color: #fff;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-
-.address-form-card .btn-save:hover:not(:disabled) {
-  background: var(--mm-green-dark, #2a4d2e);
-}
-
-.address-form-card .btn-save:disabled {
-  opacity: 0.6;
-  cursor: wait;
-}
-
-.message {
-  margin: 12px 0;
-  font-size: 13px;
-  color: var(--mm-orange-dark, #c05621);
-}
-
-.loading, .empty {
-  text-align: center;
-  padding: 40px;
-  color: var(--ink2, #6b6a5c);
-}
-
-@media (max-width: 640px) {
-  .address-form-card .form-row {
-    grid-template-columns: 1fr;
-  }
-  .address-actions {
-    flex-direction: column;
-  }
-}
-
+.settings-page{padding:28px 0 48px;font-family:'Be Vietnam Pro','Segoe UI',Arial,sans-serif;color:#243127}
+.settings-container{max-width:980px;margin:0 auto;padding:0 16px}
+.settings-container h1{margin:0;font:800 30px 'Be Vietnam Pro','Segoe UI',Arial,sans-serif;color:#1e3a2a}
+.subtitle{margin:6px 0 20px;color:#5f6b63}
+.profile-section,.membership-section,.role-upgrade-section,.request-history-section,.address-section{background:#fff;border:1px solid #e7e1d6;border-radius:16px;padding:20px;margin:0 0 18px;box-shadow:0 4px 14px rgba(0,0,0,.03)}
+.profile-section h2,.membership-section h2,.role-upgrade-section h2,.request-history-section h2,.address-section h2{margin:0 0 14px;font:700 20px 'Be Vietnam Pro','Segoe UI',Arial,sans-serif;color:#1e3a2a}
+.profile-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.profile-item{background:#faf8f3;border:1px solid #eee6d9;border-radius:12px;padding:12px}
+.profile-item label{display:block;font-size:12px;color:#6b7280;margin-bottom:4px}
+.profile-item span{font-weight:700;color:#243127;word-break:break-word}
+.role-badge{display:inline-block;padding:3px 10px;border-radius:999px;background:#eef5ef;color:#2e5a3c}
+.tier-hero{display:flex;gap:14px;align-items:flex-start;padding:16px;border-radius:14px;background:linear-gradient(135deg,color-mix(in srgb,var(--tier-color,#8a6d3b) 14%,white),#fff);border:1px solid color-mix(in srgb,var(--tier-color,#8a6d3b) 28%,#eee)}
+.tier-badge-lg{min-width:96px;text-align:center;padding:10px 14px;border-radius:999px;background:var(--tier-color,#8a6d3b);color:#fff;font:800 18px 'Be Vietnam Pro','Segoe UI',Arial,sans-serif}
+.tier-spend,.tier-benefit,.tier-meta{margin:0 0 4px}
+.tier-benefit{font-weight:700;color:#243127}
+.tier-meta{color:#5f6b63;font-size:13px}
+.tier-benefits-current{margin-top:14px}
+.tier-benefits-current h3{margin:0 0 8px;font-size:16px;color:#1e3a2a}
+.tier-benefits-current ul,.tier-item-benefits{margin:0;padding-left:18px;color:#334155;line-height:1.6}
+.tier-note{margin:10px 0 0;font-size:13px;color:#6b7280}
+.tier-progress-wrap{margin-top:14px}
+.tier-progress-head{display:flex;justify-content:space-between;gap:10px;font-size:13px;margin-bottom:6px}
+.tier-progress{height:10px;background:#eee6d9;border-radius:999px;overflow:hidden}
+.tier-progress span{display:block;height:100%;background:linear-gradient(90deg,#7b8794,#c99700,#1f7a8c);border-radius:999px}
+.tier-max{margin:12px 0 0;color:#166534;font-weight:600}
+.tier-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-top:16px}
+.tier-item{border:1px solid #e7e1d6;border-radius:14px;padding:14px;background:#fff}
+.tier-item.current{border-color:var(--tier-color,#8a6d3b);box-shadow:0 0 0 2px color-mix(in srgb,var(--tier-color,#8a6d3b) 15%,transparent)}
+.tier-item.reached .tier-item-name{color:var(--tier-color,#8a6d3b)}
+.tier-item-head{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:8px}
+.tier-item-name{font:800 18px 'Be Vietnam Pro','Segoe UI',Arial,sans-serif;color:#243127}
+.tier-item-min{font-size:12px;color:#6b7280}
+.tier-current-tag{margin-left:auto;font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px;background:#eef5ef;color:#2e5a3c}
+.tier-item-quick{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
+.tier-item-quick span{font-size:11px;font-weight:700;padding:3px 8px;border-radius:999px;background:color-mix(in srgb,var(--tier-color,#8a6d3b) 12%,white);color:color-mix(in srgb,var(--tier-color,#8a6d3b) 75%,#243127)}
+.hint,.loading,.empty{color:#5f6b63}
+.form-group{margin:10px 0}
+.form-group label{display:block;margin-bottom:6px;font-weight:600;color:#243127}
+.form-group select,.form-group textarea,.form-group input{width:100%;padding:10px 12px;border:1px solid #d8d1c3;border-radius:10px;font:500 14px 'Be Vietnam Pro','Segoe UI',Arial,sans-serif;background:#fff;color:#243127;box-sizing:border-box}
+.form-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.btn-submit,.btn-add-address,.btn-save,.btn-cancel,.btn-edit,.btn-default,.btn-delete{border:1px solid #d8d1c3;background:#fff;border-radius:10px;padding:9px 14px;cursor:pointer;font:600 13px 'Be Vietnam Pro','Segoe UI',Arial,sans-serif}
+.btn-submit,.btn-add-address,.btn-save{background:#2e5a3c;border-color:#2e5a3c;color:#fff}
+.btn-delete{color:#b42318;border-color:#f2c7c2;background:#fff7f7}
+.btn-submit:disabled,.btn-save:disabled,.btn-default:disabled{opacity:.6;cursor:not-allowed}
+.message{margin-top:10px;color:#2e5a3c;font-weight:600}
+.requests-table{width:100%;border-collapse:collapse}
+.requests-table th,.requests-table td{padding:10px;border-bottom:1px solid #eee6d9;text-align:left;font-size:14px}
+.requests-table th{color:#5f6b63;font-size:12px;text-transform:uppercase}
+.status{display:inline-block;padding:2px 8px;border-radius:999px;font-size:12px;font-weight:700}
+.status-pending{background:#fff7ed;color:#9a3412}.status-approved{background:#e8f5e9;color:#166534}.status-rejected{background:#fef2f2;color:#b42318}
+.address-list{display:grid;gap:12px;margin-top:12px}
+.address-card{border:1px solid #e7e1d6;border-radius:12px;padding:14px;background:#fafaf8}
+.address-card.default{border-color:#2e5a3c;background:#f7fbf8}
+.address-header{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:6px}
+.address-label{font-size:11px;font-weight:800;padding:2px 8px;border-radius:999px;background:#eef5ef;color:#2e5a3c}
+.address-fullname{font-weight:700}.address-phone,.address-detail{color:#5f6b63;font-size:13px}
+.address-actions,.form-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.address-form-card{margin-top:14px;border:1px dashed #d8d1c3;border-radius:14px;padding:16px;background:#fffdf9}
+.required{color:#b42318}
+.default-checkbox label{display:flex;align-items:center;gap:8px;font-weight:500}
+.default-checkbox input{width:auto}
+@media (max-width:640px){.tier-hero{flex-direction:column}.tier-badge-lg{min-width:0;width:fit-content}}
+.purchase-popup-overlay{position:fixed;inset:0;background:rgba(24,32,27,.45);display:flex;align-items:flex-start;justify-content:center;padding:24px;z-index:1200;overflow:auto}
+.purchase-popup{width:min(980px,100%);background:#fff;border-radius:18px;border:1px solid #e7e1d6;box-shadow:0 20px 60px rgba(0,0,0,.16);overflow:hidden}
+.purchase-popup-head{display:flex;justify-content:space-between;gap:16px;padding:18px 20px;border-bottom:1px solid #eee6d9;background:linear-gradient(180deg,#fff,#faf8f3)}
+.purchase-popup-head h2{margin:0;font:800 22px 'Be Vietnam Pro','Segoe UI',Arial,sans-serif;color:#1e3a2a}
+.purchase-popup-head p{margin:4px 0 0;color:#5f6b63;font-size:13px}
+.purchase-popup-close{width:36px;height:36px;border-radius:10px;border:1px solid #d8d1c3;background:#fff;color:#243127;font-size:24px;line-height:1;cursor:pointer}
+.purchase-popup-body{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;padding:18px 20px 20px}
+.purchase-block{background:#fafaf8;border:1px solid #eee6d9;border-radius:14px;padding:14px;min-width:0}
+.purchase-block-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px}
+.purchase-block-head h3{margin:0;font:700 16px 'Be Vietnam Pro','Segoe UI',Arial,sans-serif;color:#1e3a2a}
+.purchase-link-btn{border:1px solid #2e5a3c;background:#2e5a3c;color:#fff;border-radius:10px;padding:7px 11px;font:600 12px 'Be Vietnam Pro','Segoe UI',Arial,sans-serif;cursor:pointer}
+.purchase-list{display:grid;gap:10px;max-height:360px;overflow:auto;padding-right:4px}
+.purchase-item{background:#fff;border:1px solid #e7e1d6;border-radius:12px;padding:10px 12px}
+.purchase-item-main{display:flex;justify-content:space-between;gap:10px;font-size:13px;color:#243127}
+.purchase-item-main span{color:#5f6b63;font-size:12px;text-align:right}
+.purchase-item-sub{margin-top:6px;display:flex;flex-wrap:wrap;gap:6px}
+.purchase-item-sub span{font-size:12px;color:#334155;background:#f4f1ea;padding:2px 8px;border-radius:999px}
+.purchase-item-price{margin-top:8px;font-weight:800;color:#1e3a2a}
+@media (max-width:760px){.purchase-popup-overlay{padding:12px}.purchase-popup-body{grid-template-columns:1fr}}

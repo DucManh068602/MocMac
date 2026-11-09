@@ -1,0 +1,32 @@
+<section class="my-quotations-page">
+  <div class="wrap">
+    <h1>Quà tặng đã mua</h1>
+    <p class="sub">Danh sách yêu cầu báo giá / quà tặng của bạn.</p>
+
+    @if (error() && !loading()) {
+      <div class="alert">{{ error() }}</div>
+    }
+
+    @if (loading()) {
+      <p class="loading">Đang tải...</p>
+    } @else if (quotations().length === 0) {
+      <div class="empty"><i class="fa-solid fa-gift"></i><p>Bạn chưa có yêu cầu quà tặng nào.</p><a routerLink="/qua-tang">Tạo yêu cầu báo giá</a></div>
+    } @else {
+      <table class="gifts-table">
+        <thead><tr><th>Mã yêu cầu</th><th>Sản phẩm quà tặng</th><th>Số lượng</th><th>Trạng thái</th><th>Thanh toán</th><th>Tổng</th></tr></thead>
+        <tbody>
+          @for (q of quotations(); track q._id) {
+            <tr>
+              <td><strong>#{{ shortId(q._id) }}</strong></td>
+              <td>{{ giftNames(q) }}</td>
+              <td>{{ giftQty(q) }}</td>
+              <td><span class="badge" [class]="'qstatus-' + q.status">{{ statusLabel(q.status) }}</span></td>
+              <td><span class="badge" [class]="'qpay-' + q.paymentStatus">{{ payLabel(q.paymentStatus) }}</span></td>
+              <td><b>{{ money(q.quotedTotal || q.totalEstimate || 0) }}</b></td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+  </div>
+</section>

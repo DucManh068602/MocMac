@@ -1,4 +1,4 @@
-﻿<ng-template #checks let-k="k" let-opts="opts">
+<ng-template #checks let-k="k" let-opts="opts">
   @for (o of opts; track o.v) {
     <label class="chk">
       <input type="checkbox" [checked]="has(k, o.v)" (change)="toggle(k, o.v)" />
@@ -156,11 +156,11 @@
       </section>
     </div>
 
-    <!-- BÁN CHẠY VÀ GIÁ TỐT: CŨNG CHẠY NGANG TỰ ĐỘNG -->
+    <!-- ĐANG BÁN CHẠY VÀ GIÁ TỐT: CŨNG CHẠY NGANG TỰ ĐỘNG -->
     <div class="discovery-bottom">
       <section class="rank-section">
         <div class="rank-title">
-          <h3><i class="fa-solid fa-trophy" aria-hidden="true"></i> Bán chạy nhất</h3>
+          <h3><i class="fa-solid fa-trophy" aria-hidden="true"></i> Đang bán chạy</h3>
           <button type="button" (click)="showMore('popular')">Xem thêm ›</button>
         </div>
 
@@ -168,7 +168,7 @@
           class="discovery-carousel rank-carousel"
           #discoveryCarousel
           tabindex="0"
-          aria-label="Sản phẩm bán chạy nhất"
+          aria-label="Sản phẩm Đang bán chạy"
           (mouseenter)="pauseDiscoveryCarousel()"
           (mouseleave)="resumeDiscoveryCarousel()"
           (focusin)="pauseDiscoveryCarousel()"

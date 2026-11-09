@@ -1,4 +1,4 @@
-:host {
+﻿ :host { font-family: 'Be Vietnam Pro','Segoe UI',Arial,system-ui,sans-serif;
   --moss: #2e5a3c;
   --moss-d: #1e3a2a;
   --moss-light: #eef3ec;
@@ -502,7 +502,7 @@
 }
 .remove-btn-sm:hover { background: #a32e22; }
 
-/* ===== Phản hồi admin ===== */
+/* ===== Pháº£n há»“i admin ===== */
 .reply-editor {
   display: flex;
   gap: 6px;
@@ -689,3 +689,4 @@
   .modal, .modal-wide { max-width: 100%; padding: 16px; }
   .context-grid { grid-template-columns: 1fr; }
 }
+

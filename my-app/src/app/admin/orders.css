@@ -1,4 +1,4 @@
-.list-page { padding-bottom: 30px; }
+﻿.list-page { padding-bottom: 30px; }
 .list-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; margin-bottom: 20px; }
 .header-left { display: flex; align-items: center; gap: 10px; }
 .header-left h2 { margin: 0; font-size: 20px; font-weight: 700; color: var(--ink); }
@@ -31,7 +31,7 @@
 .table-wrap { overflow-x: auto; background: #fff; border: 1px solid var(--line); border-radius: 14px; box-shadow: var(--shadow-sm); }
 .admin-table { width: 100%; border-collapse: collapse; font-size: 13px; }
 .admin-table th { padding: 12px 14px; text-align: left; font-size: 11px; font-weight: 700; color: var(--ink2); border-bottom: 1px solid var(--moss-light); white-space: nowrap; background: #fbfdfb; text-transform: uppercase; letter-spacing: .04em; }
-.admin-table td { padding: 12px 14px; border-bottom: 1px solid #f3f6f1; color: var(--ink); vertical-align: middle; white-space: nowrap; }
+.admin-table td { padding: 10px 12px; border-bottom: 1px solid #f3f6f1; color: var(--ink); vertical-align: middle; } .admin-table td:nth-child(7) { white-space: nowrap; min-width: 128px; font-size: 12.5px; } .admin-table td:nth-child(5), .admin-table td:nth-child(6) { min-width: 148px; vertical-align: top; }
 .admin-table tbody tr:last-child td { border-bottom: 0; }
 .admin-table tbody tr:hover { background: #fbfdfb; }
 .admin-table td b { color: var(--ink); font-weight: 700; }
@@ -44,7 +44,9 @@
 .order-total { font-weight: 700; color: var(--moss-d); font-size: 13.5px; }
 
 .status-badge, .payment-badge { display: inline-block; padding: 3px 10px; border-radius: 999px; font-size: 11px; font-weight: 700; color: var(--c); background: color-mix(in srgb, var(--c) 10%, #fff); border: 1px solid color-mix(in srgb, var(--c) 25%, #fff); margin-bottom: 4px; }
-.status-select, .payment-select { width: 100%; height: 32px; padding: 0 8px; border: 1px solid var(--line); border-radius: 6px; background: #fff; color: var(--ink); font: inherit; font-size: 11.5px; cursor: pointer; transition: border-color .2s; }
+  .status-select, .payment-select { width: 100%; height: 32px; padding: 0 8px; border: 1px solid var(--line); border-radius: 6px; background: #fff; color: var(--ink); font: inherit; font-size: 11.5px; cursor: pointer; transition: border-color .2s; min-width: 0; }
+.admin-table td:nth-child(5) .status-select { min-width: 122px; }
+.admin-table td:nth-child(6) .payment-select { min-width: 148px; }
 .status-select:focus, .payment-select:focus { outline: none; border-color: var(--moss); box-shadow: 0 0 0 3px rgba(46,90,60,.1); }
 
 .action-group { display: flex; gap: 6px; justify-content: flex-start; }
@@ -57,3 +59,13 @@
 
 @media (max-width: 1100px) { .stats-grid { grid-template-columns: repeat(3, 1fr); } }
 @media (max-width: 700px) { .stats-grid { grid-template-columns: repeat(2, 1fr); } .admin-filters { flex-direction: column; align-items: stretch; } .filter-group { width: 100%; } .filter-input, .filter-select { width: 100%; } .filter-reset { width: 100%; } }
+.order-detail-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 10px 14px; margin: 12px 0; }
+.order-detail-grid > div { font-size: 13px; color: var(--ink2); }
+.order-detail-grid strong { color: var(--ink); margin-right: 4px; }
+.order-detail-items { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 8px; }
+.order-detail-items th,.order-detail-items td { padding: 8px 10px; border-bottom: 1px solid #f3f6f1; text-align: left; }
+.order-detail-items th { font-size: 11px; color: var(--ink2); text-transform: uppercase; background: #fbfdfb; }
+.detail-empty { padding: 24px; text-align: center; color: var(--ink2); }
+@media (max-width: 640px) { .order-detail-grid { grid-template-columns: 1fr; } }
+
+

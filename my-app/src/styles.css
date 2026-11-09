@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,600;1,700&display=swap');
+﻿@import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,600;1,700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -8,7 +8,7 @@
 :root[data-theme='dark']{--moss:#9fd8ad;--moss-d:#c7f4cc;--sage:#8fb392;--cream:#0a0e0c;--beige:#101814;--earth:#ffa96d;--clay:#ffb899;--ink:#f7fdf5;--ink2:#cfe3cf;--line:#3d5948;--surface:#15211a;--surface-muted:#1e2f25;--focus:#b8efc0;--danger:#ff9a90;--warning:#ffd082;--shadow-soft:0 18px 48px rgba(0,0,0,.55)}
 
 *{box-sizing:border-box}
-body{margin:0;background:var(--cream);color:var(--ink);font-family:'Segoe UI',system-ui,sans-serif;line-height:1.6;font-size:15px;letter-spacing:.005em;scrollbar-color:var(--sage) var(--surface-muted);scrollbar-width:thin}
+body{margin:0;background:var(--cream);color:var(--ink);font-family:'Be Vietnam Pro','Segoe UI',Arial,system-ui,sans-serif;line-height:1.6;font-size:15px;letter-spacing:.005em;scrollbar-color:var(--sage) var(--surface-muted);scrollbar-width:thin}
 :root[data-theme='dark'] body{color-scheme:dark;background:radial-gradient(circle at 92% -10%,#1d3227 0,transparent 30rem),radial-gradient(circle at -8% 55%,#162019 0,transparent 26rem),var(--cream)}
 :root[data-theme='dark'] .product-page{background:linear-gradient(180deg,#0a0e0c,#101a14 47%,#0a0e0c)!important}
 :root[data-theme='dark'] .product-page :is(.product-main,.details-section,.review-card,.related-card,.price-card,.benefit,.story-card){background:var(--surface)!important;color:var(--ink)!important;border-color:var(--line)!important}

@@ -67,7 +67,7 @@ import { ToastService } from './toast.service';
           <tbody>
             @for (r of reviews(); track r._id) {
               <tr>
-                <td>{{ r.product?.name || '—' }}</td>
+                <td>{{ r.productName || r.product?.name || '—' }}</td>
                 <td>{{ r.user?.name || r.user?.email || '—' }}</td>
                 <td>
                   <span class="rating-stars" [ngClass]="'stars-' + r.rating">

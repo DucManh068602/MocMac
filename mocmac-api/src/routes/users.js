@@ -9,10 +9,16 @@ import {
   activateUser,
   deactivateUser,
   deleteUser,
+  getMyMembership,
+  updateMyProfile,
+  getMyProfile,
 } from '../controllers/userController.js';
 
 const router = Router();
 
+router.get('/me/membership', requireAuth, getMyMembership);
+router.get('/me', requireAuth, getMyProfile);
+router.patch('/me', requireAuth, updateMyProfile);
 router.get('/', requireAuth, requireRole('admin', 'staff'), requirePermission('users.view'), getAllUsers);
 router.post('/', requireAuth, requireRole('admin'), requirePermission('users.create'), createUser);
 router.get('/:id', requireAuth, requireRole('admin', 'staff'), requirePermission('users.view'), getUserById);
