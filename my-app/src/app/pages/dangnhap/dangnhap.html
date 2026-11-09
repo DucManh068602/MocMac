@@ -105,7 +105,7 @@
       </header>
 
       <!-- ---------- FORM ĐĂNG NHẬP ---------- -->
-      @if (mode() === 'login' && !forgot()) {
+      @if (mode() === 'login' && !forgot() && !googleOtp() && !otpRegister()) {
         <section class="form-body">
 
           @if (isAdminMode()) {
@@ -360,7 +360,7 @@
         }
 
         <!-- ---------- ĐĂNG KÝ (chỉ hiển thị cho khách hàng) ---------- -->
-        @if (!isAdminMode() && mode() === 'register' && !otpRegister()) {
+        @if (!isAdminMode() && mode() === 'register' && !otpRegister() && !googleOtp()) {
         <section class="form-body">
           <h1>Tạo tài khoản Mộc Mạc</h1>
           <p class="subtitle">Gia nhập cộng đồng người gìn giữ và thưởng thức đặc sản Việt.</p>
