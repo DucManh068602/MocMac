@@ -1,4 +1,4 @@
-import { Component, inject, signal, computed } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ToastService } from './toast.service';
 import { ProductsService } from '../products.service';
@@ -9,7 +9,7 @@ import { ProductsService } from '../products.service';
   template: `
     <div class="list-page">
       <header class="list-header">
-        <h2>Sản phẩm ({{ products().length }})</h2>
+        <h2>Sản phẩm ({{ total() || products().length }})</h2>
         <div class="admin-filters">
           <div class="filter-group">
             <input
@@ -24,7 +24,7 @@ import { ProductsService } from '../products.service';
             <select class="filter-select" [(ngModel)]="categoryFilter" (change)="onFilterChange()" style="width: 160px">
               <option value="">Tất cả danh mục</option>
               <option value="Đặc sản">Đặc sản</option>
-              <option value="Thủ công mỵ nghệ">Thủ công mỵ nghệ</option>
+              <option value="Thủ công mỹ nghệ">Thủ công mỹ nghệ</option>
               <option value="Cà phê - Trà">Cà phê - Trà</option>
               <option value="Sản phẩm OCOP">Sản phẩm OCOP</option>
             </select>
@@ -40,7 +40,7 @@ import { ProductsService } from '../products.service';
             type="button"
             class="filter-reset"
             (click)="resetFilters()"
-            [disabled]="!searchTerm && !categoryFilter"
+            [disabled]="!searchTerm && !categoryFilter && !stockFilter"
           >
             Xóa bộ lọc
           </button>
@@ -50,20 +50,20 @@ import { ProductsService } from '../products.service';
 
       <div class="stats-grid">
         <div class="stat-card stat--moss">
-          <span class="stat-value">{{ stats().total }}</span>
+          <span class="stat-value">{{ total() || products().length }}</span>
           <span class="stat-label">Tổng SP</span>
         </div>
         <div class="stat-card stat--earth">
           <span class="stat-value">{{ stats().inStock }}</span>
-          <span class="stat-label">Còn hàng</span>
+          <span class="stat-label">Còn hàng (trang)</span>
         </div>
         <div class="stat-card stat--clay">
           <span class="stat-value">{{ stats().outOfStock }}</span>
-          <span class="stat-label">Hết hàng</span>
+          <span class="stat-label">Hết hàng (trang)</span>
         </div>
         <div class="stat-card stat--sage">
           <span class="stat-value">{{ stats().avgRating | number:'1.1-1' }}</span>
-          <span class="stat-label">Điểm TB</span>
+          <span class="stat-label">Điểm TB (trang)</span>
         </div>
       </div>
 
@@ -77,28 +77,30 @@ import { ProductsService } from '../products.service';
             <input class="form-input" placeholder="Tồn kho (mặc định 100)" type="number" [(ngModel)]="form.stock" />
             <select class="form-input form-select-sm" [(ngModel)]="form.deal">
               <option [ngValue]="null">Không áp dụng Deal</option>
-              @for (deal of deals(); track deal._id) { <option [ngValue]="deal._id">{{ deal.title }} · {{ deal.discountType === 'percent' ? '-' + deal.discountValue + '%' : '-' + deal.discountValue + 'đ' }}</option> }
+              @for (deal of deals(); track deal._id) {
+                <option [ngValue]="deal._id">{{ deal.title }} · {{ deal.discountType === 'percent' ? '-' + deal.discountValue + '%' : '-' + deal.discountValue + 'đ' }}</option>
+              }
             </select>
             <select class="form-input form-select-sm" [(ngModel)]="form.cat">
               <option value="">Danh mục</option>
               <option value="Đặc sản">Đặc sản</option>
-              <option value="Thủ công mỵ nghệ">Thủ công mỵ nghệ</option>
+              <option value="Thủ công mỹ nghệ">Thủ công mỹ nghệ</option>
               <option value="Cà phê - Trà">Cà phê - Trà</option>
               <option value="Sản phẩm OCOP">Sản phẩm OCOP</option>
             </select>
-            <select class="form-input form-select-sm" [(ngModel)]="form.region" placeholder="Vùng miền">
+            <select class="form-input form-select-sm" [(ngModel)]="form.region">
               <option value="">Chọn vùng miền</option>
               @for (r of regions(); track r.slug) {
                 <option [ngValue]="r.name">{{ r.name }}</option>
               }
             </select>
-            <select class="form-input form-select-sm" [(ngModel)]="form.province" placeholder="Tỉnh">
+            <select class="form-input form-select-sm" [(ngModel)]="form.province">
               <option value="">Chọn tỉnh</option>
               @for (p of provinces(); track p.code) {
                 <option [ngValue]="p.name">{{ p.name }}</option>
               }
             </select>
-            <select class="form-input form-select-sm" [(ngModel)]="form.village" placeholder="Làng nghề">
+            <select class="form-input form-select-sm" [(ngModel)]="form.village">
               <option value="">Chọn làng nghề</option>
               @for (v of villages(); track v) {
                 <option [ngValue]="v">{{ v }}</option>
@@ -107,7 +109,7 @@ import { ProductsService } from '../products.service';
             <div class="upload-area-sm" (click)="fileInput.click()" (dragover)="onDragOver($event)" (drop)="onDrop($event)">
               <input type="file" #fileInput multiple accept="image/*" (change)="onFileSelect($event)" style="display:none" />
               <div class="upload-placeholder-sm">
-                <span>📁 Ảnh</span>
+                <span>Ảnh</span>
                 <small>JPG, PNG (5MB)</small>
               </div>
               @if (previewImages().length > 0) {
@@ -134,7 +136,7 @@ import { ProductsService } from '../products.service';
         <table class="admin-table">
           <thead>
             <tr>
-              <th>#</th>
+              <th>STT</th>
               <th>Tên</th>
               <th>Ảnh</th>
               <th>Giá</th>
@@ -144,13 +146,13 @@ import { ProductsService } from '../products.service';
             </tr>
           </thead>
           <tbody>
-            @for (p of products(); track p.id) {
+            @for (p of products(); track p.slug || p.id || $index; let i = $index) {
               <tr>
-                <td>{{ p.id }}</td>
+                <td>{{ (page() - 1) * pageSize + i + 1 }}</td>
                 <td>{{ p.name }}</td>
                 <td>
                   @if (p.images?.length) {
-                    <img [src]="p.images[0]" class="thumb-img" />
+                    <img [src]="p.images[0]" class="thumb-img" alt="" />
                   }
                 </td>
                 <td>{{ p.price }}đ</td>
@@ -162,15 +164,16 @@ import { ProductsService } from '../products.service';
                 </td>
               </tr>
             } @empty {
-              <tr><td colspan="6">Chưa có sản phẩm nào.</td></tr>
+              <tr><td colspan="7">{{ loading() ? 'Đang tải...' : 'Chưa có sản phẩm nào.' }}</td></tr>
             }
           </tbody>
         </table>
       </div>
+
       <app-pagination
         [currentPage]="page()"
         [totalPages]="totalPages()"
-        (pageChange)="page.set($event); loadProducts()"
+        (pageChange)="goToPage($event)"
       ></app-pagination>
     </div>
   `,
@@ -180,6 +183,8 @@ export class AdminProductsComponent {
   private http = inject(HttpClient);
   private toast = inject(ToastService);
   private ps = inject(ProductsService);
+
+  readonly pageSize = 20;
   readonly products = signal<any[]>([]);
   readonly provinces = signal<any[]>([]);
   readonly villages = signal<string[]>([]);
@@ -187,9 +192,12 @@ export class AdminProductsComponent {
   readonly deals = signal<any[]>([]);
   readonly page = signal(1);
   readonly totalPages = signal(1);
+  readonly total = signal(0);
+  readonly loading = signal(false);
   readonly showForm = signal(false);
   readonly editing = signal<any>(null);
   readonly previewImages = signal<string[]>([]);
+
   form: any = {};
   searchTerm = '';
   categoryFilter = '';
@@ -202,7 +210,6 @@ export class AdminProductsComponent {
       ? withRating.reduce((s: number, x: any) => s + x.rate, 0) / withRating.length
       : 0;
     return {
-      total: p.length,
       inStock: p.filter((x: any) => x.inStock).length,
       outOfStock: p.filter((x: any) => !x.inStock).length,
       avgRating: Number(avgRating.toFixed(1)),
@@ -221,6 +228,11 @@ export class AdminProductsComponent {
     this.loadProducts();
   }
 
+  onStockFilterChange(): void {
+    this.page.set(1);
+    this.loadProducts();
+  }
+
   resetFilters(): void {
     this.searchTerm = '';
     this.categoryFilter = '';
@@ -229,24 +241,33 @@ export class AdminProductsComponent {
     this.loadProducts();
   }
 
-  onStockFilterChange(): void {
-    this.page.set(1);
+  goToPage(p: number): void {
+    this.page.set(p);
     this.loadProducts();
   }
 
   loadProducts(): void {
+    this.loading.set(true);
     const params = new URLSearchParams({
       page: String(this.page()),
-      limit: '12',
+      limit: String(this.pageSize),
     });
     if (this.searchTerm) params.set('q', this.searchTerm);
     if (this.categoryFilter) params.set('cat', this.categoryFilter);
     if (this.stockFilter) params.set('stock', this.stockFilter);
 
-    this.http.get('/api/products?' + params.toString()).subscribe((r: any) => {
-      const items = Array.isArray(r) ? r : (r.products || []);
-      this.products.set(items);
-      this.totalPages.set(r.totalPages || 1);
+    this.http.get('/api/products?' + params.toString()).subscribe({
+      next: (r: any) => {
+        const items = Array.isArray(r) ? r : (r.products || []);
+        this.products.set(items);
+        this.total.set(Number(r.total || items.length));
+        this.totalPages.set(Number(r.totalPages || 1));
+        this.loading.set(false);
+      },
+      error: () => {
+        this.loading.set(false);
+        this.toast.error('Không thể tải danh sách sản phẩm');
+      },
     });
   }
 
@@ -276,7 +297,9 @@ export class AdminProductsComponent {
     });
   }
 
-  loadDeals(): void { this.http.get<any>('/api/deals?active=true&limit=100').subscribe(r => this.deals.set(r.deals || [])); }
+  loadDeals(): void {
+    this.http.get<any>('/api/deals?active=true&limit=100').subscribe((r) => this.deals.set(r.deals || []));
+  }
 
   startCreate(): void {
     this.editing.set(null);
@@ -293,9 +316,7 @@ export class AdminProductsComponent {
 
   onFileSelect(event: Event): void {
     const input = event.target as HTMLInputElement;
-    if (input.files) {
-      this.uploadFiles(Array.from(input.files));
-    }
+    if (input.files) this.uploadFiles(Array.from(input.files));
     input.value = '';
   }
 
@@ -309,20 +330,18 @@ export class AdminProductsComponent {
     event.preventDefault();
     event.stopPropagation();
     (event.target as HTMLElement).classList.remove('drag-over');
-    if (event.dataTransfer?.files) {
-      this.uploadFiles(Array.from(event.dataTransfer.files));
-    }
+    if (event.dataTransfer?.files) this.uploadFiles(Array.from(event.dataTransfer.files));
   }
 
   uploadFiles(files: File[]): void {
-    const validFiles = files.filter(f => f.type.startsWith('image/') && f.size <= 5 * 1024 * 1024);
+    const validFiles = files.filter((f) => f.type.startsWith('image/') && f.size <= 5 * 1024 * 1024);
     if (validFiles.length === 0) {
       this.toast.error('File không hợp lệ. Chỉ chấp nhận ảnh (JPG, PNG, WebP, GIF) dưới 5MB.');
       return;
     }
 
     const formData = new FormData();
-    validFiles.forEach(f => formData.append('images', f));
+    validFiles.forEach((f) => formData.append('images', f));
 
     this.http.post('/api/uploads/image', formData).subscribe({
       next: (res: any) => {
@@ -347,17 +366,25 @@ export class AdminProductsComponent {
   }
 
   saveProduct(): void {
-    const f = { ...this.form };
-    f.images = this.previewImages();
+    const f = { ...this.form, images: this.previewImages() };
 
     if (this.editing()) {
       this.http.put('/api/products/' + f.slug, f).subscribe({
-        next: () => { this.toast.success('Cập nhật sản phẩm thành công'); this.loadProducts(); this.showForm.set(false); },
+        next: () => {
+          this.toast.success('Cập nhật sản phẩm thành công');
+          this.showForm.set(false);
+          this.loadProducts();
+        },
         error: () => this.toast.error('Không thể cập nhật sản phẩm'),
       });
     } else {
       this.http.post('/api/products', f).subscribe({
-        next: () => { this.toast.success('Thêm sản phẩm thành công'); this.loadProducts(); this.showForm.set(false); },
+        next: () => {
+          this.toast.success('Thêm sản phẩm thành công');
+          this.showForm.set(false);
+          this.page.set(1);
+          this.loadProducts();
+        },
         error: () => this.toast.error('Không thể thêm sản phẩm'),
       });
     }
@@ -366,7 +393,10 @@ export class AdminProductsComponent {
   deleteProduct(slug: string): void {
     if (confirm('Xóa sản phẩm này?')) {
       this.http.delete('/api/products/' + slug).subscribe({
-        next: () => { this.toast.success('Xóa sản phẩm thành công'); this.loadProducts(); },
+        next: () => {
+          this.toast.success('Xóa sản phẩm thành công');
+          this.loadProducts();
+        },
         error: () => this.toast.error('Không thể xóa sản phẩm'),
       });
     }

@@ -13,18 +13,15 @@ import { CommonModule } from '@angular/common';
           class="page-btn"
           [disabled]="currentPage <= 1"
           (click)="onPrev()"
-        >⟨</button>
+        >‹</button>
 
         @for (item of pages(); track item.value) {
           <button
             type="button"
             class="page-btn"
             [class.active]="item.value === currentPage"
-            [disabled]="item.type === 'ellipsis'"
             (click)="onPage(item.value)"
-          >
-            @if (item.type === 'ellipsis') { … } @else { {{ item.value }} }
-          </button>
+          >{{ item.value }}</button>
         }
 
         <button
@@ -32,7 +29,7 @@ import { CommonModule } from '@angular/common';
           class="page-btn"
           [disabled]="currentPage >= totalPages"
           (click)="onNext()"
-        >⟩</button>
+        >›</button>
       </nav>
     }
   `,
@@ -56,29 +53,15 @@ export class PaginationComponent {
     const current = this.currentPage;
     if (total <= 1) return [];
 
-    const delta = 1;
-    const range = [];
-    const left = Math.max(2, current - delta);
-    const right = Math.min(total - 1, current + delta);
+    const windowSize = Math.min(3, total);
+    let start = current - 1;
+    start = Math.max(1, Math.min(start, total - windowSize + 1));
+    const end = start + windowSize - 1;
 
-    range.push({ value: 1, type: 'page' });
-
-    if (left > 2) {
-      range.push({ value: -1, type: 'ellipsis' });
-    }
-
-    for (let i = left; i <= right; i++) {
+    const range: { value: number; type: 'page' }[] = [];
+    for (let i = start; i <= end; i++) {
       range.push({ value: i, type: 'page' });
     }
-
-    if (right < total - 1) {
-      range.push({ value: -1, type: 'ellipsis' });
-    }
-
-    if (total > 1) {
-      range.push({ value: total, type: 'page' });
-    }
-
     return range;
   });
 
