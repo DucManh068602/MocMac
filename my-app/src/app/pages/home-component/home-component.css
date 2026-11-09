@@ -84,12 +84,12 @@ section{padding-top:20px}
 .tabs button{border:1px solid var(--line);background:#fff;border-radius:16px;padding:5px 14px;font:inherit;font-size:13px;cursor:pointer}
 .tabs button.on{background:var(--moss);color:#fff;border-color:var(--moss)}
 .grid{display:grid;grid-template-columns:repeat(6,1fr);gap:12px}
-.card{background:#fff;border:1px solid var(--line);border-radius:0;padding:8px;transition:transform .2s,box-shadow .2s}
+.card{background:#fff;border:1px solid var(--line);border-radius:0;padding:8px;transition:transform .2s,box-shadow .2s;display:flex;flex-direction:column;height:100%}
 .img{height:120px;border-radius:8px;background:var(--beige);display:flex;align-items:center;justify-content:center;font-size:44px;position:relative;overflow:hidden}.img img{display:block;width:100%;height:100%;object-fit:cover;transition:transform .35s ease}.card:hover .img img{transform:scale(1.045)}.image-fallback{display:grid;place-items:center;width:42px;height:42px;border-radius:12px;background:color-mix(in srgb,var(--moss) 12%,transparent);color:var(--moss);font-size:18px}
 .heart{position:absolute;top:6px;right:8px;font-size:16px;color:var(--ink2)}.deal-chip{position:absolute;top:8px;right:8px;background:#c0392b;color:#fff;padding:4px 8px;font-size:12px;font-weight:900;border-radius:6px;box-shadow:0 2px 6px rgba(0,0,0,.18);z-index:3;letter-spacing:-.5px}.price-stack{display:flex;flex-direction:column}.price-stack small{text-decoration:line-through;color:var(--ink2);font-size:11px}.price-stack b{color:var(--earth)}
-.card h3{font:600 14px 'Be Vietnam Pro';margin:8px 0 2px}
+.card h3{font:600 14px 'Be Vietnam Pro';margin:8px 0 2px;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;flex:1}
 .stars{color:#e0a43a;font-size:12px}.stars small{color:var(--ink2)}.loc{color:var(--ink2);font-size:12px}
-.row{display:flex;justify-content:space-between;align-items:center;margin-top:6px}
+.row{display:flex;justify-content:space-between;align-items:center;margin-top:auto;padding-top:8px}
 .row b{color:var(--earth);font-size:15px}
 .add{background:var(--earth);border:0;border-radius:8px;width:34px;height:30px;cursor:pointer;color:#fff}.add:hover{background:var(--moss)}
 .commit{display:grid;grid-template-columns:1.3fr 1fr;gap:20px;background:var(--beige);border-radius:14px;padding:26px 30px;align-items:center}
@@ -105,5 +105,14 @@ section{padding-top:20px}
 @media(max-width:1000px){.regions{grid-template-columns:repeat(4,1fr)}.grid{grid-template-columns:repeat(3,1fr)}.story,.commit{grid-template-columns:1fr}.feat{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:600px){.grid{grid-template-columns:repeat(2,1fr)}.polaroids{grid-template-columns:repeat(2,1fr)}.hero h1{font-size:48px}}
 
+.tag.stock-out{background:#c0392b;color:#fff;font-size:10px;font-weight:700;border-radius:4px;padding:1px 6px}
+.tag.bestseller{background:#2f4538;color:#fff;font-size:10px;font-weight:700;border-radius:4px;padding:1px 6px}
+.qty-input{width:45px;height:30px;border:1px solid var(--line);border-radius:6px;text-align:center;font-size:13px;color:var(--ink)}
 .card{cursor:pointer}
 .card:hover{box-shadow:var(--shadow-soft);transform:translateY(-3px)}
+
+.sold-bar{margin-top:8px;position:relative;overflow:hidden;border-radius:12px;background:#fff5f5;border:1px solid #f4c2c2;height:22px;width:88%;max-width:220px}
+.sold-track{width:100%;height:100%;background:#fee2e2;border-radius:12px;overflow:hidden}
+.sold-fill{height:100%;background:linear-gradient(90deg,#c0392b 0%,#e74c3c 50%,#c0392b 100%);background-size:200% auto;border-radius:12px;animation:shine 1.5s infinite linear;transition:width .5s ease}
+@keyframes shine{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.sold-label{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;width:100%;font:700 12px 'Be Vietnam Pro';color:#fff;letter-spacing:.04em;text-transform:uppercase;z-index:2;text-shadow:0 1px 2px rgba(0,0,0,.25)}

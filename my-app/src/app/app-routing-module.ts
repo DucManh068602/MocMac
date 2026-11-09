@@ -41,6 +41,7 @@ import { AdminDealsComponent } from './admin/deals';
 import { AdminRegionStoriesComponent } from './admin/region-stories';
 import { AdminVillageStoriesComponent } from './admin/village-stories';
 import { AdminLegalContentComponent } from './admin/legal-content';
+import { NotFoundComponent } from './pages/not-found/not-found.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -111,7 +112,7 @@ const routes: Routes = [
       { path: 'legal/privacy', component: AdminLegalContentComponent, data: { legalKey: 'privacy' } },
     ]
   },
-  { path: '**', redirectTo: '' }
+  { path: '**', component: NotFoundComponent }
 ];
 
 @NgModule({

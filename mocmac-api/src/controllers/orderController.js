@@ -1,5 +1,6 @@
 import { Order } from '../models/Order.js';
 import { Product } from '../models/Product.js';
+import { FlashSale } from '../models/FlashSale.js';
 import { logAction, getRequestInfo } from '../utils/auditLog.js';
 import { generateOrderId, initStatusHistory, appendStatusHistory } from '../utils/orderUtils.js';
 
@@ -30,11 +31,65 @@ export const createOrder = async (req, res) => {
       });
     }
 
+    // Validate each item price against current product price in DB.
+    const now = new Date();
+    const flashSale = await FlashSale.findOne({ key: 'storewide' }).lean();
+    const saleActive = Boolean(
+      flashSale?.active && flashSale?.startsAt && flashSale?.endsAt &&
+      new Date(flashSale.startsAt) <= now && new Date(flashSale.endsAt) >= now
+    );
+    const salePercent = saleActive ? Number(flashSale?.discountPercent || 0) : 0;
+
+    const validatedItems = [];
+    let computedSubtotal = 0;
+
+    for (const it of items) {
+      if (it.productId == null) {
+        return res.status(400).json({
+          success: false,
+          message: 'Mỗi sản phẩm phải có productId.',
+        });
+      }
+      const product = await Product.findOne({ id: Number(it.productId) }).lean();
+      if (!product) {
+        return res.status(400).json({
+          success: false,
+          message: `Không tìm thấy sản phẩm ID ${it.productId}.`,
+        });
+      }
+      const quantity = Number(it.quantity) || 1;
+      const basePrice = Number(product.price);
+      // Khi sale đang diễn ra, giá hợp lệ là giá đã giảm; ngược lại là giá gốc.
+      const expectedPrice = saleActive
+        ? Math.max(0, Math.round(basePrice * (100 - salePercent) / 100))
+        : basePrice;
+      const submittedPrice = Number(it.price);
+      if (!Number.isFinite(submittedPrice) || submittedPrice < 0) {
+        return res.status(400).json({
+          success: false,
+          message: `Giá sản phẩm ${product.name} không hợp lệ.`,
+        });
+      }
+      if (Math.abs(submittedPrice - expectedPrice) > 0.01) {
+        return res.status(400).json({
+          success: false,
+          message: `Giá sản phẩm "${product.name}" đã thay đổi. Vui lòng làm mới giỏ hàng và thử lại.`,
+        });
+      }
+      validatedItems.push({
+        productId: Number(it.productId),
+        name: String(it.name || product.name),
+        price: expectedPrice,
+        quantity,
+      });
+      computedSubtotal += expectedPrice * quantity;
+    }
+
     const order = await Order.create({
       user: req.user ? req.user.id : null,
       orderId: generateOrderId(),
-      items,
-      subtotal,
+      items: validatedItems,
+      subtotal: computedSubtotal,
       discount,
       shipping,
       total,
@@ -44,16 +99,6 @@ export const createOrder = async (req, res) => {
       statusHistory: initStatusHistory({ status: 'pending', paymentStatus: 'pending' }, 'Đơn hàng mới được tạo'),
     });
 
-    // Tự động tăng số lượng đã bán (sold) cho mỗi sản phẩm trong đơn
-    for (const it of items) {
-      if (it.productId != null) {
-        await Product.findOneAndUpdate(
-          { id: Number(it.productId) },
-          { $inc: { sold: Number(it.quantity) || 1 } },
-        );
-      }
-    }
-
     const { user, ip } = getRequestInfo(req);
     await logAction({
       action: 'order.create',
@@ -61,7 +106,7 @@ export const createOrder = async (req, res) => {
       resourceId: order._id,
       user,
       ip,
-      details: { total, paymentMethod, itemCount: items.length },
+      details: { total, paymentMethod, itemCount: validatedItems.length },
     });
 
     return res.status(201).json({
@@ -202,9 +247,20 @@ export const updateOrderStatus = async (req, res) => {
       });
     }
 
+    const prevStatus = order.status;
     order.status = status;
     appendStatusHistory(order, { status, note: `Cập nhật trạng thái: ${status}` });
     await order.save();
+
+    // Khi đơn hàng chuyển thành đã giao (delivered), trừ số lượng tồn kho và tăng sold.
+    if (prevStatus !== 'delivered' && status === 'delivered') {
+      for (const it of order.items) {
+        await Product.findOneAndUpdate(
+          { id: it.productId },
+          { $inc: { stock: -it.quantity, sold: it.quantity } },
+        );
+      }
+    }
 
     const { user: reqUser, ip } = getRequestInfo(req);
     await logAction({

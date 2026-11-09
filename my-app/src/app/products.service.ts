@@ -176,7 +176,9 @@ export const PRED: Record<
   status: (p, v) =>
     v === 'in'
       ? p.inStock
-      : p.preorder,
+      : v === 'out'
+        ? !p.inStock && !p.preorder
+        : p.preorder,
 
   months: (p, v) => {
     const [a, b] = v.split('-').map(Number);

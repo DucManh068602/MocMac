@@ -1,85 +1,91 @@
 <div class="dashboard">
   <header class="dash-head">
-    <div class="greet">
-      <h2>{{ greeting() }}, {{ auth.user()?.name || 'Quản trị viên' }}</h2>
-      <p>Tổng quan hoạt động cửa hàng Mộc Mạc · {{ todayLabel() }}</p>
+    <div class="brand">
+      <div class="brand-mark"><i class="fa-solid fa-leaf"></i></div>
+      <div>
+        <h2>{{ greeting() }}, {{ auth.user()?.name || 'Quản trị viên' }}</h2>
+        <p>Bảng điều khiển Mộc Mạc · {{ todayLabel() }}</p>
+      </div>
     </div>
     <div class="head-actions">
-      <button type="button" class="btn-outline" (click)="load()" [disabled]="loading()"><i class="fa-solid fa-rotate-right ico"></i> <span>{{ loading() ? 'Đang tải...' : 'Làm mới' }}</span></button>
-      <a routerLink="/admin/orders" class="btn-primary"><i class="fa-solid fa-cart-shopping ico"></i> Xem đơn hàng</a>
+      <button type="button" class="btn-refresh" (click)="load()" [disabled]="loading()">
+        <i class="fa-solid fa-rotate-right"></i>
+        <span>{{ loading() ? 'Đang tải...' : 'Làm mới dữ liệu' }}</span>
+      </button>
+      <a routerLink="/admin/orders" class="btn-go"><i class="fa-solid fa-cart-shopping"></i> Xem đơn hàng</a>
     </div>
   </header>
 
   @if (failed() && !loading()) {
-    <div class="alert">Một số dữ liệu không tải được. <button type="button" (click)="load()">Thử lại</button></div>
+    <div class="alert"><span class="alert-icon"><i class="fa-solid fa-triangle-exclamation"></i></span><span>Một số dữ liệu không tải được.</span> <button type="button" (click)="load()">Thử lại</button></div>
   }
 
-  <section class="flash-sale-admin">
-    <div class="sale-heading"><span class="sale-mark"><i class="fa-solid fa-bolt"></i></span><div><h3>Săn sale toàn shop</h3><p>Giảm đồng loạt cho toàn bộ sản phẩm trong khoảng thời gian bạn chọn.</p></div><span class="sale-state" [class.live]="flashSale()?.live">{{ flashSale()?.live ? 'Đang diễn ra' : (saleForm.active ? 'Đã lên lịch' : 'Đang tắt') }}</span></div>
-    <div class="sale-controls">
-      <label class="sale-switch"><input type="checkbox" [(ngModel)]="saleForm.active" /> <span>Bật chiến dịch</span></label>
-      <label>Giảm giá <div class="sale-number"><input type="number" min="1" max="90" [(ngModel)]="saleForm.discountPercent" /><b>%</b></div></label>
-      <label>Bắt đầu <input type="datetime-local" [(ngModel)]="saleForm.startsAt" /></label>
-      <label>Kết thúc <input type="datetime-local" [(ngModel)]="saleForm.endsAt" /></label>
-      <button type="button" class="sale-save" (click)="saveFlashSale()"><i class="fa-solid fa-floppy-disk"></i> Lưu Săn sale</button>
-      <button type="button" class="sale-delete" (click)="deleteFlashSale()"><i class="fa-solid fa-trash"></i> Xóa Săn sale</button>
+  <!-- Flash sale hero -->
+  <section class="hero-sale">
+    <div class="hero-body">
+      <div class="hero-tag"><i class="fa-solid fa-bolt"></i> Săn sale toàn shop</div>
+      <h3>Giảm đồng loạt toàn bộ sản phẩm</h3>
+      <p>Thiết lập khung thời gian và phần trăm giảm giá cho mọi đơn hàng trong khoảng thời gian bạn chọn.</p>
+    </div>
+    <div class="hero-controls">
+      <label class="hero-switch"><input type="checkbox" [(ngModel)]="saleForm.active" /> <span>Bật chiến dịch</span></label>
+      <div class="hero-field"><label>Giảm giá</label><div class="input-wrap"><input type="number" min="1" max="90" [(ngModel)]="saleForm.discountPercent" /><span class="unit">%</span></div></div>
+      <div class="hero-field"><label>Bắt đầu</label><input type="datetime-local" [(ngModel)]="saleForm.startsAt" /></div>
+      <div class="hero-field"><label>Kết thúc</label><input type="datetime-local" [(ngModel)]="saleForm.endsAt" /></div>
+      <button type="button" class="hero-save" (click)="saveFlashSale()"><i class="fa-solid fa-floppy-disk"></i> Lưu Săn sale</button>
+      <button type="button" class="hero-delete" (click)="deleteFlashSale()"><i class="fa-solid fa-trash"></i> Xóa Săn sale</button>
+    </div>
+    <div class="hero-state">
+      <span class="state-dot" [class.live]="flashSale()?.live || saleForm.active"></span>
+      <span>{{ flashSale()?.live ? 'Đang diễn ra' : (saleForm.active ? 'Đã lên lịch' : 'Đang tắt') }}</span>
     </div>
   </section>
 
-  <div class="kpi-grid" [class.is-loading]="loading()">
-    <div class="kpi primary">
-      <span class="kpi-icon"><i class="fa-solid fa-arrow-trend-up"></i></span>
-      <div class="kpi-copy"><span>Doanh thu</span><strong>{{ revenue() | number }}đ</strong><small>Đơn đã thanh toán</small></div>
+  <!-- KPI grid -->
+  <div class="kpi-grid">
+    <div class="kpi card revenue">
+      <div class="kpi-head"><span class="kpi-label">Doanh thu</span><span class="kpi-trend"><i class="fa-solid fa-chart-line"></i> Theo ngày</span></div>
+      <div class="kpi-value">{{ revenue() | number:'1.0-0' }}đ</div>
+      <div class="kpi-sub">Đơn đã thanh toán · {{ counts().routePerms }} quyền phân quyền</div>
     </div>
-    <div class="kpi">
-      <span class="kpi-icon"><i class="fa-solid fa-bag-shopping"></i></span>
-      <div class="kpi-copy"><span>Đơn hàng</span><strong>{{ ordersTotal() | number }}</strong><small>Tổng số đơn</small></div>
+    <div class="kpi card orders">
+      <div class="kpi-head"><span class="kpi-label">Đơn hàng</span><span class="kpi-trend"><i class="fa-solid fa-bag-shopping"></i> Tổng số</span></div>
+      <div class="kpi-value">{{ ordersTotal() | number }}</div>
+      <div class="kpi-sub">Tất cả đơn trong hệ thống</div>
     </div>
-    <div class="kpi" [class.warn]="pending() > 0">
-      <span class="kpi-icon"><i class="fa-solid fa-hourglass-half"></i></span>
-      <div class="kpi-copy"><span>Chờ xử lý</span><strong>{{ pending() }}</strong><small>Cần xác nhận</small></div>
+    <div class="kpi card pending" [class.warn]="pending() > 0">
+      <div class="kpi-head"><span class="kpi-label">Chờ xử lý</span><span class="kpi-trend"><i class="fa-solid fa-hourglass-half"></i> Cần xác nhận</span></div>
+      <div class="kpi-value">{{ pending() }}</div>
+      <div class="kpi-sub">Đơn chưa xác nhận</div>
     </div>
-    <div class="kpi">
-      <span class="kpi-icon"><i class="fa-solid fa-cubes-stacked"></i></span>
-      <div class="kpi-copy"><span>Sản phẩm</span><strong>{{ counts().products | number }}</strong><small>Đang kinh doanh</small></div>
+    <div class="kpi card products">
+      <div class="kpi-head"><span class="kpi-label">Sản phẩm</span><span class="kpi-trend"><i class="fa-solid fa-box"></i> Kinh doanh</span></div>
+      <div class="kpi-value">{{ counts().products | number }}</div>
+      <div class="kpi-sub">Sản phẩm đang bán</div>
+    </div>
+    <div class="kpi card customers">
+      <div class="kpi-head"><span class="kpi-label">Khách hàng</span><span class="kpi-trend"><i class="fa-solid fa-users"></i> Tài khoản</span></div>
+      <div class="kpi-value">{{ counts().users | number }}</div>
+      <div class="kpi-sub">Tài khoản đã đăng ký</div>
     </div>
   </div>
 
-  <div class="panels">
-    <section class="panel">
-      <div class="panel-head"><h3><i class="fa-solid fa-chart-column ico-title"></i> Doanh thu 7 ngày qua</h3></div>
+  <!-- Charts row -->
+  <div class="grid-2">
+    <section class="panel chart-panel">
+      <div class="panel-head"><h3><i class="fa-solid fa-chart-area"></i> Doanh thu 7 ngày qua</h3></div>
       <div class="chart-wrap"><div class="bars">
         @for (d of chart(); track d.key) {
-          <div class="bar-col" [title]="(d.value | number) + 'đ'">
-            <div class="bar-val">{{ d.value ? (d.value / 1000 | number: '1.0-0') + 'k' : '' }}</div>
+          <div class="bar-col" [title]="(d.value | number:'1.0-0') + 'đ'">
+            <div class="bar-val">{{ d.value ? (d.value / 1000 | number:'1.0-0') + 'k' : '' }}</div>
             <div class="bar-track"><div class="bar" [style.height.%]="d.h"></div></div>
             <div class="bar-label">{{ d.label }}</div>
           </div>
         }
       </div></div>
     </section>
-
-    <section class="panel">
-      <div class="panel-head"><h3><i class="fa-solid fa-list-check ico-title"></i> Trạng thái đơn hàng</h3></div>
-      <div class="chart-wrap"><div class="stack">
-        @for (s of byStatus(); track s.key) {
-          @if (s.n) { <span class="bar-seg" [style.width.%]="s.pct" [style.background]="s.color"></span> }
-        }
-      </div><ul class="legend">
-        @for (s of byStatus(); track s.key) {
-          <li>
-            <span class="dot" [style.background]="s.color"></span>
-            <span>{{ s.label }}</span>
-            <b>{{ s.n }}</b>
-          </li>
-        }
-      </ul></div>
-    </section>
-  </div>
-
-  <div class="panels">
-    <section class="panel">
-      <div class="panel-head"><h3><i class="fa-solid fa-chart-line ico-title"></i> Số đơn 7 ngày qua</h3></div>
+    <section class="panel chart-panel">
+      <div class="panel-head"><h3><i class="fa-solid fa-chart-pie"></i> Số đơn 7 ngày qua</h3></div>
       <div class="chart-wrap"><div class="bars">
         @for (d of ordersCountChart(); track d.key) {
           <div class="bar-col" [title]="d.value + ' đơn'">
@@ -90,102 +96,101 @@
         }
       </div></div>
     </section>
-
-    <section class="panel">
-      <div class="panel-head"><h3><i class="fa-solid fa-receipt ico-title"></i> Giá trị TB/đơn 7 ngày</h3></div>
-      <div class="chart-wrap"><div class="bars">
-        @for (d of aovChart(); track d.key) {
-          <div class="bar-col" [title]="(d.value | number) + 'đ'">
-            <div class="bar-val">{{ d.value ? (d.value / 1000 | number: '1.0-0') + 'k' : '' }}</div>
-            <div class="bar-track"><div class="bar bar--clay" [style.height.%]="d.h"></div></div>
-            <div class="bar-label">{{ d.label }}</div>
-          </div>
-        }
-      </div></div>
-    </section>
   </div>
 
-  <div class="panels">
-    <section class="panel">
-      <div class="panel-head"><h3><i class="fa-solid fa-credit-card ico-title"></i> Trạng thái thanh toán</h3></div>
-      <div class="chart-wrap"><div class="stack">
-        @for (s of byPaymentStatus(); track s.key) {
-          @if (s.n) { <span class="bar-seg" [style.width.%]="s.pct" [style.background]="s.color"></span> }
-        }
-      </div><ul class="legend">
-        @for (s of byPaymentStatus(); track s.key) {
-          <li>
-            <span class="dot" [style.background]="s.color"></span>
-            <span>{{ s.label }}</span>
-            <b>{{ s.n }} ({{ s.pct | number:'1.0-0' }}%)</b>
-          </li>
-        }
-      </ul></div>
-    </section>
-
-    <section class="panel">
-      <div class="panel-head"><h3><i class="fa-solid fa-wallet ico-title"></i> Phương thức thanh toán</h3></div>
-      <div class="chart-wrap"><div class="stack">
-        @for (s of byPaymentMethod(); track s.key) {
-          @if (s.n) { <span class="bar-seg" [style.width.%]="s.pct" [style.background]="s.color"></span> }
-        }
-      </div><ul class="legend">
-        @for (s of byPaymentMethod(); track s.key) {
-          <li>
-            <span class="dot" [style.background]="s.color"></span>
-            <span>{{ s.label }}</span>
-            <b>{{ s.n }} ({{ s.pct | number:'1.0-0' }}%)</b>
-          </li>
-        }
-      </ul></div>
-    </section>
-  </div>
-
-  <section class="panel">
-    <div class="panel-head"><h3><i class="fa-solid fa-ranking-star ico-title"></i> Top sản phẩm bán chạy</h3></div>
-    <div class="hbars">
-      @for (p of topProducts(); track p.label) {
-        <div class="hbar-row" [title]="p.label + ': ' + p.value">
-          <span class="hbar-label">{{ p.label }}</span>
-          <div class="hbar-track"><div class="hbar" [style.width.%]="p.w"></div></div>
-          <b class="hbar-val">{{ p.value }}</b>
+  <div class="grid-2">
+    <section class="panel chart-panel">
+      <div class="panel-head"><h3><i class="fa-solid fa-list-check"></i> Trạng thái đơn hàng</h3></div>
+      <div class="panel-body">
+        <div class="stack">
+          @for (s of byStatus(); track s.key) {
+            @if (s.n) { <span class="bar-seg" [style.width.%]="s.pct" [style.background]="s.color"></span> }
+          }
         </div>
-      } @empty {
-        <div class="empty">{{ loading() ? 'Đang tải...' : 'Chưa có dữ liệu.' }}</div>
-      }
+        <ul class="legend">
+          @for (s of byStatus(); track s.key) {
+            <li>
+              <span class="dot" [style.background]="s.color"></span>
+              <span>{{ s.label }}</span>
+              <b>{{ s.n }}</b>
+            </li>
+          }
+        </ul>
+      </div>
+    </section>
+    <section class="panel chart-panel">
+      <div class="panel-head"><h3><i class="fa-solid fa-wallet"></i> Phương thức thanh toán</h3></div>
+      <div class="panel-body">
+        <div class="stack">
+          @for (s of byPaymentMethod(); track s.key) {
+            @if (s.n) { <span class="bar-seg" [style.width.%]="s.pct" [style.background]="s.color"></span> }
+          }
+        </div>
+        <ul class="legend">
+          @for (s of byPaymentMethod(); track s.key) {
+            <li>
+              <span class="dot" [style.background]="s.color"></span>
+              <span>{{ s.label }}</span>
+              <b>{{ s.n }} ({{ s.pct | number:'1.0-0' }}%)</b>
+            </li>
+          }
+        </ul>
+      </div>
+    </section>
+  </div>
+
+  <!-- Top products + Recent orders -->
+  <div class="grid-2">
+    <section class="panel top-panel">
+      <div class="panel-head"><h3><i class="fa-solid fa-ranking-star"></i> Top sản phẩm bán chạy</h3><a routerLink="/admin/products">Xem tất cả <i class="fa-solid fa-arrow-right"></i></a></div>
+      <div class="panel-body">
+        <div class="hbars">
+          @for (p of topProducts(); track p.label) {
+            <div class="hbar-row" [title]="p.label + ': ' + p.value">
+              <span class="hbar-label">{{ p.label }}</span>
+              <div class="hbar-track"><div class="hbar" [style.width.%]="p.w"></div></div>
+              <b class="hbar-val">{{ p.value }}</b>
+            </div>
+          } @empty {
+            <div class="empty">{{ loading() ? 'Đang tải...' : 'Chưa có dữ liệu.' }}</div>
+          }
+        </div>
+      </div>
+    </section>
+    <section class="panel table-panel">
+      <div class="panel-head"><h3><i class="fa-solid fa-clock-rotate-left"></i> Đơn hàng gần đây</h3><a routerLink="/admin/orders">Xem tất cả <i class="fa-solid fa-arrow-right"></i></a></div>
+      <div class="table-scroll"><table class="mini-table">
+        <thead><tr><th>Mã</th><th>Khách hàng</th><th>Tổng</th><th>Trạng thái</th><th>Ngày</th></tr></thead>
+        <tbody>
+          @for (o of recent(); track o._id) {
+            <tr>
+              <td>#{{ o._id?.toString().slice(-6) }}</td>
+              <td>{{ o.customerInfo?.name || o.user?.name || '—' }}</td>
+              <td><b>{{ o.total | number:'1.0-0' }}đ</b></td>
+              <td><span class="badge" [style.--c]="statusOf(o.status)?.color">{{ statusOf(o.status)?.label || o.status }}</span></td>
+              <td>{{ o.createdAt | date: 'dd/MM HH:mm' }}</td>
+            </tr>
+          } @empty {
+            <tr><td colspan="5" class="empty">{{ loading() ? 'Đang tải...' : 'Chưa có đơn hàng nào.' }}</td></tr>
+          }
+        </tbody>
+      </table></div>
+    </section>
+  </div>
+
+  <!-- Quick actions -->
+  <section class="panel quick-panel">
+    <div class="panel-head"><h3><i class="fa-solid fa-bolt"></i> Nhanh các thao tác</h3></div>
+    <div class="quick-grid">
+      <a routerLink="/admin/coupons" class="quick-tile"><span class="quick-icon"><i class="fa-solid fa-ticket"></i></span><span class="quick-label">Mã giảm giá</span><b class="quick-val">{{ counts().coupons }}</b></a>
+      <a routerLink="/admin/coupons/update" class="quick-tile quick-tile--edit"><span class="quick-icon"><i class="fa-solid fa-pencil-alt"></i></span><span class="quick-label">Chỉnh sửa mã giảm giá</span><b class="quick-val">{{ counts().coupons }}</b></a>
+      <a routerLink="/admin/users" class="quick-tile"><span class="quick-icon"><i class="fa-solid fa-user"></i></span><span class="quick-label">Tài khoản</span><b class="quick-val">{{ counts().users }}</b></a>
+      <a routerLink="/admin/contacts" class="quick-tile"><span class="quick-icon"><i class="fa-solid fa-envelope"></i></span><span class="quick-label">Liên hệ</span><b class="quick-val">{{ counts().contacts }}</b></a>
+      <a routerLink="/admin/notifications" class="quick-tile"><span class="quick-icon"><i class="fa-solid fa-bell"></i></span><span class="quick-label">Thông báo</span><b class="quick-val">{{ counts().notifications }}</b></a>
+      <a routerLink="/admin/products" class="quick-tile"><span class="quick-icon"><i class="fa-solid fa-box"></i></span><span class="quick-label">Sản phẩm</span><b class="quick-val">{{ counts().products }}</b></a>
+      <a routerLink="/admin/route-permissions" class="quick-tile quick-tile--perm"><span class="quick-icon"><i class="fa-solid fa-shield-halved"></i></span><span class="quick-label">Phân quyền</span><b class="quick-val">{{ counts().routePerms }}</b></a>
+      <a routerLink="/admin/legal/terms" class="quick-tile quick-tile--legal"><span class="quick-icon"><i class="fa-solid fa-file-text"></i></span><span class="quick-label">Điều khoản dịch vụ</span></a>
+      <a routerLink="/admin/legal/privacy" class="quick-tile quick-tile--privacy"><span class="quick-icon"><i class="fa-solid fa-shield-check"></i></span><span class="quick-label">Chính sách dữ liệu</span></a>
     </div>
   </section>
-
-  <section class="panel">
-    <div class="panel-head"><h3>Đơn hàng gần đây</h3><a routerLink="/admin/orders">Xem tất cả <i class="fa-solid fa-arrow-right ico"></i></a></div>
-    <div class="table-scroll"><table class="mini-table">
-      <thead><tr><th>Mã</th><th>Khách hàng</th><th>Tổng</th><th>Trạng thái</th><th>Ngày</th></tr></thead>
-      <tbody>
-        @for (o of recent(); track o._id) {
-          <tr>
-            <td>#{{ o._id?.toString().slice(-6) }}</td>
-            <td>{{ o.customerInfo?.name || o.user?.name || '—' }}</td>
-            <td><b>{{ o.total | number }}đ</b></td>
-            <td><span class="badge" [style.--c]="statusOf(o.status)?.color">{{ statusOf(o.status)?.label || o.status }}</span></td>
-            <td>{{ o.createdAt | date: 'dd/MM HH:mm' }}</td>
-          </tr>
-        } @empty {
-          <tr><td colspan="5" class="empty">{{ loading() ? 'Đang tải...' : 'Chưa có đơn hàng nào.' }}</td></tr>
-        }
-      </tbody>
-    </table></div>
-  </section>
-
-  <div class="mini-grid">
-    <a routerLink="/admin/coupons" class="mini"><span class="mini-label"><i class="fa-solid fa-ticket ico"></i>Mã giảm giá</span><b>{{ counts().coupons }}</b></a>
-    <a routerLink="/admin/users" class="mini"><span class="mini-label"><i class="fa-solid fa-users ico"></i>Tài khoản</span><b>{{ counts().users }}</b></a>
-    <a routerLink="/admin/contacts" class="mini"><span class="mini-label"><i class="fa-solid fa-envelope ico"></i>Liên hệ</span><b>{{ counts().contacts }}</b></a>
-    <a routerLink="/admin/notifications" class="mini"><span class="mini-label"><i class="fa-solid fa-bell ico"></i>Thông báo</span><b>{{ counts().notifications }}</b></a>
-    <a routerLink="/admin/products" class="mini"><span class="mini-label"><i class="fa-solid fa-box ico"></i>Sản phẩm</span><b>{{ counts().products }}</b></a>
-    <a routerLink="/admin/quotation-requests" class="mini"><span class="mini-label"><i class="fa-solid fa-file-invoice-dollar ico"></i>Báo giá</span><b>—</b></a>
-    <a routerLink="/admin/regions" class="mini"><span class="mini-label"><i class="fa-solid fa-map-location-dot ico"></i>Vùng miền</span><b><i class="fa-solid fa-arrow-right ico"></i></b></a>
-    <a routerLink="/admin/reviews" class="mini"><span class="mini-label"><i class="fa-solid fa-star ico"></i>Đánh giá</span><b><i class="fa-solid fa-arrow-right ico"></i></b></a>
-    <a routerLink="/admin/legal/terms" class="mini mini--action"><span class="mini-label"><i class="fa-solid fa-file-pen ico"></i>Sửa Điều khoản dịch vụ</span><b><i class="fa-solid fa-arrow-right ico"></i></b></a>
-    <a routerLink="/admin/legal/privacy" class="mini mini--action"><span class="mini-label"><i class="fa-solid fa-shield-pen ico"></i>Sửa Chính sách bảo vệ dữ liệu</span><b><i class="fa-solid fa-arrow-right ico"></i></b></a>
-  </div>
 </div>

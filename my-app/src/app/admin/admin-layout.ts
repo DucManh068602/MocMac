@@ -2,7 +2,6 @@ import { Component, inject, signal, computed } from '@angular/core';
 import { Router, NavigationEnd, RouterLink, RouterOutlet } from '@angular/router';
 import { AuthService } from '../auth.service';
 import { filter } from 'rxjs/operators';
-import { ThemeService } from '../theme.service';
 
 interface NavItem {
   label: string;
@@ -18,7 +17,6 @@ interface NavItem {
 })
 export class AdminLayoutComponent {
   auth = inject(AuthService);
-  readonly theme = inject(ThemeService);
   private router = inject(Router);
 
   readonly navItems: NavItem[] = [
@@ -39,9 +37,12 @@ export class AdminLayoutComponent {
     { label: 'Đánh giá', path: 'reviews', icon: 'fa-solid fa-star' },
     { label: 'Lịch sử hệ thống', path: 'audit', icon: 'fa-solid fa-clock-rotate-left' },
     { label: 'Thông báo', path: 'notifications', icon: 'fa-solid fa-bell' },
+    { label: 'Điều khoản dịch vụ', path: 'legal/terms', icon: 'fa-solid fa-file-contract' },
+    { label: 'Chính sách dữ liệu', path: 'legal/privacy', icon: 'fa-solid fa-shield-halved' },
   ];
 
   readonly sidebarOpen = signal(false);
+  readonly sidebarCollapsed = signal(false);
   readonly currentPath = signal('');
 
   constructor() {
@@ -56,8 +57,22 @@ export class AdminLayoutComponent {
     this.currentPath.set(parts.slice(1).join('/'));
   }
 
+  toggleCollapse(): void {
+    this.sidebarCollapsed.update(v => !v);
+  }
+
+  onNavClick(): void {
+    if (window.innerWidth <= 768) {
+      this.sidebarOpen.set(false);
+    }
+  }
+
   setActive(path: string) {
     this.router.navigate(['/admin/' + path]);
+  }
+
+  navLink(path: string): any[] {
+    return path === '/' ? ['/'] : ['/admin', ...path.split('/')];
   }
 
   logout(): void {

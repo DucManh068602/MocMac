@@ -1,30 +1,47 @@
-<div class="admin-wrapper">
-  <aside class="admin-sidebar" [class.open]="sidebarOpen()">
-    <div class="admin-sidebar-head">
-      <strong>Quản trị Mộc Mạc</strong>
+<nav class="admin-layout">
+  <aside class="sidebar" [class.open]="sidebarOpen()" [class.collapsed]="sidebarCollapsed()">
+    <div class="sidebar-head">
+      <button type="button" class="sidebar-collapse" (click)="toggleCollapse()" aria-label="Thu menu"><i class="fa-solid fa-chevron-left"></i></button>
+      <div class="brand">
+        <div class="brand-mark"><i class="fa-solid fa-leaf"></i></div>
+        <span class="brand-text">{{ sidebarCollapsed() ? '' : 'Quản trị Mộc Mạc' }}</span>
+      </div>
       <button type="button" class="sidebar-close" (click)="sidebarOpen.set(false)" aria-label="Đóng"><i class="fa-solid fa-xmark"></i></button>
     </div>
-    <nav class="admin-nav">
+    <ul class="sidebar-nav">
       @for (item of navItems; track item.path) {
-        <a
-          [routerLink]="item.path === '/' ? ['/'] : ['/admin', item.path]"
-          [class.active]="item.path !== '/' && currentPath() === item.path"
-          class="nav-item"
-        >
-          <span class="nav-icon"><i [class]="item.icon"></i></span>
-          <span class="nav-label">{{ item.label }}</span>
-        </a>
+        <li>
+          <a
+            [routerLink]="navLink(item.path)"
+            [class.active]="item.path !== '/' && currentPath() === item.path"
+            class="nav-link"
+            (click)="onNavClick()"
+          >
+            <span class="nav-icon"><i [class]="item.icon"></i></span>
+            <span class="nav-label">{{ sidebarCollapsed() ? '' : item.label }}</span>
+          </a>
+        </li>
       }
-    </nav>
-    <div class="admin-logout">
-      <button type="button" class="logout-btn" (click)="logout()"> Đăng xuất </button>
+    </ul>
+    <div class="sidebar-footer">
+      <div class="user-card">
+        <div class="user-avatar">{{ auth.user()?.name?.charAt(0) || 'A' }}</div>
+        <div class="user-info">
+          <div class="user-name">{{ sidebarCollapsed() ? '' : auth.user()?.name || 'Quản trị' }}</div>
+          <div class="user-role">{{ auth.user()?.role || '' }}</div>
+        </div>
+      </div>
+      <button type="button" class="btn-logout" (click)="logout()">
+        <i class="fa-solid fa-right-from-bracket"></i>
+        <span>{{ sidebarCollapsed() ? '' : 'Đăng xuất' }}</span>
+      </button>
     </div>
   </aside>
 
-  <div class="admin-main">
-     <header class="admin-header">
+  <div class="admin-body">
+    <header class="topbar">
       <button type="button" class="menu-toggle" (click)="sidebarOpen.set(true)" aria-label="Mở menu"><i class="fa-solid fa-bars"></i></button>
-      <h1 class="admin-title">
+      <h1 class="page-title">
         @switch (currentPath().split('/')[0] || '') {
           @case ('') { Bảng điều khiển }
           @case ('orders') { Đơn hàng }
@@ -41,23 +58,22 @@
           @case ('reviews') { Đánh giá }
           @case ('audit') { Lịch sử hệ thống }
           @case ('notifications') { Thông báo }
-          @case ('flash-sale') { Săn sale }
+          @case ('flash-sale') { Sản sale }
           @case ('quotation-requests') { Yêu cầu báo giá }
-          @case ('legal') { Sửa điều khoản & chính sách }
+          @case ('legal') { Điều khoản & chính sách }
           @default { Quản trị }
         }
       </h1>
-      <button type="button" class="admin-theme-toggle" (click)="theme.toggle()" [attr.aria-label]="theme.theme() === 'dark' ? 'Chuyển sang giao diện sáng' : 'Chuyển sang giao diện tối'"><i [class]="theme.theme() === 'dark' ? 'fa-solid fa-sun' : 'fa-solid fa-moon'" aria-hidden="true"></i></button>
-      <a routerLink="/admin" class="btn-home"><i class="fa-solid fa-gauge-high" aria-hidden="true"></i> <span class="btn-home-label">Bảng điều khiển</span></a>
-      @if (auth.user()?.role === 'admin') {
-        <span class="admin-tag">
-          <span class="admin-tag-dot"></span>
-          Quản trị viên
-        </span>
-      }
+      <div class="topbar-actions">
+        @if (auth.user()?.role === 'admin') {
+          <span class="admin-badge"><span class="dot"></span> Admin</span>
+        }
+        <a routerLink="/admin" class="btn-dashboard"><i class="fa-solid fa-gauge-high"></i> <span>Bảng điều khiển</span></a>
+      </div>
     </header>
-    <main class="admin-content">
+
+    <main class="content">
       <router-outlet />
     </main>
   </div>
-</div>
+</nav>

@@ -488,6 +488,9 @@
               >
                 <i [class]="favs().has(p.id) ? 'fa-solid fa-heart' : 'fa-regular fa-heart'" aria-hidden="true"></i>
               </button>
+              @if ((p.stock ?? 0) <= 0) {
+                <span class="tag stock-out">Hết hàng</span>
+              }
                     @if (flashSaleLive()) { <span class="product-deal-chip">-{{ flashSalePercent() }}%</span> } @else if (p.deal?.discountType === 'percent') { <span class="product-deal-chip">-{{ p.deal?.discountValue }}%</span> }
             </div>
             <div class="pbody">
@@ -509,13 +512,19 @@
               </div>
               <div class="row">
                 <span class="catalog-price">@if (flashSaleLive()) { <del>{{ fmt(p.price) }}</del><b>{{ fmt(flashSalePrice(p)) }}</b> } @else if (p.dealPrice) { <del>{{ fmt(p.price) }}</del><b>{{ fmt(p.dealPrice || p.price) }}</b> } @else { <b>{{ fmt(p.price) }}</b> }</span>
-                <button
-                  class="add"
-                  (click)="addToCart($event, p.id, p.name)"
-                  aria-label="Thêm vào giỏ"
-                >
-                  <i class="fa-solid fa-bag-shopping" aria-hidden="true"></i>
-                </button>
+                @if ((p.stock ?? 0) <= 0) {
+                  <button class="add" disabled aria-label="Hết hàng">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                  </button>
+                } @else {
+                  <button
+                    class="add"
+                    (click)="$event.stopPropagation(); cart.add(p.id, p.name)"
+                    aria-label="Thêm vào giỏ"
+                  >
+                    <i class="fa-solid fa-bag-shopping" aria-hidden="true"></i>
+                  </button>
+                }
               </div>
             </div>
           </article>

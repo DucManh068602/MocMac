@@ -33,6 +33,8 @@ export class AdminRoutePermissionsComponent {
 
   role = 'staff';
 
+  readonly selectedRole = signal<'admin' | 'staff' | 'collaborator' | 'cooperative' | 'customer'>('staff');
+
   readonly roles = [
     { value: 'admin', label: 'Quản trị viên' },
     { value: 'staff', label: 'Nhân viên' },
@@ -76,13 +78,19 @@ export class AdminRoutePermissionsComponent {
     return map;
   });
 
+  // Số quyền đã cấp của role hiện tại (mỗi tick = 1 quyền)
+  readonly grantedCount = computed(() =>
+    this.routeTemplates.filter((tpl) => this.isChecked(tpl)).length,
+  );
+
   constructor() {
-    this.load();
+    this.load(this.role);
   }
 
-  load(): void {
+  load(role?: string): void {
+    const r = role ?? this.role;
     this.loading.set(true);
-    this.http.get<{ success: boolean; permissions: RoutePerm[] }>('/api/route-permissions').subscribe({
+    this.http.get<{ success: boolean; permissions: RoutePerm[] }>('/api/route-permissions?role=' + encodeURIComponent(r)).subscribe({
       next: (res) => {
         this.perms.set(res.permissions || []);
         this.loading.set(false);
@@ -92,6 +100,14 @@ export class AdminRoutePermissionsComponent {
         this.toast.error('Không thể tải danh sách phân quyền route');
       },
     });
+  }
+
+  selectRole(role: string): void {
+    if (this.role === role) return;
+    this.role = role;
+    this.selectedRole.set(role as any);
+    this.toast.info('Bạn đang phân quyền cho ' + this.getRoleLabel(role));
+    this.load(role);
   }
 
   isChecked(tpl: RouteTemplate): boolean {

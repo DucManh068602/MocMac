@@ -191,16 +191,19 @@
 
         <!-- ---------- QUÊN MẬT KHẨU ---------- -->
         @if (forgot()) {
-          <section class="form-body">
+          <section class="form-body forgot-screen">
 
             @if (isAdminMode()) {
-              <h1 class="admin-title">
-                <span class="line-1">Đặt lại mật khẩu quản trị</span>
-                <span class="line-2">Nhập mã bí mật RESET_SECRET và mật khẩu mới.</span>
-              </h1>
-              <p class="subtitle">Chỉ dành cho tài khoản @admin.mocmac.vn.</p>
+              <div class="otp-header">
+                <div class="otp-icon">🔑</div>
+                <h1 class="admin-title">
+                  <span class="line-1">Đặt lại mật khẩu quản trị</span>
+                  <span class="line-2">Nhập mã bí mật RESET_SECRET và mật khẩu mới.</span>
+                </h1>
+                <p class="subtitle">Chỉ dành cho tài khoản @admin.mocmac.vn.</p>
+              </div>
 
-              <form [formGroup]="adminResetForm" (ngSubmit)="onAdminReset()" novalidate>
+              <form [formGroup]="adminResetForm" (ngSubmit)="onAdminReset()" novalidate class="forgot-form">
                 <label class="field-label" for="admin-reset-email">Email quản trị</label>
                 <div class="input-wrap" [class.invalid]="hasError(adminResetForm, 'email')">
                   <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor"
@@ -251,17 +254,22 @@
                   <small class="error">Mật khẩu nhập lại không khớp.</small>
                 }
 
-                <button type="submit" class="submit-btn" [disabled]="forgotLoading()">
-                  @if (forgotLoading()) { Đang xử lý... } @else { Đặt lại mật khẩu }
-                </button>
-                <button type="button" class="submit-btn" (click)="backToLogin()">← Quay lại đăng nhập</button>
+                <div class="otp-actions">
+                  <button type="submit" class="submit-btn btn-primary" [disabled]="forgotLoading()">
+                    @if (forgotLoading()) { Đang xử lý... } @else { Đặt lại mật khẩu }
+                  </button>
+                </div>
+                <button type="button" class="btn-link btn-link--back" (click)="backToLogin()">← Quay lại đăng nhập</button>
               </form>
             } @else {
-              <h1>Quên mật khẩu</h1>
-              <p class="subtitle">Nhập email đã đăng ký để nhận mã OTP.</p>
+              <div class="otp-header">
+                <div class="otp-icon">✉</div>
+                <h1>Quên mật khẩu</h1>
+                <p class="subtitle">Nhập email đã đăng ký để nhận mã OTP.</p>
+              </div>
 
               @if (!otpSent()) {
-                <form [formGroup]="forgotEmailForm" (ngSubmit)="sendOtp()" novalidate>
+                <form [formGroup]="forgotEmailForm" (ngSubmit)="sendOtp()" novalidate class="forgot-form">
                   <label class="field-label" for="forgot-email">Email đăng ký</label>
                   <div class="input-wrap" [class.invalid]="hasError(forgotEmailForm, 'email')">
                     <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor"
@@ -276,26 +284,29 @@
                     <small class="error">Email không hợp lệ.</small>
                   }
 
-                  <button type="submit" class="submit-btn" [disabled]="forgotLoading()">
-                    @if (forgotLoading()) { Gửi... } @else { Gửi mã OTP }
-                  </button>
+                  <div class="otp-actions">
+                    <button type="submit" class="submit-btn btn-primary" [disabled]="forgotLoading()">
+                      @if (forgotLoading()) { Gửi... } @else { Gửi mã OTP }
+                    </button>
+                  </div>
+                  <button type="button" class="btn-link btn-link--back" (click)="backToLogin()">← Quay lại đăng nhập</button>
                 </form>
               } @else {
-                <form [formGroup]="resetForm" (ngSubmit)="onResetPassword()" novalidate>
+                <form [formGroup]="resetForm" (ngSubmit)="onResetPassword()" novalidate class="forgot-form">
                   <label class="field-label" for="reset-email">Email</label>
-                  <div class="input-wrap">
+                  <div class="input-wrap" [class.invalid]="hasError(resetForm, 'email')">
                     <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor"
                          stroke-width="1.8" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2" /><path d="M3 7l9 6 9-6" /></svg>
                     <input id="reset-email" type="email" formControlName="email"
                            placeholder="vidu@email.com" autocomplete="email" />
                   </div>
 
-                  <label class="field-label" for="otp">Mã OTP (6 chữ số)</label>
+                  <label class="field-label" for="reset-otp">Mã OTP (6 chữ số)</label>
                   <div class="input-wrap" [class.invalid]="hasError(resetForm, 'otp')">
                     <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor"
                          stroke-width="1.8" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2" /><path d="M8 11V7a4 4 0 0 1 8 0v4" /></svg>
-                    <input id="otp" type="text" formControlName="otp"
-                           placeholder="Nhập mã OTP" inputmode="numeric" autocomplete="one-time-code" />
+                    <input id="reset-otp" type="text" formControlName="otp"
+                           placeholder="Nhập mã OTP" inputmode="numeric" autocomplete="one-time-code" maxlength="6" />
                   </div>
                   @if (hasError(resetForm, 'otp', 'required')) {
                     <small class="error">Vui lòng nhập mã OTP.</small>
@@ -304,11 +315,11 @@
                     <small class="error">Mã OTP phải là 6 chữ số.</small>
                   }
 
-                  <label class="field-label" for="new-password">Mật khẩu mới</label>
+                  <label class="field-label" for="reset-new-password">Mật khẩu mới</label>
                   <div class="input-wrap" [class.invalid]="hasError(resetForm, 'password')">
                     <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor"
                          stroke-width="1.8" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2" /><path d="M8 11V7a4 4 0 0 1 8 0v4" /></svg>
-                    <input id="new-password" type="password" formControlName="password"
+                    <input id="reset-new-password" type="password" formControlName="password"
                            placeholder="Tối thiểu 8 ký tự" autocomplete="new-password" />
                   </div>
                   @if (hasError(resetForm, 'password', 'required')) {
@@ -329,10 +340,12 @@
                     <small class="error">Mật khẩu nhập lại không khớp.</small>
                   }
 
-                  <button type="submit" class="submit-btn" [disabled]="forgotLoading()">
-                    @if (forgotLoading()) { Đặt lại... } @else { Đặt lại mật khẩu }
-                  </button>
-                  <button type="button" class="submit-btn" (click)="backToLogin()">← Quay lại đăng nhập</button>
+                  <div class="otp-actions">
+                    <button type="submit" class="submit-btn btn-primary" [disabled]="forgotLoading()">
+                      @if (forgotLoading()) { Đặt lại... } @else { Đặt lại mật khẩu }
+                    </button>
+                  </div>
+                  <button type="button" class="btn-link btn-link--back" (click)="backToLogin()">← Quay lại đăng nhập</button>
                 </form>
               }
             }
@@ -347,7 +360,7 @@
         }
 
         <!-- ---------- ĐĂNG KÝ (chỉ hiển thị cho khách hàng) ---------- -->
-        @if (!isAdminMode() && mode() === 'register') {
+        @if (!isAdminMode() && mode() === 'register' && !otpRegister()) {
         <section class="form-body">
           <h1>Tạo tài khoản Mộc Mạc</h1>
           <p class="subtitle">Gia nhập cộng đồng người gìn giữ và thưởng thức đặc sản Việt.</p>
@@ -479,6 +492,67 @@
               </small>
             }
           </form>
+        </section>
+      }
+
+      <!-- ---------- XÁC THỰC OTP (KÍCH HOẠT / GOOGLE LOGIN) ---------- -->
+      @if (!isAdminMode() && (otpRegister() || googleOtp())) {
+        <section class="form-body otp-verify-screen">
+          <div class="otp-header">
+            <div class="otp-icon">✉</div>
+            <h1>{{ googleOtp() ? 'Xác thực đăng nhập Google' : 'Kích hoạt tài khoản' }}</h1>
+            <p class="subtitle">{{ googleOtp() ? 'Chúng tôi đã gửi mã OTP 6 chữ số đến email của bạn. Vui lòng nhập mã để xác thực đăng nhập.' : 'Chúng tôi đã gửi mã OTP 6 chữ số đến email của bạn. Vui lòng nhập mã để kích hoạt.' }}</p>
+          </div>
+
+          <form [formGroup]="registerOtpForm" (ngSubmit)="onVerifyRegisterOtp()" novalidate>
+            <label class="field-label" for="otp-register-email">Email</label>
+            <div class="input-wrap" [class.invalid]="hasError(registerOtpForm, 'email')">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor"
+                   stroke-width="1.8" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2" /><path d="M3 7l9 6 9-6" /></svg>
+              <input id="otp-register-email" type="email" formControlName="email" readonly />
+            </div>
+
+            <label class="field-label" for="otp-register-code">Mã OTP (6 chữ số)</label>
+            <div class="input-wrap" [class.invalid]="hasError(registerOtpForm, 'otp')">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor"
+                   stroke-width="1.8" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2" /><path d="M8 11V7a4 4 0 0 1 8 0v4" /></svg>
+              <input id="otp-register-code" type="text" formControlName="otp"
+                     placeholder="Nhập mã OTP" inputmode="numeric" autocomplete="one-time-code" maxlength="6" />
+            </div>
+            @if (hasError(registerOtpForm, 'otp', 'required')) {
+              <small class="error">Vui lòng nhập mã OTP.</small>
+            }
+            @else if (hasError(registerOtpForm, 'otp', 'pattern')) {
+              <small class="error">Mã OTP phải là 6 chữ số.</small>
+            }
+
+            <div class="otp-actions">
+              <button type="submit" class="submit-btn btn-primary" [disabled]="otpRegisterLoading()">
+                @if (otpRegisterLoading()) { Đang xử lý... } @else { {{ googleOtp() ? 'Xác thực đăng nhập' : 'Kích hoạt tài khoản' }} }
+              </button>
+            </div>
+
+            @if (!googleOtp()) {
+              <div class="otp-footer">
+                <button type="button" class="btn-link" (click)="resendRegisterOtp()" [disabled]="resendCountdown() > 0 || otpRegisterLoading()">
+                  {{ resendCountdown() > 0 ? ('Gửi lại sau ' + resendCountdown() + 's') : 'Gửi lại mã OTP' }}
+                </button>
+                <button type="button" class="btn-link btn-link--back" (click)="otpRegister.set(false)">
+                  ← Quay lại đăng nhập
+                </button>
+              </div>
+            } @else {
+              <button type="button" class="btn-link btn-link--back" (click)="googleOtp.set(false)">
+                ← Quay lại đăng nhập
+              </button>
+            }
+          </form>
+          @if (feedback(); as result) {
+            <small [class.error]="result.type === 'error'"
+                   [class.info-box]="result.type === 'success'" role="status">
+              {{ result.message }}
+            </small>
+          }
         </section>
       }
 

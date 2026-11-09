@@ -2,7 +2,7 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { User } from '../models/User.js';
 import { logAction, getRequestInfo } from '../utils/auditLog.js';
-import { sendMail } from '../utils/mailer.js';
+import { sendMail, otpEmailTemplate } from '../utils/mailer.js';
 
 const signToken = (user) =>
   jwt.sign({ sub: String(user._id), role: user.role }, process.env.JWT_SECRET, {
@@ -52,6 +52,18 @@ export const login = async (req, res) => {
     return res.status(401).json({ message: 'Sai tài khoản hoặc mật khẩu' });
   }
 
+  if (!user.isActive) {
+    await logAction({
+      action: 'auth.login_blocked',
+      resourceType: 'Auth',
+      user,
+      ip,
+      details: { email: user.email, reason: 'not_verified' },
+      status: 'blocked',
+    });
+    return res.status(403).json({ message: 'Tài khoản chưa được kích hoạt. Vui lòng kiểm tra email và nhập mã OTP để kích hoạt.' });
+  }
+
   await logAction({
     action: 'auth.login_success',
     resourceType: 'Auth',
@@ -84,9 +96,116 @@ export const register = async (req, res) => {
     phone: phone ?? '',
     passwordHash,
     role: 'customer',
+    isActive: false,
+    isVerified: false,
   });
 
-  res.status(201).json(await authResponse(user));
+  const otp = String(Math.floor(100000 + Math.random() * 900000));
+  user.verifyOTP = otp;
+  user.verifyOTPExpires = new Date(Date.now() + 10 * 60 * 1000);
+  await user.save();
+
+  await sendMail({
+    to: user.email,
+    subject: 'Mã OTP kích hoạt tài khoản Mộc Mạc',
+    html: otpEmailTemplate({
+      title: 'Kích hoạt tài khoản Mộc Mạc',
+      subtitle: 'Chào mừng bạn đến với cộng đồng người yêu thích đặc sản & làng nghề Việt. Mã OTP kích hoạt tài khoản của bạn là:',
+      otp,
+    }),
+  });
+
+  await logAction({
+    action: 'auth.register_otp_sent',
+    resourceType: 'Auth',
+    user,
+    details: { email: user.email },
+  });
+
+  return res.status(201).json({
+    success: true,
+    message: 'Tài khoản đã được tạo. Vui lòng kiểm tra email để nhập mã OTP kích hoạt.',
+    requiresVerification: true,
+    email: user.email,
+  });
+};
+
+export const verifyRegisterOtp = async (req, res) => {
+  const { email, otp } = req.body ?? {};
+  if (!email || !otp) {
+    return res.status(400).json({ message: 'Vui lòng nhập email và mã OTP.' });
+  }
+
+  const key = String(email).toLowerCase().trim();
+  const user = await User.findOne({ email: key }).select('+passwordHash');
+  if (!user) {
+    return res.status(404).json({ message: 'Không tìm thấy tài khoản.' });
+  }
+  if (user.isVerified) {
+    return res.status(400).json({ message: 'Tài khoản đã được kích hoạt. Vui lòng đăng nhập.' });
+  }
+  if (
+    user.verifyOTP !== String(otp) ||
+    !user.verifyOTPExpires ||
+    new Date() > new Date(user.verifyOTPExpires)
+  ) {
+    return res.status(401).json({ message: 'Mã OTP không đúng hoặc đã hết hạn.' });
+  }
+
+  user.isVerified = true;
+  user.isActive = true;
+  user.verifyOTP = null;
+  user.verifyOTPExpires = null;
+  await user.save();
+
+  await logAction({
+    action: 'auth.register_otp_verified',
+    resourceType: 'Auth',
+    user,
+    details: { email: user.email },
+  });
+
+  return res.json({ success: true, message: 'Kích hoạt tài khoản thành công.', ...(await authResponse(user)) });
+};
+
+export const resendRegisterOtp = async (req, res) => {
+  const { email } = req.body ?? {};
+  if (!email) {
+    return res.status(400).json({ message: 'Vui lòng nhập email.' });
+  }
+
+  const key = String(email).toLowerCase().trim();
+  const user = await User.findOne({ email: key });
+  if (!user) {
+    return res.status(404).json({ message: 'Không tìm thấy tài khoản.' });
+  }
+  if (user.isVerified) {
+    return res.status(400).json({ message: 'Tài khoản đã được kích hoạt. Vui lòng đăng nhập.' });
+  }
+
+  const otp = String(Math.floor(100000 + Math.random() * 900000));
+  user.verifyOTP = otp;
+  user.verifyOTPExpires = new Date(Date.now() + 10 * 60 * 1000);
+  await user.save();
+
+  await sendMail({
+    to: user.email,
+    subject: 'Mã OTP kích hoạt tài khoản Mộc Mạc (mã mới)',
+    html: otpEmailTemplate({
+      title: 'Mã OTP kích hoạt mới',
+      subtitle: 'Bạn đã yêu cầu gửi lại mã OTP kích hoạt tài khoản Mộc Mạc. Mã mới của bạn là:',
+      otp,
+    }),
+  });
+
+  await logAction({
+    action: 'auth.register_otp_resent',
+    resourceType: 'Auth',
+    user,
+    details: { email: user.email },
+  });
+
+  return res.json({ success: true, message: 'Mã OTP mới đã được gửi đến email.' });
 };
 
 export const refreshSession = async (req, res) => {
@@ -121,12 +240,53 @@ export const googleLogin = async (req, res) => {
     if (!email || !profile.sub) return res.status(401).json({ message: 'Tài khoản Google thiếu thông tin cần thiết.' });
     let user = await User.findOne({ $or: [{ googleId: profile.sub }, { email }] });
     if (!user) {
-      user = await User.create({ name: profile.name || email.split('@')[0], email, googleId: profile.sub, role: 'customer' });
+      user = await User.create({
+        name: profile.name || email.split('@')[0],
+        email,
+        googleId: profile.sub,
+        role: 'customer',
+        isActive: false,
+        isVerified: false,
+      });
     } else if (!user.googleId) {
       user.googleId = profile.sub;
       await user.save();
     }
-    if (user.isActive === false) return res.status(403).json({ message: 'Tài khoản đã bị khóa.' });
+
+    // Nếu chưa xác thực, sinh OTP gửi email và yêu cầu kích hoạt trước khi vào hệ thống.
+    if (!user.isVerified || !user.isActive) {
+      const otp = String(Math.floor(100000 + Math.random() * 900000));
+      user.verifyOTP = otp;
+      user.verifyOTPExpires = new Date(Date.now() + 10 * 60 * 1000);
+      await user.save();
+
+      await sendMail({
+        to: user.email,
+        subject: 'Mã OTP xác thực đăng nhập Google Mộc Mạc',
+        html: otpEmailTemplate({
+          title: 'Xác thực đăng nhập Google',
+          subtitle: 'Bạn đang đăng nhập bằng tài khoản Google. Mã OTP xác thực của bạn là:',
+          otp,
+          actionText: 'Xác thực ngay',
+          actionUrl: `${process.env.FRONTEND_URL || 'http://localhost:4200'}/dang-nhap`,
+        }),
+      });
+
+      await logAction({
+        action: 'auth.google_otp_sent',
+        resourceType: 'Auth',
+        user,
+        details: { email: user.email },
+      });
+
+      return res.json({
+        success: true,
+        message: 'Vui lòng kiểm tra email để nhập mã OTP xác thực đăng nhập.',
+        requiresVerification: true,
+        email: user.email,
+      });
+    }
+
     return res.json(await authResponse(user));
   } catch (error) {
     console.error('Google login error:', error);
@@ -160,8 +320,11 @@ export const forgotPassword = async (req, res) => {
   await sendMail({
     to: user.email,
     subject: 'Mã OTP đặt lại mật khẩu Mộc Mạc',
-    text: `Mã OTP của bạn là: ${otp}. Mã có hiệu lực trong 10 phút.`,
-    html: `<p>Mã OTP của bạn là: <strong>${otp}</strong></p><p>Mã có hiệu lực trong 10 phút.</p>`,
+    html: otpEmailTemplate({
+      title: 'Đặt lại mật khẩu Mộc Mạc',
+      subtitle: 'Bạn đã yêu cầu đặt lại mật khẩu. Mã OTP xác thực của bạn là:',
+      otp,
+    }),
   });
 
   await logAction({

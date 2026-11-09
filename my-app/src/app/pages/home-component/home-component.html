@@ -2,7 +2,7 @@
 <section class="hero"><div class="wrap">
   <h1>Mộc Mạc</h1>
   <p class="sl">ĐẶC SẢN VIỆT – TINH HOA BẢN ĐỊA</p>
-  <p class="it">Từ bao miền đất nước, đến gần hơn với cuộc sống của bạn</p>
+  <p class="it">Mỗi sản phẩm mang một câu chuyện, một vùng đất và những con người tận tâm gìn giữ tinh hoa Việt Nam.</p>
   <a class="btn explore-btn" href="#sp">KHÁM PHÁ NGAY →</a>
   <span class="dots"><i class="on"></i><i></i><i></i><i></i></span>
 </div></section>
@@ -39,7 +39,7 @@
   <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQkUKOogc20W7raVY_eGwPvDpH3cokRAD1VNLXJ_M3D1w&s=10" alt="Giá trị bền vững">
   <figcaption>Giá trị bền vững</figcaption>
 </figure>
-    </div>
+  </div>
 </section>
 
 <section class="wrap">
@@ -104,25 +104,61 @@
           }
           <span class="heart"><i class="fa-regular fa-heart" aria-hidden="true"></i></span>
           @if (flashSaleLive()) { <span class="deal-chip">-{{ flashSalePercent() }}%</span> } @else if (p.deal?.discountType === 'percent') { <span class="deal-chip">-{{ p.deal?.discountValue }}%</span> }
+          @if ((p.stock ?? 0) <= 0) {
+            <span class="tag stock-out">Hết hàng</span>
+          }
         </div>
         <h3>{{ p.name }}</h3>
         <div class="stars">★★★★★ <small>({{ p.reviews }})</small></div>
         <small class="loc"><i class="fa-solid fa-location-dot" aria-hidden="true"></i> {{ p.province }}{{ p.region ? ' · ' + p.region : '' }}{{ p.village ? ' · ' + p.village : '' }}</small>
-        <div class="row"><div class="price-stack">@if (flashSaleLive()) { <small>{{ p.price | number }}đ</small> } @else if (p.dealPrice) { <small>{{ p.price | number }}đ</small> }<b>{{ (flashSaleLive() ? flashSalePrice(p) : (p.dealPrice || p.price)) | number }}đ</b></div><button class="add" (click)="$event.stopPropagation(); cart.add(p.id, p.name)" aria-label="Thêm vào giỏ"><i class="fa-solid fa-bag-shopping" aria-hidden="true"></i></button></div>
+        <div class="row"><div class="price-stack">@if (flashSaleLive()) { <small>{{ p.price | number }}đ</small> } @else if (p.dealPrice) { <small>{{ p.price | number }}đ</small> }<b>{{ (flashSaleLive() ? flashSalePrice(p) : (p.dealPrice || p.price)) | number }}đ</b></div>
+          <div class="buy-controls">
+            <button class="add" [disabled]="(p.stock ?? 0) <= 0" [hidden]="(p.stock ?? 0) > 0" aria-label="Hết hàng"><i class="fa-solid fa-triangle-exclamation"></i></button>
+            <button class="add" (click)="$event.stopPropagation(); cart.add(p.id, p.name)" [disabled]="(p.stock ?? 0) <= 0" [hidden]="(p.stock ?? 0) <= 0" aria-label="Thêm vào giỏ"><i class="fa-solid fa-bag-shopping" aria-hidden="true"></i></button>
+          </div>
+        </div>
       </article>
     }
   </div>
 </section>
 
+@if (hasBestsellers()) {
 <section class="wrap best-sellers" id="best-sellers">
   <div class="sh"><h2><i class="fa-solid fa-ranking-star" aria-hidden="true"></i> Hàng bán chạy <small>Được khách hàng Mộc Mạc yêu thích</small></h2><a routerLink="/san-pham">Xem tất cả →</a></div>
   <div class="grid">
     @for (p of bestSellers(); track p.id) {
-      <article class="card" [routerLink]="['/san-pham', p.slug]"><div class="img">@if (imageOf(p); as image) { <img [src]="image" [alt]="p.name" loading="lazy" (error)="onProductImageError(p.slug)" /> } @else { <span class="image-fallback"><i class="fa-solid fa-image" aria-hidden="true"></i></span> } @if (flashSaleLive()) { <span class="deal-chip">-{{ flashSalePercent() }}%</span> } @else if (p.deal?.discountType === 'percent') { <span class="deal-chip">-{{ p.deal?.discountValue }}%</span> }</div><h3>{{ p.name }}</h3><div class="stars">★★★★★ <small>({{ p.reviews }})</small></div>        <div class="row"><div class="price-stack">@if (flashSaleLive()) { <small>{{ p.price | number }}đ</small> } @else if (p.dealPrice) { <small>{{ p.price | number }}đ</small> }<b>{{ (flashSaleLive() ? flashSalePrice(p) : (p.dealPrice || p.price)) | number }}đ</b></div>
-        <button class="add" (click)="$event.stopPropagation(); cart.add(p.id, p.name)" aria-label="Thêm vào giỏ"><i class="fa-solid fa-bag-shopping" aria-hidden="true"></i></button></div></article>
+        <article class="card" [routerLink]="['/san-pham', p.slug]">
+        <div class="img">
+          @if (imageOf(p); as image) {
+            <img [src]="image" [alt]="p.name" loading="lazy" (error)="onProductImageError(p.slug)" />
+          } @else {
+            <span class="image-fallback"><i class="fa-solid fa-image" aria-hidden="true"></i></span>
+          }
+          <span class="heart"><i class="fa-regular fa-heart" aria-hidden="true"></i></span>
+          @if (flashSaleLive()) { <span class="deal-chip">-{{ flashSalePercent() }}%</span> } @else if (p.deal?.discountType === 'percent') { <span class="deal-chip">-{{ p.deal?.discountValue }}%</span> }
+          @if ((p.stock ?? 0) <= 0) {
+            <span class="tag stock-out">Hết hàng</span>
+          }
+        </div>
+        <h3>{{ p.name }}</h3>
+        <div class="stars">★★★★★ <small>({{ p.reviews }})</small></div>
+        <div class="row"><div class="price-stack">@if (flashSaleLive()) { <small>{{ p.price | number }}đ</small> } @else if (p.dealPrice) { <small>{{ p.price | number }}đ</small> }<b>{{ (flashSaleLive() ? flashSalePrice(p) : (p.dealPrice || p.price)) | number }}đ</b></div>
+          <div class="buy-controls">
+            <button class="add" [disabled]="(p.stock ?? 0) <= 0" [hidden]="(p.stock ?? 0) > 0" aria-label="Hết hàng"><i class="fa-solid fa-triangle-exclamation"></i></button>
+            <button class="add" (click)="$event.stopPropagation(); cart.add(p.id, p.name)" [disabled]="(p.stock ?? 0) <= 0" [hidden]="(p.stock ?? 0) <= 0" aria-label="Thêm vào giỏ"><i class="fa-solid fa-bag-shopping" aria-hidden="true"></i></button>
+          </div>
+        </div>
+        <div class="sold-bar">
+          <div class="sold-track">
+            <div class="sold-fill" [style.width]="soldPercent(p) + '%'"></div>
+          </div>
+          <div class="sold-label">ĐÃ BÁN CHẠY</div>
+        </div>
+      </article>
     }
   </div>
 </section>
+}
 
 <section class="wrap">
   <div class="commit">

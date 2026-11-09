@@ -64,6 +64,8 @@ function withActiveDeal(product, flashSale = null) {
 export const getAllProducts = async (req, res) => {
   const filter = {};
   if (req.query.cat) filter.cat = String(req.query.cat);
+  if (req.query.stock === 'in') filter.inStock = true;
+  if (req.query.stock === 'out') { filter.inStock = false; filter.preorder = { $ne: true }; }
   if (req.query.q) {
     const search = String(req.query.q);
     filter.$or = [
@@ -81,8 +83,18 @@ export const getAllProducts = async (req, res) => {
   const limit = Math.max(1, Math.min(100, Number(req.query.limit) || 50));
   const skip = (page - 1) * limit;
 
+  const sortMap = {
+    'sold-desc': { sold: -1 },
+    'sold-asc': { sold: 1 },
+    'price-asc': { price: 1 },
+    'price-desc': { price: -1 },
+    'newest': { id: -1 },
+    'oldest': { id: 1 },
+  };
+  const sort = sortMap[String(req.query.sort)] || { id: 1 };
+
   const [products, total, flashSale] = await Promise.all([
-    Product.find(filter).populate('deal').sort({ id: 1 }).skip(skip).limit(limit).lean(),
+    Product.find(filter).populate('deal').sort(sort).skip(skip).limit(limit).lean(),
     Product.countDocuments(filter),
     FlashSale.findOne({ key: 'storewide' }).lean(),
   ]);
@@ -138,6 +150,7 @@ export const createProduct = async (req, res) => {
   }
   body.slug = String(body.slug).trim();
   body.totalStock = body.totalStock ?? 100;
+  body.stock = body.stock ?? body.totalStock;
   body.sold = body.sold ?? 0;
 
   const qrUrl = `${ROOT_QR_URL}/san-pham/${body.slug}`;
@@ -210,6 +223,27 @@ export const deleteProduct = async (req, res) => {
 
   await Product.findByIdAndDelete(product._id);
   res.json({ message: 'Đã xóa sản phẩm' });
+};
+
+export const fixStock = async (_req, res) => {
+  try {
+    const result = await Product.updateMany(
+      {},
+      { $set: { stock: 100, totalStock: 100, inStock: true } }
+    );
+    await logAction({
+      action: 'product.fix_stock',
+      resourceType: 'Product',
+      details: { matched: result.matchedCount, modified: result.modifiedCount },
+    });
+  return res.json({
+    success: true,
+    message: `Đã cập nhật tồn kho cho ${result.modifiedCount} sản phẩm (mapped: ${result.matchedCount}).`,
+  });
+  } catch (e) {
+    console.error('Fix stock error:', e);
+    return res.status(500).json({ message: 'Không thể sửa tồn kho sản phẩm.' });
+  }
 };
 
 export const syncSold = async (_req, res) => {

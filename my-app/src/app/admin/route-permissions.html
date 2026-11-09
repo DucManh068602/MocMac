@@ -5,11 +5,12 @@
 
   <div class="form-card">
     <h3>Chọn vai trò</h3>
-    <select class="form-input" [(ngModel)]="role" style="max-width:240px">
+    <select class="form-input" style="max-width:240px" (change)="selectRole($any($event.target).value)">
       @for (r of roles; track r.value) {
-        <option [value]="r.value">{{ r.label }}</option>
+        <option [value]="r.value" [selected]="r.value === selectedRole()">{{ r.label }}</option>
       }
     </select>
+    <p class="note">Đang phân quyền cho: <strong>{{ getRoleLabel(role) }}</strong> — {{ grantedCount() }} quyền đã cấp</p>
   </div>
 
   <div class="form-card">

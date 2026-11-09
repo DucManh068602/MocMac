@@ -29,6 +29,13 @@ import { ProductsService } from '../products.service';
               <option value="Sản phẩm OCOP">Sản phẩm OCOP</option>
             </select>
           </div>
+          <div class="filter-group">
+            <select class="filter-select" [(ngModel)]="stockFilter" (change)="onStockFilterChange()" style="width: 160px">
+              <option value="">Tất cả tồn kho</option>
+              <option value="in">Còn hàng</option>
+              <option value="out">Hết hàng</option>
+            </select>
+          </div>
           <button
             type="button"
             class="filter-reset"
@@ -67,6 +74,7 @@ import { ProductsService } from '../products.service';
             <input class="form-input" placeholder="Tên sản phẩm" [(ngModel)]="form.name" (input)="genSlug()" />
             <input class="form-input" placeholder="Slug" [(ngModel)]="form.slug" />
             <input class="form-input" placeholder="Giá" type="number" [(ngModel)]="form.price" />
+            <input class="form-input" placeholder="Tồn kho (mặc định 100)" type="number" [(ngModel)]="form.stock" />
             <select class="form-input form-select-sm" [(ngModel)]="form.deal">
               <option [ngValue]="null">Không áp dụng Deal</option>
               @for (deal of deals(); track deal._id) { <option [ngValue]="deal._id">{{ deal.title }} · {{ deal.discountType === 'percent' ? '-' + deal.discountValue + '%' : '-' + deal.discountValue + 'đ' }}</option> }
@@ -130,6 +138,7 @@ import { ProductsService } from '../products.service';
               <th>Tên</th>
               <th>Ảnh</th>
               <th>Giá</th>
+              <th>Tồn kho</th>
               <th>Danh mục</th>
               <th>Thao tác</th>
             </tr>
@@ -145,6 +154,7 @@ import { ProductsService } from '../products.service';
                   }
                 </td>
                 <td>{{ p.price }}đ</td>
+                <td>{{ p.stock ?? p.totalStock ?? 0 }}</td>
                 <td>{{ p.cat }}</td>
                 <td>
                   <button type="button" class="btn-small" (click)="editProduct(p)">Sửa</button>
@@ -183,6 +193,7 @@ export class AdminProductsComponent {
   form: any = {};
   searchTerm = '';
   categoryFilter = '';
+  stockFilter = '';
 
   readonly stats = computed(() => {
     const p = this.products();
@@ -213,6 +224,12 @@ export class AdminProductsComponent {
   resetFilters(): void {
     this.searchTerm = '';
     this.categoryFilter = '';
+    this.stockFilter = '';
+    this.page.set(1);
+    this.loadProducts();
+  }
+
+  onStockFilterChange(): void {
     this.page.set(1);
     this.loadProducts();
   }
@@ -220,10 +237,11 @@ export class AdminProductsComponent {
   loadProducts(): void {
     const params = new URLSearchParams({
       page: String(this.page()),
-      limit: '50',
+      limit: '12',
     });
     if (this.searchTerm) params.set('q', this.searchTerm);
     if (this.categoryFilter) params.set('cat', this.categoryFilter);
+    if (this.stockFilter) params.set('stock', this.stockFilter);
 
     this.http.get('/api/products?' + params.toString()).subscribe((r: any) => {
       const items = Array.isArray(r) ? r : (r.products || []);
@@ -262,7 +280,7 @@ export class AdminProductsComponent {
 
   startCreate(): void {
     this.editing.set(null);
-    this.form = { name: '', slug: '', price: 0, deal: null, cat: '', region: '', province: '', village: '', images: [], description: '' };
+    this.form = { name: '', slug: '', price: 0, stock: 100, deal: null, cat: '', region: '', province: '', village: '', images: [], description: '' };
     this.previewImages.set([]);
   }
 

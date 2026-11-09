@@ -9,9 +9,6 @@
     <div>
       <a routerLink="/thong-bao">{{ 'top.notifications' | t }}</a>
       <a routerLink="/ho-tro">{{ 'top.support' | t }}</a>
-      <button type="button" class="theme-toggle" (click)="theme.toggle()" [attr.aria-label]="theme.theme() === 'dark' ? 'Chuyển sang giao diện sáng' : 'Chuyển sang giao diện tối'">
-        <i [class]="theme.theme() === 'dark' ? 'fa-solid fa-sun' : 'fa-solid fa-moon'" aria-hidden="true"></i>
-      </button>
       <button type="button" class="lang-link" (click)="i18n.toggle()">{{ i18n.lang() === 'vi' ? 'English' : 'Tiếng Việt' }}</button>
       @if (auth.isAuthenticated()) {
         <span class="user-account">

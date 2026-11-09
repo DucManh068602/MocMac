@@ -57,6 +57,10 @@ const products = raw.map((product) => ({
     : product.occasion
       ? [product.occasion]
       : [],
+  stock: 100,
+  totalStock: 100,
+  inStock: true,
+  sold: 0,
 }));
 
 // Make slugs unique: append product id when collisions occur

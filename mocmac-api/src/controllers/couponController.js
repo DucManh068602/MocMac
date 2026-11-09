@@ -1,5 +1,13 @@
 import { Coupon } from '../models/Coupon.js';
 import { logAction, getRequestInfo } from '../utils/auditLog.js';
+
+const computeStatus = (c) => {
+  if (!c.active) return 'vô hiệu';
+  if (new Date(c.expiryDate) < new Date()) return 'hết hạn';
+  if (c.usageLimit > 0 && c.usedCount >= c.usageLimit) return 'hết lượt sử dụng';
+  return 'hoạt động';
+};
+
 export const getAllCoupons = async (req, res) => {
   try {
     const page = Math.max(1, Number(req.query.page) || 1);
@@ -26,13 +34,15 @@ export const getAllCoupons = async (req, res) => {
       Coupon.countDocuments(filter),
     ]);
 
+    const couponsWithStatus = coupons.map((c) => ({ ...c, status: computeStatus(c) }));
+
     return res.json({
       success: true,
       total,
       page,
       limit,
       totalPages: Math.ceil(total / limit),
-      coupons,
+      coupons: couponsWithStatus,
     });
   } catch (error) {
     console.error('❌ Lỗi lấy danh sách mã giảm giá:', error);
@@ -56,7 +66,7 @@ export const getCouponByCode = async (req, res) => {
     if (coupon.usageLimit > 0 && coupon.usedCount >= coupon.usageLimit) {
       return res.status(400).json({ success: false, message: 'Mã giảm giá đã hết lượt sử dụng.' });
     }
-    return res.json({ success: true, coupon });
+    return res.json({ success: true, coupon: { ...coupon, status: computeStatus(coupon) } });
   } catch (error) {
     console.error('❌ Lỗi tìm kiếm mã giảm giá:', error);
     return res.status(500).json({ success: false, message: 'Không thể tìm kiếm.', error: error.message });
@@ -103,6 +113,7 @@ export const validateCoupon = async (req, res) => {
       success: true,
       message: 'Mã giảm giá hợp lệ.',
       code: coupon.code,
+      status: computeStatus(coupon),
       discountType: coupon.discountType,
       discountValue: coupon.discountValue,
       discountAmount,
@@ -150,7 +161,7 @@ export const createCoupon = async (req, res) => {
       details: { code: coupon.code, discountType, discountValue, expiryDate },
     });
 
-    return res.status(201).json({ success: true, message: 'Tạo mã giảm giá thành công.', coupon });
+    return res.status(201).json({ success: true, message: 'Tạo mã giảm giá thành công.', coupon: { ...coupon.toObject(), status: coupon.getStatus() } });
   } catch (error) {
     console.error('❌ Lỗi tạo mã giảm giá:', error);
     return res.status(500).json({ success: false, message: 'Không thể tạo mã.', error: error.message });
@@ -179,7 +190,7 @@ export const updateCoupon = async (req, res) => {
       details: { code: updated.code },
     });
 
-    return res.json({ success: true, message: 'Cập nhật mã giảm giá thành công.', coupon: updated });
+    return res.json({ success: true, message: 'Cập nhật mã giảm giá thành công.', coupon: { ...updated.toObject(), status: updated.getStatus() } });
   } catch (error) {
     console.error('❌ Lỗi cập nhật mã giảm giá:', error);
     return res.status(500).json({ success: false, message: 'Không thể cập nhật.', error: error.message });

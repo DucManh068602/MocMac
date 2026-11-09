@@ -554,3 +554,134 @@ $error: #b3401f;
   .form-panel { padding-inline: 16px; }
   .grid-2 { grid-template-columns: 1fr; }
 }
+
+/* ===== OTP KÍCH HOẠT TÀI KHOẢN ===== */
+
+.otp-verify-screen {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding-top: 10px;
+}
+
+.otp-header {
+  text-align: center;
+  margin-bottom: 26px;
+}
+
+.otp-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #eef3ee 0%, #e3eadf 100%);
+  color: #1d4a2e;
+  font-size: 28px;
+  display: grid;
+  place-items: center;
+  margin: 0 auto 14px;
+  box-shadow: 0 4px 12px rgba(29, 74, 46, .10);
+}
+
+.otp-verify-screen h1 {
+  margin: 0 0 8px;
+  font: 700 24px 'Be Vietnam Pro', system-ui, sans-serif;
+  color: $text;
+  text-align: center;
+}
+
+.otp-verify-screen .subtitle {
+  margin: 0;
+  font-size: 13px;
+  color: $muted;
+  text-align: center;
+  line-height: 1.6;
+}
+
+.otp-verify-screen form {
+  margin-top: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.otp-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 6px;
+}
+
+.otp-actions .submit-btn.btn-primary {
+  background: linear-gradient(135deg, #1d4a2e 0%, #16392a 100%);
+}
+
+.otp-actions .submit-btn.btn-primary:hover:not(:disabled) {
+  background: linear-gradient(135deg, #16392a 0%, #1d4a2e 100%);
+}
+
+.otp-footer {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.btn-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border: 0;
+  background: transparent;
+  color: #2e6b45;
+  font: 500 12px 'Be Vietnam Pro', sans-serif;
+  cursor: pointer;
+  padding: 8px 0;
+  text-decoration: none;
+  transition: color .2s ease;
+}
+
+.btn-link:hover:not(:disabled) { color: #1d4a2e; }
+.btn-link:disabled { opacity: .55; cursor: not-allowed; }
+
+.btn-link--back { color: #7a847c; }
+.btn-link--back:hover:not(:disabled) { color: #3d4a41; }
+
+@media (max-width: 480px) {
+  .otp-header { margin-bottom: 20px; }
+  .otp-icon { width: 48px; height: 48px; font-size: 24px; }
+  .otp-verify-screen h1 { font-size: 21px; }
+}
+
+/* ===== FORM QUÊN MẬT KHẨU (OTP) ===== */
+
+.forgot-screen {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding-top: 10px;
+}
+
+.forgot-form {
+  margin-top: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.otp-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 6px;
+}
+
+.forgot-screen .submit-btn.btn-primary {
+  background: linear-gradient(135deg, #1d4a2e 0%, #16392a 100%);
+}
+
+.forgot-screen .submit-btn.btn-primary:hover:not(:disabled) {
+  background: linear-gradient(135deg, #16392a 0%, #1d4a2e 100%);
+}
+
+

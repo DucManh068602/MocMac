@@ -35,13 +35,13 @@ interface SavedAddress {
 const FREE_SHIPPING_THRESHOLD = 500000;
 const SHIPPING_FEE = 30000;
 
-function toCartDisplayItem(product: ProductItem, quantity: number): CartDisplayItem {
+function toCartDisplayItem(product: ProductItem, quantity: number, salePrice?: number): CartDisplayItem {
   return {
     id: product.id,
     name: product.name,
     origin: [product.village, product.province, product.region].filter(Boolean).join(' · '),
     description: [product.type, product.cat].filter(Boolean).join(' · '),
-    price: product.price,
+    price: salePrice ?? product.price,
     quantity,
     imageUrl: product.images?.find(Boolean) ?? null,
     badge: product.badges[0] ?? (product.ocop ? `OCOP ${product.ocop} sao` : product.cat),
@@ -63,6 +63,10 @@ export class GiohangComponent {
   private readonly paymentService = inject(PaymentService);
   private readonly route = inject(ActivatedRoute);
   private readonly http = inject(HttpClient);
+
+  readonly flashSale = signal<any>(null);
+  readonly flashSaleLive = computed(() => Boolean(this.flashSale()?.live));
+  readonly flashSalePercent = computed(() => Number(this.flashSale()?.discountPercent || 0));
 
   readonly loginRequiredPopup = signal(false);
   readonly paymentStatus = signal<'success'|'fail'|'error'|null>(null);
@@ -105,6 +109,15 @@ export class GiohangComponent {
       if (this.auth.isAuthenticated()) {
         this.loadAddresses();
       }
+    });
+
+    this.fetchFlashSale();
+  }
+
+  private fetchFlashSale(): void {
+    this.http.get<any>('/api/flash-sale').subscribe({
+      next: r => this.flashSale.set(r.sale),
+      error: () => this.flashSale.set(null),
     });
   }
 
@@ -157,7 +170,11 @@ export class GiohangComponent {
     const productsById = new Map(this.catalog.products().map(product => [product.id, product]));
     return this.cart.lines().flatMap(line => {
       const product = productsById.get(line.productId);
-      return product ? [toCartDisplayItem(product, line.quantity)] : [];
+      if (!product) return [];
+      const price = this.flashSaleLive()
+        ? Math.max(0, Math.round(product.price * (100 - this.flashSalePercent()) / 100))
+        : product.price;
+      return [toCartDisplayItem(product, line.quantity, price)];
     });
   });
 

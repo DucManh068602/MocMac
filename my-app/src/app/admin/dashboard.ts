@@ -43,10 +43,11 @@ export class AdminDashboardComponent {
   readonly payMethods = PAY_METHODS;
   readonly orders = signal<any[]>([]);
   readonly ordersTotal = signal(0);
-  readonly counts = signal({ products: 0, coupons: 0, contacts: 0, users: 0, notifications: 0 });
+  readonly counts = signal({ products: 0, coupons: 0, contacts: 0, users: 0, notifications: 0, routePerms: 0 });
   readonly loading = signal(true);
   readonly failed = signal(false);
   readonly flashSale = signal<any>(null);
+  readonly routePermCount = signal(0);
   saleForm: any = { active: false, discountPercent: 10, startsAt: '', endsAt: '' };
 
   readonly greeting = computed(() => {
@@ -182,6 +183,7 @@ export class AdminDashboardComponent {
       users: get('/api/users'),
       notifications: get('/api/notifications'),
       flashSale: get('/api/flash-sale'),
+      routePerms: get('/api/route-permissions'),
     }).subscribe((r) => {
       const orders = pick(r.orders, 'orders');
       this.orders.set(orders);
@@ -192,7 +194,9 @@ export class AdminDashboardComponent {
         contacts: pick(r.contacts, 'contacts').length,
         users: pick(r.users, 'users').length,
         notifications: pick(r.notifications, 'notifications').length,
+        routePerms: pick(r.routePerms, 'permissions').length,
       });
+      this.routePermCount.set(pick(r.routePerms, 'permissions').length);
       this.flashSale.set(r.flashSale?.sale || null);
       const sale = r.flashSale?.sale;
       if (sale) this.saleForm = { active: Boolean(sale.active), discountPercent: sale.discountPercent || 10, startsAt: this.toInputDate(sale.startsAt), endsAt: this.toInputDate(sale.endsAt) };

@@ -98,8 +98,8 @@ import { ToastService } from './toast.service';
                 <td>{{ c.usedCount || 0 }}/{{ c.usageLimit }}</td>
                 <td>{{ c.expiryDate | date:'shortDate' }}</td>
                 <td>
-                  <span class="status-badge" [ngClass]="c.active ? 'status-visible' : 'status-hidden'">
-                    {{ c.active ? 'Hoạt động' : 'Vô hiệu' }}
+                  <span class="status-badge" [ngClass]="statusClass(c.status)">
+                    {{ statusLabel(c.status) }}
                   </span>
                 </td>
                 <td>
@@ -142,6 +142,26 @@ export class AdminCouponsComponent {
       used: c.reduce((s: number, x: any) => s + (x.usedCount || 0), 0),
     };
   });
+
+  statusLabel(s: string): string {
+    switch (s) {
+      case 'hoạt động': return 'Hoạt động';
+      case 'hết hạn': return 'Hết hạn';
+      case 'hết lượt sử dụng': return 'Hết lượt';
+      case 'vô hiệu': return 'Vô hiệu';
+      default: return 'Hoạt động';
+    }
+  }
+
+  statusClass(s: string): string {
+    switch (s) {
+      case 'hoạt động': return 'status-visible';
+      case 'hết hạn': return 'status-expired';
+      case 'hết lượt sử dụng': return 'status-out';
+      case 'vô hiệu': return 'status-hidden';
+      default: return 'status-visible';
+    }
+  }
 
   constructor() {
     this.loadCoupons();

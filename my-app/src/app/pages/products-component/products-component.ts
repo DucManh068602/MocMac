@@ -18,6 +18,7 @@ import { HttpClient } from '@angular/common/http';
 import { CartService } from '../../cart.service';
 import { ReviewsService, ProductReviewItem } from '../../reviews-service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { ToastService } from '../../admin/toast.service';
 import {
   ArrayKey,
   Filters,
@@ -68,10 +69,14 @@ export class ProductsComponent implements OnDestroy, AfterViewInit {
   cart = inject(CartService);
   private readonly reviewsService = inject(ReviewsService);
   private readonly http = inject(HttpClient);
+  private readonly toast = inject(ToastService);
 
   readonly flashSale = signal<any>(null);
+  private previousFlashSaleLive = false;
   readonly now = signal(Date.now());
   private readonly countdownTimer = window.setInterval(() => this.now.set(Date.now()), 1000);
+  private flashSaleTimer?: ReturnType<typeof setInterval>;
+  private handleVisibility = () => this.onVisibilityChange();
   readonly flashSaleLive = computed(() => Boolean(this.flashSale()?.live));
   readonly flashSalePercent = computed(() => Number(this.flashSale()?.discountPercent || 0));
 
@@ -241,7 +246,7 @@ export class ProductsComponent implements OnDestroy, AfterViewInit {
 
   bestSellers = computed(() =>
     [...this.displayProducts()]
-      .sort((a: ProductItem, b: ProductItem) => b.reviews - a.reviews || b.rate - a.rate)
+      .sort((a: ProductItem, b: ProductItem) => (b.sold || 0) - (a.sold || 0) || b.reviews - a.reviews)
       .slice(0, 4),
   );
 
@@ -310,8 +315,33 @@ export class ProductsComponent implements OnDestroy, AfterViewInit {
       }
     });
 
+    this.fetchFlashSale();
+    this.flashSaleTimer = window.setInterval(() => this.fetchFlashSale(), 5000);
+    window.addEventListener('visibilitychange', this.handleVisibility);
+    window.addEventListener('focus', this.handleVisibility);
+  }
+
+  private onVisibilityChange(): void {
+    if (!document.hidden) {
+      this.fetchFlashSale();
+    }
+  }
+
+  private fetchFlashSale(): void {
     this.http.get<any>('/api/flash-sale').subscribe({
-      next: r => this.flashSale.set(r.sale || null),
+      next: (r) => {
+        const sale = r.sale;
+        const isLive = Boolean(sale?.live);
+        const wasLive = sessionStorage.getItem('flashSaleWasLive') === 'true';
+
+        if (wasLive && !isLive) {
+          this.toast.error('Săn sale đã kết thúc. Giá sản phẩm đã quay lại bình thường.');
+        }
+
+        sessionStorage.setItem('flashSaleWasLive', String(isLive));
+        this.previousFlashSaleLive = isLive;
+        this.flashSale.set(sale || null);
+      },
       error: () => this.flashSale.set(null),
     });
   }
@@ -320,6 +350,9 @@ export class ProductsComponent implements OnDestroy, AfterViewInit {
     if (this.relatedTimer) clearInterval(this.relatedTimer);
     if (this.discoveryTimer) clearInterval(this.discoveryTimer);
     if (this.countdownTimer) window.clearInterval(this.countdownTimer);
+    if (this.flashSaleTimer) window.clearInterval(this.flashSaleTimer);
+    window.removeEventListener('visibilitychange', this.handleVisibility);
+    window.removeEventListener('focus', this.handleVisibility);
   }
 
   private loadReviewStats(products: ProductItem[]): void {
@@ -444,6 +477,7 @@ export class ProductsComponent implements OnDestroy, AfterViewInit {
   statusOpts = computed(() =>
     this.opts('status', [
       ['in', 'Còn hàng'],
+      ['out', 'Hết hàng'],
       ['pre', 'Pre-order'],
     ]),
   );
@@ -735,6 +769,12 @@ export class ProductsComponent implements OnDestroy, AfterViewInit {
   addToCart(e: Event, productId: number, productName: string): void {
     e.stopPropagation();
     this.cart.add(productId, productName);
+  }
+
+  addToCartQty(e: Event, productId: number, productName: string, qty: string | number): void {
+    e.stopPropagation();
+    const q = Math.max(1, Number(qty || 1));
+    this.cart.add(productId, productName, q);
   }
 
   get page() {

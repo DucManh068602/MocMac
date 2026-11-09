@@ -49,10 +49,15 @@ export class DangnhapComponent {
   readonly forgot = signal(false);
   readonly otpSent = signal(false);
   readonly forgotLoading = signal(false);
+  readonly googleOtp = signal(false);
+  readonly otpRegister = signal(false);
+  readonly otpRegisterLoading = signal(false);
+  readonly resendCountdown = signal(0);
+  private resendTimer?: ReturnType<typeof setInterval>;
 
   readonly isAdminMode = signal(false);
 
-  readonly loginForm = this.fb.group({
+  readonly loginForm = this.fb.nonNullable.group({
     identifier: ['', Validators.required],
     password: ['', [Validators.required, Validators.minLength(8)]],
     remember: [false],
@@ -69,6 +74,11 @@ export class DangnhapComponent {
     },
     { validators: passwordsMatchValidator }
   );
+
+  readonly registerOtpForm = this.fb.nonNullable.group({
+    email: ['', [Validators.required, Validators.email]],
+    otp: ['', [Validators.required, Validators.pattern(/^[0-9]{6}$/)]],
+  });
 
   readonly forgotEmailForm = this.fb.group({
     email: ['', [Validators.required, Validators.email]],
@@ -103,6 +113,8 @@ export class DangnhapComponent {
 
   switchMode(mode: AuthMode): void {
     this.mode.set(mode);
+    this.otpRegister.set(false);
+    this.googleOtp.set(false);
     this.feedback.set(null);
     this.submitted.set(false);
   }
@@ -261,9 +273,15 @@ export class DangnhapComponent {
           this.router.navigate(['']);
         }
       },
-      error: () => {
+      error: (error: any) => {
         this.loading.set(false);
-        this.toast.error(this.t('Sai tài khoản hoặc mật khẩu', 'Incorrect account or password'));
+        if (error?.status === 403) {
+          this.otpRegister.set(true);
+          this.registerOtpForm.patchValue({ email: (this.loginForm.get('identifier')?.value ?? '').toString() });
+          this.feedback.set({ type: 'error', message: this.t('Tài khoản chưa được kích hoạt. Vui lòng nhập mã OTP gửi đến email để kích hoạt.', 'Account not activated. Please enter the OTP sent to your email to activate.') });
+        } else {
+          this.toast.error(this.t('Sai tài khoản hoặc mật khẩu', 'Incorrect account or password'));
+        }
         this.feedback.set(null);
       },
     });
@@ -279,9 +297,11 @@ export class DangnhapComponent {
     const { fullName, email, phone, password } = this.registerForm.getRawValue();
     this.auth.register({ name: fullName, email, phone, password }).subscribe({
       next: (response: any) => {
-        this.auth.saveSession(response, false);
-        this.feedback.set({ type: 'success', message: this.t('Tạo tài khoản thành công.', 'Account created successfully.') });
         this.loading.set(false);
+        this.mode.set('register');
+        this.otpRegister.set(true);
+        this.registerOtpForm.patchValue({ email });
+        this.feedback.set({ type: 'success', message: this.t('Tạo tài khoản thành công. Vui lòng nhập mã OTP gửi đến email để kích hoạt.', 'Account created. Please enter the OTP sent to your email to activate.') });
       },
       error: (error: unknown) => {
         this.loading.set(false);
@@ -293,6 +313,63 @@ export class DangnhapComponent {
         this.feedback.set(null);
       },
     });
+  }
+
+  onVerifyRegisterOtp(): void {
+    if (this.registerOtpForm.invalid) {
+      this.registerOtpForm.markAllAsTouched();
+      return;
+    }
+    this.otpRegisterLoading.set(true);
+    const { email, otp } = this.registerOtpForm.getRawValue();
+    this.auth.verifyRegisterOtp({ email: email ?? '', otp: otp ?? '' }).subscribe({
+      next: (response: any) => {
+        this.otpRegisterLoading.set(false);
+        this.auth.saveSession(response, false);
+        this.otpRegister.set(false);
+        this.googleOtp.set(false);
+        this.feedback.set({ type: 'success', message: this.t('Xác thực thành công. Chào mừng bạn đến với Mộc Mạc!', 'Verification successful. Welcome to Mộc Mạc!') });
+        setTimeout(() => this.router.navigate(['']), 1500);
+      },
+      error: (error: unknown) => {
+        this.otpRegisterLoading.set(false);
+        if (error instanceof HttpErrorResponse) {
+          this.toast.error(error.error?.message || this.t('Xác thực thất bại. Vui lòng kiểm tra mã OTP.', 'Verification failed. Please check the OTP code.'));
+        } else {
+          this.toast.error(this.t('Xác thực thất bại. Vui lòng kiểm tra mã OTP.', 'Verification failed. Please check the OTP code.'));
+        }
+      },
+    });
+  }
+
+  resendRegisterOtp(): void {
+    const email = this.registerOtpForm.get('email')?.value ?? '';
+    if (!email || this.resendCountdown() > 0) return;
+    this.auth.resendRegisterOtp(email).subscribe({
+      next: (r: any) => {
+        if (r?.success) {
+          this.toast.success(this.t('Đã gửi mã OTP mới đến email của bạn.', 'A new OTP code has been sent to your email.'));
+          this.startResendCountdown();
+        }
+      },
+      error: () => {
+        this.toast.error(this.t('Gửi mã OTP mới thất bại.', 'Failed to resend OTP.'));
+      },
+    });
+  }
+
+  private startResendCountdown(): void {
+    this.resendCountdown.set(60);
+    if (this.resendTimer) window.clearInterval(this.resendTimer);
+    this.resendTimer = window.setInterval(() => {
+      const next = this.resendCountdown() - 1;
+      if (next <= 0) {
+        this.resendCountdown.set(0);
+        window.clearInterval(this.resendTimer);
+      } else {
+        this.resendCountdown.set(next);
+      }
+    }, 1000);
   }
 
   private showRequestError(error: unknown): void {
@@ -331,8 +408,22 @@ export class DangnhapComponent {
   private completeGoogleLogin(credential: string): void {
     this.loading.set(true);
     this.http.post('/api/auth/google', { credential }).subscribe({
-      next: (response: any) => { this.auth.saveSession(response, false); this.loading.set(false); this.router.navigate(['/']); },
+      next: (response: any) => {
+        this.loading.set(false);
+        if (response?.requiresVerification) {
+          this.googleOtp.set(true);
+          this.registerOtpForm.patchValue({ email: response.email });
+          this.feedback.set({ type: 'success', message: this.t('Vui lòng nhập mã OTP gửi đến email để xác thực đăng nhập Google.', 'Please enter the OTP sent to your email to verify Google login.') });
+        } else {
+          this.auth.saveSession(response, false);
+          this.router.navigate(['/']);
+        }
+      },
       error: (error: HttpErrorResponse) => { this.loading.set(false); this.toast.error(error.error?.message || 'Đăng nhập Google thất bại.'); },
     });
+  }
+
+  ngOnDestroy(): void {
+    if (this.resendTimer) window.clearInterval(this.resendTimer);
   }
 }

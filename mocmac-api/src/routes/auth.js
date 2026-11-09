@@ -2,6 +2,8 @@ import { Router } from 'express';
 import {
   login,
   register,
+  verifyRegisterOtp,
+  resendRegisterOtp,
   forgotPassword,
   resetPassword,
   adminResetPassword,
@@ -17,6 +19,8 @@ router.get('/google/config', googleConfig);
 router.post('/google', googleLogin);
 router.post('/refresh', refreshSession);
 router.post('/register', register);
+router.post('/verify-register', verifyRegisterOtp);
+router.post('/resend-register-otp', resendRegisterOtp);
 router.post('/forgot-password', forgotPassword);
 router.post('/reset-password', resetPassword);
 router.post('/admin/reset', adminResetPassword);

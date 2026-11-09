@@ -53,12 +53,16 @@ select{width:100%;border:1px solid var(--line);border-radius:8px;padding:7px 8px
 .fav.on{color:#d33}
 .product-deal-chip{position:absolute;bottom:8px;left:8px;background:#c0392b;color:#fff;font-size:11px;font-weight:900;padding:3px 7px;border-radius:6px;z-index:3;box-shadow:0 2px 6px rgba(0,0,0,.18);letter-spacing:-.5px}
 .pbody{padding:8px 2px 2px;display:flex;flex-direction:column;flex:1}
-.pbody h3{font:600 14px 'Be Vietnam Pro';margin:0 0 3px;line-height:1.35}
+.pbody h3{font:600 14px 'Be Vietnam Pro';margin:0 0 3px;line-height:1.35;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden}
 .loc{color:var(--ink2);font-size:12px}.rt{font-size:12px;margin-top:2px}.rt small{color:var(--ink2)}
 .row{display:flex;justify-content:space-between;align-items:center;margin-top:auto;padding-top:8px}
 .row b{color:var(--earth);font-size:15px}
 .catalog-price{display:flex;flex-direction:column;gap:1px}.catalog-price del{color:var(--ink2);font-size:11px;line-height:1.2}.product-deal-chip{position:absolute;right:0;bottom:0;z-index:2;background:#c0392b;color:#fff;padding:4px 8px;border-radius:6px 0 0 0;font-size:11px;font-weight:900;letter-spacing:.01em}
-.add{background:var(--earth);border:0;border-radius:8px;width:34px;height:30px;cursor:pointer;color:#fff}.add:hover{background:var(--moss)}
+.tag.stock-out{background:#c0392b;color:#fff;font-size:10px;font-weight:700;border-radius:4px;padding:1px 6px}
+.tag.bestseller{background:#2f4538;color:#fff;font-size:10px;font-weight:700;border-radius:4px;padding:1px 6px}
+.qty-input{width:45px;height:30px;border:1px solid var(--line);border-radius:6px;text-align:center;font-size:13px;color:var(--ink)}
+.add{background:var(--earth);border:0;border-radius:8px;width:34px;height:30px;cursor:pointer;color:#fff}
+.add:hover{background:var(--moss)}
 .plist.list{grid-template-columns:1fr}
 .plist.list .pcard{flex-direction:row;gap:12px}.plist.list .pimg{width:170px;height:auto;min-height:120px;flex-shrink:0}
 .empty{grid-column:1/-1;text-align:center;padding:50px 0;color:var(--ink2)}

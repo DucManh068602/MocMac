@@ -16,4 +16,11 @@ const couponSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+couponSchema.methods.getStatus = function () {
+  if (!this.active) return 'vô hiệu';
+  if (new Date(this.expiryDate) < new Date()) return 'hết hạn';
+  if (this.usageLimit > 0 && this.usedCount >= this.usageLimit) return 'hết lượt sử dụng';
+  return 'hoạt động';
+};
+
 export const Coupon = mongoose.model('Coupon', couponSchema);

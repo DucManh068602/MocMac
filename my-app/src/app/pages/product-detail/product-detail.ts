@@ -348,7 +348,9 @@ export class ProductDetailComponent {
   }
 
   increaseQuantity(): void {
-    this.quantity.update((value) => Math.min(99, value + 1));
+    const product = this.product();
+    const maxStock = product ? Math.max(1, product.stock ?? 99) : 99;
+    this.quantity.update((value) => Math.min(maxStock, value + 1));
   }
 
   addToCart(): void {

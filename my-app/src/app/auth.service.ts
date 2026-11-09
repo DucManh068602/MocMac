@@ -38,6 +38,14 @@ export class AuthService {
     return this.http.post<AuthResponse>('/api/auth/register', payload);
   }
 
+  verifyRegisterOtp(payload: { email: string; otp: string }): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>('/api/auth/verify-register', payload);
+  }
+
+  resendRegisterOtp(email: string): Observable<{ success: boolean; message: string }> {
+    return this.http.post<{ success: boolean; message: string }>('/api/auth/resend-register-otp', { email });
+  }
+
   forgotPassword(email: string): Observable<{ success: boolean; message: string }> {
     return this.http.post<{ success: boolean; message: string }>('/api/auth/forgot-password', { email });
   }
