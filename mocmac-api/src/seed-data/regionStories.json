@@ -1,0 +1,47 @@
+[
+  {
+    "title": "Tây Nguyên – Hương cà phê giữa đại ngàn",
+    "content": "Tây Nguyên được xem là thủ phủ cà phê của Việt Nam với những nương rẫy trải dài trên nền đất bazan màu mỡ. Từ Buôn Ma Thuột đến Đà Lạt, từng hạt cà phê được chăm sóc qua nhiều mùa nắng gió, rang xay giữ trọn hương thơm nồng nàn. Khi chọn một gói cà phê Tây Nguyên làm quà, bạn đang gửi trao dư vị của đại ngàn, sự chân chất và câu chuyện về những người nông dân miệt mài gìn giữ nghề.",
+    "excerpt": "Đất bazan đỏ và khí hậu cao nguyên tạo nên hạt cà phê đậm vị, mang theo nhịp sống mộc mạc của buôn làng.",
+    "imageUrl": "https://images.unsplash.com/photo-1447933601403-0c6688de566e?auto=format&fit=crop&w=1200&q=80",
+    "order": 10,
+    "region": "Tây Nguyên",
+    "status": "published"
+  },
+  {
+    "title": "Đồng bằng sông Hồng – Nơi làng nghề dệt nên ký ức",
+    "content": "Đồng bằng sông Hồng là cái nôi của nhiều làng nghề lâu đời. Nghệ nhân nơi đây biến đất sét thành gốm men tinh tế, biến sợi tơ thành tấm lụa mềm mại, biến mây tre thành sản phẩm hữu dụng. Mỗi món quà thủ công từ vùng này không chỉ đẹp ở hình thức mà còn chứa đựng kỹ thuật truyền dạy qua nhiều thế hệ — một cách gửi tặng bản sắc Việt thật gần gũi.",
+    "excerpt": "Từ lò gốm Bát Tràng đến khung cửi Vạn Phúc, vùng đất này lưu giữ tinh hoa thủ công truyền thống.",
+    "imageUrl": "https://images.unsplash.com/photo-1565193566173-7a0ee3dbe261?auto=format&fit=crop&w=1200&q=80",
+    "order": 9,
+    "region": "Đồng bằng sông Hồng",
+    "status": "published"
+  },
+  {
+    "title": "Tây Bắc – Vị trà cổ thụ và sắc thổ cẩm",
+    "content": "Tây Bắc gây thương nhớ bởi những cây chè cổ thụ mọc giữa mây ngàn Hà Giang, Sơn La. Búp trà được hái thủ công, giữ vị chát dịu và hậu ngọt sâu. Song hành cùng trà là nghề dệt thổ cẩm với hoa văn mang ý nghĩa văn hóa của từng cộng đồng. Một set quà kết hợp trà và sản phẩm thủ công Tây Bắc là lời chúc bình an, đậm đà bản địa.",
+    "excerpt": "Sương sớm trên núi cao ươm búp trà Shan Tuyết, trong khi bàn tay người thợ dệt nên hoa văn thổ cẩm độc bản.",
+    "imageUrl": "https://images.unsplash.com/photo-1576092768241-dec231879fc3?auto=format&fit=crop&w=1200&q=80",
+    "order": 8,
+    "region": "Tây Bắc",
+    "status": "published"
+  },
+  {
+    "title": "Duyên hải Nam Trung Bộ – Quà từ nắng, gió và biển",
+    "content": "Duyên hải Nam Trung Bộ nổi bật với sản vật từ biển và nghề chế biến truyền thống. Từ những mẻ cá, mẻ mắm được ủ kỹ đến các sản phẩm thủ công ven biển, mỗi món quà mang theo vị mặn mòi của gió biển và sự cần mẫn của người dân. Đây là lựa chọn phù hợp cho những ai muốn gửi tặng hương vị chân thật, mạnh mẽ của miền Trung.",
+    "excerpt": "Vùng biển đầy nắng gió đóng góp những đặc sản đậm đà, gói trọn tinh thần hiếu khách của miền Trung.",
+    "imageUrl": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80",
+    "order": 7,
+    "region": "Duyên hải Nam Trung Bộ",
+    "status": "published"
+  },
+  {
+    "title": "Tây Nam Bộ – Miệt vườn trù phú, quà ngọt hậu",
+    "content": "Tây Nam Bộ hiền hòa với kênh rạch chằng chịt, vườn cây trái sum suê. Đặc sản miền sông nước thường mang vị ngọt thanh, thơm tự nhiên và tinh thần phóng khoáng của con người Nam Bộ. Gói quà từ vùng đất này phù hợp cho dịp thăm hỏi, biếu tặng — giản dị nhưng đầy tình.",
+    "excerpt": "Sông nước và vườn trái cây bốn mùa tạo nên những món quà dân dã, tròn vị mà gần gũi.",
+    "imageUrl": "https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=1200&q=80",
+    "order": 6,
+    "region": "Tây Nam Bộ",
+    "status": "published"
+  }
+]

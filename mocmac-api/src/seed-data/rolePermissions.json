@@ -1,0 +1,234 @@
+[
+  {
+    "role": "admin",
+    "permissionName": "auth.me"
+  },
+  {
+    "role": "admin",
+    "permissionName": "auth.forgot-password"
+  },
+  {
+    "role": "admin",
+    "permissionName": "users.view"
+  },
+  {
+    "role": "admin",
+    "permissionName": "users.create"
+  },
+  {
+    "role": "admin",
+    "permissionName": "users.update"
+  },
+  {
+    "role": "admin",
+    "permissionName": "users.delete"
+  },
+  {
+    "role": "admin",
+    "permissionName": "products.view"
+  },
+  {
+    "role": "admin",
+    "permissionName": "products.create"
+  },
+  {
+    "role": "admin",
+    "permissionName": "products.update"
+  },
+  {
+    "role": "admin",
+    "permissionName": "products.delete"
+  },
+  {
+    "role": "admin",
+    "permissionName": "orders.view"
+  },
+  {
+    "role": "admin",
+    "permissionName": "orders.create"
+  },
+  {
+    "role": "admin",
+    "permissionName": "orders.update"
+  },
+  {
+    "role": "admin",
+    "permissionName": "orders.delete"
+  },
+  {
+    "role": "admin",
+    "permissionName": "contacts.view"
+  },
+  {
+    "role": "admin",
+    "permissionName": "contacts.update"
+  },
+  {
+    "role": "admin",
+    "permissionName": "reviews.view"
+  },
+  {
+    "role": "admin",
+    "permissionName": "reviews.update"
+  },
+  {
+    "role": "admin",
+    "permissionName": "coupons.view"
+  },
+  {
+    "role": "admin",
+    "permissionName": "coupons.create"
+  },
+  {
+    "role": "admin",
+    "permissionName": "coupons.update"
+  },
+  {
+    "role": "admin",
+    "permissionName": "role-requests.view"
+  },
+  {
+    "role": "admin",
+    "permissionName": "role-requests.create"
+  },
+  {
+    "role": "admin",
+    "permissionName": "role-requests.update"
+  },
+  {
+    "role": "admin",
+    "permissionName": "audit.view"
+  },
+  {
+    "role": "admin",
+    "permissionName": "audit.create"
+  },
+  {
+    "role": "admin",
+    "permissionName": "audit.delete"
+  },
+  {
+    "role": "admin",
+    "permissionName": "notifications.view"
+  },
+  {
+    "role": "admin",
+    "permissionName": "notifications.create"
+  },
+  {
+    "role": "admin",
+    "permissionName": "notifications.update"
+  },
+  {
+    "role": "staff",
+    "permissionName": "auth.me"
+  },
+  {
+    "role": "staff",
+    "permissionName": "auth.forgot-password"
+  },
+  {
+    "role": "staff",
+    "permissionName": "products.view"
+  },
+  {
+    "role": "staff",
+    "permissionName": "products.create"
+  },
+  {
+    "role": "staff",
+    "permissionName": "products.update"
+  },
+  {
+    "role": "staff",
+    "permissionName": "products.delete"
+  },
+  {
+    "role": "staff",
+    "permissionName": "orders.view"
+  },
+  {
+    "role": "staff",
+    "permissionName": "orders.create"
+  },
+  {
+    "role": "staff",
+    "permissionName": "orders.update"
+  },
+  {
+    "role": "staff",
+    "permissionName": "orders.delete"
+  },
+  {
+    "role": "staff",
+    "permissionName": "contacts.view"
+  },
+  {
+    "role": "staff",
+    "permissionName": "contacts.update"
+  },
+  {
+    "role": "staff",
+    "permissionName": "reviews.view"
+  },
+  {
+    "role": "staff",
+    "permissionName": "reviews.update"
+  },
+  {
+    "role": "staff",
+    "permissionName": "coupons.view"
+  },
+  {
+    "role": "staff",
+    "permissionName": "coupons.create"
+  },
+  {
+    "role": "staff",
+    "permissionName": "coupons.update"
+  },
+  {
+    "role": "staff",
+    "permissionName": "notifications.view"
+  },
+  {
+    "role": "staff",
+    "permissionName": "notifications.create"
+  },
+  {
+    "role": "staff",
+    "permissionName": "notifications.update"
+  },
+  {
+    "role": "collaborator",
+    "permissionName": "auth.me"
+  },
+  {
+    "role": "collaborator",
+    "permissionName": "products.view"
+  },
+  {
+    "role": "cooperative",
+    "permissionName": "auth.me"
+  },
+  {
+    "role": "cooperative",
+    "permissionName": "products.view"
+  },
+  {
+    "role": "cooperative",
+    "permissionName": "orders.view"
+  },
+  {
+    "role": "customer",
+    "permissionName": "auth.me"
+  },
+  {
+    "role": "customer",
+    "permissionName": "auth.forgot-password"
+  },
+  {
+    "role": "customer",
+    "permissionName": "products.view"
+  }
+]

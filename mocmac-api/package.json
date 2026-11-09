@@ -8,6 +8,7 @@
     "start": "node src/index.js",
     "upload-server": "node --watch src/upload-server.js",
     "seed": "node src/seed.js",
+    "seed:export": "node src/seed-export.js",
     "seed:stories": "node src/seed-region-stories.js",
     "migrate-images": "node src/migrate-images.js"
   },

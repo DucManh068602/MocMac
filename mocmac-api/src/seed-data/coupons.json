@@ -1,0 +1,110 @@
+[
+  {
+    "code": "2011",
+    "description": "",
+    "discountType": "percent",
+    "discountValue": 20,
+    "minOrderValue": 30000,
+    "maxDiscount": 0,
+    "usageLimit": 3,
+    "usedCount": 1,
+    "expiryDate": "2026-11-15T00:00:00.000Z",
+    "active": true
+  },
+  {
+    "code": "TEACHESVZX",
+    "description": "Mã ưu đãi Nhà giáo Việt Nam 20/11 - tự động tạo theo ngày lễ.",
+    "discountType": "percent",
+    "discountValue": 15,
+    "minOrderValue": 150000,
+    "maxDiscount": 0,
+    "usageLimit": 0,
+    "usedCount": 0,
+    "expiryDate": "2026-11-24T00:00:00.000Z",
+    "active": true
+  },
+  {
+    "code": "CHRISTFHCN",
+    "description": "Mã ưu đãi Giáng Sinh - tự động tạo theo ngày lễ.",
+    "discountType": "percent",
+    "discountValue": 12,
+    "minOrderValue": 200000,
+    "maxDiscount": 0,
+    "usageLimit": 0,
+    "usedCount": 0,
+    "expiryDate": "2026-12-29T00:00:00.000Z",
+    "active": true
+  },
+  {
+    "code": "NEWYEAYQDC",
+    "description": "Mã ưu đãi Tết Dương Lịch - tự động tạo theo ngày lễ.",
+    "discountType": "percent",
+    "discountValue": 10,
+    "minOrderValue": 200000,
+    "maxDiscount": 0,
+    "usageLimit": 0,
+    "usedCount": 0,
+    "expiryDate": "2027-01-03T00:00:00.000Z",
+    "active": true
+  },
+  {
+    "code": "TETJVUW",
+    "description": "Mã ưu đãi Tết Nguyên Đán (cửa sổ gợi ý, có thể chỉnh ngày) - tự động tạo.",
+    "discountType": "percent",
+    "discountValue": 20,
+    "minOrderValue": 300000,
+    "maxDiscount": 200000,
+    "usageLimit": 0,
+    "usedCount": 0,
+    "expiryDate": "2027-02-02T00:00:00.000Z",
+    "active": true
+  },
+  {
+    "code": "TEACHEXKLG",
+    "description": "Mã ưu đãi Nhà giáo Việt Nam 20/11 - tự động tạo theo ngày lễ.",
+    "discountType": "percent",
+    "discountValue": 15,
+    "minOrderValue": 150000,
+    "maxDiscount": 0,
+    "usageLimit": 0,
+    "usedCount": 0,
+    "expiryDate": "2026-11-24T00:00:00.000Z",
+    "active": true
+  },
+  {
+    "code": "CHRIST2WMG",
+    "description": "Mã ưu đãi Giáng Sinh - tự động tạo theo ngày lễ.",
+    "discountType": "percent",
+    "discountValue": 12,
+    "minOrderValue": 200000,
+    "maxDiscount": 0,
+    "usageLimit": 0,
+    "usedCount": 0,
+    "expiryDate": "2026-12-29T00:00:00.000Z",
+    "active": true
+  },
+  {
+    "code": "NEWYEAZWRZ",
+    "description": "Mã ưu đãi Tết Dương Lịch - tự động tạo theo ngày lễ.",
+    "discountType": "percent",
+    "discountValue": 10,
+    "minOrderValue": 200000,
+    "maxDiscount": 0,
+    "usageLimit": 0,
+    "usedCount": 0,
+    "expiryDate": "2027-01-03T00:00:00.000Z",
+    "active": true
+  },
+  {
+    "code": "TETA4HF",
+    "description": "Mã ưu đãi Tết Nguyên Đán (cửa sổ gợi ý, có thể chỉnh ngày) - tự động tạo.",
+    "discountType": "percent",
+    "discountValue": 20,
+    "minOrderValue": 300000,
+    "maxDiscount": 200000,
+    "usageLimit": 0,
+    "usedCount": 0,
+    "expiryDate": "2027-02-02T00:00:00.000Z",
+    "active": true
+  }
+]

@@ -1,0 +1,58 @@
+[
+  {
+    "name": "Tây Bắc",
+    "slug": "tay-bac",
+    "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRxpyJhyXB5BQzAtOHwlylJZHMsfoghqPlrCKbZAyZ9ow&s=10",
+    "description": "Vùng cao nguyên miền Bắc với khí hậu mát mẻ, nổi tiếng với đồng hồ cát, rau má, tiêu.",
+    "productCount": 4
+  },
+  {
+    "name": "Đông Bắc",
+    "slug": "dong-bac",
+    "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSQWRIh9tStHZYCwUvvCGPqVVfmX-xuVgBuoIdxeUkzQg&s=10",
+    "description": "Vùng đồng bằng phía đông của miền Bắc, giàu truyền thống nông nghiệp và công nghiệp.",
+    "productCount": 9
+  },
+  {
+    "name": "Đồng bằng sông Hồng",
+    "slug": "dong-bang-song-hong",
+    "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSNWSaIAJETm8_NoEhTSPruVE3glshosFGwJfbUy4g5bw&s=10",
+    "description": "Trái tim kinh tế của Việt Nam với đất đai màu mỏng bờ kè, lúa gạo nổi tiếng.",
+    "productCount": 21
+  },
+  {
+    "name": "Bắc Trung Bộ",
+    "slug": "bac-trung-bo",
+    "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRHYlICpRLMbmCq-P99jHBxUgrwIseVCYoAlJPUiK2Mlw&s=10",
+    "description": "Bờ cảng biển tươi mát với văn hóa lịch sử hùng mỵ, đặc sản hải sản và rau củ.",
+    "productCount": 1
+  },
+  {
+    "name": "Duyên hải Nam Trung Bộ",
+    "slug": "duyen-hai-nam-trung-bo",
+    "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR4po6kiK1CzC8qZCzsG_MzfZNrOEuS_iYCk9MeTQ5-Pg&s=10",
+    "description": "Dải đông bờ biển với những bãi biển hoang sơ và nghề mộc, gỗ truyền thống.",
+    "productCount": 2
+  },
+  {
+    "name": "Tây Nguyên",
+    "slug": "tay-nguyen",
+    "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQyJJlk2Tg2KiFkg6prQa1HdWgkD5U5BQGvKJ52ihMFQQ&s=10",
+    "description": "Vùng đất cao với khí hậu se lạnh, nổi tiếng với cà phê, cao su và nông sản.",
+    "productCount": 4
+  },
+  {
+    "name": "Đông Nam Bộ",
+    "slug": "dong-nam-bo",
+    "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTuoSgjLgOLcsThMSOj2b3TwMbIdRh4aUGLsN0gV3phmw&s=10",
+    "description": "Vùng đất mỏng với khí hậu nhiệt đới, nổi tiếng với trái cây và thủ công mỹ nghệ.",
+    "productCount": 7
+  },
+  {
+    "name": "Tây Nam Bộ",
+    "slug": "tay-nam-bo",
+    "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRy5j3zhx-l9D1GbNgZCiiw_H3lf589GhLHwlH7UH7ICg&s=10",
+    "description": "Vùng đồng bằng với hệ thống kênh rạch, nổi tiếng với trái cây và mặn.",
+    "productCount": 1
+  }
+]

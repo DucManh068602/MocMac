@@ -82,67 +82,58 @@ MocMac/
 
 ---
 
-## 5. Cần chuẩn bị gì trước khi chạy?
+## 5. Cần chuẩn bị trước khi chạy
 
 Bạn cần cài trên máy:
 
 1. **Node.js** (khuyến nghị phiên bản LTS mới) — để chạy website và máy chủ.
-2. **npm** — thường đi kèm Node.js (dự án frontend ghi nhận npm 11.x).
-3. **MongoDB** — cơ sở dữ liệu. Có thể dùng MongoDB cài local (ví dụ chạy tại `mongodb://127.0.0.1:27017/mocmac`) hoặc MongoDB Atlas (đám mây).
-4. (Tùy chọn) **mongosh** — nếu muốn chạy các lệnh MongoDB thủ công như script `fix-stock.ps1` gợi ý.
+2. **npm** — đi kèm Node.js.
+3. **MongoDB** — cơ sở dữ liệu (local `mongodb://127.0.0.1:27017/mocmac` hoặc MongoDB Atlas).
+4. (Tùy chọn) **mongosh** — nếu muốn chạy lệnh MongoDB thủ công.
 
-> Nếu bạn không rành kỹ thuật: hãy nhờ người hỗ trợ cài Node.js và MongoDB, sau đó làm theo các bước bên dưới.
-
----
+> **Bảo mật:** Không chia sẻ file `.env` và không đăng khóa/mật khẩu lên nơi công khai.
 
 ## 6. Cách chạy dự án trên máy (local)
 
 ### Bước A — Chạy máy chủ API (`mocmac-api`)
 
-Mở cửa sổ dòng lệnh (PowerShell/Terminal) và thực hiện:
+Mở cửa sổ dòng lệnh (PowerShell/Terminal):
 
 ```powershell
 cd D:\MocMac\mocmac-api
 ```
 
 1. Tạo file cấu hình môi trường:
-   - Sao chép `.env.example` thành `.env`.
-   - Mở `.env` và điền/chỉnh các giá trị cần thiết.
-
-**Các mục quan trọng trong `.env` (giải thích dễ hiểu):**
-- `MONGODB_URI`: địa chỉ kết nối MongoDB.
-- `JWT_SECRET`: chuỗi bí mật dùng cho đăng nhập (phải tự đặt, giữ kín).
-- `ADMIN_EMAIL`, `ADMIN_PASSWORD`: thông tin tạo tài khoản quản trị ban đầu khi chạy seed (nếu chưa có).
-- `FRONTEND_URL`: địa chỉ website frontend (local thường là `http://localhost:4200`).
-- `PORT`: cổng chạy API (mặc định thường `3000`).
-- Cấu hình **email (SMTP)**: dùng cho gửi OTP/quên mật khẩu (nếu cần dùng tính năng này).
-- Cấu hình **AI/Google/VNPAY/MoMo** (nếu có): chỉ cần khi bạn muốn bật các tính năng tương ứng.
-
-> **Bảo mật:** Không chia sẻ file `.env` và không đăng các khóa/mật khẩu lên nơi công khai.
+   ```powershell
+   copy .env.example .env
+   ```
+   Mở `.env` và điền ít nhất `MONGODB_URI`, `JWT_SECRET`, `FRONTEND_URL` (`http://localhost:4200`), `PORT` (`3000`), và các biến email/SMTP nếu dùng OTP/quên mật khẩu.
 
 2. Cài thư viện:
+   ```powershell
+   npm install
+   ```
 
-```powershell
-npm install
-```
+3. Nạp dữ liệu seed (lần đầu / muốn khởi tạo dữ liệu đầy đủ):
+   ```powershell
+   npm run seed
+   ```
+   Lệnh đọc từ `src/seed-data/*.json` và nạp: sản phẩm, vùng miền, tỉnh/thành, câu chuyện vùng miền/làng nghề, mã giảm giá, deal, flash sale, nội dung trang, permissions/role-permissions.
 
-3. (Tùy chọn/lần đầu) Nạp dữ liệu mẫu:
+   **Cảnh báo:** `npm run seed` sẽ **xóa và nạp lại** các collection dữ liệu seed ở trên trong database `MONGODB_URI`. Nó **không** xóa/nạp dữ liệu vận hành/cá nhân (đơn hàng, thanh toán, đánh giá, liên hệ, thông báo, địa chỉ, yêu cầu báo giá, chat, audit...). Tài khoản admin/staff được tạo nếu chưa tồn tại (email/mật khẩu từ `.env`: `ADMIN_EMAIL`/`ADMIN_PASSWORD`, `STAFF_EMAIL`/`STAFF_PASSWORD`, hoặc mặc định trong seed).
 
-```powershell
-npm run seed
-```
-
-**Cảnh báo quan trọng:** `npm run seed` sẽ **xóa toàn bộ sản phẩm hiện có** trong cơ sở dữ liệu rồi nạp lại từ file `my-app/public/data/product.json` (và có thể tạo tài khoản admin ban đầu nếu phù hợp). Chỉ chạy khi bạn hiểu rõ.
+   Nếu bạn chỉnh dữ liệu trong DB và muốn cập nhật bộ seed cho lần sau, chạy:
+   ```powershell
+   npm run seed:export
+   ```
+   rồi commit các file `src/seed-data/*.json`.
 
 4. Chạy máy chủ:
+   ```powershell
+   npm run dev
+   ```
 
-```powershell
-npm run dev
-```
-
-Nếu thành công, API thường chạy tại: `http://localhost:3000`.
-
----
+   Nếu thành công, API chạy tại: `http://localhost:3000`.
 
 ### Bước B — Chạy website (`my-app`)
 
@@ -154,7 +145,7 @@ npm install
 npm start
 ```
 
-- `npm start` chạy Angular với proxy (`/api` và `/uploads` được chuyển tới `http://localhost:3000`).
+- `npm start` chạy Angular với proxy (`/api` và `/uploads` chuyển tới `http://localhost:3000`).
 - Mở trình duyệt tại: **http://localhost:4200**
 
 Chạy giao diện admin trên cổng khác (nếu cần):
@@ -163,7 +154,9 @@ Chạy giao diện admin trên cổng khác (nếu cần):
 npm run start:admin
 ```
 
-(Theo cấu hình hiện tại: chạy ở cổng **4201**.)
+Mở trình duyệt tại: **http://localhost:4201**
+
+Lưu ý: backend (`mocmac-api`) phải chạy trước frontend để API hoạt động.
 
 ---
 
@@ -182,8 +175,9 @@ npm run start:admin
 |---|---|
 | `npm run dev` | Chạy API ở chế độ phát triển (tự tải lại khi sửa code) |
 | `npm start` | Chạy API |
-| `npm run seed` | Nạp dữ liệu sản phẩm mẫu/tạo admin ban đầu (**xóa sản phẩm cũ**) |
-| `npm run seed:stories` | Nạp dữ liệu câu chuyện vùng miền (nếu script sử dụng) |
+| `npm run seed` | Nạp toàn bộ dữ liệu seed từ `src/seed-data/*.json` và tạo admin/staff nếu chưa có (**ghi đè các collection seed**) |
+| `npm run seed:export` | Xuất dữ liệu hiện tại từ MongoDB ra `src/seed-data/*.json` (để commit/cập nhật bộ seed) |
+| `npm run seed:stories` | Nạp/chỉnh câu chuyện vùng miền/làng nghề mẫu (script cũ, tùy chọn) |
 | `npm run upload-server` | Chạy server upload riêng (nếu dự án dùng luồng này) |
 | `npm run migrate-images` | Chạy script chuyển đổi/di trú ảnh (nếu cần) |
 
@@ -224,8 +218,8 @@ Chỉ dùng khi bạn hiểu tác động của script và đã cấu hình môi
 3. **Thanh toán VNPAY/AI không hoạt động**
    - Các tính năng này cần cấu hình khóa/môi trường tương ứng. Môi trường test/sandbox có thể khác sản phẩm thật.
 
-4. **Mất dữ liệu sản phẩm sau khi seed**
-   - Đây là hành vi đã được cảnh báo: `seed` xóa sản phẩm cũ và nạp lại từ JSON.
+4. **Mất dữ liệu sau khi seed**
+   - `npm run seed` ghi đè các collection seed (sản phẩm, vùng miền, tỉnh/thành, stories, coupons/deals/flash sales, site content, permissions...). Dữ liệu vận hành như đơn hàng/thanh toán/đánh giá/liên hệ/thông báo không nằm trong bộ seed này.
 
 ---
 

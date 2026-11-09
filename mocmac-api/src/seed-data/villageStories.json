@@ -1,0 +1,24 @@
+[
+  {
+    "title": "Bát Tràng – Từ bàn xoay đến lò lửa",
+    "content": "Làng gốm Bát Tràng nổi tiếng với sản phẩm gốm sứ tinh xảo. Người thợ nhào nặn đất, tạo hình trên bàn xoay, phủ men và canh lửa trong lò — mỗi công đoạn đều cần sự kiên nhẫn. Quà tặng từ Bát Tràng mang vẻ đẹp mộc mạc mà sang trọng, thích hợp cho biếu tặng và không gian sum vầy.",
+    "craft": "Gốm",
+    "excerpt": "Mỗi bộ ấm chén là kết tinh của đất, men và kinh nghiệm nung lửa truyền đời.",
+    "imageUrl": "https://images.unsplash.com/photo-1610701596007-11502861dcfa?auto=format&fit=crop&w=1200&q=80",
+    "order": 10,
+    "province": "Hà Nội",
+    "status": "published",
+    "village": "Bát Tràng"
+  },
+  {
+    "title": "Phú Vinh – Sợi mây kể chuyện đôi tay",
+    "content": "Phú Vinh giữ nghề mây tre đan với kỹ thuật tỉ mỉ: chọn nguyên liệu, vót nan, phơi phóng và đan lát thành sản phẩm. Giỏ, khay, hộp quà mây tre không chỉ hữu dụng mà còn thể hiện sự chăm chút — một lựa chọn quà tặng xanh, thân thiện và giàu bản sắc.",
+    "craft": "Mây tre đan",
+    "excerpt": "Từng đường đan mây tre tạo nên giỏ quà bền đẹp, mang hơi thở thủ công Việt.",
+    "imageUrl": "https://images.unsplash.com/photo-1595408076683-5d0c228d8a3a?auto=format&fit=crop&w=1200&q=80",
+    "order": 9,
+    "province": "Hà Nội",
+    "status": "published",
+    "village": "Phú Vinh"
+  }
+]
