@@ -1,6 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ToastService } from './toast.service';
+import { ConfirmService } from './confirm.service';
 
 @Component({
   selector: 'app-admin-region-stories',
@@ -72,6 +73,7 @@ import { ToastService } from './toast.service';
 export class AdminRegionStoriesComponent {
   private http = inject(HttpClient);
   private toast = inject(ToastService);
+  private confirm = inject(ConfirmService);
   readonly stories = signal<any[]>([]);
   readonly editing = signal<any | null>(null);
   readonly saving = signal(false);
@@ -133,8 +135,9 @@ export class AdminRegionStoriesComponent {
     });
   }
 
-  remove(s: any): void {
-    if (!confirm('Xóa câu chuyện này?')) return;
+  async remove(s: any) {
+    const ok = await this.confirm.confirm({ title: 'Xác nhận xóa', message: 'Xóa câu chuyện này?', confirmText: 'Xóa', danger: true });
+    if (!ok) return;
     this.http.delete('/api/region-stories/' + s._id).subscribe({
       next: () => { this.toast.success('Đã xóa.'); this.load(); },
       error: () => this.toast.error('Không thể xóa.'),

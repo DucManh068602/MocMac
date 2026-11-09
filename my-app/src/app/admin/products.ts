@@ -1,6 +1,7 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ToastService } from './toast.service';
+import { ConfirmService } from './confirm.service';
 import { ProductsService } from '../products.service';
 
 @Component({
@@ -182,6 +183,7 @@ import { ProductsService } from '../products.service';
 export class AdminProductsComponent {
   private http = inject(HttpClient);
   private toast = inject(ToastService);
+  private confirm = inject(ConfirmService);
   private ps = inject(ProductsService);
 
   readonly pageSize = 20;
@@ -390,15 +392,15 @@ export class AdminProductsComponent {
     }
   }
 
-  deleteProduct(slug: string): void {
-    if (confirm('Xóa sản phẩm này?')) {
-      this.http.delete('/api/products/' + slug).subscribe({
-        next: () => {
-          this.toast.success('Xóa sản phẩm thành công');
-          this.loadProducts();
-        },
-        error: () => this.toast.error('Không thể xóa sản phẩm'),
-      });
-    }
+  async deleteProduct(slug: string): Promise<void> {
+    const ok = await this.confirm.confirm({ title: 'Xác nhận xóa', message: 'Xóa sản phẩm này?', confirmText: 'Xóa', danger: true });
+    if (!ok) return;
+    this.http.delete('/api/products/' + slug).subscribe({
+      next: () => {
+        this.toast.success('Xóa sản phẩm thành công');
+        this.loadProducts();
+      },
+      error: () => this.toast.error('Không thể xóa sản phẩm'),
+    });
   }
 }

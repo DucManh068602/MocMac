@@ -1,6 +1,7 @@
 import { Component, inject, signal, computed } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ToastService } from './toast.service';
+import { ConfirmService } from './confirm.service';
 
 @Component({
   selector: 'app-admin-flash-sale',
@@ -10,6 +11,7 @@ import { ToastService } from './toast.service';
 })
 export class AdminFlashSaleComponent {
   private http = inject(HttpClient); private toast = inject(ToastService);
+  private confirm = inject(ConfirmService);
 
   readonly sale = signal<any>(null);
   readonly saving = signal(false);
@@ -48,8 +50,9 @@ export class AdminFlashSaleComponent {
     });
   }
 
-  remove(): void {
-    if (!confirm('Xóa chế độ Săn sale này? Toàn bộ sản phẩm sẽ bỏ nhãn giảm.')) return;
+  async remove(): Promise<void> {
+    const ok = await this.confirm.confirm({ title: 'Xác nhận xóa', message: 'Xóa chế độ Săn sale này? Toàn bộ sản phẩm sẽ bỏ nhãn giảm.', confirmText: 'Xóa', danger: true });
+    if (!ok) return;
     this.saving.set(true);
     this.http.delete<any>('/api/flash-sale').subscribe({
       next: r => { this.sale.set(r.sale); this.saving.set(false); this.form = { active: false, discountPercent: 10, startsAt: '', endsAt: '' }; this.toast.success('Đã xóa Săn sale.'); },

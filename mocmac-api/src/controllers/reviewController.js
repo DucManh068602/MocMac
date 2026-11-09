@@ -212,23 +212,6 @@ export const updateReviewStatus = async (req, res) => {
   }
 };
 
-export const deleteReview = async (req, res) => {
-  try {
-    const review = await Review.findById(req.params.id);
-    if (!review) {
-      return res.status(404).json({ success: false, message: 'Không tìm thấy đánh giá.' });
-    }
-
-    await review.deleteOne();
-    await updateProductStats(review.product);
-
-    return res.json({ success: true, message: 'Xóa đánh giá thành công.' });
-  } catch (error) {
-    console.error('❌ Lỗi xóa đánh giá:', error);
-    return res.status(500).json({ success: false, message: 'Không thể xóa.', error: error.message });
-  }
-};
-
 export const adminReplyReview = async (req, res) => {
   try {
     const { reply } = req.body ?? {};
@@ -248,7 +231,7 @@ export const adminReplyReview = async (req, res) => {
 
     return res.json({ success: true, message: 'Đã phản hồi đánh giá.', review });
   } catch (error) {
-    console.error('❌ Lỗi phản hồi đánh giá:', error);
+    console.error('Lỗi phản hồi đánh giá:', error);
     return res.status(500).json({ success: false, message: 'Không thể phản hồi.', error: error.message });
   }
 };

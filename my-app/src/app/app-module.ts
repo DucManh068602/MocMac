@@ -60,6 +60,7 @@ import { AdminFlashSaleComponent } from './admin/flash-sale';
 import { AdminQuotationRequestsComponent } from './admin/quotation-requests';
 import { PaginationComponent } from './admin/pagination';
 import { ToastComponent } from './admin/toast';
+import { ConfirmDialogComponent } from './admin/confirm-dialog';
 import { AdminRegionStoriesComponent } from './admin/region-stories';
 import { AdminVillageStoriesComponent } from './admin/village-stories';
 import { NotificationPopupComponent } from './pages/notification-popup/notification-popup';
@@ -98,6 +99,7 @@ import { TranslatePipe } from './translate.pipe';
     AdminRegionStoriesComponent,
     AdminVillageStoriesComponent,
     ToastComponent,
+    ConfirmDialogComponent,
     NotificationPopupComponent,
     ChatPopupComponent,
     TranslatePipe,

@@ -3,6 +3,8 @@ import { HttpClient } from '@angular/common/http';
 import { forkJoin, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { AuthService } from '../auth.service';
+import { ToastService } from './toast.service';
+import { ConfirmService } from './confirm.service';
 
 const STATUSES = [
   { key: 'pending', label: 'Chờ xử lý', color: '#e0a43a' },
@@ -35,6 +37,8 @@ const pick = (r: any, k: string): any[] => (Array.isArray(r) ? r : r?.[k] ?? [])
   styleUrl: './dashboard.css',
 })
 export class AdminDashboardComponent {
+  private toast = inject(ToastService);
+  private confirm = inject(ConfirmService);
   private http = inject(HttpClient);
   auth = inject(AuthService);
 
@@ -205,6 +209,6 @@ export class AdminDashboardComponent {
   }
 
   saveFlashSale(): void { this.http.put<any>('/api/flash-sale', this.saleForm).subscribe({ next: r => { this.flashSale.set(r.sale); this.saleForm = { ...this.saleForm, active: r.sale.active }; }, error: () => this.failed.set(true) }); }
-  deleteFlashSale(): void { if (!confirm('Xóa chế độ săn sale này?')) return; this.http.delete<any>('/api/flash-sale').subscribe({ next: r => { this.flashSale.set(r.sale); this.saleForm = { active: false, discountPercent: 10, startsAt: '', endsAt: '' }; }, error: () => this.failed.set(true) }); }
+  async deleteFlashSale(): Promise<void> { const ok = await this.confirm.confirm({ title: 'Xác nhận xóa', message: 'Xóa chế độ săn sale?', confirmText: 'Xóa', danger: true }); if (!ok) return; this.http.delete<any>('/api/flash-sale').subscribe({ next: r => { this.flashSale.set(r.sale); this.saleForm = { active: false, discountPercent: 10, startsAt: '', endsAt: '' }; }, error: () => this.failed.set(true) }); }
   private toInputDate(value: string | null): string { return value ? new Date(value).toISOString().slice(0, 16) : ''; }
 }

@@ -89,7 +89,9 @@ import { ToastService } from './toast.service';
                 </td>
                 <td>{{ r.createdAt | date:'short' }}</td>
                 <td>
-                  <button type="button" class="btn-small btn-delete" (click)="deleteReview(r._id)">Xóa</button>
+                  <button type="button" class="btn-small btn-reply" (click)="openReplyModal(r)">
+                    {{ r.adminReply ? 'Sửa phản hồi' : 'Phản hồi' }}
+                  </button>
                 </td>
               </tr>
             } @empty {
@@ -136,7 +138,7 @@ import { ToastService } from './toast.service';
                 [(ngModel)]="replyModalText"
                 placeholder="Nhập phản hồi của Mộc Mạc cho đánh giá này..."
               ></textarea>
-              <p class="reply-hint">Phản hồi sẽ hiển thị ngay dưới bình luận của khách hàng tại trang sản phẩm (thụt vào ô riêng).</p>
+              <p class="reply-hint">Phản hồi sẽ hiển thị ngay dưới bình luận của khách hàng tại trang sản phẩm.</p>
             </div>
 
             <div class="modal-actions">
@@ -167,16 +169,13 @@ export class AdminReviewsComponent {
 
   readonly stats = computed(() => {
     const r = this.reviews();
-    const avg = r.length > 0
-      ? r.reduce((s: number, x: any) => s + x.rating, 0) / r.length
-      : 0;
-    return {
-      total: r.length,
-      avg: Number(avg.toFixed(1)),
-    };
+    const avg = r.length > 0 ? r.reduce((s: number, x: any) => s + x.rating, 0) / r.length : 0;
+    return { total: r.length, avg: Number(avg.toFixed(1)) };
   });
 
-  readonly replying = signal<{ [id: string]: boolean }>({});
+  constructor() {
+    this.loadReviews();
+  }
 
   openReplyModal(review: any): void {
     this.replyModalReview.set(review);
@@ -214,10 +213,6 @@ export class AdminReviewsComponent {
     });
   }
 
-  constructor() {
-    this.loadReviews();
-  }
-
   onFilterChange(): void {
     this.page.set(1);
     this.loadReviews();
@@ -231,10 +226,7 @@ export class AdminReviewsComponent {
   }
 
   loadReviews(): void {
-    const params = new URLSearchParams({
-      page: String(this.page()),
-      limit: '20',
-    });
+    const params = new URLSearchParams({ page: String(this.page()), limit: '20' });
     if (this.searchTerm) params.set('q', this.searchTerm);
     if (this.ratingFilter) params.set('rating', this.ratingFilter);
 
@@ -243,14 +235,5 @@ export class AdminReviewsComponent {
       this.reviews.set(items);
       this.totalPages.set(r.totalPages || 1);
     });
-  }
-
-  deleteReview(id: string): void {
-    if (confirm('Xóa đánh giá này?')) {
-      this.http.delete('/api/reviews/' + id).subscribe({
-        next: () => { this.toast.success('Xóa đánh giá thành công'); this.loadReviews(); },
-        error: () => this.toast.error('Không thể xóa đánh giá'),
-      });
-    }
   }
 }

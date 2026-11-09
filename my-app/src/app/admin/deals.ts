@@ -1,6 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ToastService } from './toast.service';
+import { ConfirmService } from './confirm.service';
 
 @Component({
   selector: 'app-admin-deals',
@@ -26,12 +27,13 @@ import { ToastService } from './toast.service';
 })
 export class AdminDealsComponent {
   private http = inject(HttpClient); private toast = inject(ToastService);
+  private confirm = inject(ConfirmService);
   readonly deals = signal<any[]>([]); readonly editing = signal<any | null>(null); form: any = {};
   constructor() { this.load(); }
   load(): void { this.http.get<any>('/api/deals').subscribe({ next: r => this.deals.set(r.deals || []), error: () => this.toast.error('Không tải được Deal.') }); }
   newDeal(): void { this.form = { title:'', description:'', discountType:'percent', discountValue:0, startsAt:'', endsAt:'', active:true }; this.editing.set({}); }
   edit(deal: any): void { this.form = { ...deal, startsAt: this.toInput(deal.startsAt), endsAt: this.toInput(deal.endsAt) }; this.editing.set(deal); }
   save(): void { const current = this.editing(); const request = current?._id ? this.http.patch('/api/deals/' + current._id, this.form) : this.http.post('/api/deals', this.form); request.subscribe({ next: () => { this.toast.success('Đã lưu Deal.'); this.editing.set(null); this.load(); }, error: (e: any) => this.toast.error(e.error?.message || 'Không thể lưu Deal.') }); }
-  remove(deal: any): void { if (!confirm('Xóa Deal này?')) return; this.http.delete('/api/deals/' + deal._id).subscribe({ next: () => { this.toast.success('Đã xóa Deal.'); this.load(); }, error: () => this.toast.error('Không thể xóa Deal.') }); }
+  async remove(deal: any): Promise<void> { const ok = await this.confirm.confirm({ title: 'Xác nhận xóa', message: 'Xóa Deal này?', confirmText: 'Xóa', danger: true }); if (!ok) return; this.http.delete('/api/deals/' + deal._id).subscribe({ next: () => { this.toast.success('Đã xóa Deal.'); this.load(); }, error: () => this.toast.error('Không thể xóa Deal.') }); }
   private toInput(value: string): string { return value ? new Date(value).toISOString().slice(0, 16) : ''; }
 }

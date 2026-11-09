@@ -2,6 +2,7 @@ import { Component, OnDestroy, OnInit, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { ToastService } from './toast.service';
+import { ConfirmService } from './confirm.service';
 import { Subscription } from 'rxjs';
 
 interface Section { heading: string; body: string; }
@@ -109,6 +110,7 @@ export class AdminLegalContentComponent implements OnInit, OnDestroy {
   private http = inject(HttpClient);
   private route = inject(ActivatedRoute);
   private toast = inject(ToastService);
+  private confirm = inject(ConfirmService);
   private sub?: Subscription;
 
   readonly key = signal<'terms' | 'privacy'>('terms');
@@ -165,7 +167,6 @@ export class AdminLegalContentComponent implements OnInit, OnDestroy {
   }
 
   removeSection(i: number): void {
-    if (!confirm(`Xóa mục ${i + 1}? (Nhấn Lưu nội dung để áp dụng)`)) return;
     this.sections.update((list) => list.filter((_, idx) => idx !== i));
   }
 

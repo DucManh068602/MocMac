@@ -1,6 +1,7 @@
 import { Component, inject, signal, computed } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ToastService } from './toast.service';
+import { ConfirmService } from './confirm.service';
 
 @Component({
   selector: 'app-admin-coupons',
@@ -125,6 +126,7 @@ import { ToastService } from './toast.service';
 export class AdminCouponsComponent {
   private http = inject(HttpClient);
   private toast = inject(ToastService);
+  private confirm = inject(ConfirmService);
   readonly coupons = signal<any[]>([]);
   readonly page = signal(1);
   readonly totalPages = signal(1);
@@ -221,12 +223,12 @@ export class AdminCouponsComponent {
     }
   }
 
-  deleteCoupon(id: string): void {
-    if (confirm('Xóa mã giảm giá này?')) {
-      this.http.delete('/api/coupons/' + id).subscribe({
-        next: () => { this.toast.success('Xóa mã giảm giá thành công'); this.loadCoupons(); },
-        error: () => this.toast.error('Không thể xóa mã giảm giá'),
-      });
-    }
+  async deleteCoupon(id: string): Promise<void> {
+    const ok = await this.confirm.confirm({ title: 'Xác nhận xóa', message: 'Xóa mã giảm giá này?', confirmText: 'Xóa', danger: true });
+    if (!ok) return;
+    this.http.delete('/api/coupons/' + id).subscribe({
+      next: () => { this.toast.success('Xóa mã giảm giá thành công'); this.loadCoupons(); },
+      error: () => this.toast.error('Không thể xóa mã giảm giá'),
+    });
   }
 }
