@@ -60,6 +60,7 @@ async function seed() {
   const villageStories = readJson('villageStories');
   const coupons = readJson('coupons').map((c) => ({
     ...c,
+    startsAt: asDate(c.startsAt),
     validFrom: asDate(c.validFrom),
     validTo: asDate(c.validTo),
   }));

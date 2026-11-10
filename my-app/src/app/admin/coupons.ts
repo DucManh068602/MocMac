@@ -46,11 +46,12 @@ import { ConfirmService } from './confirm.service';
             <label class="field">Giảm tối đa (đ, % dùng) <input class="form-input" type="number" min="0" [(ngModel)]="form.maxDiscount" /></label>
             <label class="field">Đơn tối thiểu (đ) <input class="form-input" type="number" min="0" [(ngModel)]="form.minOrderValue" /></label>
             <label class="field">Số lượt dùng (0 = không giới hạn) <input class="form-input" type="number" min="0" [(ngModel)]="form.usageLimit" /></label>
+            <label class="field">Ngày bắt đầu <input class="form-input" type="date" [(ngModel)]="form.startsAt" /></label>
             <label class="field">Ngày hết hạn <input class="form-input" type="date" [(ngModel)]="form.expiryDate" /></label>
             <label class="field field-check"><input type="checkbox" [(ngModel)]="form.active" /> Kích hoạt mã</label>
             <label class="field field-wide">Mô tả/ghi chú <input class="form-input" placeholder="Áp dụng cho..., không áp dụng với..." [(ngModel)]="form.description" /></label>
           </div>
-          @if (preview()) { <p class="coupon-preview">Xem nhanh: <strong>{{ preview() }}</strong>{{ form.expiryDate ? ' · Hết hạn ' + form.expiryDate : '' }}</p> }
+          @if (preview()) { <p class="coupon-preview">Xem nhanh: <strong>{{ preview() }}</strong>{{ form.startsAt ? ' · Bắt đầu ' + form.startsAt : '' }}{{ form.expiryDate ? ' · Hết hạn ' + form.expiryDate : '' }}</p> }
           <div class="form-actions">
             <button type="button" class="btn-save" (click)="saveCoupon()" [disabled]="saving()">{{ saving() ? 'Đang lưu...' : 'Lưu' }}</button>
             <button type="button" class="btn-cancel" (click)="showForm.set(false)">Hủy</button>
@@ -60,7 +61,7 @@ import { ConfirmService } from './confirm.service';
 
       <div class="table-wrap">
         <table class="admin-table">
-          <thead><tr><th>Mã</th><th>Ưu đãi</th><th>Điều kiện</th><th>Đã dùng</th><th>Hết hạn</th><th>Trạng thái</th><th>Thao tác</th></tr></thead>
+          <thead><tr><th>Mã</th><th>Ưu đãi</th><th>Điều kiện</th><th>Đã dùng</th><th>Bắt đầu</th><th>Hết hạn</th><th>Trạng thái</th><th>Thao tác</th></tr></thead>
           <tbody>
             @for (c of coupons(); track c._id) {
               <tr>
@@ -68,6 +69,7 @@ import { ConfirmService } from './confirm.service';
                 <td>{{ c.discountType === 'percent' ? ('Giảm ' + c.discountValue + '%') : ('Giảm ' + formatMoney(c.discountValue)) }}@if (c.maxDiscount) {<div class="subtext">Tối đa {{ formatMoney(c.maxDiscount) }}</div>}</td>
                 <td>{{ c.minOrderValue ? ('Đơn từ ' + formatMoney(c.minOrderValue)) : 'Không giới hạn' }}</td>
                 <td>{{ c.usedCount || 0 }} / {{ c.usageLimit ? c.usageLimit : '∞' }}</td>
+                <td>{{ c.startsAt | date:'dd/MM/yyyy' }}</td>
                 <td>{{ c.expiryDate | date:'dd/MM/yyyy' }}</td>
                 <td><span class="status-badge" [ngClass]="statusClass(c.status)">{{ statusLabel(c.status) }}</span></td>
                 <td class="actions">
@@ -77,7 +79,7 @@ import { ConfirmService } from './confirm.service';
                 </td>
               </tr>
             } @empty {
-              <tr><td colspan="7">Chưa có mã giảm giá.</td></tr>
+              <tr>          <td colspan="8">Chưa có mã giảm giá.</td></tr>
             }
           </tbody>
         </table>
@@ -132,13 +134,13 @@ export class AdminCouponsComponent {
   startCreate(): void {
     this.editing.set(null);
     const nextMonth = new Date(); nextMonth.setMonth(nextMonth.getMonth() + 1);
-    this.form = { code: '', discountType: 'percent', discountValue: 10, maxDiscount: 0, usageLimit: 0, expiryDate: nextMonth.toISOString().slice(0, 10), minOrderValue: 0, active: true, description: '' };
+    this.form = { code: '', discountType: 'percent', discountValue: 10, maxDiscount: 0, usageLimit: 0, expiryDate: nextMonth.toISOString().slice(0, 10), minOrderValue: 0, active: true, description: '', startsAt: new Date().toISOString().slice(0, 10) };
     this.showForm.set(true);
   }
 
   editCoupon(c: any): void {
     this.editing.set(c);
-    this.form = { ...c, expiryDate: c.expiryDate ? new Date(c.expiryDate).toISOString().slice(0, 10) : '' };
+    this.form = { ...c, expiryDate: c.expiryDate ? new Date(c.expiryDate).toISOString().slice(0, 10) : '', startsAt: c.startsAt ? new Date(c.startsAt).toISOString().slice(0, 10) : '' };
     this.showForm.set(true);
   }
 

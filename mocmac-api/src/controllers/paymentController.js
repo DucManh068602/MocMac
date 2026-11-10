@@ -26,6 +26,7 @@ async function resolveCoupon(code, subtotalAfterMember) {
   const coupon = await Coupon.findOne({ code: normalized }).lean();
   if (!coupon) throw new Error(`Mã giảm giá ${normalized} không tồn tại.`);
   if (!coupon.active) throw new Error(`Mã giảm giá ${normalized} không còn kích hoạt.`);
+  if (coupon.startsAt && new Date(coupon.startsAt) > new Date()) throw new Error(`Mã giảm giá ${normalized} chưa bắt đầu sử dụng.`);
   if (new Date(coupon.expiryDate) < new Date()) throw new Error(`Mã giảm giá ${normalized} đã hết hạn.`);
   if (coupon.usageLimit > 0 && coupon.usedCount >= coupon.usageLimit) throw new Error(`Mã giảm giá ${normalized} đã hết lượt sử dụng.`);
   if (Number(coupon.minOrderValue || 0) > 0 && Number(subtotalAfterMember) < Number(coupon.minOrderValue)) {

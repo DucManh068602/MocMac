@@ -8,6 +8,7 @@
     "maxDiscount": 0,
     "usageLimit": 3,
     "usedCount": 1,
+    "startsAt": "2026-11-10T00:00:00.000Z",
     "expiryDate": "2026-11-15T00:00:00.000Z",
     "active": true
   },
@@ -20,6 +21,7 @@
     "maxDiscount": 0,
     "usageLimit": 0,
     "usedCount": 0,
+    "startsAt": "2026-11-19T00:00:00.000Z",
     "expiryDate": "2026-11-24T00:00:00.000Z",
     "active": true
   },
@@ -32,6 +34,7 @@
     "maxDiscount": 0,
     "usageLimit": 0,
     "usedCount": 0,
+    "startsAt": "2026-12-24T00:00:00.000Z",
     "expiryDate": "2026-12-29T00:00:00.000Z",
     "active": true
   },
@@ -44,6 +47,7 @@
     "maxDiscount": 0,
     "usageLimit": 0,
     "usedCount": 0,
+    "startsAt": "2026-12-29T00:00:00.000Z",
     "expiryDate": "2027-01-03T00:00:00.000Z",
     "active": true
   },
@@ -56,6 +60,7 @@
     "maxDiscount": 200000,
     "usageLimit": 0,
     "usedCount": 0,
+    "startsAt": "2027-01-26T00:00:00.000Z",
     "expiryDate": "2027-02-02T00:00:00.000Z",
     "active": true
   },
@@ -68,6 +73,7 @@
     "maxDiscount": 0,
     "usageLimit": 0,
     "usedCount": 0,
+    "startsAt": "2026-11-19T00:00:00.000Z",
     "expiryDate": "2026-11-24T00:00:00.000Z",
     "active": true
   },
@@ -80,6 +86,7 @@
     "maxDiscount": 0,
     "usageLimit": 0,
     "usedCount": 0,
+    "startsAt": "2026-12-24T00:00:00.000Z",
     "expiryDate": "2026-12-29T00:00:00.000Z",
     "active": true
   },
@@ -92,6 +99,7 @@
     "maxDiscount": 0,
     "usageLimit": 0,
     "usedCount": 0,
+    "startsAt": "2026-12-29T00:00:00.000Z",
     "expiryDate": "2027-01-03T00:00:00.000Z",
     "active": true
   },
@@ -104,6 +112,7 @@
     "maxDiscount": 200000,
     "usageLimit": 0,
     "usedCount": 0,
+    "startsAt": "2027-01-26T00:00:00.000Z",
     "expiryDate": "2027-02-02T00:00:00.000Z",
     "active": true
   }

@@ -82,6 +82,7 @@ function resultPage(title, message, accent = '#2e7d32') {
 
 function couponUsable(c) {
   if (!c || !c.active) return false;
+  if (c.startsAt && new Date(c.startsAt) > new Date()) return false;
   if (new Date(c.expiryDate) < new Date()) return false;
   if (c.usageLimit > 0 && c.usedCount >= c.usageLimit) return false;
   return true;
@@ -335,7 +336,7 @@ export const acceptQuotationRequest = async (req, res) => {
     if (!doc.couponUsageCounted && doc.appliedCoupon?.code) {
       const coupon = await Coupon.findOne({ code: String(doc.appliedCoupon.code).toUpperCase() });
       if (coupon) {
-        const canCount = coupon.active && !(coupon.usageLimit > 0 && coupon.usedCount >= coupon.usageLimit) && new Date(coupon.expiryDate) >= new Date();
+        const canCount = coupon.active && !(coupon.startsAt && new Date(coupon.startsAt) > new Date()) && !(coupon.usageLimit > 0 && coupon.usedCount >= coupon.usageLimit) && new Date(coupon.expiryDate) >= new Date();
         if (canCount) {
           await Coupon.updateOne({ _id: coupon._id }, { $inc: { usedCount: 1 } });
           doc.couponUsageCounted = true;

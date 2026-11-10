@@ -136,9 +136,15 @@ export class AdminHolidayCouponsComponent {
   generate(): void {
     const selected = new Set(this.selected());
     const items = this.holidays().filter((h) => selected.has(h.key)).map((h) => ({
-      ...h,
       code: h.suggestedCode,
+      startsAt: h.startsAt,
       expiryDate: h.expiresAt,
+      discountType: h.discountType,
+      discountValue: h.discountValue,
+      minOrderValue: h.minOrderValue,
+      maxDiscount: h.maxDiscount,
+      usageLimit: h.usageLimit,
+      description: h.description,
     }));
     if (!items.length) return;
     this.saving.set(true);

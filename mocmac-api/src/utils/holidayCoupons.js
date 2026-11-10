@@ -111,6 +111,7 @@ export async function generateHolidayCoupons(items = []) {
     const exists = await Coupon.findOne({ code }).lean();
     if (exists) { skipped.push({ code, reason: 'exists' }); continue; }
     const expiryDate = item.expiresAt || item.expiryDate;
+    const startsAt = item.startsAt || item.starts_at;
     if (!expiryDate) { skipped.push({ code, reason: 'missing_expiry' }); continue; }
     const coupon = await Coupon.create({
       code,
@@ -120,6 +121,7 @@ export async function generateHolidayCoupons(items = []) {
       minOrderValue: Number(item.minOrderValue ?? 0),
       maxDiscount: Number(item.maxDiscount ?? 0),
       usageLimit: Number(item.usageLimit ?? 0),
+      startsAt: startsAt ? new Date(startsAt) : null,
       expiryDate,
       active: true,
     });

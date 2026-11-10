@@ -5,6 +5,7 @@ import { getUpcomingHolidays, generateHolidayCoupons } from '../utils/holidayCou
 
 const computeStatus = (c) => {
   if (!c.active) return 'vô hiệu';
+  if (c.startsAt && new Date(c.startsAt) > new Date()) return 'sắp diễn ra';
   if (new Date(c.expiryDate) < new Date()) return 'hết hạn';
   if (c.usageLimit > 0 && c.usedCount >= c.usageLimit) return 'hết lượt sử dụng';
   return 'hoạt động';
@@ -33,6 +34,7 @@ export const getCouponByCode = async (req, res) => {
     const coupon = await Coupon.findOne({ code: req.params.code.toUpperCase() }).lean();
     if (!coupon) return res.status(404).json({ success: false, message: 'Mã giảm giá không tồn tại.' });
     if (!coupon.active) return res.status(400).json({ success: false, message: 'Mã giảm giá đã vô hiệu.' });
+    if (coupon.startsAt && new Date(coupon.startsAt) > new Date()) return res.status(400).json({ success: false, message: 'Mã giảm giá chưa bắt đầu sử dụng.' });
     if (new Date(coupon.expiryDate) < new Date()) return res.status(400).json({ success: false, message: 'Mã giảm giá đã hết hạn.' });
     if (coupon.usageLimit > 0 && coupon.usedCount >= coupon.usageLimit) return res.status(400).json({ success: false, message: 'Mã giảm giá đã hết lượt sử dụng.' });
     return res.json({ success: true, coupon: { ...coupon, status: computeStatus(coupon) } });
@@ -50,6 +52,7 @@ export const validateCoupon = async (req, res) => {
     const coupon = await Coupon.findOne({ code: String(code).toUpperCase() }).lean();
     if (!coupon) return res.status(404).json({ success: false, message: 'Mã giảm giá không tồn tại.' });
     if (!coupon.active) return res.status(400).json({ success: false, message: 'Mã giảm giá không còn kích hoạt.' });
+    if (coupon.startsAt && new Date(coupon.startsAt) > new Date()) return res.status(400).json({ success: false, message: 'Mã giảm giá chưa bắt đầu sử dụng.' });
     if (new Date(coupon.expiryDate) < new Date()) return res.status(400).json({ success: false, message: 'Mã giảm giá đã hết hạn.' });
     if (coupon.usageLimit > 0 && coupon.usedCount >= coupon.usageLimit) return res.status(400).json({ success: false, message: 'Mã giảm giá đã hết lượt sử dụng.' });
     // Coupon applies after automatic member discount in cart/checkout UI.
@@ -73,15 +76,16 @@ export const validateCoupon = async (req, res) => {
 
 export const createCoupon = async (req, res) => {
   try {
-    const { code, description, discountType, discountValue, minOrderValue, maxDiscount, usageLimit, expiryDate, active = true } = req.body ?? {};
+    const { code, description, discountType, discountValue, minOrderValue, maxDiscount, usageLimit, startsAt, expiryDate, active = true } = req.body ?? {};
     if (!code || discountValue === undefined || discountValue === null || discountValue === '') return res.status(400).json({ success: false, message: 'Vui lòng nhập mã và giá trị giảm.' });
     if (!expiryDate) return res.status(400).json({ success: false, message: 'Vui lòng chọn ngày hết hạn.' });
     const normalizedCode = String(code).toUpperCase().trim();
     const exists = await Coupon.findOne({ code: normalizedCode }).lean();
     if (exists) return res.status(409).json({ success: false, message: `Mã ${normalizedCode} đã tồn tại.` });
-    const coupon = await Coupon.create({ code: normalizedCode, description: description ?? '', discountType: discountType ?? 'percent', discountValue: Number(discountValue), minOrderValue: Number(minOrderValue ?? 0), maxDiscount: Number(maxDiscount ?? 0), usageLimit: Number(usageLimit ?? 0), expiryDate, active: !!active });
+    const startsAtDate = startsAt ? new Date(startsAt) : null;
+    const coupon = await Coupon.create({ code: normalizedCode, description: description ?? '', discountType: discountType ?? 'percent', discountValue: Number(discountValue), minOrderValue: Number(minOrderValue ?? 0), maxDiscount: Number(maxDiscount ?? 0), usageLimit: Number(usageLimit ?? 0), startsAt: startsAtDate, expiryDate, active: !!active });
     const { user, ip } = getRequestInfo(req);
-    await logAction({ action: 'coupon.create', resourceType: 'Coupon', resourceId: coupon._id, user, ip, details: { code: coupon.code, discountType: coupon.discountType, discountValue: coupon.discountValue, expiryDate: coupon.expiryDate } });
+    await logAction({ action: 'coupon.create', resourceType: 'Coupon', resourceId: coupon._id, user, ip, details: { code: coupon.code, discountType: coupon.discountType, discountValue: coupon.discountValue, startsAt: coupon.startsAt, expiryDate: coupon.expiryDate } });
     return res.status(201).json({ success: true, message: `Đã tạo mã ${coupon.code} (${couponLabel(coupon)}).`, coupon: { ...coupon.toObject(), status: computeStatus(coupon) } });
   } catch (error) {
     console.error('Lỗi tạo mã giảm giá:', error);
@@ -91,9 +95,10 @@ export const createCoupon = async (req, res) => {
 
 export const updateCoupon = async (req, res) => {
   try {
-    const { code, description, discountType, discountValue, minOrderValue, maxDiscount, usageLimit, expiryDate, active } = req.body ?? {};
-    const payload = { description, discountType, discountValue, minOrderValue, maxDiscount, usageLimit, expiryDate, active };
+    const { code, description, discountType, discountValue, minOrderValue, maxDiscount, usageLimit, startsAt, expiryDate, active } = req.body ?? {};
+    const payload = { description, discountType, discountValue, minOrderValue, maxDiscount, usageLimit, startsAt, expiryDate, active };
     if (code !== undefined) payload.code = String(code).toUpperCase().trim();
+    if (startsAt !== undefined) payload.startsAt = startsAt ? new Date(startsAt) : null;
     Object.keys(payload).forEach((k) => payload[k] === undefined && delete payload[k]);
     const updated = await Coupon.findByIdAndUpdate(req.params.id, payload, { new: true, runValidators: true });
     if (!updated) return res.status(404).json({ success: false, message: 'Không tìm thấy mã giảm giá.' });
