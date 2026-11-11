@@ -7,6 +7,7 @@ import { resolveTier } from '../utils/membership.js';
 import { awardFreeShipVouchers, listFreeShipVouchers } from '../utils/freeShipVouchers.js';
 import { logAction, getRequestInfo } from '../utils/auditLog.js';
 import { io, userSocketMap } from '../index.js';
+import { sendMail } from '../utils/mailer.js';
 
 async function attachMembership(users) {
   const list = Array.isArray(users) ? users : [users];
@@ -237,6 +238,39 @@ export const updateUser = async (req, res) => {
 
     if (role) update.role = role;
     const updated = await User.findByIdAndUpdate(user._id, update, { new: true, runValidators: true }).lean();
+
+    // Gửi email thông báo khi admin đổi mật khẩu
+    if (password) {
+      const toEmail = String(user.originalEmail || user.email || '').toLowerCase().trim();
+      if (toEmail) {
+        await sendMail({
+          to: toEmail,
+          subject: 'Mộc Mạc – Mật khẩu của bạn đã được thay đổi',
+          html: `
+            <div style="font-family:'Segoe UI',Arial,sans-serif;background:#fbf9f2;padding:40px 20px;">
+              <div style="max-width:600px;margin:0 auto;background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 12px 40px rgba(47,69,56,0.10);border:1px solid #e8dfcb;">
+                <div style="padding:32px 24px 24px;background:linear-gradient(135deg,#2f4538 0%,#4a7c59 100%);text-align:center;">
+                  <div style="font-size:28px;font-weight:800;color:#fff;letter-spacing:2px;">MỘC MẠC</div>
+                  <div style="font-size:12px;color:#e8dfcb;margin-top:4px;letter-spacing:.5px;">Đặc sản & Làng Nghệ Việt</div>
+                </div>
+                <div style="padding:32px 24px;text-align:center;">
+                  <h1 style="margin:0 0 12px;font-size:22px;font-weight:800;color:#2f4538;">Mật khẩu đã được thay đổi</h1>
+                  <p style="margin:0 0 24px;font-size:14px;color:#7a7f73;line-height:1.6;">Xin chào <strong>${user.name || 'Khách hàng'}</strong>,</p>
+                  <p style="margin:0 0 24px;font-size:14px;color:#7a7f73;line-height:1.6;">Mật khẩu tài khoản Mộc Mạc của bạn đã được quản trị viên đặt lại. Nếu bạn không thực hiện thao tác này, vui lòng liên hệ hỗ trợ ngay lập tức.</p>
+                  <div style="padding:18px 28px;background:#f3efe3;border:1px solid #ddd5c2;border-radius:12px;display:inline-block;">
+                    <span style="display:inline-block;font-size:32px;font-weight:900;color:#c0392b;letter-spacing:8px;font-family:'Courier New',monospace;">✓ Đã thay đổi</span>
+                  </div>
+                </div>
+                <div style="padding:24px;background:#f3efe3;border-top:1px solid #e8dfcb;text-align:center;">
+                  <p style="margin:0;font-size:11px;color:#7a7f73;">© ${new Date().getFullYear()} Mộc Mạc — Đặc sản & Làng Nghệ Việt.<br>Nếu bạn không yêu cầu thay đổi này, vui lòng bỏ qua email này.</p>
+                </div>
+              </div>
+            </div>
+          `,
+        });
+      }
+    }
+
     const { user: reqUser, ip } = getRequestInfo(req);
     await logAction({ action: 'user.update', resourceType: 'User', resourceId: updated._id, user: reqUser, ip, details: { email: updated.email, role: updated.role, isActive: updated.isActive } });
     await attachMembership(updated);

@@ -130,7 +130,7 @@
           }
         </div>
         <h3>{{ p.name }}</h3>
-        <div class="stars" *ngIf="p.reviews > 0">★{{ p.reviews }} <small>({{ p.reviews }} đánh giá)</small></div>
+        <div class="stars" *ngIf="p.reviews > 0">{{ (p.avgRating || 0) | number:'1.1-1' }}★ <small>({{ p.reviews }} đánh giá)</small></div>
         <div class="stars empty" *ngIf="p.reviews === 0">Chưa có đánh giá</div>
         <small class="loc"><i class="fa-solid fa-location-dot" aria-hidden="true"></i> {{ p.province }}{{ p.region ? ' · ' + p.region : '' }}{{ p.village ? ' · ' + p.village : '' }}</small>
         <div class="row"><div class="price-stack">@if (flashSaleLive()) { <small>{{ p.price | number }}đ</small> } @else if (p.dealPrice) { <small>{{ p.price | number }}đ</small> }<b>{{ (flashSaleLive() ? flashSalePrice(p) : (p.dealPrice || p.price)) | number }}đ</b></div>
@@ -163,7 +163,7 @@
           }
         </div>
         <h3>{{ p.name }}</h3>
-        <div class="stars" *ngIf="p.reviews > 0">★{{ p.reviews }} <small>({{ p.reviews }} đánh giá)</small></div>
+        <div class="stars" *ngIf="p.reviews > 0">{{ (p.avgRating || 0) | number:'1.1-1' }}★ <small>({{ p.reviews }} đánh giá)</small></div>
         <div class="stars empty" *ngIf="p.reviews === 0">Chưa có đánh giá</div>
         <div class="row"><div class="price-stack">@if (flashSaleLive()) { <small>{{ p.price | number }}đ</small> } @else if (p.dealPrice) { <small>{{ p.price | number }}đ</small> }<b>{{ (flashSaleLive() ? flashSalePrice(p) : (p.dealPrice || p.price)) | number }}đ</b></div>
           <div class="buy-controls">

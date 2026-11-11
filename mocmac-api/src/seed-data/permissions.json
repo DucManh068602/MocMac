@@ -42,6 +42,13 @@
     "isSystem": true
   },
   {
+    "name": "users.password-reset",
+    "description": "Đặt lại mật khẩu cho người dùng khác",
+    "category": "users",
+    "action": "manage",
+    "isSystem": true
+  },
+  {
     "name": "products.view",
     "description": "Xem danh sách sản phẩm",
     "category": "products",
@@ -119,6 +126,13 @@
     "isSystem": true
   },
   {
+    "name": "reviews.create",
+    "description": "Tạo đánh giá sản phẩm",
+    "category": "reviews",
+    "action": "create",
+    "isSystem": true
+  },
+  {
     "name": "reviews.update",
     "description": "Cập nhật / ẩn / xóa đánh giá",
     "category": "reviews",
@@ -144,6 +158,13 @@
     "description": "Cập nhật / xóa mã giảm giá",
     "category": "coupons",
     "action": "update",
+    "isSystem": true
+  },
+  {
+    "name": "coupons.delete",
+    "description": "Xóa mã giảm giá",
+    "category": "coupons",
+    "action": "delete",
     "isSystem": true
   },
   {
@@ -207,6 +228,265 @@
     "description": "Đánh dấu / cập nhật thông báo",
     "category": "notifications",
     "action": "update",
+    "isSystem": true
+  },
+  {
+    "name": "notifications.delete",
+    "description": "Xóa thông báo",
+    "category": "notifications",
+    "action": "delete",
+    "isSystem": true
+  },
+  {
+    "name": "quotation-requests.view",
+    "description": "Xem danh sách yêu cầu báo giá",
+    "category": "quotation-requests",
+    "action": "view",
+    "isSystem": true
+  },
+  {
+    "name": "quotation-requests.create",
+    "description": "Tạo yêu cầu báo giá",
+    "category": "quotation-requests",
+    "action": "create",
+    "isSystem": true
+  },
+  {
+    "name": "quotation-requests.update",
+    "description": "Cập nhật trạng thái yêu cầu báo giá",
+    "category": "quotation-requests",
+    "action": "update",
+    "isSystem": true
+  },
+  {
+    "name": "flash-sales.view",
+    "description": "Xem flash sale",
+    "category": "flash-sales",
+    "action": "view",
+    "isSystem": true
+  },
+  {
+    "name": "flash-sales.create",
+    "description": "Tạo flash sale",
+    "category": "flash-sales",
+    "action": "create",
+    "isSystem": true
+  },
+  {
+    "name": "flash-sales.update",
+    "description": "Cập nhật flash sale",
+    "category": "flash-sales",
+    "action": "update",
+    "isSystem": true
+  },
+  {
+    "name": "flash-sales.delete",
+    "description": "Xóa flash sale",
+    "category": "flash-sales",
+    "action": "delete",
+    "isSystem": true
+  },
+  {
+    "name": "deals.view",
+    "description": "Xem ưu đãi",
+    "category": "deals",
+    "action": "view",
+    "isSystem": true
+  },
+  {
+    "name": "deals.create",
+    "description": "Tạo ưu đãi",
+    "category": "deals",
+    "action": "create",
+    "isSystem": true
+  },
+  {
+    "name": "deals.update",
+    "description": "Cập nhật ưu đãi",
+    "category": "deals",
+    "action": "update",
+    "isSystem": true
+  },
+  {
+    "name": "deals.delete",
+    "description": "Xóa ưu đãi",
+    "category": "deals",
+    "action": "delete",
+    "isSystem": true
+  },
+  {
+    "name": "village-stories.view",
+    "description": "Xem bài viết làng nghề",
+    "category": "village-stories",
+    "action": "view",
+    "isSystem": true
+  },
+  {
+    "name": "village-stories.create",
+    "description": "Tạo bài viết làng nghề",
+    "category": "village-stories",
+    "action": "create",
+    "isSystem": true
+  },
+  {
+    "name": "village-stories.update",
+    "description": "Cập nhật bài viết làng nghề",
+    "category": "village-stories",
+    "action": "update",
+    "isSystem": true
+  },
+  {
+    "name": "village-stories.delete",
+    "description": "Xóa bài viết làng nghề",
+    "category": "village-stories",
+    "action": "delete",
+    "isSystem": true
+  },
+  {
+    "name": "region-stories.view",
+    "description": "Xem bài viết vùng miền",
+    "category": "region-stories",
+    "action": "view",
+    "isSystem": true
+  },
+  {
+    "name": "region-stories.create",
+    "description": "Tạo bài viết vùng miền",
+    "category": "region-stories",
+    "action": "create",
+    "isSystem": true
+  },
+  {
+    "name": "region-stories.update",
+    "description": "Cập nhật bài viết vùng miền",
+    "category": "region-stories",
+    "action": "update",
+    "isSystem": true
+  },
+  {
+    "name": "region-stories.delete",
+    "description": "Xóa bài viết vùng miền",
+    "category": "region-stories",
+    "action": "delete",
+    "isSystem": true
+  },
+  {
+    "name": "site-content.view",
+    "description": "Xem nội dung trang",
+    "category": "site-content",
+    "action": "view",
+    "isSystem": true
+  },
+  {
+    "name": "site-content.create",
+    "description": "Tạo nội dung trang",
+    "category": "site-content",
+    "action": "create",
+    "isSystem": true
+  },
+  {
+    "name": "site-content.update",
+    "description": "Cập nhật nội dung trang",
+    "category": "site-content",
+    "action": "update",
+    "isSystem": true
+  },
+  {
+    "name": "site-content.delete",
+    "description": "Xóa nội dung trang",
+    "category": "site-content",
+    "action": "delete",
+    "isSystem": true
+  },
+  {
+    "name": "provinces.view",
+    "description": "Xem danh sách tỉnh/thành",
+    "category": "provinces",
+    "action": "view",
+    "isSystem": true
+  },
+  {
+    "name": "provinces.create",
+    "description": "Tạo tỉnh/thành",
+    "category": "provinces",
+    "action": "create",
+    "isSystem": true
+  },
+  {
+    "name": "provinces.update",
+    "description": "Cập nhật tỉnh/thành",
+    "category": "provinces",
+    "action": "update",
+    "isSystem": true
+  },
+  {
+    "name": "provinces.delete",
+    "description": "Xóa tỉnh/thành",
+    "category": "provinces",
+    "action": "delete",
+    "isSystem": true
+  },
+  {
+    "name": "regions.view",
+    "description": "Xem danh sách vùng miền",
+    "category": "regions",
+    "action": "view",
+    "isSystem": true
+  },
+  {
+    "name": "regions.create",
+    "description": "Tạo vùng miền",
+    "category": "regions",
+    "action": "create",
+    "isSystem": true
+  },
+  {
+    "name": "regions.update",
+    "description": "Cập nhật vùng miền",
+    "category": "regions",
+    "action": "update",
+    "isSystem": true
+  },
+  {
+    "name": "regions.delete",
+    "description": "Xóa vùng miền",
+    "category": "regions",
+    "action": "delete",
+    "isSystem": true
+  },
+  {
+    "name": "chat.view",
+    "description": "Xem trò chuyện / hỗ trợ khách hàng",
+    "category": "chat",
+    "action": "view",
+    "isSystem": true
+  },
+  {
+    "name": "uploads.view",
+    "description": "Xem hình ảnh đã tải lên",
+    "category": "uploads",
+    "action": "view",
+    "isSystem": true
+  },
+  {
+    "name": "uploads.create",
+    "description": "Tải lên hình ảnh",
+    "category": "uploads",
+    "action": "create",
+    "isSystem": true
+  },
+  {
+    "name": "uploads.delete",
+    "description": "Xóa hình ảnh đã tải lên",
+    "category": "uploads",
+    "action": "delete",
+    "isSystem": true
+  },
+  {
+    "name": "ai.view",
+    "description": "Sử dụng tính năng AI",
+    "category": "ai",
+    "action": "view",
     "isSystem": true
   }
 ]
