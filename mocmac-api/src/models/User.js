@@ -53,6 +53,11 @@ const userSchema = new mongoose.Schema(
       default: 'dong',
     },
 
+    freeShipVouchersIssued: {
+      type: Number,
+      default: 0,
+    },
+
     isVerified: {
       type: Boolean,
       default: false

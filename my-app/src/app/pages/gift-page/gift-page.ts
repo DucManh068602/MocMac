@@ -420,7 +420,12 @@ export class GiftPageComponent implements OnInit {
   readonly memberDiscountPercent = computed(() => Number(this.memberTier()?.discountPercent || 0));
   readonly memberDiscount = computed(() => Math.round(this.quoteTotal() * this.memberDiscountPercent() / 100));
   readonly quoteTotalAfterMember = computed(() => Math.max(0, this.quoteTotal() - this.memberDiscount()));
-  readonly memberFreeShipping = computed(() => Boolean(this.memberTier()?.freeShipping));
+  readonly memberFreeShipping = computed(() => {
+    const t = this.memberTier();
+    if (!t) return { free: false, threshold: 0 };
+    if (t.freeShipping === true) return { free: true, threshold: 0 };
+    return { free: false, threshold: Number(t.freeShippingThreshold || 0) };
+  });
 
   inQuote(p: ProductItem): boolean {
     return this.selectedItems().some((it) => it.productId === p.id);

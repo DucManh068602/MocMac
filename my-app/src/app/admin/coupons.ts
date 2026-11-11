@@ -49,6 +49,7 @@ import { ConfirmService } from './confirm.service';
             <label class="field">Ngày bắt đầu <input class="form-input" type="date" [(ngModel)]="form.startsAt" /></label>
             <label class="field">Ngày hết hạn <input class="form-input" type="date" [(ngModel)]="form.expiryDate" /></label>
             <label class="field field-check"><input type="checkbox" [(ngModel)]="form.active" /> Kích hoạt mã</label>
+            <label class="field field-check"><input type="checkbox" [(ngModel)]="form.freeShipping" /> Miễn phí vận chuyển</label>
             <label class="field field-wide">Mô tả/ghi chú <input class="form-input" placeholder="Áp dụng cho..., không áp dụng với..." [(ngModel)]="form.description" /></label>
           </div>
           @if (preview()) { <p class="coupon-preview">Xem nhanh: <strong>{{ preview() }}</strong>{{ form.startsAt ? ' · Bắt đầu ' + form.startsAt : '' }}{{ form.expiryDate ? ' · Hết hạn ' + form.expiryDate : '' }}</p> }
@@ -71,7 +72,7 @@ import { ConfirmService } from './confirm.service';
                 <td>{{ c.usedCount || 0 }} / {{ c.usageLimit ? c.usageLimit : '∞' }}</td>
                 <td>{{ c.startsAt | date:'dd/MM/yyyy' }}</td>
                 <td>{{ c.expiryDate | date:'dd/MM/yyyy' }}</td>
-                <td><span class="status-badge" [ngClass]="statusClass(c.status)">{{ statusLabel(c.status) }}</span></td>
+                <td><span class="status-badge" [ngClass]="statusClass(c.status)">{{ statusLabel(c.status) }}</span>@if (c.freeShipping) { <span class="status-badge status-free">Free Ship</span> }</td>
                 <td class="actions">
                   <button type="button" class="btn-small" (click)="editCoupon(c)">Sửa</button>
                   <button type="button" class="btn-small" (click)="notifyCoupon(c)">Thông báo</button>
@@ -134,13 +135,13 @@ export class AdminCouponsComponent {
   startCreate(): void {
     this.editing.set(null);
     const nextMonth = new Date(); nextMonth.setMonth(nextMonth.getMonth() + 1);
-    this.form = { code: '', discountType: 'percent', discountValue: 10, maxDiscount: 0, usageLimit: 0, expiryDate: nextMonth.toISOString().slice(0, 10), minOrderValue: 0, active: true, description: '', startsAt: new Date().toISOString().slice(0, 10) };
+    this.form = { code: '', discountType: 'percent', discountValue: 10, maxDiscount: 0, usageLimit: 0, expiryDate: nextMonth.toISOString().slice(0, 10), minOrderValue: 0, active: true, description: '', startsAt: new Date().toISOString().slice(0, 10), freeShipping: false };
     this.showForm.set(true);
   }
 
   editCoupon(c: any): void {
     this.editing.set(c);
-    this.form = { ...c, expiryDate: c.expiryDate ? new Date(c.expiryDate).toISOString().slice(0, 10) : '', startsAt: c.startsAt ? new Date(c.startsAt).toISOString().slice(0, 10) : '' };
+    this.form = { ...c, expiryDate: c.expiryDate ? new Date(c.expiryDate).toISOString().slice(0, 10) : '', startsAt: c.startsAt ? new Date(c.startsAt).toISOString().slice(0, 10) : '', freeShipping: Boolean(c.freeShipping) };
     this.showForm.set(true);
   }
 

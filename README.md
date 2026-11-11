@@ -160,6 +160,28 @@ Lưu ý: backend (`mocmac-api`) phải chạy trước frontend để API hoạt
 
 ---
 
+### Hệ thống phiếu giảm phí vận chuyển (tự sinh, không có trong seed)
+
+Phiếu giảm ship **không được nạp sẵn qua `npm run seed`** — chúng được hệ thống tự sinh cho mỗi khách hàng khi chi tiêu đạt mốc:
+
+| Tổng chi tiêu | Số phiếu nhận | Mỗi phiếu giảm |
+|---------------|---------------|----------------|
+| 500.000đ | 1 | 30.000đ phí ship |
+| 1.000.000đ | 2 | 30.000đ phí ship |
+| 1.500.000đ | 3 | 30.000đ phí ship |
+| ... (mỗi 500.000đ) | +1 | 30.000đ phí ship |
+
+**Quan trọng:** Hệ thống **tặng theo mốc 500.000đ, vô hạn số lần**:
+- Chỉ tính số phiếu khách **đủ nhận** (`eligible = floor(tổngChiTiêu / 500.000)`) trừ đi số phiếu **đã cấp trước đó** (`issued`).
+- Mỗi mốc 500.000đ chỉ tặng **1 lần**, không tặng lại.
+- Không giới hạn tổng số phiếu (tùy chi tiêu của khách).
+- Mỗi phiếu mã ngẫu nhiên (`FS-XXXXXXXX`), giảm **30.000đ phí ship**, hạn dùng 90 ngày, dùng 1 lần.
+- Tối đa áp dụng **2 phiếu/đơn**, giảm phí ship tối đa bằng phí ship đơn hàng.
+
+**Luồng:** Khách mua hàng → vượt mỗi mốc 500.000đ → hệ thống tự sinh mã + gửi thông báo → khách xem phiếu tại `/tai-khoan` hoặc `/gio-hang` → áp dụng tại thanh toán → phí ship giảm.
+
+---
+
 ## 7. Các lệnh thường dùng
 
 ### Frontend (`my-app`)

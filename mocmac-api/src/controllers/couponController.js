@@ -65,7 +65,7 @@ export const validateCoupon = async (req, res) => {
     }
     let discountAmount = coupon.discountType === 'percent' ? Math.round(eligibleBase * coupon.discountValue / 100) : Number(coupon.discountValue || 0);
     if (coupon.discountType === 'percent' && coupon.maxDiscount > 0) discountAmount = Math.min(discountAmount, coupon.maxDiscount);
-    return res.json({ success: true, message: `Mã ${coupon.code} hợp lệ: ${couponLabel(coupon)}.`, code: coupon.code, status: computeStatus(coupon), discountType: coupon.discountType, discountValue: coupon.discountValue, discountAmount: Math.max(0, discountAmount), description: coupon.description || '', memberDiscountPercent, memberDiscount, eligibleBase });
+    return res.json({ success: true, message: `Mã ${coupon.code} hợp lệ: ${couponLabel(coupon)}.`, code: coupon.code, status: computeStatus(coupon), discountType: coupon.discountType, discountValue: coupon.discountValue, discountAmount: Math.max(0, discountAmount), description: coupon.description || '', memberDiscountPercent, memberDiscount, eligibleBase, freeShipping: Boolean(coupon.freeShipping), shippingDiscount: Number(coupon.shippingDiscount || 0) });
   } catch (error) {
     console.error('Lỗi xác thực mã giảm giá:', error);
     const { user, ip } = getRequestInfo(req);
@@ -76,14 +76,14 @@ export const validateCoupon = async (req, res) => {
 
 export const createCoupon = async (req, res) => {
   try {
-    const { code, description, discountType, discountValue, minOrderValue, maxDiscount, usageLimit, startsAt, expiryDate, active = true } = req.body ?? {};
+    const { code, description, discountType, discountValue, minOrderValue, maxDiscount, usageLimit, startsAt, expiryDate, active = true, freeShipping = false, shippingDiscount = 0 } = req.body ?? {};
     if (!code || discountValue === undefined || discountValue === null || discountValue === '') return res.status(400).json({ success: false, message: 'Vui lòng nhập mã và giá trị giảm.' });
     if (!expiryDate) return res.status(400).json({ success: false, message: 'Vui lòng chọn ngày hết hạn.' });
     const normalizedCode = String(code).toUpperCase().trim();
     const exists = await Coupon.findOne({ code: normalizedCode }).lean();
     if (exists) return res.status(409).json({ success: false, message: `Mã ${normalizedCode} đã tồn tại.` });
     const startsAtDate = startsAt ? new Date(startsAt) : null;
-    const coupon = await Coupon.create({ code: normalizedCode, description: description ?? '', discountType: discountType ?? 'percent', discountValue: Number(discountValue), minOrderValue: Number(minOrderValue ?? 0), maxDiscount: Number(maxDiscount ?? 0), usageLimit: Number(usageLimit ?? 0), startsAt: startsAtDate, expiryDate, active: !!active });
+    const coupon = await Coupon.create({ code: normalizedCode, description: description ?? '', discountType: discountType ?? 'percent', discountValue: Number(discountValue), minOrderValue: Number(minOrderValue ?? 0), maxDiscount: Number(maxDiscount ?? 0), usageLimit: Number(usageLimit ?? 0), startsAt: startsAtDate, expiryDate, active: !!active, freeShipping: !!freeShipping, shippingDiscount: Number(shippingDiscount || 0) });
     const { user, ip } = getRequestInfo(req);
     await logAction({ action: 'coupon.create', resourceType: 'Coupon', resourceId: coupon._id, user, ip, details: { code: coupon.code, discountType: coupon.discountType, discountValue: coupon.discountValue, startsAt: coupon.startsAt, expiryDate: coupon.expiryDate } });
     return res.status(201).json({ success: true, message: `Đã tạo mã ${coupon.code} (${couponLabel(coupon)}).`, coupon: { ...coupon.toObject(), status: computeStatus(coupon) } });
@@ -95,10 +95,12 @@ export const createCoupon = async (req, res) => {
 
 export const updateCoupon = async (req, res) => {
   try {
-    const { code, description, discountType, discountValue, minOrderValue, maxDiscount, usageLimit, startsAt, expiryDate, active } = req.body ?? {};
-    const payload = { description, discountType, discountValue, minOrderValue, maxDiscount, usageLimit, startsAt, expiryDate, active };
+    const { code, description, discountType, discountValue, minOrderValue, maxDiscount, usageLimit, startsAt, expiryDate, active, freeShipping, shippingDiscount } = req.body ?? {};
+    const payload = { description, discountType, discountValue, minOrderValue, maxDiscount, usageLimit, startsAt, expiryDate, active, freeShipping, shippingDiscount };
     if (code !== undefined) payload.code = String(code).toUpperCase().trim();
     if (startsAt !== undefined) payload.startsAt = startsAt ? new Date(startsAt) : null;
+    if (freeShipping !== undefined) payload.freeShipping = !!freeShipping;
+    if (shippingDiscount !== undefined) payload.shippingDiscount = Number(shippingDiscount || 0);
     Object.keys(payload).forEach((k) => payload[k] === undefined && delete payload[k]);
     const updated = await Coupon.findByIdAndUpdate(req.params.id, payload, { new: true, runValidators: true });
     if (!updated) return res.status(404).json({ success: false, message: 'Không tìm thấy mã giảm giá.' });

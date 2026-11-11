@@ -700,3 +700,56 @@
   }
 
 }
+
+/* ===== VISUAL UPGRADE: CONTACT PAGE ===== */
+.contact-banner{
+  background:linear-gradient(135deg,#2e4a3d 0%,#3d6a4e 55%,#2e4a3d 100%);
+  color:#fff
+}
+.contact-banner h1,.contact-banner p,.contact-banner .small-title{color:#fff}
+.contact-banner .small-title{color:#d4a373}
+.contact-info h2{color:#2e4a3d}
+.contact-info p.intro{color:#6b6a5c}
+.info-item{display:flex;gap:16px;padding:18px 20px;border-radius:14px;border:1px solid #e8dec7;background:#fff;margin-bottom:12px;box-shadow:0 4px 14px rgba(46,55,42,.06);transition:transform .2s ease,border-color .2s ease}
+.info-item:hover{transform:translateY(-3px);border-color:#d4cbb8;box-shadow:0 10px 24px rgba(46,55,42,.1)}
+.info-icon{display:grid;place-items:center;width:44px;height:44px;flex:0 0 44px;border-radius:12px;background:color-mix(in srgb,#2e4a3d 12%,transparent);color:#2e4a3d;font-size:20px}
+.info-item h3{margin:0 0 4px;font-size:14px;color:#2e4a3d;font-weight:700}
+.info-item p{margin:0;color:#6b6a5c;font-size:13px;line-height:1.6}
+.info-item a{color:#6b6a5c;text-decoration:none}
+.info-item a:hover{color:#b56f45;text-decoration:underline}
+.social p{color:#6b6a5c;font-weight:700;margin-bottom:12px}
+.social-icons a{display:grid;place-items:center;width:42px;height:42px;border-radius:10px;border:1px solid #ddd6c8;background:#fff;color:#2e4a3d;text-decoration:none;font-size:18px;transition:transform .2s ease,background .2s ease,color .2s ease}
+.social-icons a:hover{background:#2e4a3d;color:#fff;transform:translateY(-3px)}
+.contact-form-box{border:1px solid #e8dec7;border-radius:18px;background:#fff;padding:30px;box-shadow:0 12px 34px rgba(46,55,42,.08)}
+.contact-form-box h2{color:#2e4a3d;font-size:22px;margin:0 0 8px}
+.form-description{color:#6b6a5c;margin-bottom:24px}
+.contact-form .form-group{margin-bottom:18px}
+.contact-form label{display:flex;align-items:center;gap:6px;margin-bottom:8px;color:#4c4d43;font-size:12px;font-weight:700}
+.contact-form label span{color:#c0392b}
+.contact-form input,.contact-form select,.contact-form textarea{width:100%;min-height:46px;padding:12px 15px;border:1px solid #ddd6c8;border-radius:10px;background:#fff;color:#343933;font:inherit;font-size:13px;outline:none;transition:border-color .2s ease,box-shadow .2s ease}
+.contact-form textarea{min-height:130px;resize:vertical}
+.contact-form input:focus,.contact-form select:focus,.contact-form textarea:focus{border-color:#8b9c79;box-shadow:0 0 0 3px rgba(46,77,61,.09)}
+.send-button{width:100%;min-height:50px;border-radius:10px;border:0;background:#2e4a3d;color:#fff;font:700 15px 'Be Vietnam Pro';cursor:pointer;box-shadow:0 6px 16px rgba(46,77,61,.2);transition:transform .2s ease,background .2s ease;display:flex;align-items:center;justify-content:center;gap:8px}
+.send-button:hover{background:#1e2d24;transform:translateY(-2px)}
+.send-button i{font-size:14px}
+.success{padding:16px 18px;border-radius:12px;background:#f0f6e9;border:1px solid #d8e5ce;color:#416132;display:flex;align-items:center;gap:10px;margin-top:18px;font-size:14px}
+.popup{background:#fff;border-radius:14px;padding:26px;text-align:center;box-shadow:0 20px 50px rgba(0,0,0,.15)}
+.popup-icon{width:52px;height:52px;border-radius:50%;display:grid;place-items:center;margin:0 auto 16px;font-size:24px}
+.popup-icon .fa-circle-check{color:#2e4a3d;background:#eef5ea}
+.popup-icon .fa-circle-xmark{color:#c0392b;background:#fdecea}
+.popup-message{font-size:15px;color:#343933;margin-bottom:20px}
+.popup-close{min-height:40px;padding:0 24px;border-radius:8px;border:0;background:#2e4a3d;color:#fff;font-weight:700;cursor:pointer}
+.popup-close:hover{background:#1e2d24}
+.quick-support{padding:40px 20px;background:#f4f7ee}
+.support-title{text-align:center;margin-bottom:26px}
+.support-title h2{color:#2e4a3d;font-size:24px;margin:6px 0 0}
+.support-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.support-card{display:flex;flex-direction:column;gap:10px;padding:24px 20px;border-radius:16px;border:1px solid #e8dec7;background:#fff;text-decoration:none;color:inherit;transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease}
+.support-card:hover{transform:translateY(-5px);border-color:#d4cbb8;box-shadow:0 14px 30px rgba(46,55,42,.14)}
+.support-icon{display:grid;place-items:center;width:44px;height:44px;border-radius:12px;background:color-mix(in srgb,#b56f45 12%,transparent);color:#b56f45;font-size:20px}
+.support-card h3{margin:0 0 6px;font-size:15px;color:#2e4a3d;font-weight:700}
+.support-card p{margin:0;color:#6b6a5c;font-size:13px;line-height:1.6}
+.support-card a{margin-top:auto;color:#b56f45;font-weight:700;text-decoration:none;font-size:13px}
+.support-card a:hover{color:#2e4a3d;text-decoration:underline}
+@media (max-width:900px){.contact-wrapper,.quick-support .wrap{grid-template-columns:1fr;gap:24px}.support-grid{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:560px){.support-grid{grid-template-columns:1fr}}

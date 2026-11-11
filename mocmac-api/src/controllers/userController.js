@@ -4,6 +4,7 @@ import { Order } from '../models/Order.js';
 import { QuotationRequest } from '../models/QuotationRequest.js';
 import { Notification } from '../models/Notification.js';
 import { resolveTier } from '../utils/membership.js';
+import { awardFreeShipVouchers, listFreeShipVouchers } from '../utils/freeShipVouchers.js';
 import { logAction, getRequestInfo } from '../utils/auditLog.js';
 import { io, userSocketMap } from '../index.js';
 
@@ -234,8 +235,8 @@ export const getMyMembership = async (req, res) => {
     // Auto-notify tier upgrade
     try {
       const tierOrder = { dong: 0, bac: 1, vang: 2, kimcuong: 3 };
-      const user = await User.findById(userId).select('lastNotifiedTier').lean();
-      const lastTier = user?.lastNotifiedTier || 'dong';
+      const userDoc = await User.findById(userId).select('lastNotifiedTier freeShipVouchersIssued').lean();
+      const lastTier = userDoc?.lastNotifiedTier || 'dong';
       if ((tierOrder[membership.currentTier.key] ?? 0) > (tierOrder[lastTier] ?? 0)) {
         await User.findByIdAndUpdate(userId, { $set: { lastNotifiedTier: membership.currentTier.key } });
         await Notification.create({
@@ -249,6 +250,27 @@ export const getMyMembership = async (req, res) => {
         });
         const socketId = userSocketMap.get(String(userId));
         if (socketId) io.to(socketId).emit('notification', { title: `Chúc mừng bạn đã đạt hạng ${membership.currentTier.name}`, type: 'system', link: '/tai-khoan', createdAt: new Date() });
+      }
+
+      // Tự động tặng phiếu miễn phí vận chuyển mỗi mốc 100.000đ (mỗi mốc 1 lần)
+      try {
+        const { awarded } = await awardFreeShipVouchers(userDoc, orderSpend + giftSpend);
+        if (awarded.length > 0) {
+          const codes = awarded.map((c) => c.code).join(', ');
+          await Notification.create({
+            title: `Bạn nhận được ${awarded.length} phiếu miễn phí vận chuyển`,
+            content: `Mã: ${codes}. Mã áp dụng miễn phí ship cho đơn hàng tiếp theo, hạn dùng 90 ngày.`,
+            type: 'promo',
+            recipient: userId,
+            link: '/gio-hang',
+            sent: true,
+            sentAt: new Date(),
+          });
+          const socketId = userSocketMap.get(String(userId));
+          if (socketId) io.to(socketId).emit('notification', { title: `Bạn nhận được ${awarded.length} phiếu miễn phí vận chuyển`, type: 'promo', link: '/gio-hang', createdAt: new Date() });
+        }
+      } catch (e) {
+        console.error('Free ship voucher award error:', e.message || e);
       }
     } catch (e) {
       console.error('Tier upgrade notification error:', e.message || e);
@@ -290,6 +312,19 @@ export const updateMyProfile = async (req, res) => {
 };
 
 
+export const getMyFreeShipVouchers = async (req, res) => {
+  try {
+    const userId = req.user?._id || req.user?.id;
+    const user = await User.findById(userId).select('freeShipVouchersIssued email').lean();
+    if (!user) return res.status(404).json({ success: false, message: 'Không tìm thấy người dùng.' });
+    const vouchers = await listFreeShipVouchers(user);
+    return res.json({ success: true, vouchers, issued: Number(user.freeShipVouchersIssued || 0) });
+  } catch (error) {
+    console.error('Free ship vouchers error:', error);
+    return res.status(500).json({ success: false, message: 'Không thể tải phiếu miễn phí vận chuyển.' });
+  }
+};
+
 export const getMyProfile = async (req, res) => {
   try {
     const userId = req.user?._id || req.user?.id;
@@ -298,6 +333,6 @@ export const getMyProfile = async (req, res) => {
     return res.json({ success: true, user });
   } catch (error) {
     console.error('Lỗi lấy hồ sơ:', error);
-    return res.status(500).json({ success: false, message: 'Không thể tải hồ sơ.', error: error.message });
+    return res.status(500).json({ success: false, message: 'Không thể tải hồ sơ.' });
   }
 };

@@ -352,7 +352,8 @@
                 <strong>Ưu đãi hội viên {{ tier.name }}</strong>
                 <p>
                   @if (memberDiscountPercent() > 0) { Giảm {{ memberDiscountPercent() }}% tự động trên tổng báo giá. }
-                  @if (memberFreeShipping()) { Miễn phí vận chuyển cho đơn hàng hội viên. }
+                  @if (memberFreeShipping().free) { Miễn phí vận chuyển mọi đơn hàng. }
+                  @else if (memberFreeShipping().threshold > 0) { Miễn phí vận chuyển khi đơn hàng đạt {{ formatPrice(memberFreeShipping().threshold) }}. }
                   @if (tier.priorityQuotation) { Ưu tiên xử lý báo giá quà tặng. }
                 </p>
               </div>

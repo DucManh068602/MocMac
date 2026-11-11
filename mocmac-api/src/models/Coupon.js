@@ -13,6 +13,8 @@ const couponSchema = new mongoose.Schema(
     startsAt: { type: Date },
     expiryDate: { type: Date, required: true },
     active: { type: Boolean, default: true },
+    freeShipping: { type: Boolean, default: false },
+    shippingDiscount: { type: Number, default: 0 },
   },
   { timestamps: true }
 );

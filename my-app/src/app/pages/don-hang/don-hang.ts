@@ -144,14 +144,19 @@ export class DonHangComponent implements OnInit {
     const history = order.statusHistory || [];
     const currentStatus = order.status || 'pending';
     const currentIdx = this.currentStep(currentStatus);
+    const isFinal = currentIdx === STATUS_STEPS.length - 1;
 
     // Các trạng thái đã từng xuất hiện trong lịch sử
-    const visitedStatuses = new Set(history.map(h => h.status));
+    const visitedStatuses = new Set(history.map((h) => h.status));
     visitedStatuses.add(currentStatus); // đảm bảo trạng thái hiện tại cũng tính
 
     return STATUS_STEPS.map((step, i) => {
-      const done = visitedStatuses.has(step.key) && i < currentIdx;
-      const active = i === currentIdx;
+      // Các bước đã đi qua (trước bước hiện tại) đều tính là hoàn thành
+      const passed = i < currentIdx;
+      // Nếu đang ở bước cuối cùng (đã nhận), bước hiện tại cũng hoàn thành (hiện tick)
+      const finished = isFinal && i === currentIdx && visitedStatuses.has(step.key);
+      const done = passed || finished;
+      const active = i === currentIdx && !done;
       return { done, active };
     });
   }

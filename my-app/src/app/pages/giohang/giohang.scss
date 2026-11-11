@@ -1255,3 +1255,277 @@ $error: #b3401f;
   white-space:nowrap;
 }
 .member-benefit-link:hover { text-decoration:underline; }
+
+/* ===== Phiếu miễn phí vận chuyển ===== */
+.freeship-vouchers {
+  margin-bottom: 16px;
+  padding: 16px;
+  border-radius: 12px;
+  border: 1px solid $border;
+  background: #fbfdfb;
+}
+
+.freeship-vouchers label {
+  display: block;
+  margin-bottom: 10px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #3d4f43;
+}
+
+.freeship-vouchers .muted {
+  display: block;
+  font-size: 11.5px;
+  color: $text-muted;
+  margin-bottom: 10px;
+}
+
+.voucher-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.voucher-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid #ddd6c8;
+  background: #fff;
+  transition: border-color .2s ease, box-shadow .2s ease;
+}
+
+.voucher-item.used {
+  opacity: 0.65;
+  border-color: #e2e0d8;
+  background: #f7f6f2;
+}
+
+.voucher-item:hover:not(.used) {
+  border-color: #a25633;
+  box-shadow: 0 4px 12px rgba(162, 86, 51, .12);
+}
+
+.voucher-code {
+  font: 700 13px 'Be Vietnam Pro';
+  color: #1c2a20;
+  letter-spacing: 0.5px;
+}
+
+.voucher-desc {
+  font-size: 11.5px;
+  color: $text-muted;
+  flex: 1;
+  min-width: 0;
+  margin-right: 10px;
+}
+
+.voucher-actions {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.btn-apply-voucher {
+  padding: 6px 14px;
+  border-radius: 8px;
+  border: 0;
+  background: #1d4a2e;
+  color: #fff;
+  font: 600 12px 'Be Vietnam Pro';
+  cursor: pointer;
+  transition: background .2s ease, transform .2s ease;
+  white-space: nowrap;
+}
+
+.btn-apply-voucher:hover {
+  background: #16392a;
+  transform: translateY(-1px);
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font: 600 11px 'Be Vietnam Pro';
+  white-space: nowrap;
+}
+
+.chip.applied {
+  background: #e8f5e9;
+  color: #2e7d32;
+}
+
+.chip.used {
+  background: #f5f5f5;
+  color: #8a8177;
+}
+
+/* Nút xóa mã đã áp dụng */
+.remove-coupon {
+  background: transparent;
+  border: 0;
+  color: #c0392b;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 2px 6px;
+  line-height: 1;
+}
+.remove-coupon:hover { color: #a93226; }
+
+.btn-remove-voucher {
+  padding: 4px 10px;
+  border-radius: 6px;
+  border: 0;
+  background: #f5f5f5;
+  color: #8a8177;
+  font: 600 11px 'Be Vietnam Pro';
+  cursor: pointer;
+}
+.btn-remove-voucher:hover { background: #e8e7e2; color: #5d6b61; }
+
+.chip.limit {
+  background: #fff3e0;
+  color: #e65100;
+}
+
+/* Shipping discount row */
+.shipping-discount-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 8px 0;
+  font-size: 13px;
+  color: $text-muted;
+}
+.shipping-discount-row strong {
+  color: #2e7d32;
+  font-weight: 700;
+}
+
+/* Voucher item selected state */
+.voucher-item.selected {
+  border-color: #1d4a2e;
+  background: #eef5ea;
+}
+
+/* ===== VISUAL UPGRADE: CART PAGE ===== */
+.item-card {
+  transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+}
+.item-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 24px rgba(46, 77, 61, .1);
+  border-color: #d4cbb8;
+}
+.item-card .thumb {
+  transition: transform .4s ease;
+}
+.item-card:hover .thumb {
+  transform: scale(1.03);
+}
+.qty button {
+  transition: background .18s ease, color .18s ease;
+}
+.remove {
+  transition: color .18s ease, transform .18s ease;
+}
+.remove:hover {
+  transform: scale(1.1);
+}
+
+/* Summary card upgrades */
+.summary-card {
+  position: sticky;
+  top: 20px;
+}
+.summary-card .total strong {
+  color: #1d4a2e;
+  text-shadow: 0 1px 2px rgba(29, 74, 46, .1);
+}
+.coupon-row button {
+  background: #1d4a2e;
+  color: #fff;
+  border-radius: 8px;
+  padding: 0 16px;
+  height: 40px;
+  font: 600 13px 'Be Vietnam Pro', sans-serif;
+  transition: background .2s ease;
+}
+.coupon-row button:hover {
+  background: #16392a;
+}
+.coupon .ok {
+  font-weight: 700;
+  color: #2e7d32;
+}
+
+/* Checkout button */
+.btn-primary.block {
+  background: linear-gradient(135deg, #1d4a2e 0%, #2e6b45 100%);
+  box-shadow: 0 6px 16px rgba(29, 74, 46, .25);
+}
+.btn-primary.block:hover {
+  background: linear-gradient(135deg, #16392a 0%, #275e3f 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 9px 20px rgba(29, 74, 46, .3);
+}
+.btn-primary.block:disabled {
+  opacity: .7;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Shipping banner */
+.shipping-banner {
+  background: linear-gradient(135deg, #f4f7ee 0%, #eef3ea 100%);
+  border: 1px solid #d8e3d6;
+}
+.shipping-banner .free-tag {
+  background: linear-gradient(135deg, #1d4a2e 0%, #2e6b45 100%);
+}
+.progress span {
+  background: linear-gradient(90deg, #2e6b45, #a25633);
+}
+
+/* Empty state */
+.empty-state .empty-icon {
+  box-shadow: 0 4px 12px rgba(29, 74, 46, .12);
+}
+
+/* Product cards bottom */
+.bottom-card {
+  transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+}
+.bottom-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 28px rgba(46, 77, 61, .1);
+  border-color: #c9bda8;
+}
+.bottom-order-btn {
+  background: #a25633;
+  box-shadow: 0 4px 12px rgba(162, 86, 51, .25);
+}
+.bottom-order-btn:hover {
+  background: #874223;
+  transform: translateY(-1px);
+}
+
+/* Assurance list */
+.assurance li {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+.assurance li::before {
+  content: '✦';
+  color: #a25633;
+  font-size: 12px;
+  flex-shrink: 0;
+  margin-top: 1px;
+}

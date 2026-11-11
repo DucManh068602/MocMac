@@ -154,6 +154,10 @@
                 {{ p.type }}
               </span>
 
+              @if (flashSaleLive()) {
+                <span class="badge badge-flash"> Săn sale -{{ flashSalePercent() }}% </span>
+              }
+
               <span class="badge badge-beige"> Hàng Việt </span>
             </div>
 
@@ -196,9 +200,16 @@
             <div class="price-card">
               <span class="price-label"> Giá bán </span>
               <div class="deal-price">
-                @if (p.deal?.discountType === 'percent') { <span class="detail-deal-chip">Giảm {{ p.deal?.discountValue }}%</span> }
-                @if (p.dealPrice) { <del>{{ fmt(p.price) }}</del> }
-                <strong class="price">{{ fmt(p.dealPrice || p.price) }}</strong>
+                @if (flashSaleLive()) {
+                  <span class="detail-deal-chip">Săn sale -{{ flashSalePercent() }}%</span>
+                  <del>{{ fmt(displayOriginal(p)) }}</del>
+                } @else if (p.deal?.discountType === 'percent') {
+                  <span class="detail-deal-chip">Giảm {{ p.deal?.discountValue }}%</span>
+                  @if (p.dealPrice) { <del>{{ fmt(p.price) }}</del> }
+                } @else if (p.dealPrice) {
+                  <del>{{ fmt(p.price) }}</del>
+                }
+                <strong class="price">{{ fmt(displayPrice(p)) }}</strong>
               </div>
             </div>
 

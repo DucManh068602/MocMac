@@ -29,6 +29,11 @@ export class ProductDetailComponent {
   readonly auth = inject(AuthService);
   readonly i18n = inject(I18nService);
   private readonly ct = inject(ContentTranslateService);
+  private readonly flashSaleTimer = signal<ReturnType<typeof setInterval> | null>(null);
+
+  readonly flashSale = signal<any>(null);
+  readonly flashSaleLive = computed(() => Boolean(this.flashSale()?.live));
+  readonly flashSalePercent = computed(() => Number(this.flashSale()?.discountPercent || 0));
 
   readonly allProducts = this.productsService.products;
   readonly shareMessage = signal('');
@@ -196,6 +201,11 @@ export class ProductDetailComponent {
   readonly reviewCount = computed<number>(() => this.reviews().length);
 
   constructor() {
+    this.fetchFlashSale();
+    this.flashSaleTimer.set(window.setInterval(() => this.fetchFlashSale(), 5000));
+    window.addEventListener('visibilitychange', this.onVisibilityChange);
+    window.addEventListener('focus', this.onVisibilityChange);
+
     effect(() => {
       this.loadProduct(this.productSlug());
     });
@@ -215,6 +225,33 @@ export class ProductDetailComponent {
         untracked(() => this.loadRelatedReviewStats(related));
       }
     });
+  }
+
+  ngOnDestroy(): void {
+    if (this.flashSaleTimer()) window.clearInterval(this.flashSaleTimer()!);
+    window.removeEventListener('visibilitychange', this.onVisibilityChange);
+    window.removeEventListener('focus', this.onVisibilityChange);
+  }
+
+  private onVisibilityChange = () => {
+    if (!document.hidden) this.fetchFlashSale();
+  };
+
+  private fetchFlashSale(): void {
+    this.http.get<any>('/api/flash-sale').subscribe({
+      next: (r) => { this.flashSale.set(r?.sale ?? null); },
+      error: () => this.flashSale.set(null),
+    });
+  }
+
+  displayPrice(p: ProductItem): number {
+    const price = Number(p.price || 0);
+    if (this.flashSaleLive()) return Math.max(0, Math.round(price * (100 - this.flashSalePercent()) / 100));
+    return Number(p.dealPrice || price);
+  }
+
+  displayOriginal(p: ProductItem): number {
+    return Number(p.price || 0);
   }
 
   displayDescription(p: any): string {

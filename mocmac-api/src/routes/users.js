@@ -12,11 +12,13 @@ import {
   getMyMembership,
   updateMyProfile,
   getMyProfile,
+  getMyFreeShipVouchers,
 } from '../controllers/userController.js';
 
 const router = Router();
 
 router.get('/me/membership', requireAuth, getMyMembership);
+router.get('/me/free-ship-vouchers', requireAuth, getMyFreeShipVouchers);
 router.get('/me', requireAuth, getMyProfile);
 router.patch('/me', requireAuth, updateMyProfile);
 router.get('/', requireAuth, requireRole('admin', 'staff'), requirePermission('users.view'), getAllUsers);

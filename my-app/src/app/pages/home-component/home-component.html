@@ -74,16 +74,37 @@
 </section>
 
 <section class="wrap" id="sp">
-  @if (flashSale()?.live) {
-    <div class="flash-sale-banner">
-      <span class="flash-sale-icon"><i class="fa-solid fa-bolt" aria-hidden="true"></i></span>
-      <div class="flash-sale-copy"><strong>Săn sale toàn shop · Giảm {{ flashSale()?.discountPercent }}%</strong><small><i class="fa-regular fa-clock" aria-hidden="true"></i> {{ flashSale()?.startsAt | date:'HH:mm dd/MM' }} — {{ flashSale()?.endsAt | date:'HH:mm dd/MM' }}</small></div>
-      <div class="sale-countdown" aria-label="Thời gian còn lại"><span><b>{{ saleRemaining().days }}</b><small>ngày</small></span><i>:</i><span><b>{{ saleRemaining().hours | number:'2.0-0' }}</b><small>giờ</small></span><i>:</i><span><b>{{ saleRemaining().minutes | number:'2.0-0' }}</b><small>phút</small></span><i>:</i><span><b>{{ saleRemaining().secs | number:'2.0-0' }}</b><small>giây</small></span></div>
-      <a href="#best-sellers">Xem hàng bán chạy <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
-      <div class="sale-range" aria-label="Tiến trình thời gian sale"><div class="sale-elapsed" [style.width.%]="saleProgress()"></div><div class="sale-remaining" [style.width.%]="100 - saleProgress()"></div></div>
-      <span class="sale-bolt" aria-hidden="true">⚡</span>
+  <ng-container *ngIf="flashSale() as sale">
+    <div class="fs-hero" [class.live]="flashSaleLive()" [class.upcoming]="!flashSaleLive() && sale?.active && sale?.startsAt">
+      <div class="fs-badge">{{ flashSaleLive() ? 'ĐANG DIỄN RA' : sale?.active ? 'SẮP BẮT ĐẦU' : 'SẮP Diễn ra' }}</div>
+      <div class="fs-inner">
+        <div class="fs-left">
+          <h2 class="fs-title"><i class="fa-solid fa-bolt"></i> SĂN SALE TOÀN SHOP</h2>
+          <p class="fs-desc">Giảm <b>{{ sale.discountPercent }}%</b> trên tất cả sản phẩm</p>
+          <div class="fs-time">
+            <span class="fs-time-label">Thời gian</span>
+            <span class="fs-range">{{ sale.startsAt | date:'dd/MM HH:mm' }} → {{ sale.endsAt | date:'dd/MM HH:mm' }}</span>
+          </div>
+          <a class="fs-btn" [routerLink]="'/san-pham'">MUA NGAY →</a>
+        </div>
+        <div class="fs-right">
+          <div class="fs-countdown">
+            <div class="fs-clock"><b>{{ saleRemaining().days }}</b><small>Ngày</small></div>
+            <div class="fs-sep">:</div>
+            <div class="fs-clock"><b>{{ saleRemaining().hours | number:'2.0-0' }}</b><small>Giờ</small></div>
+            <div class="fs-sep">:</div>
+            <div class="fs-clock"><b>{{ saleRemaining().minutes | number:'2.0-0' }}</b><small>Phút</small></div>
+            <div class="fs-sep">:</div>
+            <div class="fs-clock"><b>{{ saleRemaining().secs | number:'2.0-0' }}</b><small>Giây</small></div>
+          </div>
+          <div class="fs-progress"><div class="fs-progress-bar" [style.width.%]="saleProgress()"></div></div>
+          <div class="fs-hint small">{{ flashSaleLive() ? 'Ưu đãi đang có hiệu lực' : 'Chờ đợi sale sớm bắt đầu' }}</div>
+        </div>
+      </div>
+      <span class="fs-sparkle" aria-hidden="true">✦</span>
+      <span class="fs-sparkle fs-sparkle-2" aria-hidden="true">✦</span>
     </div>
-  }
+  </ng-container>
   <div class="sh"><h2>Sản phẩm nổi bật <small>Tinh hoa từ khắp mọi miền Việt Nam</small></h2>
     <div class="tabs">
       <button [class.on]="tab() === 'Tất cả'" (click)="tab.set('Tất cả')">Tất cả</button>

@@ -37,10 +37,16 @@ async function resolveCoupon(code, subtotalAfterMember) {
 
 export const createPayment = async (req, res) => {
   try {
-    const { items, paymentMethod = 'cod', customerInfo, note = '', couponCode = '' } = req.body ?? {};
+    const { items, paymentMethod = 'cod', customerInfo, note = '', couponCodes = [] } = req.body ?? {};
 
     if (!Array.isArray(items) || items.length === 0) {
       return res.status(400).json({ success: false, message: 'Đơn hàng phải có ít nhất một sản phẩm.' });
+    }
+
+    const codes = Array.isArray(couponCodes) ? couponCodes : [couponCodes];
+    const uniqueCodes = [...new Set(codes.map((c) => String(c || '').trim().toUpperCase()).filter(Boolean))];
+    if (uniqueCodes.length > 2) {
+      return res.status(400).json({ success: false, message: 'Tối đa áp dụng 2 mã giảm giá mỗi đơn hàng.' });
     }
 
     const productIds = items.map((item) => Number(item.productId)).filter(Number.isFinite);
@@ -69,13 +75,33 @@ export const createPayment = async (req, res) => {
     const memberDiscountPercent = Number(membership?.currentTier?.discountPercent || 0);
     const memberDiscount = Math.round(subtotal * memberDiscountPercent / 100);
     const subtotalAfterMember = Math.max(0, subtotal - memberDiscount);
-    const { coupon, discount: couponDiscount } = await resolveCoupon(couponCode, subtotalAfterMember);
-    const discount = Math.min(subtotal, memberDiscount + couponDiscount);
-    const freeShipping = Boolean(membership?.currentTier?.freeShipping) || subtotalAfterMember >= FREE_SHIPPING_THRESHOLD;
-    const shipping = subtotal <= 0 ? 0 : (freeShipping ? 0 : SHIPPING_FEE);
+
+    // Xác thực nhiều mã (tối đa 2), tổng hợp giảm giá và giảm phí vận chuyển
+    const appliedCoupons = [];
+    let totalCouponDiscount = 0;
+    let totalShippingDiscount = 0;
+    for (const code of uniqueCodes) {
+      try {
+        const { coupon, discount } = await resolveCoupon(code, subtotalAfterMember);
+        if (!coupon) continue;
+        appliedCoupons.push(coupon);
+        totalCouponDiscount += discount || 0;
+        if (coupon.freeShipping) totalShippingDiscount = SHIPPING_FEE;
+        else if (coupon.shippingDiscount && coupon.shippingDiscount > 0) totalShippingDiscount += coupon.shippingDiscount;
+      } catch (e) {
+        // Bỏ qua mã không hợp lệ, tiếp tục mã khác
+      }
+    }
+
+    const discount = Math.min(subtotal, memberDiscount + totalCouponDiscount);
+    const baseShipping = subtotal <= 0 ? 0 : SHIPPING_FEE;
+    const memberFreeShipping = membership?.currentTier?.freeShipping === true || (Number(membership?.currentTier?.freeShippingThreshold || 0) > 0 && subtotalAfterMember >= Number(membership.currentTier.freeShippingThreshold)) || subtotalAfterMember >= FREE_SHIPPING_THRESHOLD;
+    const freeShipping = memberFreeShipping || totalShippingDiscount >= baseShipping;
+    const shipping = freeShipping ? 0 : Math.max(0, baseShipping - Math.min(totalShippingDiscount, baseShipping));
     const total = Math.max(0, subtotal - discount + shipping);
 
-    if (coupon?.code) {
+    // Tăng usedCount cho từng mã đã áp dụng
+    for (const coupon of appliedCoupons) {
       await Coupon.updateOne({ code: coupon.code }, { $inc: { usedCount: 1 } });
     }
 
@@ -96,12 +122,12 @@ export const createPayment = async (req, res) => {
     if (paymentMethod === 'cod') {
       const payment = await Payment.create({
         order: order._id, user: req.user ? req.user.id : null, amount: total, method: 'cod', status: 'pending',
-        couponCode: coupon?.code || '', discountAmount: discount,
+        couponCode: appliedCoupons.map((c) => c.code).join(', '), discountAmount: discount,
       });
       order.paymentId = payment._id;
       order.paymentStatus = 'pending';
       await order.save();
-      return res.status(201).json({ success: true, message: 'Đặt hàng thành công. Thanh toán khi nhận hàng.', order, payment, pricing: { memberDiscountPercent, memberDiscount, couponDiscount, shipping, discount, total } });
+      return res.status(201).json({ success: true, message: 'Đặt hàng thành công. Thanh toán khi nhận hàng.', order, payment, pricing: { memberDiscountPercent, memberDiscount, couponDiscount: totalCouponDiscount, shippingDiscount: totalShippingDiscount, shipping, discount, total } });
     }
 
     if (paymentMethod === 'vnpay') {
@@ -117,7 +143,7 @@ export const createPayment = async (req, res) => {
       const payment = await Payment.create({
         order: order._id, user: req.user ? req.user.id : null, amount: total, method: 'vnpay', status: 'pending',
         transactionId: txnRef, payUrl, note: isMock ? `${orderInfo} (VNPAY mock test)` : orderInfo,
-        couponCode: coupon?.code || '', discountAmount: discount,
+        couponCode: appliedCoupons.map((c) => c.code).join(', '), discountAmount: discount,
       });
       order.paymentId = payment._id;
       order.paymentStatus = 'pending';
@@ -126,7 +152,7 @@ export const createPayment = async (req, res) => {
         success: true,
         message: isMock ? 'Mở trang thanh toán VNPAY test (mô phỏng).' : 'Tạo đơn hàng thành công. Chuyển hướng đến VNPAY (sandbox test).',
         order, payment, payUrl,
-        pricing: { memberDiscountPercent, memberDiscount, couponDiscount, shipping, discount, total },
+        pricing: { memberDiscountPercent, memberDiscount, couponDiscount: totalCouponDiscount, shippingDiscount: totalShippingDiscount, shipping, discount, total },
       });
     }
 

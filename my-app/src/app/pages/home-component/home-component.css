@@ -116,3 +116,51 @@ section{padding-top:20px}
 .sold-fill{height:100%;background:linear-gradient(90deg,#c0392b 0%,#e74c3c 50%,#c0392b 100%);background-size:200% auto;border-radius:12px;animation:shine 1.5s infinite linear;transition:width .5s ease}
 @keyframes shine{0%{background-position:200% 0}100%{background-position:-200% 0}}
 .sold-label{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;width:100%;font:700 12px 'Be Vietnam Pro';color:#fff;letter-spacing:.04em;text-transform:uppercase;z-index:2;text-shadow:0 1px 2px rgba(0,0,0,.25)}
+
+/* ---------- Flash Sale Hero ---------- */
+.fs-hero{
+  position:relative;margin:0 0 28px;padding:30px 22px 24px;border-radius:20px;
+  background:linear-gradient(135deg,#2f4538 0%,#1e2d24 55%,#2f4538 100%);
+  color:#fff;border:1px solid color-mix(in srgb,var(--moss) 35%,transparent);overflow:hidden;
+  box-shadow:0 10px 30px rgba(47,69,56,.25);
+}
+.fs-hero::before{
+  content:"";position:absolute;inset:-10%;background:radial-gradient(600px 400px at 80% -10%,rgba(160,200,130,.18),transparent 60%),radial-gradient(500px 300px at -10% 110%,rgba(200,160,90,.12),transparent 55%);
+  pointer-events:none;z-index:0;
+}
+.fs-hero.upcoming{background:linear-gradient(135deg,#5b4a1a 0%,#3e300d 55%,#5b4a1a 100%);border-color:color-mix(in srgb,#c99700 35%,transparent);}
+.fs-hero > *{position:relative;z-index:1}
+.fs-badge{
+  display:inline-flex;align-items:center;gap:7px;font:700 11px 'Be Vietnam Pro';letter-spacing:.14em;text-transform:uppercase;
+  padding:5px 14px;border-radius:999px;background:color-mix(in srgb,#fff 18%,transparent);color:#fff;border:1px solid color-mix(in srgb,#fff 35%,transparent);margin-bottom:10px;
+}
+.fs-hero.live .fs-badge{animation:pulse-badge 2.5s infinite;box-shadow:0 0 0 0 color-mix(in srgb,#de3128 55%,transparent);}
+.fs-inner{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:center}
+.fs-left .fs-title{font-family:'Playfair Display',Georgia,serif;font-size:clamp(24px,5vw,36px);font-style:italic;font-weight:700;margin:0 0 6px;letter-spacing:-.02em;display:flex;align-items:center;gap:8px}
+.fs-title i{color:#d4a373}
+.fs-desc{font-size:16px;margin:0 0 10px;color:color-mix(in srgb,#fff 90%,transparent)}
+.fs-desc b{color:#f2d69a}
+.fs-time{display:flex;align-items:center;gap:8px;margin-top:6px}
+.fs-time-label{font-size:12px;color:color-mix(in srgb,#fff 70%,transparent)}
+.fs-range{font:700 13px 'Be Vietnam Pro';color:#fff}
+.fs-btn{
+  display:inline-flex;align-items:center;gap:6px;margin-top:10px;padding:10px 18px;border-radius:10px;background:#d4a373;color:#1e2d24;font:700 14px 'Be Vietnam Pro';text-decoration:none;letter-spacing:.02em;box-shadow:0 4px 12px rgba(212,163,115,.35);
+}
+.fs-btn:hover{background:#e2c08c;transform:translateY(-1px)}
+.fs-right{display:flex;flex-direction:column;gap:8px}
+.fs-countdown{
+  display:flex;align-items:center;gap:6px;background:rgba(0,0,0,.25);border:1px solid color-mix(in srgb,#fff 20%,transparent);border-radius:12px;padding:10px 12px
+}
+.fs-clock{display:flex;flex-direction:column;align-items:center;min-width:42px}
+.fs-clock b{font:700 17px/1 'Be Vietnam Pro';color:#fff}
+.fs-clock small{font-size:10px;color:color-mix(in srgb,#fff 65%,transparent);text-transform:uppercase;letter-spacing:.05em}
+.fs-sep{font:800 16px/1 'Be Vietnam Pro';color:#d4a373}
+.fs-progress{height:8px;background:color-mix(in srgb,#fff 15%,transparent);border-radius:99px;overflow:hidden}
+.fs-progress-bar{height:100%;background:linear-gradient(90deg,#d4a373,#f2d69a);border-radius:99px;transition:width .6s ease;width:0%}
+.fs-hint{font-size:11px;color:color-mix(in srgb,#fff 70%,transparent)}
+.fs-sparkle{position:absolute;font-size:16px;color:#f2d69a;opacity:.9;animation:fs-sparkle 4s infinite alternate;pointer-events:none}
+.fs-sparkle{top:18%;right:10%}
+.fs-sparkle-2{top:68%;right:4%;animation-delay:1.6s;font-size:12px;opacity:.85}
+@keyframes fs-sparkle{from{transform:scale(1) rotate(0deg);opacity:.7}to{transform:scale(1.25) rotate(18deg);opacity:1}}
+@keyframes pulse-badge{0%,100%{box-shadow:0 0 0 0 color-mix(in srgb,#de3128 55%,transparent)}50%{box-shadow:0 0 0 8px color-mix(in srgb,#de3128 30%,transparent)}}
+@media(max-width:760px){.fs-inner{grid-template-columns:1fr}.fs-countdown{flex-wrap:wrap;justify-content:center}.fs-sep{margin:0 4px}}

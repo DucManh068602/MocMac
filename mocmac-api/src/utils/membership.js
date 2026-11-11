@@ -1,36 +1,38 @@
 import { Order } from '../models/Order.js';
 import { QuotationRequest } from '../models/QuotationRequest.js';
 import { User } from '../models/User.js';
+import { awardFreeShipVouchers } from './freeShipVouchers.js';
 
 export const TIERS = [
   {
     key: 'dong', name: 'Đồng', minSpend: 0, color: '#8a6d3b',
     benefit: 'Bậc khởi đầu cho thành viên Mộc Mạc.',
-    discountPercent: 0, freeShipping: false, priorityQuotation: false,
+    discountPercent: 0, freeShipping: false, freeShippingThreshold: 500000, priorityQuotation: false,
     benefits: [
       'Tích lũy chi tiêu từ đơn hàng và báo giá quà tặng đã thanh toán.',
       'Nhận thông tin sản phẩm mới và chương trình ưu đãi.',
       'Áp dụng mã giảm giá của shop khi đủ điều kiện.',
+      'Miễn phí vận chuyển khi đơn hàng đạt 500.000đ.',
     ],
   },
   {
     key: 'bac', name: 'Bạc', minSpend: 2_000_000, color: '#7b8794',
-    benefit: 'Giảm 5% khi mua hàng và miễn phí vận chuyển.',
-    discountPercent: 5, freeShipping: true, priorityQuotation: true,
+    benefit: 'Giảm 5% khi mua hàng và miễn phí vận chuyển đơn từ 300.000đ.',
+    discountPercent: 5, freeShipping: false, freeShippingThreshold: 300000, priorityQuotation: true,
     benefits: [
       'Giảm 5% tự động khi mua hàng (áp dụng trên giá trị sản phẩm, hiển thị tại giỏ hàng).',
-      'Miễn phí vận chuyển cho đơn hàng thành viên Bạc.',
+      'Miễn phí vận chuyển khi đơn hàng đạt 300.000đ.',
       'Nhận thông báo mã giảm giá và ưu đãi sớm.',
       'Ưu tiên hỗ trợ khi đặt hàng quà tặng/báo giá.',
     ],
   },
   {
     key: 'vang', name: 'Vàng', minSpend: 5_000_000, color: '#c99700',
-    benefit: 'Giảm 8% khi mua hàng, miễn phí vận chuyển và ưu tiên xử lý.',
-    discountPercent: 8, freeShipping: true, priorityQuotation: true,
+    benefit: 'Giảm 8% khi mua hàng, miễn phí vận chuyển đơn từ 100.000đ và ưu tiên xử lý.',
+    discountPercent: 8, freeShipping: false, freeShippingThreshold: 100000, priorityQuotation: true,
     benefits: [
       'Giảm 8% tự động khi mua hàng (áp dụng trên giá trị sản phẩm, hiển thị tại giỏ hàng).',
-      'Miễn phí vận chuyển cho đơn hàng thành viên Vàng.',
+      'Miễn phí vận chuyển khi đơn hàng đạt 100.000đ.',
       'Ưu tiên xử lý yêu cầu báo giá quà tặng/doanh nghiệp.',
       'Được ưu tiên nhận/gợi ý mã giảm giá phù hợp cho đơn quà tặng số lượng lớn.',
       'Nhận quà tri ân theo các chương trình của Mộc Mạc.',
@@ -38,11 +40,11 @@ export const TIERS = [
   },
   {
     key: 'kimcuong', name: 'Kim Cương', minSpend: 15_000_000, color: '#1f7a8c',
-    benefit: 'Giảm 12% khi mua hàng, miễn phí vận chuyển và chăm sóc ưu tiên 1:1.',
-    discountPercent: 12, freeShipping: true, priorityQuotation: true,
+    benefit: 'Giảm 12% khi mua hàng, miễn phí vận chuyển mọi đơn và chăm sóc ưu tiên 1:1.',
+    discountPercent: 12, freeShipping: true, freeShippingThreshold: 0, priorityQuotation: true,
     benefits: [
       'Giảm 12% tự động khi mua hàng (áp dụng trên giá trị sản phẩm, hiển thị tại giỏ hàng).',
-      'Miễn phí vận chuyển cho đơn hàng thành viên Kim Cương.',
+      'Miễn phí vận chuyển mọi đơn hàng (không tối thiểu).',
       'Chăm sóc ưu tiên 1:1 khi đặt quà tặng cá nhân/doanh nghiệp.',
       'Ưu tiên nhận mã giảm giá/ưu đãi đặc biệt và xử lý báo giá số lượng lớn.',
       'Hỗ trợ và xử lý phát sinh theo chính sách ưu tiên.',
@@ -80,7 +82,16 @@ export async function membershipForUser(user) {
   const userId = user._id || user.id;
   const spend = await spendForUser(userId, user.email);
   const tier = resolveTier(spend.totalSpend);
-  return { ...tier, ...spend };
+
+  // Tự động tặng phiếu miễn phí vận chuyển mỗi mốc 100.000đ chi tiêu (mỗi mốc 1 lần)
+  let vouchers = { awarded: [], eligible: 0, issued: 0 };
+  try {
+    vouchers = await awardFreeShipVouchers(user, spend.totalSpend);
+  } catch (e) {
+    console.error('Không thể tặng phiếu miễn phí vận chuyển:', e);
+  }
+
+  return { ...tier, ...spend, freeShipVouchers: vouchers };
 }
 
 export async function getUsersByTierKeys(tierKeys = []) {

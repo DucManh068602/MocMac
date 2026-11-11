@@ -510,6 +510,13 @@
 .badge-green { background: #eaf0e2; color: #3e592e; }
 .badge-beige { background: #f3ede1; color: #826a4e; }
 
+.badge-flash { background: #c0392b; color: #fff; animation: badge-pulse 2.5s infinite; }
+
+@keyframes badge-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(192, 57, 43, .55); }
+  50% { box-shadow: 0 0 0 7px rgba(192, 57, 43, .3); }
+}
+
 .product-info h1 {
   margin: 0 0 12px;
   color: var(--mm-green-dark);

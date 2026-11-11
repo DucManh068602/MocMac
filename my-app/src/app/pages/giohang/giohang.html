@@ -32,7 +32,7 @@
                   @if (tier.priorityQuotation) { Ưu tiên nhận mã giảm giá và hỗ trợ báo giá quà tặng. }
                 </p>
               </div>
-              <a routerLink="/tai-khoan/cai-dat" class="member-benefit-link">Xem quyền lợi</a>
+              <a routerLink="/tai-khoan" class="member-benefit-link">Xem quyền lợi</a>
             </div>
           } @else if (!auth.isAuthenticated()) {
             <div class="member-benefit-banner guest">
@@ -51,10 +51,10 @@
                 <div>
                   @if (isFreeShipping()) {
                     <strong>Bạn được miễn phí vận chuyển.</strong>
-                    <small>{{ memberFreeShipping() ? 'Ưu đãi áp dụng cho hội viên ' + (memberTier()?.name || '') + '.' : 'Đơn hàng đủ điều kiện miễn phí vận chuyển.' }}</small>
+                    <small>{{ memberFreeShipping().free ? 'Ưu đãi áp dụng cho hội viên ' + (memberTier()?.name || '') + '.' : 'Đơn hàng đủ điều kiện miễn phí vận chuyển.' }}</small>
                   } @else {
                     <strong>Mua thêm {{ vnd(remainingForFreeShipping()) }} để được miễn phí vận chuyển.</strong>
-                    <small>Áp dụng cho giá trị sau ưu đãi hội viên, từ {{ vnd(freeShippingThreshold) }}.</small>
+                    <small>Áp dụng cho giá trị sau ưu đãi hội viên, từ {{ vnd(memberFreeShipping().threshold > 0 ? memberFreeShipping().threshold : freeShippingThreshold) }}.</small>
                   }
                 </div>
               </div>
@@ -118,8 +118,8 @@
             }
             <div class="row">
               <span>Phí vận chuyển</span>
-              @if (shipping() === 0) { <span class="free">Miễn phí<small>{{ memberFreeShipping() ? 'Ưu đãi hội viên' : 'Đủ điều kiện miễn phí ship' }}</small></span> }
-              @else { <strong>{{ vnd(shipping()) }}</strong> }
+              @if (shipping() === 0) { <span class="free">Miễn phí<small>{{ memberFreeShipping().free ? 'Ưu đãi hội viên' : couponFreeShipping() ? 'Mã giảm phí ship' : 'Đủ điều kiện miễn phí ship' }}</small></span> }
+              @else { <strong>{{ vnd(shipping()) }}</strong>@if (couponShippingDiscount() > 0) { <small class="muted">(−{{ vnd(couponShippingDiscount()) }})</small> } }
             </div>
 
             <div class="total">
@@ -134,9 +134,62 @@
                 <button type="button" (click)="applyCoupon()">Áp dụng</button>
               </div>
               @if (couponError()) { <small class="error">{{ couponError() }}</small> }
-              @if (couponApplied()) { <small class="ok">Đã áp dụng mã {{ couponInfo()?.code || couponInput }} -{{ vnd(couponDiscount()) }}</small> }
+              @if (couponApplied()) {
+                <small class="ok">Đã áp dụng {{ couponCodes().join(', ') }}</small>
+                @if (couponInfo()?.code) {
+                  <button type="button" class="remove-coupon" (click)="removeCoupon(couponInfo()?.code)">×</button>
+                }
+              }
               @if (memberDiscount() > 0) { <small class="ok">Mã giảm giá được tính sau ưu đãi hội viên.</small> }
             </div>
+
+            <!-- Phiếu giảm phí vận chuyển -->
+            @if (auth.isAuthenticated()) {
+              <div class="freeship-vouchers">
+                <label>Phiếu giảm phí vận chuyển của bạn</label>
+                @if (freeShipVouchersLoading()) {
+                  <small>Đang tải...</small>
+                } @else if (freeShipVouchers().length === 0) {
+                  <small class="muted">Chưa có phiếu giảm phí vận chuyển. Mỗi chi tiêu 100.000đ nhận 1 phiếu, sau đó mỗi 500.000đ nhận thêm 1 phiếu (tối đa 2 mã/đơn).</small>
+                } @else {
+                  <div class="voucher-list">
+                    @for (v of freeShipVouchers(); track v.code) {
+                      <div class="voucher-item" [class.used]="v.usedCount >= (v.usageLimit || 1)" [class.selected]="couponCodes().includes(v.code)">
+                        <div class="voucher-info">
+                          <div class="voucher-code">{{ v.code }}</div>
+                          <div class="voucher-desc">{{ v.description }} · giảm {{ v.shippingDiscount | number:'0.0-0' }}đ phí ship</div>
+                        </div>
+                        <div class="voucher-actions">
+                          @if (couponCodes().includes(v.code)) {
+                            <span class="chip applied">Đã áp dụng</span>
+                            <button type="button" class="btn-remove-voucher" (click)="removeCoupon(v.code)">Bỏ</button>
+                          } @else if (v.usedCount < (v.usageLimit || 1) && couponCodes().length < 2) {
+                            <button type="button" class="btn-apply-voucher" (click)="applyFreeShipVoucher(v.code)">Áp dụng</button>
+                          } @else if (couponCodes().length >= 2) {
+                            <span class="chip limit">Đủ 2 mã</span>
+                          } @else {
+                            <span class="chip used">Đã sử dụng</span>
+                          }
+                        </div>
+                      </div>
+                    }
+                  </div>
+                  <small class="muted">Mỗi đơn hàng tối đa áp dụng 2 phiếu. Giảm phí ship tối đa bằng phí ship đơn hàng.</small>
+                }
+              </div>
+            }
+
+            <!-- Tóm tắt giảm phí vận chuyển -->
+            @if (couponShippingDiscount() > 0 || couponFreeShipping()) {
+              <div class="shipping-discount-row">
+                <span>Giảm phí vận chuyển</span>
+                @if (couponFreeShipping()) {
+                  <strong>-100% phí ship</strong>
+                } @else {
+                  <strong>-{{ vnd(couponShippingDiscount()) }}</strong>
+                }
+              </div>
+            }
 
             <div class="payment">
               <label class="payment-label">Phương thức thanh toán</label>
