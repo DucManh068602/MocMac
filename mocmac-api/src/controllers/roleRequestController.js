@@ -2,6 +2,8 @@ import { RoleRequest } from '../models/RoleRequest.js';
 import { User } from '../models/User.js';
 import { logAction, getRequestInfo } from '../utils/auditLog.js';
 
+const roleEmailSuffix = { admin: 'admin.mocmac.vn', staff: 'staff.mocmac.vn', collaborator: 'collaborator.mocmac.vn', cooperative: 'cooperative.mocmac.vn' };
+
 export const submitRoleRequest = async (req, res) => {
   try {
     const { requestedRole, reason } = req.body ?? {};
@@ -135,7 +137,18 @@ export const updateRoleRequest = async (req, res) => {
         return res.status(400).json({ success: false, message: 'Vai trò không hợp lệ.' });
       }
 
-      await User.findByIdAndUpdate(request.user._id, { role, isActive: true });
+      const targetUser = await User.findById(request.user._id);
+      if (targetUser) {
+        if (!targetUser.originalEmail) targetUser.originalEmail = targetUser.email;
+        const suffix = roleEmailSuffix[role];
+        if (suffix) {
+          const localPart = String(targetUser.originalEmail || targetUser.email || '').split('@')[0];
+          targetUser.email = `${localPart}@${suffix}`;
+        }
+        targetUser.role = role;
+        targetUser.isActive = true;
+        await targetUser.save();
+      }
 
       request.status = 'approved';
     } else {

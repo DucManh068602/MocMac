@@ -199,6 +199,7 @@ export const updateUser = async (req, res) => {
     if (role && !allowedRoles.includes(role)) return res.status(400).json({ success: false, message: 'Vai trò không hợp lệ.' });
     const user = await User.findById(req.params.id);
     if (!user) return res.status(404).json({ success: false, message: 'Không tìm thấy người dùng.' });
+    if (user.email === 'admin@admin.mocmac.vn') return res.status(403).json({ success: false, message: 'Không thể chỉnh sửa tài khoản quản trị cấp cao.' });
 
     const update = {};
     if (name) update.name = String(name).trim();

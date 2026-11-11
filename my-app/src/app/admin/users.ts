@@ -111,22 +111,24 @@ import { ToastService } from './toast.service';
                 <td>{{ u.createdAt | date:'dd/MM/yyyy' }}</td>
                 <td>
                   <div class="action-row">
-                    <button type="button" class="btn-small" (click)="editUser(u)">Sửa</button>
-                    @if (u.isActive) {
-                      @if (!isSuperAdmin(u)) {
+                    @if (!isSuperAdmin(u)) {
+                      <button type="button" class="btn-small" (click)="editUser(u)">Sửa</button>
+                      @if (u.isActive) {
                         <button type="button" class="btn-small btn--warn" (click)="deactivateUser(u._id)">Vô hiệu</button>
                         <button type="button" class="btn-small btn-toggle" (click)="toggleLock(u._id, true)">Khóa</button>
-                      } @else { <span class="subtext">Bảo vệ</span> }
+                      } @else {
+                        <select (change)="onActivateSelect(u._id, $event)">
+                          <option value="">Kích hoạt</option>
+                          <option value="customer">Khách hàng</option>
+                          <option value="admin">Quản trị viên</option>
+                          <option value="staff">Nhân viên</option>
+                          <option value="collaborator">Cộng tác viên</option>
+                          <option value="cooperative">Hợp tác xã</option>
+                        </select>
+                        <button type="button" class="btn-small btn-toggle" (click)="toggleLock(u._id, false, u.role)">Mở khóa</button>
+                      }
                     } @else {
-                      <select (change)="onActivateSelect(u._id, $event)">
-                        <option value="">Kích hoạt</option>
-                        <option value="customer">Khách hàng</option>
-                        <option value="admin">Quản trị viên</option>
-                        <option value="staff">Nhân viên</option>
-                        <option value="collaborator">Cộng tác viên</option>
-                        <option value="cooperative">Hợp tác xã</option>
-                      </select>
-                      <button type="button" class="btn-small btn-toggle" (click)="toggleLock(u._id, false, u.role)">Mở khóa</button>
+                      <span class="subtext">Bảo vệ</span>
                     }
                   </div>
                 </td>
