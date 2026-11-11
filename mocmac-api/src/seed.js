@@ -111,7 +111,7 @@ async function seed() {
     console.log(`- admin: đã tồn tại ${adminEmail} (giữ nguyên)`);
   }
 
-  const staffEmail = String(process.env.STAFF_EMAIL || 'staff@mocmac.vn').toLowerCase();
+  const staffEmail = String(process.env.STAFF_EMAIL || 'staff@staff.mocmac.vn').toLowerCase();
   const staffPassword = process.env.STAFF_PASSWORD || 'Staff@12345';
   if (!(await User.exists({ email: staffEmail }))) {
     const passwordHash = await bcrypt.hash(staffPassword, 10);

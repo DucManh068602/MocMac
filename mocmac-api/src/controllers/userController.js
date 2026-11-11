@@ -97,7 +97,7 @@ export const updateUserRole = async (req, res) => {
 };
 
 const upgradeRoles = ['customer', 'collaborator', 'cooperative', 'staff', 'admin'];
-const roleEmailSuffix = { admin: 'admin.mocmac.vn', staff: 'staff.mocmac.vn', collaborator: 'contr.mocmac.vn', cooperative: 'htx.mocmac.vn' };
+const roleEmailSuffix = { admin: 'admin.mocmac.vn', staff: 'staff.mocmac.vn', collaborator: 'collaborator.mocmac.vn', cooperative: 'cooperative.mocmac.vn' };
 
 export const activateUser = async (req, res) => {
   try {
@@ -194,24 +194,52 @@ export const createUser = async (req, res) => {
 
 export const updateUser = async (req, res) => {
   try {
-    const { name, phone, role, isActive, password } = req.body ?? {};
+    const { name, email, phone, role, isActive, password } = req.body ?? {};
     const allowedRoles = ['admin', 'staff', 'collaborator', 'cooperative', 'customer'];
     if (role && !allowedRoles.includes(role)) return res.status(400).json({ success: false, message: 'Vai trò không hợp lệ.' });
+    const user = await User.findById(req.params.id);
+    if (!user) return res.status(404).json({ success: false, message: 'Không tìm thấy người dùng.' });
+
     const update = {};
     if (name) update.name = String(name).trim();
     if (phone !== undefined) update.phone = String(phone).trim();
-    if (role) update.role = role;
     if (isActive !== undefined) update.isActive = isActive;
     if (password) {
       if (String(password).length < 8) return res.status(400).json({ success: false, message: 'Mật khẩu tối thiểu 8 ký tự.' });
       update.passwordHash = await bcrypt.hash(String(password), 10);
     }
-    const user = await User.findByIdAndUpdate(req.params.id, update, { new: true, runValidators: true }).lean();
-    if (!user) return res.status(404).json({ success: false, message: 'Không tìm thấy người dùng.' });
+
+    // Xử lý email theo vai trò
+    if (role === 'customer') {
+      // Về khách hàng: khôi phục email gốc nếu có
+      if (user.originalEmail) {
+        update.email = user.originalEmail.toLowerCase().trim();
+        update.originalEmail = undefined;
+      } else if (email) {
+        const normalizedEmail = String(email).toLowerCase().trim();
+        const exists = await User.exists({ email: normalizedEmail, _id: { $ne: user._id } });
+        if (exists) return res.status(409).json({ success: false, message: `Email ${normalizedEmail} đã được sử dụng.` });
+        update.email = normalizedEmail;
+      }
+    } else {
+      // Vai trò nhân viên trở lên: TỰ ĐỘNG gán email theo domain suffix (không lấy email từ input)
+      if (!user.originalEmail) update.originalEmail = user.email;
+      const suffix = roleEmailSuffix[role];
+      if (suffix) {
+        const localPart = String(user.originalEmail || user.email || '').split('@')[0];
+        const targetEmail = `${localPart}@${suffix}`;
+        const exists = await User.exists({ email: targetEmail, _id: { $ne: user._id } });
+        if (exists) return res.status(409).json({ success: false, message: `Email ${targetEmail} đã được sử dụng.` });
+        update.email = targetEmail;
+      }
+    }
+
+    if (role) update.role = role;
+    const updated = await User.findByIdAndUpdate(user._id, update, { new: true, runValidators: true }).lean();
     const { user: reqUser, ip } = getRequestInfo(req);
-    await logAction({ action: 'user.update', resourceType: 'User', resourceId: user._id, user: reqUser, ip, details: { email: user.email, role: user.role, isActive: user.isActive } });
-    await attachMembership(user);
-    return res.json({ success: true, message: 'Cập nhật tài khoản thành công.', user });
+    await logAction({ action: 'user.update', resourceType: 'User', resourceId: updated._id, user: reqUser, ip, details: { email: updated.email, role: updated.role, isActive: updated.isActive } });
+    await attachMembership(updated);
+    return res.json({ success: true, message: 'Cập nhật tài khoản thành công.', user: updated });
   } catch (error) {
     console.error('Lỗi cập nhật người dùng:', error);
     return res.status(500).json({ success: false, message: 'Không thể cập nhật.', error: error.message });

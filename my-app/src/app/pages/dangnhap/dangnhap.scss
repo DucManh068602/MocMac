@@ -6,6 +6,22 @@ $brown: #8c3f1c;
 $input-bg: #f8f9f6;
 $error: #b3401f;
 
+/* Typography upgrades for auth page */
+.auth-page h1,
+.auth-page h2,
+.auth-page .brand-name,
+.auth-page .quote {
+  font-family: 'Playfair Display', Georgia, serif;
+  letter-spacing: -.02em;
+}
+.auth-page .brand-sub,
+.auth-page .subtitle,
+.auth-page .field-label,
+.auth-page input,
+.auth-page .submit-btn {
+  font-family: 'Be Vietnam Pro', system-ui, sans-serif;
+}
+
 :host {
   display: block;
 }
@@ -69,7 +85,7 @@ $error: #b3401f;
 
 .brand-name {
   color: $green;
-  font: 700 24px 'Lora', Georgia, serif;
+  font: 700 24px 'Playfair Display', Georgia, serif;
   letter-spacing: .5px;
 }
 
@@ -113,7 +129,7 @@ $error: #b3401f;
   max-width: 620px;
   margin: 16px 0 12px;
   color: $text;
-  font: 600 clamp(34px, 4.2vw, 52px)/1.2 'Lora', Georgia, serif;
+  font: 600 clamp(34px, 4.2vw, 52px)/1.2 'Playfair Display', Georgia, serif;
 }
 
 .quote-desc {
@@ -259,7 +275,7 @@ $error: #b3401f;
   h1 {
     margin: 22px 0 6px;
     color: $text;
-    font: 700 22px 'Be Vietnam Pro', system-ui, sans-serif;
+    font: 700 26px 'Playfair Display', Georgia, serif;
     text-align: center;
   }
 

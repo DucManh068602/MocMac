@@ -317,7 +317,10 @@ export const forgotPassword = async (req, res) => {
   }
 
   const key = String(email).toLowerCase().trim();
-  const user = await User.findOne({ email: key });
+  let user = await User.findOne({ email: key });
+  if (!user) {
+    user = await User.findOne({ originalEmail: key });
+  }
   if (!user) {
     return res.status(404).json({ message: 'Không tìm thấy tài khoản.' });
   }

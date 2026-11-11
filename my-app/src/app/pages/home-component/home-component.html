@@ -75,7 +75,7 @@
 
 <section class="wrap" id="sp">
   <ng-container *ngIf="flashSale() as sale">
-    <div class="fs-hero" [class.live]="flashSaleLive()" [class.upcoming]="!flashSaleLive() && sale?.active && sale?.startsAt">
+    <div class="fs-hero" *ngIf="flashSaleLive() || (sale?.active && sale?.startsAt)" [class.live]="flashSaleLive()" [class.upcoming]="!flashSaleLive() && sale?.active && sale?.startsAt">
       <div class="fs-badge">{{ flashSaleLive() ? 'ĐANG DIỄN RA' : sale?.active ? 'SẮP BẮT ĐẦU' : 'SẮP Diễn ra' }}</div>
       <div class="fs-inner">
         <div class="fs-left">

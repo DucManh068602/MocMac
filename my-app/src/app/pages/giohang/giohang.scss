@@ -14,6 +14,19 @@ $text-main: #1c2a20;
 $text-muted: #5d6b61;
 $error: #b3401f;
 
+/* Typography upgrades */
+.cart-page h1,
+.cart-page h2,
+.cart-page h3 {
+  font-family: 'Playfair Display', Georgia, serif;
+  letter-spacing: -.02em;
+}
+.cart-page .page-head h1,
+.cart-page .summary-head h2,
+.cart-page .receiver-info h3 {
+  font-weight: 700;
+}
+
 .cart-page {
   min-height: 100vh;
   padding: 32px 16px 48px;
@@ -226,6 +239,7 @@ $error: #b3401f;
     font-weight: 700;
     color: $text-main;
     line-height: 1.35;
+    font-family: 'Playfair Display', Georgia, serif;
   }
 
   .desc {
