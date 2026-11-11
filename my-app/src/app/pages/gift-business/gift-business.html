@@ -57,7 +57,7 @@
                   <div class="product-placeholder">{{ product.icon || '🎁' }}</div>
                 }
                 <span class="quote-tag" [class.selected]="inQuote(product.id)" (click)="toggleQuote(product, $event)">
-                  <i class="fa-solid fa-circle-plus" aria-hidden="true"></i>
+                  <i class="fa-solid fa-check" aria-hidden="true"></i>
                   {{ inQuote(product.id) ? 'Đã chọn' : 'Thêm báo giá' }}
                 </span>
               </div>

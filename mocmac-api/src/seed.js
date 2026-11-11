@@ -42,6 +42,18 @@ async function replaceCollection(Model, docs, label) {
   return docs.length;
 }
 
+async function upsertBootstrapAccount(Model, filter, data, label) {
+  const exists = await Model.exists(filter);
+  if (exists) {
+    console.log(`- ${label}: đã tồn tại ${filter.email} (giữ nguyên)`);
+    return false;
+  }
+  const passwordHash = await bcrypt.hash(data.password, 10);
+  await Model.create({ ...data, passwordHash });
+  console.log(`- ${label}: đã tạo ${filter.email} (mật khẩu từ env hoặc mặc định)`);
+  return true;
+}
+
 async function seed() {
   if (!process.env.MONGODB_URI) {
     throw new Error('Thiếu MONGODB_URI trong mocmac-api/.env');
@@ -51,8 +63,6 @@ async function seed() {
   console.log('Đã kết nối MongoDB');
   console.log(`Đọc dữ liệu seed từ: ${dataDir}`);
 
-  // App/content data exported from DB. Runtime/PII collections are intentionally not seeded:
-  // orders, payments, reviews, contacts, notifications, addresses, quotation requests, chat, audit, etc.
   const regions = readJson('regions');
   const provinces = readJson('provinces');
   const products = readJson('products');
@@ -63,6 +73,7 @@ async function seed() {
     startsAt: asDate(c.startsAt),
     validFrom: asDate(c.validFrom),
     validTo: asDate(c.validTo),
+    shippingDiscount: Number(c.shippingDiscount || 0),
   }));
   const deals = readJson('deals').map((d) => ({
     ...d,
@@ -100,33 +111,49 @@ async function seed() {
   console.log(`- permissions: ${permissionDocs.length} bản ghi`);
   console.log(`- rolePermissions: ${rolePermissionDocs.length} bản ghi`);
 
-  // Bootstrap accounts (idempotent; no user/PII data exported from DB)
-  const adminEmail = String(process.env.ADMIN_EMAIL || 'admin@admin.mocmac.vn').toLowerCase();
-  const adminPassword = process.env.ADMIN_PASSWORD || 'Admin@12345';
-  if (!(await User.exists({ email: adminEmail }))) {
-    const passwordHash = await bcrypt.hash(adminPassword, 10);
-    await User.create({ name: 'Quản trị viên', email: adminEmail, phone: '0123456789', passwordHash, role: 'admin', isActive: true });
-    console.log(`- admin: đã tạo ${adminEmail} (mật khẩu từ ADMIN_PASSWORD hoặc mặc định)`);
-  } else {
-    console.log(`- admin: đã tồn tại ${adminEmail} (giữ nguyên)`);
-  }
+  await upsertBootstrapAccount(
+    User,
+    { email: String(process.env.ADMIN_EMAIL || 'admin@admin.mocmac.vn').toLowerCase() },
+    {
+      name: 'Quản trị viên',
+      email: String(process.env.ADMIN_EMAIL || 'admin@admin.mocmac.vn').toLowerCase(),
+      phone: '0123456789',
+      password: process.env.ADMIN_PASSWORD || 'Admin@12345',
+      role: 'admin',
+      isActive: true,
+    },
+    'admin'
+  );
 
-  const staffEmail = String(process.env.STAFF_EMAIL || 'staff@staff.mocmac.vn').toLowerCase();
-  const staffPassword = process.env.STAFF_PASSWORD || 'Staff@12345';
-  if (!(await User.exists({ email: staffEmail }))) {
-    const passwordHash = await bcrypt.hash(staffPassword, 10);
-    await User.create({ name: 'Nhân viên Mộc Mạc', email: staffEmail, passwordHash, role: 'staff', isActive: true });
-    console.log(`- staff: đã tạo ${staffEmail} (mật khẩu từ STAFF_PASSWORD hoặc mặc định)`);
-  } else {
-    console.log(`- staff: đã tồn tại ${staffEmail} (giữ nguyên)`);
-  }
+  await upsertBootstrapAccount(
+    User,
+    { email: String(process.env.STAFF_EMAIL || 'staff@staff.mocmac.vn').toLowerCase() },
+    {
+      name: 'Nhân viên Mộc Mạc',
+      email: String(process.env.STAFF_EMAIL || 'staff@staff.mocmac.vn').toLowerCase(),
+      phone: '0123456790',
+      password: process.env.STAFF_PASSWORD || 'Staff@12345',
+      role: 'staff',
+      isActive: true,
+    },
+    'staff'
+  );
 
-  console.log('\nSeed hoàn tất. Chạy API: npm run dev (mocmac-api). Chạy web: npm start (my-app).');
+  console.log('\n========================================');
+  console.log('Seed hoàn tất.');
+  console.log('----------------------------------------');
+  console.log('Tài khoản bootstrap:');
+  console.log(`- Admin: ${process.env.ADMIN_EMAIL || 'admin@admin.mocmac.vn'} / ${process.env.ADMIN_PASSWORD || 'Admin@12345'}`);
+  console.log(`- Staff: ${process.env.STAFF_EMAIL || 'staff@staff.mocmac.vn'} / ${process.env.STAFF_PASSWORD || 'Staff@12345'}`);
+  console.log('----------------------------------------');
+  console.log('Chạy API: npm run dev (mocmac-api)');
+  console.log('Chạy web: npm start (my-app)');
+  console.log('========================================\n');
 }
 
 seed()
   .catch((err) => {
-    console.error('Seed thất bại:', err);
+    console.error('Seed thất bại:', err.message);
     process.exitCode = 1;
   })
   .finally(async () => {

@@ -875,10 +875,10 @@
 /* ============================================================
    NÚT TICK CH?N BÁO GIÁ
    ============================================================ */
-.quote-checkbox{display:inline-flex;align-items:center;gap:6px;cursor:pointer;font-size:13px;color:#2b2a22;font-weight:600;position:relative}
-.quote-checkbox input{appearance:none;width:18px;height:18px;border:2px solid #a25633;border-radius:4px;background:#fff;cursor:pointer;position:relative;margin:0}
-.quote-checkbox input:checked{background:#a25633;border-color:#a25633}
-.quote-checkbox input:checked::after{content:'?';position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);color:#fff;font-weight:800;font-size:12px}
+.quote-checkbox{display:inline-flex;align-items:center;justify-content:center;gap:6px;cursor:pointer;font-size:13px;color:#2b2a22;font-weight:600;position:relative;width:24px;height:24px;border:2px solid #a25633;border-radius:6px;background:#fff}
+.quote-checkbox .fa-check{color:#a25633;font-size:14px;opacity:0;transition:opacity .2s ease}
+.quote-checkbox.selected .fa-check{opacity:1;color:#fff}
+.quote-checkbox.selected{background:#a25633;border-color:#a25633}
 .quote-checkbox:hover{border-color:#a25633}
 .checkmark{display:none}
 
